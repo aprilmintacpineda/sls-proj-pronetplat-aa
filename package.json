@@ -1,0 +1,39 @@
+{
+  "name": "proj-pronetplat-aa",
+  "description": "proj-pronetplat-aa",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.12.1",
+    "eslint": "^7.12.0",
+    "eslint-plugin-jest": "^24.1.0",
+    "husky": "^4.3.0",
+    "jest": "^26.6.1",
+    "lint-staged": "^10.4.2",
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.1.2"
+  },
+  "scripts": {
+    "test": "jest",
+    "eslint": "eslint \"*.js\" \"src/**/*.js\" --fix",
+    "prettier": "prettier \"*.js\" \"src/**/*.js\" --write",
+    "lint": "npm run prettier && npm run eslint",
+    "migration:setup": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate setup",
+    "migration:rollback": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate rollback",
+    "migration:migrate": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate migrate",
+    "migration:create": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate create",
+    "create-plans": "node scripts/createPlans.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}
