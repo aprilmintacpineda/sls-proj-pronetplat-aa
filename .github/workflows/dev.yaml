@@ -27,9 +27,9 @@ jobs:
 
       - name: Versions
         run: |
-          sam --version
-          yarn --version
-          node --version
+          echo "SAM CLI: $(sam --version)"
+          echo "Yarn: $(yarn --version)"
+          echo "Node: $(node --version)"
 
       - name: Generate tokens
         run: |
