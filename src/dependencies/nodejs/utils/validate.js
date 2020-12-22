@@ -77,4 +77,4 @@ function validate (value, rules) {
   return '';
 }
 
-export default validate;
+module.exports = validate;
