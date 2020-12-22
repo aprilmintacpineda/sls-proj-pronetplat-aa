@@ -2,9 +2,14 @@ const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
 function didPassFieldValidation ({ email, password }) {
-  return (
-    validate(email, ['required', 'email']) &&
+  console.log(
+    validate(email, ['required', 'email']),
     validate(password, ['required', 'password'])
+  );
+
+  return (
+    !validate(email, ['required', 'email']) &&
+    !validate(password, ['required', 'password'])
   );
 }
 
