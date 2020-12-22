@@ -29,13 +29,6 @@ jobs:
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/upload-artifact@v1
-        with:
-          name: build-artifacts
-          path: |
-            ${{ steps.yarn-cache.outputs.dir }}
-            ./aws-sam
-
       - name: Generate tokens
         run: |
           echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/dependencies/nodejs/resources/jwt.key
@@ -46,6 +39,13 @@ jobs:
 
       - name: Build
         run: sam build
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: build-artifacts
+          path: |
+            ${{ steps.yarn-cache.outputs.dir }}
+            ./aws-sam
 
       - name: Deploy
         run: sam deploy --stack-name sls-proj-pronetplat-aa-dev \
