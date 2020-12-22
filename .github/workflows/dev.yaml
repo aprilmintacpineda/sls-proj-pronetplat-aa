@@ -31,7 +31,7 @@ jobs:
           echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/dependencies/nodejs/resources/jwt.key
           echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/dependencies/nodejs/resources/jwt.pub
       - name: Install dependencies
-        run: cd src/dependencies/nodejs && npm i --ci --production
+        run: cd src/dependencies/nodejs && yarn
 
       - name: Build
         run: sam build
@@ -39,4 +39,5 @@ jobs:
       - name: Deploy
         run: sam deploy --stack-name sls-proj-pronetplat-aa-dev \
           --s3-prefix sls-proj-pronetplat-aa-dev \
-          --parameter-overrides Stage=dev
+          --parameter-overrides Stage=dev \
+          --tags what="sls-proj-pronetplat-aa" stage="dev"
