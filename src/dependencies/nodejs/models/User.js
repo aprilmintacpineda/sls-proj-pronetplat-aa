@@ -11,7 +11,7 @@ class User {
   async fetchByEmail () {
     console.log('fetchByEmail');
 
-    const user = this.client.query(
+    const user = await this.client.query(
       q.Get(
         q.Match(
           q.Index('userByEmail'),

@@ -23,10 +23,10 @@ const validationRules = {
     const minLength = 8;
     const maxLength = 30;
 
-    if (value.length < minLength || value.length > maxLength) return `Password should be ${minLength} to ${maxLength} characters.`;
     if ((value.match(/[0-9]/gm) || []).length < 2) return 'Password must contain at least 2 numbers.';
     if ((value.match(/[a-z]/gm) || []).length < 2) return 'Password must contain at least 2 small letters.';
     if ((value.match(/[A-Z]/gm) || []).length < 2) return 'Password must contain at least 2 capital letters.';
+    if (value.length < minLength || value.length > maxLength) return `Password should be ${minLength} to ${maxLength} characters.`;
 
     if (
       (
