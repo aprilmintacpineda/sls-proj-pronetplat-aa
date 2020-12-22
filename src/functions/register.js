@@ -14,7 +14,8 @@ async function register ({ body }) {
   if (!didPassFieldValidation(formBody)) return { status: 400 };
 
   const { email } = formBody;
-  new User({ email });
+  const user = new User({ email });
+  await user.fetchByEmail();
 
   return {
     statusCode: 200,
