@@ -9,18 +9,14 @@ class User {
   }
 
   async fetchByEmail () {
-    try {
-      this.instance = await this.client.query(
-        q.Get(
-          q.Match(
-            q.Index('userByEmail'),
-            this.email
-          )
+    this.instance = await this.client.query(
+      q.Get(
+        q.Match(
+          q.Index('userByEmail'),
+          this.email
         )
-      );
-    } catch (error) {
-      // do nothing
-    }
+      )
+    );
   }
 }
 
