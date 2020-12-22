@@ -45,7 +45,7 @@ jobs:
           name: build-artifacts
           path: |
             ${{ steps.yarn-cache.outputs.dir }}
-            ./aws-sam
+            ./.aws-sam
 
       - name: Deploy
         run: sam deploy --stack-name sls-proj-pronetplat-aa-dev \
