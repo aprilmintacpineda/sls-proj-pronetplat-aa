@@ -11,7 +11,9 @@ function didPassFieldValidation ({ email, password }) {
 async function register ({ body }) {
   const formBody = JSON.parse(body);
 
-  if (!didPassFieldValidation(formBody)) return { status: 400 };
+  console.log(formBody);
+
+  if (!didPassFieldValidation(formBody)) return { statusCode: 400 };
 
   const { email } = formBody;
   const user = new User({ email });
