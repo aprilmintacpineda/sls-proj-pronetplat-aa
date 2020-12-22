@@ -1,5 +1,5 @@
-function login ({ body }) {
-  console.log(body);
+async function login (event) {
+  console.log(event);
 
   return {
     statusCode: 200,
