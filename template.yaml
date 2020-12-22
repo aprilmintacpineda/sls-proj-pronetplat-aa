@@ -30,7 +30,7 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Method: get
+            Method: post
             Path: /login
             RestApiId:
               Ref: mainBackendApi
