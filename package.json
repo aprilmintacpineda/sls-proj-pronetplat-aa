@@ -19,10 +19,10 @@
     "eslint": "eslint \"*.js\" \"src/**/*.js\" --fix",
     "prettier": "prettier \"*.js\" \"src/**/*.js\" --write",
     "lint": "npm run prettier && npm run eslint",
-    "migration:setup": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate setup",
-    "migration:rollback": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate rollback",
-    "migration:migrate": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate migrate",
-    "migration:create": "FAUNADB_SECRET=fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k faunadb-migrate create",
+    "migration:setup": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate setup",
+    "migration:rollback": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate rollback",
+    "migration:migrate": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate migrate",
+    "migration:create": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate create",
     "create-plans": "node scripts/createPlans.js"
   },
   "husky": {

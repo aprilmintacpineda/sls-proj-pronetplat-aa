@@ -19,10 +19,10 @@ Globals:
     OpenApiVersion: 3.0.1
 
 Resources:
-  login:
+  register:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/login.handler
+      Handler: src/functions/register.handler
       Runtime: nodejs12.x
       Layers:
         - !Ref dependencies
@@ -31,7 +31,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /login
+            Path: /register
             RestApiId:
               Ref: mainBackendApi
   dependencies:

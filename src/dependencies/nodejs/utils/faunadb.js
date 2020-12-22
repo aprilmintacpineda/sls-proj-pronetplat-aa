@@ -2,7 +2,7 @@ const faunadb = require('faunadb');
 
 function initClient () {
   return new faunadb.Client({
-    secret: 'fnAD1s8eO4ACDJVZQkrJJ0PVLVliXNDDG9K7wn2k'
+    secret: 'fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg'
   });
 }
 
