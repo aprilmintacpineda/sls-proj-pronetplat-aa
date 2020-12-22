@@ -1,7 +1,5 @@
-const bcrypt = require('bcrypt');
-
 const validate = require('/opt/nodejs/utils/validate');
-const { randomCode } = require('/opt/nodejs/utils/helpers');
+const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
 const User = require('/opt/nodejs/models/User');
 
 function didPassFieldValidation ({ email, password }) {
@@ -30,9 +28,10 @@ async function register ({ body }) {
   }
 
   const emailVerificationCode = randomCode();
+
   const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
-    bcrypt.hash(emailVerificationCode),
-    bcrypt.hash(password)
+    hash(emailVerificationCode, 5),
+    hash(password, 5)
   ]);
 
   const user = await User.create({
