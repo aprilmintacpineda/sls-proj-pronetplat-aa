@@ -27,7 +27,6 @@ jobs:
 
       - name: Generate tokens
         run: |
-          mkdir src/dependencies/nodejs/resources
           echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/dependencies/nodejs/resources/jwt.key
           echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/dependencies/nodejs/resources/jwt.pub
       - name: Install dependencies
