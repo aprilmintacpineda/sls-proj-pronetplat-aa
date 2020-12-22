@@ -25,6 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@master
 
+      - name: Versions
+        run: |
+          sam --version
+          yarn --version
+          node --version
+
       - name: Generate tokens
         run: |
           echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/dependencies/nodejs/resources/jwt.key
