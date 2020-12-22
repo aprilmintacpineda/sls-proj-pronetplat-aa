@@ -27,7 +27,7 @@ jobs:
 
       - name: Versions
         run: |
-          echo "SAM CLI: $(sam --version)"
+          echo "SAM: $(sam --version)"
           echo "Yarn: $(yarn --version)"
           echo "Node: $(node --version)"
 
