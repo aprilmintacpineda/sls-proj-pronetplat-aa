@@ -9,18 +9,18 @@ class User {
   }
 
   async fetchByEmail () {
-    console.log('fetchByEmail');
-
-    const user = await this.client.query(
-      q.Get(
-        q.Match(
-          q.Index('userByEmail'),
-          this.email
+    try {
+      this.instance = await this.client.query(
+        q.Get(
+          q.Match(
+            q.Index('userByEmail'),
+            this.email
+          )
         )
-      )
-    );
-
-    console.log(user);
+      );
+    } catch (error) {
+      // do nothing
+    }
   }
 }
 

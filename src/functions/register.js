@@ -21,6 +21,8 @@ async function register ({ body }) {
   const user = new User({ email });
   await user.fetchByEmail();
 
+  if (user.instance) return { statusCode: 409 };
+
   return {
     statusCode: 200,
     body: JSON.stringify({
