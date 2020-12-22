@@ -9,6 +9,8 @@ class User {
   }
 
   async fetchByEmail () {
+    console.log('fetchByEmail');
+
     const user = this.client.query(
       q.Get(
         q.Match(
@@ -21,3 +23,5 @@ class User {
     console.log(user);
   }
 }
+
+module.exports = User;
