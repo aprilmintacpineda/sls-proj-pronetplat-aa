@@ -15,8 +15,8 @@ function sendEmailVerificationCode ({ recipient, emailVerificationCode, isResend
           You will be asked for this verification code on your next login. You only have to enter it
           once.
         </p>
-        <div style="display: flex;justify-content: center;margin-top: 50px;margin-bottom: 50px;">
-          <div style="background-color: #d0d5d1;border-radius: 4px;padding: 10px;">
+        <div style="position: relative; height: 150px;">
+          <div style="position: absolute;background-color: #d0d5d1;border-radius: 4px;padding: 10px;top: 50%;left: 50%;transform: translate(-50%, -50%);">
             <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
             <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${emailVerificationCode}</h2>
           </div>
