@@ -1,5 +1,4 @@
 const validate = require('/opt/nodejs/utils/validate');
-const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
 const User = require('/opt/nodejs/models/User');
 
 function didPassFieldValidation ({ email, password }) {
@@ -18,10 +17,8 @@ async function register ({ body }) {
   const formBody = JSON.parse(body);
   if (!didPassFieldValidation(formBody)) return { statusCode: 400 };
 
-  const { email, password } = formBody;
-
   try {
-    await User.fetchByEmail(email);
+    await User.fetchByEmail(formBody.email);
 
     console.log('User already exists.');
 
@@ -32,25 +29,8 @@ async function register ({ body }) {
     // can proceed to registration
   }
 
-  const emailVerificationCode = randomCode();
-
-  const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
-    hash(emailVerificationCode, 5),
-    hash(password, 5)
-  ]);
-
-  const user = await User.create({
-    email,
-    hashedEmailVerificationCode,
-    hashedPassword
-  });
-
-  // send veritication code to email
-
-  return {
-    statusCode: 200,
-    body: user.toString()
-  };
+  await User.register(formBody);
+  return { statusCode: 200 };
 }
 
 exports.handler = register;
