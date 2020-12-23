@@ -17,14 +17,14 @@ class User extends Model {
   //   });
   // }
 
-  static async fetchByEmail () {
+  static async fetchByEmail (email) {
     const client = initClient();
 
     const instance = await client.query(
       query.Get(
         query.Match(
           query.Index('userByEmail'),
-          this.email
+          email
         )
       )
     );
