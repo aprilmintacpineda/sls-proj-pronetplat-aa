@@ -3,6 +3,7 @@ const validate = require('/opt/nodejs/utils/validate');
 
 function hasErrors ({ email, password }) {
   console.log(
+    'hasErrors',
     validate(email, ['required', 'email']) || validate(password, ['required', 'password'])
   );
 
@@ -13,7 +14,7 @@ function hasErrors ({ email, password }) {
 
 async function register ({ body }) {
   const formBody = JSON.parse(body);
-  if (!hasErrors(formBody)) return { statusCode: 200 };
+  if (hasErrors(formBody)) return { statusCode: 200 };
 
   const { email, password } = formBody;
 
