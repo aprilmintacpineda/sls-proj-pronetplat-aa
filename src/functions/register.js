@@ -22,7 +22,10 @@ async function register ({ body }) {
 
   try {
     await User.fetchByEmail(email);
-    return { statusCode: 409 };
+
+    // to prevent enumeration attack
+    // we just say register success
+    return { statusCode: 200 };
   } catch (error) {
     // can proceed to registration
   }
