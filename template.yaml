@@ -26,6 +26,13 @@ Resources:
       Runtime: nodejs12.x
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+          - Sid: sendEmail
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: '*'
       Events:
         ApiEvent:
           Type: Api
