@@ -2,11 +2,6 @@ const User = require('/opt/nodejs/models/User');
 const validate = require('/opt/nodejs/utils/validate');
 
 function hasErrors ({ email, password }) {
-  console.log(
-    'hasErrors',
-    validate(email, ['required', 'email']) || validate(password, ['required', 'password'])
-  );
-
   return (
     validate(email, ['required', 'email']) || validate(password, ['required', 'password'])
   );
@@ -17,9 +12,10 @@ async function register ({ body }) {
   if (hasErrors(formBody)) return { statusCode: 200 };
 
   const { email, password } = formBody;
+  const user = new User();
 
   try {
-    await User.fetchByEmail(email);
+    await user.fetchByEmail(email);
 
     console.log('User already exists.');
 
@@ -30,7 +26,7 @@ async function register ({ body }) {
     // can proceed to registration
   }
 
-  await new User().create({ email, password });
+  await user.create({ email, password });
   return { statusCode: 200 };
 }
 
