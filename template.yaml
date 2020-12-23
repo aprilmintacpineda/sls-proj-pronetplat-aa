@@ -24,7 +24,7 @@ Resources:
   register:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/register.handler
+      Handler: src/functions/guest/register.handler
       Layers:
         - !Ref dependencies
       Policies:

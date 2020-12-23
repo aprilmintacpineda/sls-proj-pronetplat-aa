@@ -3,6 +3,35 @@ const sesv2 = new aws.SESV2({
   apiVersion: '2019-09-27'
 });
 
+function sendEmailVerificationCode ({ recipient, verificationCode, isResend }) {
+  return sendEmail({
+    recipient,
+    content: `
+      <div style="width: 500px; text-align: center;">
+        <h1 style="margin-bottom: 50px;">Welcome to Quaint!</h1>
+        <p>
+          Thank you for using <strong>Quaint; a professional networking platform for professionals,
+          business persons, and entrepreneurs to grow.</strong> Your email confirmation code is below.
+          You will be asked for this verification code on your next login. You only have to enter it
+          once.
+        </p>
+        <div style="display: flex;justify-content: center;margin-top: 50px;margin-bottom: 50px;">
+          <div style="background-color: #d0d5d1;border-radius: 4px;padding: 10px;">
+            <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
+            <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${verificationCode}</h2>
+          </div>
+        </div>
+        <p>
+          We hope that you find the platform useful on your journey to professional growth. Your feedback
+          is always welcome, send them to <a href="mailto:feedback@quaint-app.com">feedback@quaint-app.com</a>
+        </p>
+      </div>
+    `,
+    subject: 'Email Verification: Welcome to Quaint',
+    emailType: isResend ? 'resend-email-verification' : 'email-verification'
+  });
+}
+
 function sendEmail ({ recipient, content, subject, emailType }) {
   return new Promise(resolve => {
     sesv2.sendEmail(
@@ -38,4 +67,4 @@ function sendEmail ({ recipient, content, subject, emailType }) {
   });
 }
 
-module.exports = sendEmail;
+module.exports.sendEmailVerificationCode = sendEmailVerificationCode;
