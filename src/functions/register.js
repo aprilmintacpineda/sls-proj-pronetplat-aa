@@ -23,6 +23,8 @@ async function register ({ body }) {
   try {
     await User.fetchByEmail(email);
 
+    console.log('User already exists.');
+
     // to prevent enumeration attack
     // we just say register success
     return { statusCode: 200 };
