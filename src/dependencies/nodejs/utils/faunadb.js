@@ -6,4 +6,4 @@ function initClient () {
   });
 }
 
-module.exports.initClient = initClient;
+module.exports = initClient;
