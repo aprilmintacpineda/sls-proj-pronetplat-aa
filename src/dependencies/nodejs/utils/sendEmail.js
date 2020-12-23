@@ -3,7 +3,7 @@ const sesv2 = new aws.SESV2({
   apiVersion: '2019-09-27'
 });
 
-function sendEmailVerificationCode ({ recipient, verificationCode, isResend }) {
+function sendEmailVerificationCode ({ recipient, emailVerificationCode, isResend }) {
   return sendEmail({
     recipient,
     content: `
@@ -18,7 +18,7 @@ function sendEmailVerificationCode ({ recipient, verificationCode, isResend }) {
         <div style="display: flex;justify-content: center;margin-top: 50px;margin-bottom: 50px;">
           <div style="background-color: #d0d5d1;border-radius: 4px;padding: 10px;">
             <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
-            <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${verificationCode}</h2>
+            <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${emailVerificationCode}</h2>
           </div>
         </div>
         <p>

@@ -27,7 +27,10 @@ class User extends Model {
       emailCodeCanSendAt: query.TimeAdd(query.Now(), 5, 'minutes')
     });
 
-    await sendEmailVerificationCode(emailVerificationCode);
+    await sendEmailVerificationCode({
+      recipient: data.email,
+      emailVerificationCode
+    });
   }
 }
 
