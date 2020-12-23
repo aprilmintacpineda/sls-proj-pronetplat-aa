@@ -43,8 +43,8 @@ class User extends Model {
           </p>
           <div style="display: flex;justify-content: center;margin-top: 50px;margin-bottom: 50px;">
             <div style="background-color: #d0d5d1;border-radius: 4px;padding: 10px;">
-              <p style="color: gray;font-size: 12px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
-              <h3 style="margin: 0; padding: 0;letter-spacing: 5px;">${verificationCode}</h3>
+              <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
+              <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${verificationCode}</h2>
             </div>
           </div>
           <p>
