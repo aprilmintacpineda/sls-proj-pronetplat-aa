@@ -39,13 +39,11 @@ async function register ({ body }) {
     hash(password, 5)
   ]);
 
-  const user = await User.create({
+  await User.create({
     email,
     hashedEmailVerificationCode,
     hashedPassword
   });
-
-  console.log('register', JSON.stringify(user.data, null, 2));
 
   // send veritication code to email
 

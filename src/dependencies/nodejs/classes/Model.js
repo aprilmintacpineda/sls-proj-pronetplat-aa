@@ -18,8 +18,6 @@ class Model {
   constructor (instance) {
     this.instance = instance;
     this.data = normalizeData(this.instance.data);
-    this.data.id = instance.ref.id;
-
     console.log('model', JSON.stringify(this.data, null, 2));
   }
 }
