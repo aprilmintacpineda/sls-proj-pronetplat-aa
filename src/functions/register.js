@@ -41,6 +41,7 @@ async function register ({ body }) {
   });
 
   console.log(JSON.stringify(user.instance, null, 2));
+  console.log(JSON.stringify(user.data, null, 2));
 
   // send veritication code to email
 

@@ -1,10 +1,11 @@
 const { query } = require('faunadb');
+const Model = require('/opt/nodejs/classes/Model');
 // const sendEmail = require('/opt/nodejs/utils/sendEmail');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
-class User {
+class User extends Model {
   constructor (instance) {
-    this.instance = instance;
+    super(instance);
   }
 
   // async sendVerificationCodeEmail (verificationCode) {
