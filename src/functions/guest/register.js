@@ -2,6 +2,10 @@ const User = require('/opt/nodejs/models/User');
 const validate = require('/opt/nodejs/utils/validate');
 
 function hasErrors ({ email, password }) {
+  console.log(
+    validate(email, ['required', 'email']) || validate(password, ['required', 'password'])
+  );
+
   return (
     validate(email, ['required', 'email']) || validate(password, ['required', 'password'])
   );
