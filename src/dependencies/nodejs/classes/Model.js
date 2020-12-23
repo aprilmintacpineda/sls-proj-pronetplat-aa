@@ -1,9 +1,10 @@
+const { values: { FaunaTime, FaunaDate } } = require('faunadb');
+
 function normalizeData (unnormalizedData) {
   switch (unnormalizedData.constructor) {
     case Array:
       return unnormalizedData.map(field => normalizeData(field));
     case Object:
-      if ('@ts' in unnormalizedData) return unnormalizedData['@ts'];
       return Object.keys(unnormalizedData)
         .reduce((accumulator, key) => {
           accumulator[key] = normalizeData(unnormalizedData[key]);
@@ -11,6 +12,7 @@ function normalizeData (unnormalizedData) {
         }, {});
   }
 
+  if ('value' in unnormalizedData) return unnormalizedData.value;
   return unnormalizedData;
 }
 

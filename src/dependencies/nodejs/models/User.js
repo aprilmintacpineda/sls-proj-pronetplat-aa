@@ -7,8 +7,6 @@ class User extends Model {
   constructor (instance) {
     super(instance);
     this.data.id = this.instance.ref.id;
-
-    console.log(this.data);
   }
 
   // async sendVerificationCodeEmail (verificationCode) {
