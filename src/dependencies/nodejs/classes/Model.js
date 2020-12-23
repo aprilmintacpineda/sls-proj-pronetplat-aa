@@ -20,6 +20,10 @@ class Model {
     this.data = normalizeData(this.instance.data);
     console.log('model', JSON.stringify(this.data, null, 2));
   }
+
+  toString () {
+    return JSON.stringify(this.data);
+  }
 }
 
 module.exports = Model;

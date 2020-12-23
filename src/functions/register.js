@@ -39,7 +39,7 @@ async function register ({ body }) {
     hash(password, 5)
   ]);
 
-  await User.create({
+  const user = await User.create({
     email,
     hashedEmailVerificationCode,
     hashedPassword
@@ -47,7 +47,10 @@ async function register ({ body }) {
 
   // send veritication code to email
 
-  return { statusCode: 200 };
+  return {
+    statusCode: 200,
+    body: user.toString()
+  };
 }
 
 exports.handler = register;
