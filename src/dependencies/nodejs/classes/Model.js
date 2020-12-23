@@ -10,9 +10,11 @@ function normalizeData (unnormalizedData) {
           accumulator[key] = normalizeData(unnormalizedData[key]);
           return accumulator;
         }, {});
+    case FaunaTime:
+    case FaunaDate:
+      return unnormalizedData.value;
   }
 
-  if ('value' in unnormalizedData) return unnormalizedData.value;
   return unnormalizedData;
 }
 
