@@ -21,7 +21,7 @@ async function register ({ body }) {
   const { email, password } = formBody;
 
   try {
-    await User.fetchByEmail();
+    await User.fetchByEmail(email);
     return { statusCode: 409 };
   } catch (error) {
     // can proceed to registration

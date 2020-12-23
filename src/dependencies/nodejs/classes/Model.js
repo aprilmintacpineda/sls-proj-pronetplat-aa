@@ -1,17 +1,14 @@
 function normalizeData (unnormalizedData) {
-  const dataConstructor = unnormalizedData.constructor;
-
-  if (dataConstructor === Array)
-    return unnormalizedData.map(field => normalizeData(field));
-
-  if (dataConstructor === Object) {
-    if (unnormalizedData['@ts']) return unnormalizedData['@ts'];
-
-    return Object.keys(unnormalizedData)
-      .reduce((accumulator, key) => {
-        accumulator[key] = normalizeData(unnormalizedData[key]);
-        return accumulator;
-      }, {});
+  switch (unnormalizedData.constructor) {
+    case Array:
+      return unnormalizedData.map(field => normalizeData(field));
+    case Object:
+      if ('@ts' in unnormalizedData) return unnormalizedData['@ts'];
+      return Object.keys(unnormalizedData)
+        .reduce((accumulator, key) => {
+          accumulator[key] = normalizeData(unnormalizedData[key]);
+          return accumulator;
+        }, {});
   }
 
   return unnormalizedData;
