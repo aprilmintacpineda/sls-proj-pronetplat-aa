@@ -11,7 +11,7 @@ async function handler ({ body }) {
 
   try {
     const user = await User.fetchByEmail(body.email);
-    if (!await user.forgotPassword()) return { statusCode: 429 };
+    await user.forgotPassword();
   } catch (error) {
     console.log(error);
     if (error.type === 'httpError') return { statusCode: error.statusCode };

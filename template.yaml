@@ -42,6 +42,27 @@ Resources:
             Path: /register
             RestApiId:
               Ref: mainBackendApi
+  forgotPasswordSend:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/guest/forgotPasswordSend.handler
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Sid: sendEmail
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: '*'
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /forgot-password-send
+            RestApiId:
+              Ref: mainBackendApi
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
