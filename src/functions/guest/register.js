@@ -7,7 +7,7 @@ function hasErrors ({ email, password }) {
   );
 }
 
-async function register ({ body }) {
+module.exports.handler = async ({ body }) => {
   const formBody = JSON.parse(body);
   if (hasErrors(formBody)) return { statusCode: 200 };
 
@@ -28,6 +28,4 @@ async function register ({ body }) {
 
   await user.create({ email, password });
   return { statusCode: 200 };
-}
-
-exports.handler = register;
+};

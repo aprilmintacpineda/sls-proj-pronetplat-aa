@@ -5,7 +5,7 @@ function hasErrors ({ email }) {
   return validate(email, ['required', 'email']);
 }
 
-async function handler ({ body }) {
+module.exports.handler = async ({ body }) => {
   const formBody = JSON.parse(body);
   if (!hasErrors(formBody)) return { statusCode: 200 };
 
@@ -18,6 +18,4 @@ async function handler ({ body }) {
   }
 
   return { status: 200 };
-}
-
-module.exports = handler;
+};
