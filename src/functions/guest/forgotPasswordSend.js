@@ -14,9 +14,9 @@ module.exports.handler = async ({ body }) => {
     await user.fetchByEmail(body.email);
     await user.forgotPassword();
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
     if (error.type === 'httpError') return { statusCode: error.statusCode };
   }
 
-  return { status: 200 };
+  return { statusCode: 200 };
 };
