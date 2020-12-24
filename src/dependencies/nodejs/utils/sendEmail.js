@@ -21,10 +21,7 @@ function sendEmailVerificationCode ({ recipient, emailVerificationCode, isResend
             <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${emailVerificationCode}</h2>
           </div>
         </div>
-        <p>
-          We hope that you find the platform useful on your journey to professional growth. Your feedback
-          is always welcome, send them to <a href="mailto:feedback@quaint-app.com">feedback@quaint-app.com</a>
-        </p>
+        <p>We hope that you find the platform useful on your journey to professional growth.</p>
       </div>
     `,
     subject: 'Email Verification: Welcome to Quaint',
@@ -37,12 +34,9 @@ function sendResetPasswordCode ({ recipient, resetPasswordCode, isResend }) {
     recipient,
     content: `
       <div style="width: 500px; text-align: center;">
-        <h1 style="margin-bottom: 50px;">Welcome to Quaint!</h1>
+        <h1 style="margin-bottom: 50px;">Did you forgot your password?</h1>
         <p>
-          Thank you for using <strong>Quaint; a professional networking platform for professionals,
-          business persons, and entrepreneurs to grow.</strong> Your email confirmation code is below.
-          You will be asked for this verification code on your next login. You only have to enter it
-          once.
+          We are sending you this email because you submitted a forgot password request. This code will expire in 5 minutes.
         </p>
         <div style="position: relative; height: 150px;">
           <div style="position: absolute;background-color: #d0d5d1;border-radius: 4px;padding: 10px;top: 50%;left: 50%;transform: translate(-50%, -50%);">
@@ -50,14 +44,11 @@ function sendResetPasswordCode ({ recipient, resetPasswordCode, isResend }) {
             <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${resetPasswordCode}</h2>
           </div>
         </div>
-        <p>
-          We hope that you find the platform useful on your journey to professional growth. Your feedback
-          is always welcome, send them to <a href="mailto:feedback@quaint-app.com">feedback@quaint-app.com</a>
-        </p>
+        <p>If you did not make this request, you can safely ignore this email.</p>
       </div>
     `,
-    subject: 'Email Verification: Welcome to Quaint',
-    emailType: isResend ? 'resend-password-reset-code' : 'password-reset-code'
+    subject: 'Forgot password: Quaint',
+    emailType: isResend ? 'resend-forgot-password-request' : 'forgot-password-request'
   });
 }
 

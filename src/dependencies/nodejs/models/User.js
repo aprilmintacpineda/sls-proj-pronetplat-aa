@@ -1,4 +1,3 @@
-const { query } = require('faunadb');
 const Model = require('/opt/nodejs/classes/Model');
 const HttpError = require('/opt/nodejs/classes/HttpError');
 const { randomCode, hash, hasTimePassed } = require('/opt/nodejs/utils/helpers');
@@ -7,9 +6,7 @@ const {
   sendResetPasswordCode
 } = require('/opt/nodejs/utils/sendEmail');
 
-function getOffsetTime () {
-  return query.TimeAdd(query.Now(), 5, 'minutes');
-}
+const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
 
 class User extends Model {
   constructor () {
@@ -28,11 +25,14 @@ class User extends Model {
       hash(password)
     ]);
 
+    const offsetTime = getTimeOffset();
+
     await super.create({
       ...data,
       hashedEmailVerificationCode,
       hashedPassword,
-      emailCodeCanSendAt: getOffsetTime()
+      emailCodeCanSendAt: offsetTime,
+      emailConfirmCodeExpiresAt: offsetTime
     });
 
     await sendEmailVerificationCode({
@@ -46,10 +46,12 @@ class User extends Model {
 
     const resetPasswordCode = randomCode();
     const hashedResetPasswordCode = await hash(resetPasswordCode);
+    const offsetTime = getTimeOffset();
 
     await this.update({
       hashedResetPasswordCode,
-      passwordCodeCanResendAt: getOffsetTime()
+      passwordCodeCanResendAt: offsetTime,
+      passwordResetCodeExpiresAt: offsetTime
     });
 
     await sendResetPasswordCode({
