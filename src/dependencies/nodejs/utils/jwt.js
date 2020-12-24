@@ -15,17 +15,14 @@ const verifyConfig = { maxAge: validityPeriod };
 const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
 
-async function sign (data) {
+module.exports.sign = async data => {
   const file = await fs.readFile(path.join(__dirname, '../resources/jwt.key'));
   const privateKey = file.toString();
   return await signAsync(data, privateKey, signConfig);
-}
+};
 
-async function verify (token) {
+module.exports.verify = async token => {
   const file = await fs.readFile(path.join(__dirname, '../resources/jwt.pub'));
   const publicKey = file.toString();
   return verifyAsync(token, publicKey, verifyConfig);
-}
-
-module.exports.sign = sign;
-module.exports.verify = verify;
+};

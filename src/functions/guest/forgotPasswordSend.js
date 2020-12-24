@@ -11,10 +11,10 @@ async function handler ({ body }) {
 
   try {
     const user = await User.fetchByEmail(body.email);
-    await user.forgotPassword();
+    if (!await user.forgotPassword()) return { statusCode: 429 };
   } catch (error) {
     console.log(error);
-    // do nothing else
+    if (error.type === 'httpError') return { statusCode: error.statusCode };
   }
 
   return { status: 200 };

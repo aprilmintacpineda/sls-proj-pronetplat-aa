@@ -1,7 +1,7 @@
 const { isPast } = require('date-fns');
 
 const fetch = require('node-fetch');
-const CardError = require('./CardError');
+const CardError = require('/opt/nodejs/classes/CardError');
 
 const username = 'API_1602153518351925061784';
 const password = '$SPc!p18O@d0';
@@ -41,7 +41,7 @@ function getSubscriptionData (data) {
   };
 }
 
-async function subscribe ({ planId, creditCard, payerInfo }) {
+module.exports.subscribe = async ({ planId, creditCard, payerInfo }) => {
   let response = await fetch(
     'https://sandbox.bluesnap.com/services/2/recurring/subscriptions',
     {
@@ -89,9 +89,13 @@ async function subscribe ({ planId, creditCard, payerInfo }) {
       paymentMethod: 'blueSnap'
     }
   };
-}
+};
 
-async function getSubscription ({ subscriptionId, subscribedAt, expiry = null }) {
+module.exports.getSubscription = async ({
+  subscriptionId,
+  subscribedAt,
+  expiry = null
+}) => {
   let response = await fetch(
     `https://sandbox.bluesnap.com/services/2/recurring/subscriptions/${subscriptionId}`,
     { headers }
@@ -113,9 +117,9 @@ async function getSubscription ({ subscriptionId, subscribedAt, expiry = null })
     hasExpired: expiry ? isPast(expiry) : false,
     subscribedAt
   };
-}
+};
 
-async function cancelSubscription (subscription, currentSubscriptionData) {
+module.exports.cancelSubscription = async ({ subscription, currentSubscriptionData }) => {
   const status = 'CANCELED';
   const { nextChargeDate } = currentSubscriptionData;
   const { subscriptionId, planId } = subscription;
@@ -167,8 +171,4 @@ async function cancelSubscription (subscription, currentSubscriptionData) {
       isActive: false
     }
   };
-}
-
-module.exports.subscribe = subscribe;
-module.exports.getSubscription = getSubscription;
-module.exports.cancelSubscription = cancelSubscription;
+};

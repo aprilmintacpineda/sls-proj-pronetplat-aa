@@ -32,6 +32,35 @@ function sendEmailVerificationCode ({ recipient, emailVerificationCode, isResend
   });
 }
 
+function sendResetPasswordCode ({ recipient, resetPasswordCode, isResend }) {
+  return sendEmail({
+    recipient,
+    content: `
+      <div style="width: 500px; text-align: center;">
+        <h1 style="margin-bottom: 50px;">Welcome to Quaint!</h1>
+        <p>
+          Thank you for using <strong>Quaint; a professional networking platform for professionals,
+          business persons, and entrepreneurs to grow.</strong> Your email confirmation code is below.
+          You will be asked for this verification code on your next login. You only have to enter it
+          once.
+        </p>
+        <div style="position: relative; height: 150px;">
+          <div style="position: absolute;background-color: #d0d5d1;border-radius: 4px;padding: 10px;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+            <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
+            <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${resetPasswordCode}</h2>
+          </div>
+        </div>
+        <p>
+          We hope that you find the platform useful on your journey to professional growth. Your feedback
+          is always welcome, send them to <a href="mailto:feedback@quaint-app.com">feedback@quaint-app.com</a>
+        </p>
+      </div>
+    `,
+    subject: 'Email Verification: Welcome to Quaint',
+    emailType: isResend ? 'resend-password-reset-code' : 'password-reset-code'
+  });
+}
+
 function sendEmail ({ recipient, content, subject, emailType }) {
   return new Promise(resolve => {
     sesv2.sendEmail(
@@ -68,3 +97,4 @@ function sendEmail ({ recipient, content, subject, emailType }) {
 }
 
 module.exports.sendEmailVerificationCode = sendEmailVerificationCode;
+module.exports.sendResetPasswordCode = sendResetPasswordCode;

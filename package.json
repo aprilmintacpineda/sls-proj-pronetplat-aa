@@ -6,6 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "@babel/eslint-parser": "^7.12.1",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
     "eslint": "^7.16.0",
     "eslint-plugin-jest": "^24.1.0",
     "husky": "^4.3.0",

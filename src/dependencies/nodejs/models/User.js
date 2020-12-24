@@ -1,7 +1,15 @@
 const { query } = require('faunadb');
 const Model = require('/opt/nodejs/classes/Model');
-const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
-const { sendEmailVerificationCode } = require('/opt/nodejs/utils/sendEmail');
+const HttpError = require('/opt/nodejs/classes/HttpError');
+const { randomCode, hash, hasTimePassed } = require('/opt/nodejs/utils/helpers');
+const {
+  sendEmailVerificationCode,
+  sendResetPasswordCode
+} = require('/opt/nodejs/utils/sendEmail');
+
+function getOffsetTime () {
+  return query.TimeAdd(query.Now(), 5, 'minutes');
+}
 
 class User extends Model {
   constructor () {
@@ -16,21 +24,40 @@ class User extends Model {
     const emailVerificationCode = randomCode();
 
     const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
-      hash(emailVerificationCode, 5),
-      hash(password, 5)
+      hash(emailVerificationCode),
+      hash(password)
     ]);
 
     await super.create({
       ...data,
       hashedEmailVerificationCode,
       hashedPassword,
-      emailCodeCanSendAt: query.TimeAdd(query.Now(), 5, 'minutes')
+      emailCodeCanSendAt: getOffsetTime()
     });
 
     await sendEmailVerificationCode({
       recipient: data.email,
       emailVerificationCode
     });
+  }
+
+  async resetPasswordRequest () {
+    if (!hasTimePassed(this.data.passwordCodeCanResendAt)) throw new HttpError(429);
+
+    const resetPasswordCode = randomCode();
+    const hashedResetPasswordCode = await hash(resetPasswordCode);
+
+    await this.update({
+      hashedResetPasswordCode,
+      passwordCodeCanResendAt: getOffsetTime()
+    });
+
+    await sendResetPasswordCode({
+      recipient: this.data.email,
+      resetPasswordCode
+    });
+
+    return true;
   }
 }
 

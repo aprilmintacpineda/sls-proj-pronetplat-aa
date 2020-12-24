@@ -3,7 +3,7 @@ const {
   query
 } = require('faunadb');
 
-const initClient = require('/opt/nodejs/utils/faunadb');
+const { initClient } = require('/opt/nodejs/utils/faunadb');
 
 function normalizeData (unnormalizedData) {
   switch (unnormalizedData.constructor) {
@@ -22,7 +22,7 @@ function normalizeData (unnormalizedData) {
   return unnormalizedData;
 }
 
-class Model {
+module.exports = class Model {
   constructor (collection) {
     this.collection = collection;
     this.hasBeenErased = false;
@@ -85,6 +85,4 @@ class Model {
   toString () {
     return JSON.stringify(this.data);
   }
-}
-
-module.exports = Model;
+};
