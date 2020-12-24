@@ -41,7 +41,7 @@ class User extends Model {
     });
   }
 
-  async resetPasswordRequest () {
+  async sendPasswordResetCode (isResend) {
     if (!hasTimePassed(this.data.passwordCodeCanResendAt)) throw new HttpError(429);
 
     const resetPasswordCode = randomCode();
@@ -54,7 +54,8 @@ class User extends Model {
 
     await sendResetPasswordCode({
       recipient: this.data.email,
-      resetPasswordCode
+      resetPasswordCode,
+      isResend
     });
 
     return true;

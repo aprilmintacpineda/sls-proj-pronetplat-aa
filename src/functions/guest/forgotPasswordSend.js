@@ -12,10 +12,9 @@ module.exports.handler = async ({ body }) => {
   try {
     const user = new User();
     await user.fetchByEmail(formBody.email);
-    await user.resetPasswordRequest();
+    await user.sendPasswordResetCode();
   } catch (error) {
     console.log('error', error);
-    if (error.type === 'httpError') return { statusCode: error.statusCode };
   }
 
   return { statusCode: 200 };
