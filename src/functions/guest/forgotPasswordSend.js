@@ -7,7 +7,7 @@ function hasErrors ({ email }) {
 
 module.exports.handler = async ({ body }) => {
   const formBody = JSON.parse(body);
-  if (!hasErrors(formBody)) return { statusCode: 200 };
+  if (hasErrors(formBody)) return { statusCode: 200 };
 
   try {
     const user = await User.fetchByEmail(body.email);
