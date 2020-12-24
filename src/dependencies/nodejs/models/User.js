@@ -1,12 +1,18 @@
 const Model = require('/opt/nodejs/classes/Model');
 const HttpError = require('/opt/nodejs/classes/HttpError');
-const { randomCode, hash, hasTimePassed } = require('/opt/nodejs/utils/helpers');
-const {
-  sendEmailVerificationCode,
-  sendResetPasswordCode
-} = require('/opt/nodejs/utils/sendEmail');
 
 const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
+const {
+  randomCode,
+  hash,
+  verifyHash,
+  hasTimePassed
+} = require('/opt/nodejs/utils/helpers');
+const {
+  sendEmailVerificationCode,
+  sendEmailResetPasswordCode,
+  sendEmailResetPasswordSuccess
+} = require('/opt/nodejs/utils/sendEmail');
 
 class User extends Model {
   constructor () {
@@ -42,7 +48,8 @@ class User extends Model {
   }
 
   async sendPasswordResetCode (isResend) {
-    if (!hasTimePassed(this.data.passwordCodeCanResendAt)) throw new HttpError(429);
+    if (!hasTimePassed(this.data.passwordCodeCanResendAt))
+      return new HttpError({ statusCode: 429 });
 
     const resetPasswordCode = randomCode();
     const hashedResetPasswordCode = await hash(resetPasswordCode);
@@ -54,14 +61,31 @@ class User extends Model {
       passwordResetCodeExpiresAt: offsetTime
     });
 
-    await sendResetPasswordCode({
+    await sendEmailResetPasswordCode({
       recipient: this.data.email,
       resetPasswordCode,
       isResend
     });
+  }
 
-    return true;
+  async resetPassword ({ confirmationCode, newPassword }) {
+    if (hasTimePassed(this.data.passwordResetCodeExpiresAt))
+      return new HttpError({ statusCode: 410 });
+
+    if (!await verifyHash(confirmationCode, this.data.hashedResetPasswordCode))
+      return new HttpError({ statusCode: 403 });
+
+    const hashedPassword = await hash(newPassword);
+
+    await this.update({
+      hashedPassword,
+      hashedResetPasswordCode: null,
+      passwordCodeCanResendAt: null,
+      passwordResetCodeExpiresAt: null
+    });
+
+    await sendEmailResetPasswordSuccess(this.data.email);
   }
 }
 
-module.exports = User;
+module.exports = new User();
