@@ -45,7 +45,11 @@ module.exports = class Model {
 
   async getByIndex (index, ...values) {
     const client = initClient();
-    const newInstance = await client.query(query.Get(query.Match(index, ...values)));
+
+    const newInstance = await client.query(
+      query.Get(query.Match(query.Index(index), ...values))
+    );
+
     this.resetInstance(newInstance);
   }
 
