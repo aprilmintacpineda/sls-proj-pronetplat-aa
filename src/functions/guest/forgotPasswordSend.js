@@ -10,7 +10,8 @@ module.exports.handler = async ({ body }) => {
   if (hasErrors(formBody)) return { statusCode: 200 };
 
   try {
-    const user = await User.fetchByEmail(body.email);
+    const user = new User();
+    await User.fetchByEmail(body.email);
     await user.forgotPassword();
   } catch (error) {
     console.log(error);
