@@ -10,7 +10,7 @@ function hasErrors ({ confirmationCode, email, newPassword }) {
   );
 }
 
-module.exports = async ({ body }) => {
+module.exports.handler = async ({ body }) => {
   const formBody = JSON.parse(body);
   if (hasErrors(formBody)) return { statusCode: 200 };
 
