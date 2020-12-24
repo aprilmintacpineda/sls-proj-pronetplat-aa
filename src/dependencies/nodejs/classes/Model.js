@@ -28,45 +28,46 @@ module.exports = class Model {
     this.hasBeenErased = false;
   }
 
-  async resetInstance (promisedData) {
-    const instance = await promisedData;
-    this.instance = instance;
-    this.data = normalizeData(instance.data);
+  resetInstance (newInstance) {
+    this.instance = newInstance;
+    this.data = normalizeData(newInstance.data);
   }
 
-  getById (id) {
+  async getById (id) {
     const client = initClient();
 
-    return this.resetInstance(
-      client.query(query.Get(query.Ref(query.Collection(this.collection), id)))
+    const newInstance = await client.query(
+      query.Get(query.Ref(query.Collection(this.collection), id))
     );
+
+    this.resetInstance(newInstance);
   }
 
-  getByIndex (index, ...values) {
+  async getByIndex (index, ...values) {
     const client = initClient();
-
-    return this.resetInstance(client.query(query.Get(query.Match(index, ...values))));
+    const newInstance = await client.query(query.Get(query.Match(index, ...values)));
+    this.resetInstance(newInstance);
   }
 
-  create (data) {
+  async create (data) {
     const client = initClient();
 
-    return this.resetInstance(
-      client.query(
-        query.Create(query.Collection(this.collection), {
-          data: {
-            ...data,
-            createdAt: query.Now()
-          }
-        })
-      )
+    const newInstance = await client.query(
+      query.Create(query.Collection(this.collection), {
+        data: {
+          ...data,
+          createdAt: query.Now()
+        }
+      })
     );
+
+    this.resetInstance(newInstance);
   }
 
-  update (data) {
+  async update (data) {
     const client = initClient();
 
-    return client.query(
+    const newInstance = await client.query(
       query.Update(this.instance.ref, {
         data: {
           ...data,
@@ -74,6 +75,8 @@ module.exports = class Model {
         }
       })
     );
+
+    this.resetInstance(newInstance);
   }
 
   async erase () {
