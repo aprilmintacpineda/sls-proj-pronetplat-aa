@@ -34,24 +34,24 @@ module.exports = class Model {
     this.data = normalizeData(instance.data);
   }
 
-  async getById (id) {
+  getById (id) {
     const client = initClient();
 
-    await this.resetInstance(
+    return this.resetInstance(
       client.query(query.Get(query.Ref(query.Collection(this.collection), id)))
     );
   }
 
-  async getByIndex (index, ...values) {
+  getByIndex (index, ...values) {
     const client = initClient();
 
-    await this.resetInstance(client.query(query.Get(query.Match(index, ...values))));
+    return this.resetInstance(client.query(query.Get(query.Match(index, ...values))));
   }
 
-  async create (data) {
+  create (data) {
     const client = initClient();
 
-    await this.resetInstance(
+    return this.resetInstance(
       client.query(
         query.Create(query.Collection(this.collection), {
           data: {
@@ -63,10 +63,10 @@ module.exports = class Model {
     );
   }
 
-  async update (data) {
+  update (data) {
     const client = initClient();
 
-    await client.query(
+    return client.query(
       query.Update(this.instance.ref, {
         data: {
           ...data,

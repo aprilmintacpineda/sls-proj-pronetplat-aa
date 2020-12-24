@@ -16,8 +16,8 @@ class User extends Model {
     super('users');
   }
 
-  async fetchByEmail (email) {
-    await this.getByIndex('userByEmail', email);
+  fetchByEmail (email) {
+    return this.getByIndex('userByEmail', email);
   }
 
   async create ({ password, ...data }) {
