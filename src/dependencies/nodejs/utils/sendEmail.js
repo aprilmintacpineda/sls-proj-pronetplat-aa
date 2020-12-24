@@ -48,7 +48,7 @@ module.exports.sendEmailVerificationCode = ({
   return sendEmail({
     recipient,
     content: `
-      <div style="width: 500px; text-align: center;">
+      <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">Welcome to Quaint!</h1>
         <p>
           Thank you for using <i>Quaint; a professional networking platform for professionals,
@@ -77,7 +77,7 @@ module.exports.sendEmailResetPasswordCode = ({
   return sendEmail({
     recipient,
     content: `
-      <div style="width: 500px; text-align: center;">
+      <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">Did you forgot your password?</h1>
         <p>
           We are sending you this email because you submitted a forgot password request.
@@ -104,7 +104,7 @@ module.exports.sendEmailResetPasswordSuccess = ({ recipient, temporaryBlockToken
   return sendEmail({
     recipient,
     content: `
-      <div style="width: 500px; text-align: center;">
+      <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">You have successfully reset your password.</h1>
         <p>
           We are sending you this email to inform you that you have reset your password using the forgot password form.
