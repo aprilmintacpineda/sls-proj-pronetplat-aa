@@ -35,7 +35,7 @@ function sendResetPasswordCode ({ recipient, resetPasswordCode, isResend }) {
       <div style="width: 500px; text-align: center;">
         <h1 style="margin-bottom: 50px;">Did you forgot your password?</h1>
         <p>
-          We are sending you this email because you submitted a forgot password request. This code will expire in 5 minutes.
+          We are sending you this email because you submitted a forgot password request.
         </p>
         <div style="position: relative;background-color: #d0d5d1;border-radius: 4px;padding: 10px;margin-top: 50px;margin-bottom: 50px;">
           <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
