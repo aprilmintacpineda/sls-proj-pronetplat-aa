@@ -60,7 +60,10 @@ module.exports.sendEmailVerificationCode = ({
           <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
           <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${emailVerificationCode}</h2>
         </div>
-        <p>For your safety, this code will expire in 5 minutes. You can always resend a new confirmation code after it has expired.</p>
+        <p>
+          For your safety, this code will expire in 5 minutes; if you fail to enter this password 3 times,
+          this code will automatically expire even if 5 minutes hasn't passed yet. You can always resend a new confirmation code after it has expired.
+        </p>
         <p>We sincerely hope to help you in your journey to your professional growth.</p>
       </div>
     `,
@@ -86,7 +89,10 @@ module.exports.sendEmailResetPasswordCode = ({
           <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
           <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${resetPasswordCode}</h2>
         </div>
-        <p>For your safety, this code will expire in 5 minutes. You can always resend a new confirmation code after it has expired.</p>
+        <p>
+          For your safety, this code will expire in 5 minutes; if you fail to enter this password 3 times,
+          this code will automatically expire even if 5 minutes hasn't passed yet. You can always resend a new confirmation code after it has expired.
+        </p>
         <p>If you did not make this request, you can safely ignore this email.</p>
       </div>
     `,

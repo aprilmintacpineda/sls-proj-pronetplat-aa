@@ -1,3 +1,5 @@
+const { query } = require('faunadb');
+
 const Model = require('/opt/nodejs/classes/Model');
 const HttpError = require('/opt/nodejs/classes/HttpError');
 
@@ -72,8 +74,19 @@ class User extends Model {
     if (hasTimePassed(this.data.passwordResetCodeExpiresAt))
       throw new HttpError({ statusCode: 410 });
 
-    if (!await verifyHash(confirmationCode, this.data.hashedResetPasswordCode))
+    if (!await verifyHash(confirmationCode, this.data.hashedResetPasswordCode)) {
+      const data = {
+        passwordResetCodeNumFailed: (this.data.passwordResetCodeNumFailed || 0) + 1
+      };
+
+      // limit retries to 3 and then force expire
+      if (data.passwordResetCodeNumFailed >= 3)
+        data.passwordResetCodeExpiresAt = query.Now();
+
+      await this.update(data);
+
       throw new HttpError({ statusCode: 403 });
+    }
 
     const hashedPassword = await hash(newPassword);
 
@@ -81,7 +94,8 @@ class User extends Model {
       hashedPassword,
       hashedResetPasswordCode: null,
       passwordCodeCanResendAt: null,
-      passwordResetCodeExpiresAt: null
+      passwordResetCodeExpiresAt: null,
+      passwordResetCodeNumFailed: null
     });
 
     await sendEmailResetPasswordSuccess(this.data.email);
