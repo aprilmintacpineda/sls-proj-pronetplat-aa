@@ -1,3 +1,4 @@
+const { addHours } = require('date-fns');
 const Model = require('/opt/nodejs/classes/Model');
 const HttpError = require('/opt/nodejs/classes/HttpError');
 
@@ -21,6 +22,16 @@ class User extends Model {
 
   fetchByEmail (email) {
     return this.getByIndex('userByEmail', email);
+  }
+
+  hasReachedResetPasswordLimit () {
+    // limit number of times users can send reset
+    // password requests every 24 hours
+    return (
+      this.data.passwordResetRequestNum &&
+      this.data.passwordResetRequestNum % 3 === 0 &&
+      !hasTimePassed(addHours(new Date(this.data.passwordCodeCanResendAt), 24))
+    );
   }
 
   async create ({ password, ...data }) {
@@ -47,42 +58,54 @@ class User extends Model {
     });
   }
 
-  async sendPasswordResetCode (isResend) {
-    if (!hasTimePassed(this.data.passwordCodeCanResendAt))
-      return new HttpError({ statusCode: 429 });
+  async resetPasswordRequest (isResend) {
+    if (
+      !hasTimePassed(this.data.passwordCodeCanResendAt) ||
+      this.hasReachedResetPasswordLimit()
+    ) {
+      // to prevent enumeration attack,
+      // always respond with 200
+      throw new HttpError({ statusCode: 200 });
+    }
 
     const resetPasswordCode = randomCode();
     const hashedResetPasswordCode = await hash(resetPasswordCode);
     const offsetTime = getTimeOffset();
+    const passwordResetRequestNum = (this.data.passwordResetRequestNum || 0) + 1;
 
     await this.update({
       hashedResetPasswordCode,
       passwordCodeCanResendAt: offsetTime,
-      passwordResetCodeExpiresAt: offsetTime
+      passwordResetCodeExpiresAt: offsetTime,
+      passwordResetRequestNum
     });
 
     await sendEmailResetPasswordCode({
       recipient: this.data.email,
       resetPasswordCode,
-      isResend
+      isResend,
+      passwordResetRequestNum
     });
   }
 
   async resetPassword ({ confirmationCode, newPassword }) {
+    // to prevent enumeration attack
+    // we will always respond with 403 on all
+    // errors on this process
+
     if (hasTimePassed(this.data.passwordResetCodeExpiresAt))
-      throw new HttpError({ statusCode: 410 });
+      throw new HttpError({ statusCode: 403 });
 
     if (!await verifyHash(confirmationCode, this.data.hashedResetPasswordCode)) {
-      const data = {
+      const newData = {
         passwordResetCodeNumFailed: (this.data.passwordResetCodeNumFailed || 0) + 1
       };
 
       // limit retries to 3 and then force expire
-      if (data.passwordResetCodeNumFailed >= 3)
-        data.passwordResetCodeExpiresAt = getTimeOffset(true);
+      if (newData.passwordResetCodeNumFailed % 3 === 0)
+        newData.passwordResetCodeExpiresAt = getTimeOffset(true);
 
-      await this.update(data);
-
+      await this.update(newData);
       throw new HttpError({ statusCode: 403 });
     }
 
@@ -92,8 +115,7 @@ class User extends Model {
       hashedPassword,
       hashedResetPasswordCode: null,
       passwordCodeCanResendAt: null,
-      passwordResetCodeExpiresAt: null,
-      passwordResetCodeNumFailed: null
+      passwordResetCodeExpiresAt: null
     });
 
     await sendEmailResetPasswordSuccess(this.data.email);

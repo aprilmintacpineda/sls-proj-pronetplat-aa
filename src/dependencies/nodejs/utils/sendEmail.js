@@ -62,7 +62,7 @@ module.exports.sendEmailVerificationCode = ({
         </div>
         <p>
           For your safety, this code will expire in 5 minutes; if you fail to enter this password 3 times,
-          this code will automatically expire even if 5 minutes hasn't passed yet. You can always resend a new confirmation code after it has expired.
+          this code will automatically expire even if 5 minutes hasn't passed yet. You can only request for a new code 3 times every 24 hours.
         </p>
         <p>We sincerely hope to help you in your journey to your professional growth.</p>
       </div>
@@ -91,7 +91,7 @@ module.exports.sendEmailResetPasswordCode = ({
         </div>
         <p>
           For your safety, this code will expire in 5 minutes; if you fail to enter this password 3 times,
-          this code will automatically expire even if 5 minutes hasn't passed yet. You can always resend a new confirmation code after it has expired.
+          this code will automatically expire even if 5 minutes hasn't passed yet. You can only request for a new code 3 times every 24 hours.
         </p>
         <p>If you did not make this request, you can safely ignore this email.</p>
       </div>
