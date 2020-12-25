@@ -14,7 +14,7 @@ const {
   sendEmailResetPasswordSuccess
 } = require('/opt/nodejs/utils/sendEmail');
 
-class User extends Model {
+module.exports = class User extends Model {
   constructor () {
     super({
       collection: 'users',
@@ -108,6 +108,4 @@ class User extends Model {
 
     await sendEmailResetPasswordSuccess(this.data.email);
   }
-}
-
-module.exports = new User();
+};

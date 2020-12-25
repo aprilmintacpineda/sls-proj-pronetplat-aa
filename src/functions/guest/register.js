@@ -1,4 +1,4 @@
-const user = require('/opt/nodejs/models/User');
+const User = require('/opt/nodejs/models/User');
 const validate = require('/opt/nodejs/utils/validate');
 
 function hasErrors ({ email, password }) {
@@ -12,6 +12,7 @@ module.exports.handler = async ({ body }) => {
   if (hasErrors(formBody)) return { statusCode: 200 };
 
   const { email, password } = formBody;
+  const user = new User();
 
   try {
     await user.fetchByEmail(email);

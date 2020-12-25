@@ -1,5 +1,5 @@
 const validate = require('/opt/nodejs/utils/validate');
-const user = require('/opt/nodejs/models/User');
+const User = require('/opt/nodejs/models/User');
 
 function hasErrors ({ email }) {
   return validate(email, ['required', 'email']);
@@ -11,6 +11,7 @@ module.exports.handler = async ({ body }) => {
 
   try {
     const { email, isResend = false } = formBody;
+    const user = new User();
     await user.fetchByEmail(email);
     await user.resetPasswordRequest(isResend);
   } catch (error) {

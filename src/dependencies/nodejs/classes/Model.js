@@ -31,7 +31,12 @@ module.exports = class Model {
 
   resetInstance (newInstance) {
     this.instance = newInstance;
-    this.data = normalizeData(newInstance.data);
+    this.ref = newInstance.ref;
+
+    this.data = normalizeData({
+      id: newInstance.ref.id,
+      ...newInstance.data
+    });
   }
 
   async getById (id) {
@@ -73,7 +78,7 @@ module.exports = class Model {
     const client = initClient();
 
     const newInstance = await client.query(
-      query.Update(this.instance.ref, {
+      query.Update(this.ref, {
         data: {
           ...data,
           updatedAt: query.Now()
@@ -86,7 +91,7 @@ module.exports = class Model {
 
   async erase () {
     const client = initClient();
-    await client.query(query.Delete(this.instance.ref));
+    await client.query(query.Delete(this.ref));
     this.hasBeenErased = true;
   }
 

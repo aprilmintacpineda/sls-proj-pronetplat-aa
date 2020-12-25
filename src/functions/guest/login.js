@@ -2,7 +2,7 @@ const { query } = require('faunadb');
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { verifyHash } = require('/opt/nodejs/utils/helpers');
-const user = require('/opt/nodejs/models/User');
+const User = require('/opt/nodejs/models/User');
 
 function hasErrors ({ email, password }) {
   return (
@@ -17,6 +17,7 @@ module.exports.handler = async ({ body }) => {
 
   try {
     const { email, password } = formBody;
+    const user = new User();
     await user.fetchByEmail(email);
 
     if (!await verifyHash(password, user.data.hashedPassword))
