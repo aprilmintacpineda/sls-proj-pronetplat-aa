@@ -22,7 +22,7 @@ module.exports.handler = async ({ body }) => {
     if (!await verifyHash(password, user.data.hashedPassword))
       throw new Error('Incorrect password');
 
-    await user.update({ lastLogin: query.Now() });
+    await user.update({ lastLoginAt: query.Now() });
     const authUser = user.toResponseData();
     const authToken = await jwt.sign(authUser);
 

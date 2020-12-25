@@ -16,7 +16,10 @@ const {
 
 class User extends Model {
   constructor () {
-    super({ collection: 'users' });
+    super({
+      collection: 'users',
+      censoredData: ['hashedEmailVerificationCode', 'hashedPassword']
+    });
   }
 
   fetchByEmail (email) {
