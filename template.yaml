@@ -108,7 +108,7 @@ Resources:
   verifyEmail:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/guest/verifyEmail.handler
+      Handler: src/functions/auth/verifyEmail.handler
       Layers:
         - !Ref dependencies
       Policies:
