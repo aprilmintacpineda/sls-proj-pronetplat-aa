@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
-const { compare } = require('/opt/nodejs/utils/helpers');
+const { verifyHash } = require('/opt/nodejs/utils/helpers');
 const user = require('/opt/nodejs/models/User');
 
 function hasErrors ({ email, password }) {
@@ -19,7 +19,7 @@ module.exports.handler = async ({ body }) => {
     const { email, password } = formBody;
     await user.fetchByEmail(email);
 
-    if (!await compare(password, user.data.hashedPassword))
+    if (!await verifyHash(password, user.data.hashedPassword))
       throw new Error('Incorrect password');
 
     await user.update({ lastLogin: query.Now() });
