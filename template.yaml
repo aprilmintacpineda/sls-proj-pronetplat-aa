@@ -105,6 +105,27 @@ Resources:
             Path: /login
             RestApiId:
               Ref: mainBackendApi
+  verifyEmail:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/guest/verifyEmail.handler
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Sid: sendEmail
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: '*'
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /verify-email
+            RestApiId:
+              Ref: mainBackendApi
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
