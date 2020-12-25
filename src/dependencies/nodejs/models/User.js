@@ -70,10 +70,10 @@ class User extends Model {
 
   async resetPassword ({ confirmationCode, newPassword }) {
     if (hasTimePassed(this.data.passwordResetCodeExpiresAt))
-      return new HttpError({ statusCode: 410 });
+      throw new HttpError({ statusCode: 410 });
 
     if (!await verifyHash(confirmationCode, this.data.hashedResetPasswordCode))
-      return new HttpError({ statusCode: 403 });
+      throw new HttpError({ statusCode: 403 });
 
     const hashedPassword = await hash(newPassword);
 

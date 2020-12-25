@@ -3,13 +3,6 @@ const HttpError = require('/opt/nodejs/classes/HttpError');
 const user = require('/opt/nodejs/models/User');
 
 function hasErrors ({ confirmationCode, email, newPassword }) {
-  console.log(
-    'hasErrors',
-    validate(confirmationCode, ['required']),
-    validate(email, ['email', 'required']),
-    validate(newPassword, ['required', 'password'])
-  );
-
   return (
     validate(confirmationCode, ['required']) ||
     validate(email, ['email', 'required']) ||
