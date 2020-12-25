@@ -5,7 +5,7 @@ const user = require('/opt/nodejs/models/User');
 function hasErrors ({ confirmationCode, email, newPassword }) {
   return (
     validate(confirmationCode, ['required']) ||
-    validate(email, ['email', 'required']) ||
+    validate(email, ['required', 'email']) ||
     validate(newPassword, ['required', 'password'])
   );
 }

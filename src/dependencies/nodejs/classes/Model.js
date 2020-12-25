@@ -23,8 +23,9 @@ function normalizeData (unnormalizedData) {
 }
 
 module.exports = class Model {
-  constructor (collection) {
+  constructor ({ collection, censoredData = [] }) {
     this.collection = collection;
+    this.censoredData = censoredData;
     this.hasBeenErased = false;
   }
 
@@ -89,7 +90,14 @@ module.exports = class Model {
     this.hasBeenErased = true;
   }
 
-  toString () {
-    return JSON.stringify(this.data);
+  toResponseData () {
+    // automatically considered anything that has "hashed"
+    // in it's name as censored.
+    return Object.keys(this.data).reduce((accumulator, key) => {
+      if (!key.toLowerCase().includes('hashed') && !this.censoredData.includes(key))
+        accumulator[key] = this.data[key];
+
+      return accumulator;
+    }, {});
   }
 };

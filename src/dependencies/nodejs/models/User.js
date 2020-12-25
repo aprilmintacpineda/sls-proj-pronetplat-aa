@@ -16,7 +16,7 @@ const {
 
 class User extends Model {
   constructor () {
-    super('users');
+    super({ collection: 'users' });
   }
 
   fetchByEmail (email) {
