@@ -1,5 +1,3 @@
-const { query } = require('faunadb');
-
 const Model = require('/opt/nodejs/classes/Model');
 const HttpError = require('/opt/nodejs/classes/HttpError');
 
@@ -81,7 +79,7 @@ class User extends Model {
 
       // limit retries to 3 and then force expire
       if (data.passwordResetCodeNumFailed >= 3)
-        data.passwordResetCodeExpiresAt = query.Now();
+        data.passwordResetCodeExpiresAt = getTimeOffset(true);
 
       await this.update(data);
 
