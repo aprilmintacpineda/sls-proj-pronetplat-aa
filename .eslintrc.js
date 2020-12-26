@@ -20,6 +20,7 @@ module.exports = {
     semi: ['error', 'always'],
     quotes: ['error', 'single'],
     curly: ['error', 'multi-or-nest', 'consistent'],
+    'no-return-await': 'error',
     'linebreak-style': ['error', 'unix'],
     'no-duplicate-imports': [
       'error',
