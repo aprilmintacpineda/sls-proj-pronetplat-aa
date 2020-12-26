@@ -40,11 +40,31 @@ function sendEmail ({ recipient, content, subject, emailType }) {
   });
 }
 
-module.exports.sendEmailVerificationCode = ({
-  recipient,
-  emailVerificationCode,
-  isResend
-}) => {
+module.exports.sendEmailVerificationCode = ({ recipient, emailVerificationCode }) => {
+  return sendEmail({
+    recipient,
+    content: `
+      <div style="width: 500px; text-align: center;margin: 0 auto;">
+        <h1 style="margin-bottom: 50px;">Verify your email</h1>
+        <p>
+          We sent you this email because you requested for a new email verification code.
+        </p>
+        <div style="position: relative;background-color: #d0d5d1;border-radius: 4px;padding: 10px;margin-top: 50px;margin-bottom: 50px;">
+          <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
+          <h2 style="margin: 0; padding: 0;letter-spacing: 5px;">${emailVerificationCode}</h2>
+        </div>
+        <p>
+          For your safety, this code will expire in 5 minutes; if you fail to enter this password 3 times,
+          this code will automatically expire even if 5 minutes hasn't passed yet. Once expired, you can request a new code.
+        </p>
+      </div>
+    `,
+    subject: 'Email Verification',
+    emailType: 'resend-email-verification'
+  });
+};
+
+module.exports.sendEmailWelcomeMessage = ({ recipient, emailVerificationCode }) => {
   return sendEmail({
     recipient,
     content: `
@@ -68,7 +88,7 @@ module.exports.sendEmailVerificationCode = ({
       </div>
     `,
     subject: 'Email Verification: Welcome to Quaint',
-    emailType: isResend ? 'resend-email-verification' : 'email-verification'
+    emailType: 'welcome'
   });
 };
 

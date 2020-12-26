@@ -9,7 +9,7 @@ const {
   hasTimePassed
 } = require('/opt/nodejs/utils/helpers');
 const {
-  sendEmailVerificationCode,
+  sendEmailWelcomeMessage,
   sendEmailResetPasswordCode,
   sendEmailResetPasswordSuccess
 } = require('/opt/nodejs/utils/sendEmail');
@@ -44,7 +44,7 @@ module.exports = class User extends Model {
       emailConfirmCodeExpiresAt: offsetTime
     });
 
-    await sendEmailVerificationCode({
+    await sendEmailWelcomeMessage({
       recipient: data.email,
       emailVerificationCode
     });

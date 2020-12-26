@@ -30,8 +30,7 @@ module.exports.handler = async ({ headers }) => {
 
     await sendEmailVerificationCode({
       recipient: user.data.email,
-      emailVerificationCode,
-      isResend: true
+      emailVerificationCode
     });
 
     return {
