@@ -18,7 +18,7 @@ const verifyAsync = promisify(jwt.verify);
 module.exports.sign = async data => {
   const file = await fs.readFile(path.join(__dirname, '../resources/jwt.key'));
   const privateKey = file.toString();
-  return await signAsync({ data }, privateKey, signConfig);
+  return signAsync({ data }, privateKey, signConfig);
 };
 
 module.exports.verify = async token => {
