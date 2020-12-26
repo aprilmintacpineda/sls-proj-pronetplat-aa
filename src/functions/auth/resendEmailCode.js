@@ -14,7 +14,7 @@ module.exports.handler = async ({ headers }) => {
   try {
     const auth = await jwt.verify(parseAuth(headers));
     const user = new User();
-    await user.fetchById(auth.data.id);
+    await user.getById(auth.data.id);
 
     if (!hasTimePassed(user.data.emailCodeCanSendAt)) return { statusCode: 429 };
 

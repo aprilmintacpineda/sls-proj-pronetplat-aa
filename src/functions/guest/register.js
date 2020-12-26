@@ -15,7 +15,7 @@ module.exports.handler = async ({ body }) => {
   const user = new User();
 
   try {
-    await user.fetchByEmail(email);
+    await user.getByEmail(email);
 
     console.log('User already exists.');
 

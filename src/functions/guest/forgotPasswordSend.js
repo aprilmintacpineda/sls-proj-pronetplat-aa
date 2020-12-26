@@ -12,7 +12,7 @@ module.exports.handler = async ({ body }) => {
   try {
     const { email, isResend = false } = formBody;
     const user = new User();
-    await user.fetchByEmail(email);
+    await user.getByEmail(email);
     await user.resetPasswordRequest(isResend);
   } catch (error) {
     console.log('error', error);

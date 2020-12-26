@@ -18,7 +18,7 @@ module.exports.handler = async ({ body }) => {
   try {
     const { email, password } = formBody;
     const user = new User();
-    await user.fetchByEmail(email);
+    await user.getByEmail(email);
 
     if (!await verifyHash(password, user.data.hashedPassword))
       throw new Error('Incorrect password');

@@ -22,7 +22,7 @@ module.exports = class User extends Model {
     });
   }
 
-  fetchByEmail (email) {
+  getByEmail (email) {
     return this.getByIndex('userByEmail', email);
   }
 

@@ -16,7 +16,7 @@ module.exports.handler = async ({ body }) => {
 
   try {
     const user = new User();
-    await user.fetchByEmail(formBody.email);
+    await user.getByEmail(formBody.email);
     await user.resetPassword(formBody);
   } catch (error) {
     console.log('error', error);
