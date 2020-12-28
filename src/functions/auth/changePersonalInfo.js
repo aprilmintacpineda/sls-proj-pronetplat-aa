@@ -25,13 +25,13 @@ module.exports.handler = async ({ headers, body }) => {
 
     await user.update({
       firstName,
-      middleName,
+      middleName: middleName || '',
       surname,
       gender
     });
 
     const authUser = user.toResponseData();
-    const authToken = jwt.sign(authUser);
+    const authToken = await jwt.sign(authUser);
 
     return {
       statusCode: 200,
