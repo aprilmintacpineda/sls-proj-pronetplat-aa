@@ -166,6 +166,13 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+  usersS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "proj-pronetplat-aa-users"
+      Tags:
+        - Key: "what"
+          Value: "proj-pronetplat-aa users s3 bucket"
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
