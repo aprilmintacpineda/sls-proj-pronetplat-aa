@@ -140,6 +140,20 @@ Resources:
             Path: /resend-email-code
             RestApiId:
               Ref: mainBackendApi
+  changePersonalInfo:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/changePersonalInfo.handler
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /change-personal-info
+            RestApiId:
+              Ref: mainBackendApi
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
