@@ -12,7 +12,7 @@ function hasErrors ({ firstName, middleName, surname, gender }) {
   );
 }
 
-module.exports = async ({ headers, body }) => {
+module.exports.handler = async ({ headers, body }) => {
   try {
     const auth = await jwt.verify(parseAuth(headers));
     const user = new User();
