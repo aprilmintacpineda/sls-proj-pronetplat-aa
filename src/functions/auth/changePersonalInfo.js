@@ -1,3 +1,5 @@
+const { query } = require('faunadb');
+
 const jwt = require('/opt/nodejs/utils/jwt');
 const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
@@ -27,7 +29,8 @@ module.exports.handler = async ({ headers, body }) => {
       firstName,
       middleName: middleName || '',
       surname,
-      gender
+      gender,
+      completedFirstSetupAt: query.Now()
     });
 
     const authUser = user.toResponseData();
