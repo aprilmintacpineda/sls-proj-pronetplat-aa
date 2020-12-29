@@ -17,6 +17,10 @@ Globals:
     MemorySize: 512
     Timeout: 60
     Runtime: nodejs12.x
+    Environment:
+      Variables:
+        stage: !Ref Stage
+        usersBucket: !Ref usersS3Bucket
   Api:
     OpenApiVersion: 3.0.1
 
@@ -168,10 +172,6 @@ Resources:
             Path: /change-profile-picture
             RestApiId:
               Ref: mainBackendApi
-      Environment:
-        Variables:
-          stage: !Ref Stage
-          usersBucket: !Ref usersS3Bucket
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
