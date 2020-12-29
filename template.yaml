@@ -33,9 +33,9 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            Effect: Allow
-            Action:
+          - Action:
               - ses:SendEmail
+            Effect: Allow
             Resource: "*"
       Events:
         ApiEvent:
@@ -53,10 +53,10 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            Effect: Allow
-            Action:
-              - ses:SendEmail
-            Resource: "*"
+            - Action:
+                - ses:SendEmail
+              Effect: Allow
+              Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -73,10 +73,10 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            Effect: Allow
-            Action:
-              - ses:SendEmail
-            Resource: "*"
+            - Action:
+                - ses:SendEmail
+              Effect: Allow
+              Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -107,9 +107,9 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            Effect: Allow
-            Action:
+          - Action:
               - ses:SendEmail
+            Effect: Allow
             Resource: "*"
       Events:
         ApiEvent:
@@ -127,9 +127,9 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            Effect: Allow
-            Action:
+          - Action:
               - ses:SendEmail
+            Effect: Allow
             Resource: "*"
       Events:
         ApiEvent:
@@ -160,8 +160,12 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - S3WritePolicy:
-            BucketName: !Ref usersS3Bucket
+        - Statement:
+          - Action:
+              - s3:PutObject
+              - s3:PutObjectAcl
+            Effect: Allow
+            Resource: !GetAtt usersS3Bucket.Arn
       Events:
         ApiEvent:
           Type: Api
