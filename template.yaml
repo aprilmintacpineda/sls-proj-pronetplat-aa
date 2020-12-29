@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   proj-pronetplat-aa
@@ -21,12 +21,6 @@ Globals:
       Variables:
         STAGE: !Ref Stage
         USERS_BUCKET: !Ref usersS3Bucket
-    Policies:
-      - Statement:
-          Effect: Allow
-          Action:
-            - ses:SendEmail
-          Resource: '*'
   Api:
     OpenApiVersion: 3.0.1
 
@@ -37,6 +31,12 @@ Resources:
       Handler: src/functions/guest/register.handler
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -51,6 +51,12 @@ Resources:
       Handler: src/functions/guest/forgotPasswordSend.handler
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -65,6 +71,12 @@ Resources:
       Handler: src/functions/guest/forgotPasswordConfirm.handler
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -93,6 +105,12 @@ Resources:
       Handler: src/functions/auth/verifyEmail.handler
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -107,6 +125,12 @@ Resources:
       Handler: src/functions/auth/resendEmailCode.handler
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+            Resource: "*"
       Events:
         ApiEvent:
           Type: Api
@@ -159,7 +183,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join
-        - '-'
+        - "-"
         - - "proj-pronetplat-aa-users"
           - !Ref Stage
       Tags:
@@ -174,20 +198,20 @@ Resources:
           - Action:
               - s3:putObject
             Effect: Deny
-            Principal: *
+            Principal: "*"
             NotResource:
               - !Join
-                - ''
+                - ""
                 - - !GetAtt
                     - usersS3Bucket
                     - Arn
-                  - '/*.jpg'
+                  - "/*.jpg"
               - !Join
-                - ''
+                - ""
                 - - !GetAtt
                     - usersS3Bucket
                     - Arn
-                  - '/*.png'
+                  - "/*.png"
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
