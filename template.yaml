@@ -159,6 +159,13 @@ Resources:
       Handler: src/functions/auth/changeProfilePicture.handler
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - s3:putObject
+              - s3:putObjectAcl
+            Resource: !GetAtt usersS3Bucket.Arn
       Events:
         ApiEvent:
           Type: Api
