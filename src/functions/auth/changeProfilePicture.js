@@ -1,11 +1,12 @@
-const AWS = require('aws-sdk');
+const aws = require('aws-sdk');
+const mimetypes = require('mime-types');
 
 const jwt = require('/opt/nodejs/utils/jwt');
 const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
-const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+const s3 = new aws.S3({ apiVersion: '2006-03-01' });
 
 function hasErrors ({ mimeType }) {
   return validate(mimeType, ['required', 'options:image/jpeg,image/png']);
@@ -21,14 +22,17 @@ module.exports.handler = async ({ headers, body }) => {
     if (hasErrors(formBody)) return '';
 
     const signedUrl = await new Promise((resolve, reject) => {
+      const { mimeType } = formBody;
+      const ext = mimetypes.extension(mimeType);
+
       s3.getSignedUrl(
         'putObject',
         {
           Bucket: process.env.USERS_BUCKET,
           Expires: 15,
           ACL: 'public-read',
-          Key: `profilePictures/${user.data.id}`,
-          ContentType: formBody.mimeType
+          Key: `profilePictures/${user.data.id}.${ext}`,
+          ContentType: mimeType
         },
         (error, data) => {
           if (error) reject(error);
