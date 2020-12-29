@@ -165,7 +165,7 @@ Resources:
               - s3:PutObject
               - s3:PutObjectAcl
             Effect: Allow
-            Resource: !GetAtt usersS3Bucket.Arn
+            Resource: "*"
       Events:
         ApiEvent:
           Type: Api
