@@ -190,24 +190,24 @@ Resources:
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
-      Policies:
-        - Statement:
-            Effect: Deny
-            Action:
-              - s3:putObject
-            NotResource:
-              - !Join
-                - ''
-                - - !GetAtt
-                    - usersS3Bucket
-                    - Arn
-                  - '/*.jpg'
-              - !Join
-                - ''
-                - - !GetAtt
-                    - usersS3Bucket
-                    - Arn
-                  - '/*.png'
+      # Policies:
+      #   - Statement:
+      #       Effect: Deny
+      #       Action:
+      #         - s3:putObject
+      #       NotResource:
+      #         - !Join
+      #           - ''
+      #           - - !GetAtt
+      #               - usersS3Bucket
+      #               - Arn
+      #             - '/*.jpg'
+      #         - !Join
+      #           - ''
+      #           - - !GetAtt
+      #               - usersS3Bucket
+      #               - Arn
+      #             - '/*.png'
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
