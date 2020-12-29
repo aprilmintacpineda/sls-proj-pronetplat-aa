@@ -12,12 +12,11 @@ module.exports.handler = async ({ headers }) => {
     const user = new User();
     await user.getById(auth.data.id);
 
-    console.log(process.env);
-
     const presignedUrl = await new Promise((resolve, reject) => {
       s3.createPresignedPost(
         {
-          Bucket: 'proj-pronetplat-users-dev',
+          Bucket: process.env.USERS_BUCKET,
+          Expires: 10,
           Fields: {
             key: `profilePictures/${user.data.id}`
           }
@@ -29,7 +28,10 @@ module.exports.handler = async ({ headers }) => {
       );
     });
 
-    console.log('presignedUrl', presignedUrl);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(presignedUrl)
+    };
   } catch (error) {
     console.log('error', error);
   }

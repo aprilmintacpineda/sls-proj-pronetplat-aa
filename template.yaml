@@ -19,8 +19,8 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
-        stage: !Ref Stage
-        usersBucket: !Ref usersS3Bucket
+        STAGE: !Ref Stage
+        USERS_BUCKET: !Ref usersS3Bucket
   Api:
     OpenApiVersion: 3.0.1
 
