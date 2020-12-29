@@ -170,6 +170,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: "proj-pronetplat-aa-users"
+      AccessControl: public-read
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
