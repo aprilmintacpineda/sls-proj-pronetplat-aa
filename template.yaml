@@ -154,6 +154,20 @@ Resources:
             Path: /change-personal-info
             RestApiId:
               Ref: mainBackendApi
+  changeProfilePicture:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/changeProfilePicture.handler
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /change-profile-picture
+            RestApiId:
+              Ref: mainBackendApi
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
