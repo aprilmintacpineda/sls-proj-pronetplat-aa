@@ -9,8 +9,8 @@ const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 module.exports.handler = async ({ headers }) => {
   try {
     const auth = await jwt.verify(parseAuth(headers));
-    const user = new User(auth.data.id);
-    await user.getById();
+    const user = new User();
+    await user.getById(auth.data.id);
 
     console.log(process.env);
 
