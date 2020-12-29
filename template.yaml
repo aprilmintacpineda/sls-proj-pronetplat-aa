@@ -189,11 +189,15 @@ Resources:
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
+  usersS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref usersS3Bucket
       PolicyDocument:
-        - Statement:
-          - Effect: Deny
-            Action:
+        Statement:
+          - Action:
               - s3:putObject
+            Effect: Deny
             NotResource:
               - !Join
                 - ''
