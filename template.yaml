@@ -197,6 +197,7 @@ Resources:
         Statement:
           - Action:
               - s3:putObject
+              - s3:putObjectAcl
             Effect: Allow
             Principal: "*"
             Resource:
