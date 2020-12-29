@@ -165,7 +165,19 @@ Resources:
               - s3:PutObject
               - s3:PutObjectAcl
             Effect: Allow
-            Resource: "*"
+            Resource:
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.jpg"
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.jpeg"
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.png"
       Events:
         ApiEvent:
           Type: Api
