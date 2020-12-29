@@ -169,8 +169,9 @@ Resources:
             RestApiId:
               Ref: mainBackendApi
       Environment:
-        stage: !Ref Stage
-        usersBucket: !Ref usersS3Bucket
+        Variables:
+          stage: !Ref Stage
+          usersBucket: !Ref usersS3Bucket
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
