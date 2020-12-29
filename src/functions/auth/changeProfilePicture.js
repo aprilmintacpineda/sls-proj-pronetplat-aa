@@ -27,7 +27,7 @@ module.exports.handler = async ({ headers, body }) => {
           Bucket: process.env.USERS_BUCKET,
           Expires: 15,
           ACL: 'public-read',
-          key: `profilePictures/${user.data.id}`,
+          Key: `profilePictures/${user.data.id}`,
           ContentType: formBody.mimeType
         },
         (error, data) => {
