@@ -212,6 +212,12 @@ Resources:
                 - - !GetAtt
                     - usersS3Bucket
                     - Arn
+                  - "/*.jpeg"
+              - !Join
+                - ""
+                - - !GetAtt
+                    - usersS3Bucket
+                    - Arn
                   - "/*.png"
 
 # Outputs:
