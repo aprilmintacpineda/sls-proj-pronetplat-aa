@@ -189,6 +189,16 @@ Resources:
         - "-"
         - - "proj-pronetplat-aa-users"
           - !Ref Stage
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+            - "*"
+          AllowedMethods:
+            - GET
+            - PUT
+            - HEAD
+          AllowedOrigins:
+            - "*"
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
