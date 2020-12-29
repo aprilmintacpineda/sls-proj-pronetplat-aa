@@ -170,7 +170,7 @@ Resources:
               Ref: mainBackendApi
       Environment:
         stage: !Ref Stage
-        usersBucket: !GetAtt usersS3Bucket.BucketName
+        usersBucket: !Ref usersS3Bucket
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
