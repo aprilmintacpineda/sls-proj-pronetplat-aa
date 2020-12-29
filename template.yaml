@@ -33,7 +33,6 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-          - Sid: sendEmail
             Effect: Allow
             Action:
               - ses:SendEmail
@@ -54,7 +53,6 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-          - Sid: sendEmail
             Effect: Allow
             Action:
               - ses:SendEmail
@@ -75,7 +73,6 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-          - Sid: sendEmail
             Effect: Allow
             Action:
               - ses:SendEmail
@@ -110,7 +107,6 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-          - Sid: sendEmail
             Effect: Allow
             Action:
               - ses:SendEmail
@@ -131,7 +127,6 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-          - Sid: sendEmail
             Effect: Allow
             Action:
               - ses:SendEmail
@@ -187,13 +182,32 @@ Resources:
   usersS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join
-        - '-'
-        - - "proj-pronetplat-aa-users"
-          - !Ref Stage
+      BucketName:
+        - !Join
+          - '-'
+          - - "proj-pronetplat-aa-users"
+            - !Ref Stage
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
+      Policies:
+        - Statement:
+            Effect: Deny
+            Action:
+              - s3:putObject
+            NotResource:
+              - !Join
+                - ''
+                - - !GetAtt:
+                    - usersS3Bucket
+                    - Arn
+                  - '/*.jpg'
+              - !Join
+                - ''
+                - - !GetAtt:
+                    - usersS3Bucket
+                    - Arn
+                  - '/*.png'
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
