@@ -160,12 +160,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-            Effect: Allow
-            Action:
-              - s3:putObject
-              - s3:putObjectAcl
-            Resource: !GetAtt usersS3Bucket.Arn
+        - S3WritePolicy:
+            BucketName: !Ref usersS3Bucket
       Events:
         ApiEvent:
           Type: Api
