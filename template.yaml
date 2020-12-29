@@ -198,13 +198,13 @@ Resources:
             NotResource:
               - !Join
                 - ''
-                - - !GetAtt:
+                - - !GetAtt
                     - usersS3Bucket
                     - Arn
                   - '/*.jpg'
               - !Join
                 - ''
-                - - !GetAtt:
+                - - !GetAtt
                     - usersS3Bucket
                     - Arn
                   - '/*.png'
