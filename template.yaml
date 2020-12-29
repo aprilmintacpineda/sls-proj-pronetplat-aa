@@ -197,9 +197,9 @@ Resources:
         Statement:
           - Action:
               - s3:putObject
-            Effect: Deny
+            Effect: Allow
             Principal: "*"
-            NotResource:
+            Resource:
               - !Join
                 - ""
                 - - !GetAtt

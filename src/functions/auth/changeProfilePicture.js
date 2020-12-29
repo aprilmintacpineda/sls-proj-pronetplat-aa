@@ -21,24 +21,15 @@ module.exports.handler = async ({ headers, body }) => {
 
     if (hasErrors(formBody)) return '';
 
-    const signedUrl = await new Promise((resolve, reject) => {
-      const { mimeType } = formBody;
-      const ext = mimetypes.extension(mimeType);
+    const { mimeType } = formBody;
+    const ext = mimetypes.extension(mimeType);
 
-      s3.getSignedUrl(
-        'putObject',
-        {
-          Bucket: process.env.USERS_BUCKET,
-          Expires: 60,
-          ACL: 'public-read',
-          Key: `profilePicture_${user.data.id}.${ext}`,
-          ContentType: mimeType
-        },
-        (error, data) => {
-          if (error) reject(error);
-          resolve(data);
-        }
-      );
+    const signedUrl = await s3.getSignedUrlPromise('putObject', {
+      Bucket: process.env.USERS_BUCKET,
+      Expires: 15,
+      ACL: 'public-read',
+      Key: `profilePicture_${user.data.id}.${ext}`,
+      ContentType: mimeType
     });
 
     return {
