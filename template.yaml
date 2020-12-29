@@ -45,9 +45,6 @@ Resources:
             Path: /register
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
   forgotPasswordSend:
     Type: AWS::Serverless::Function
     Properties:
@@ -68,9 +65,6 @@ Resources:
             Path: /forgot-password-send
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
   forgotPasswordConfirm:
     Type: AWS::Serverless::Function
     Properties:
@@ -91,9 +85,6 @@ Resources:
             Path: /forgot-password-confirm
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
   login:
     Type: AWS::Serverless::Function
     Properties:
@@ -108,9 +99,6 @@ Resources:
             Path: /login
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
   verifyEmail:
     Type: AWS::Serverless::Function
     Properties:
@@ -131,11 +119,6 @@ Resources:
             Path: /verify-email
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
-              - method.request.header.Authorization:
-                Required: true
   resendEmailCode:
     Type: AWS::Serverless::Function
     Properties:
@@ -156,9 +139,6 @@ Resources:
             Path: /resend-email-code
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.header.Authorization:
-                Required: true
   changePersonalInfo:
     Type: AWS::Serverless::Function
     Properties:
@@ -173,11 +153,6 @@ Resources:
             Path: /change-personal-info
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
-              - method.request.header.Authorization:
-                Required: true
   changeProfilePicture:
     Type: AWS::Serverless::Function
     Properties:
@@ -192,11 +167,6 @@ Resources:
             Path: /change-profile-picture
             RestApiId:
               Ref: mainBackendApi
-            RequestParameters:
-              - method.request.body:
-                Required: true
-              - method.request.header.Authorization:
-                Required: true
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
