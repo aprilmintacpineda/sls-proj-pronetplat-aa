@@ -29,7 +29,7 @@ module.exports.handler = async ({ headers, body }) => {
         'putObject',
         {
           Bucket: process.env.USERS_BUCKET,
-          Expires: 15,
+          Expires: 60,
           ACL: 'public-read',
           Key: `profilePicture_${user.data.id}.${ext}`,
           ContentType: mimeType
