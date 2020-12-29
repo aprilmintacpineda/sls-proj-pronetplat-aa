@@ -20,7 +20,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     if (hasErrors(formBody)) return '';
 
-    const presignedUrl = await new Promise((resolve, reject) => {
+    const signedUrl = await new Promise((resolve, reject) => {
       s3.getSignedUrl(
         'putObject',
         {
@@ -37,12 +37,12 @@ module.exports.handler = async ({ headers, body }) => {
       );
     });
 
-    console.log(presignedUrl);
-
-    // return {
-    //   statusCode: 200,
-    //   body: JSON.stringify({})
-    // };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        signedUrl
+      })
+    };
   } catch (error) {
     console.log('error', error);
   }
