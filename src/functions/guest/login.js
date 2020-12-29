@@ -11,7 +11,10 @@ function hasErrors ({ email, password }) {
   );
 }
 
-module.exports.handler = async ({ body }) => {
+module.exports.handler = async event => {
+  console.log(JSON.stringify(body, null, 2));
+
+  const { body } = event;
   const formBody = JSON.parse(body);
   if (hasErrors(formBody)) return { statusCode: 403 };
 
