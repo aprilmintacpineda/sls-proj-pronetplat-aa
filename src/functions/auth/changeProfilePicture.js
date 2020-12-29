@@ -6,7 +6,10 @@ const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
-const s3 = new aws.S3({ apiVersion: '2006-03-01' });
+const s3 = new aws.S3({
+  apiVersion: '2006-03-01',
+  signatureVersion: 'v4'
+});
 
 function hasErrors ({ mimeType }) {
   return validate(mimeType, ['required', 'options:image/jpeg,image/png']);
