@@ -14,7 +14,7 @@ module.exports.handler = async ({ headers }) => {
 
     console.log(process.env);
 
-    const presignedUrl = new Promise((resolve, reject) => {
+    const presignedUrl = await new Promise((resolve, reject) => {
       s3.createPresignedPost(
         {
           Bucket: 'proj-pronetplat-users-dev',

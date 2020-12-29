@@ -168,6 +168,9 @@ Resources:
             Path: /change-profile-picture
             RestApiId:
               Ref: mainBackendApi
+      Environment:
+        stage: !Ref Stage
+        usersBucket: !GetAtt usersS3Bucket.BucketName
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
