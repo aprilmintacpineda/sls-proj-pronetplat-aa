@@ -189,7 +189,7 @@ Resources:
   profilePictureUploaded:
     Type: AWS::Serverless::Function
     Properties:
-      handler: src/events/s3/profilePictureUploaded.handler
+      Handler: src/events/s3/profilePictureUploaded.handler
       Layers:
         - !Ref dependencies
       Policies:
