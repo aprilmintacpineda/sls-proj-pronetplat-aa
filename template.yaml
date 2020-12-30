@@ -190,6 +190,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/events/s3/profilePictureUploaded.handler
+      MemorySize: 2048
       Layers:
         - !Ref dependencies
       Policies:
@@ -197,13 +198,25 @@ Resources:
           - Action:
               - s3:GetObject
             Effect: Allow
-            Resource: "*"
+            Resource:
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.jpg"
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.jpeg"
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.png"
       Events:
         Upload:
           Type: S3
           Properties:
             Bucket: !Ref usersS3Bucket
-            Events: s3:ObjectCreated:Put
+            Events: "s3:ObjectCreated:Put"
             Filter:
               S3Key:
                 Rules:
