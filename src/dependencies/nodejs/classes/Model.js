@@ -4,6 +4,7 @@ const {
 } = require('faunadb');
 
 const { initClient } = require('/opt/nodejs/utils/faunadb');
+const { sanitizeFormBody } = require('/opt/nodejs/utils/helpers');
 
 function normalizeData (unnormalizedData) {
   switch (unnormalizedData.constructor) {
@@ -26,7 +27,7 @@ module.exports = class Model {
   constructor ({ collection, censoredData = [] }) {
     this.collection = collection;
     this.censoredData = censoredData;
-    this.hasBeenErased = false;
+    this.wasHardDeleted = false;
   }
 
   resetInstance (newInstance) {
@@ -65,7 +66,7 @@ module.exports = class Model {
     const newInstance = await client.query(
       query.Create(query.Collection(this.collection), {
         data: {
-          ...data,
+          ...sanitizeFormBody(data),
           createdAt: query.Now()
         }
       })
@@ -80,7 +81,7 @@ module.exports = class Model {
     const newInstance = await client.query(
       query.Update(this.ref, {
         data: {
-          ...data,
+          ...sanitizeFormBody(data),
           updatedAt: query.Now()
         }
       })
@@ -89,10 +90,10 @@ module.exports = class Model {
     this.resetInstance(newInstance);
   }
 
-  async erase () {
+  async hardDelete () {
     const client = initClient();
     await client.query(query.Delete(this.ref));
-    this.hasBeenErased = true;
+    this.wasHardDeleted = true;
   }
 
   toResponseData () {
