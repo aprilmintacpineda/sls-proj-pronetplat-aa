@@ -11,14 +11,11 @@ function hasErrors ({ email, password }) {
   );
 }
 
-module.exports.handler = async event => {
-  console.log(JSON.stringify(event, null, 2));
-
-  const { body } = event;
-  const formBody = JSON.parse(body);
-  if (hasErrors(formBody)) return { statusCode: 403 };
-
+module.exports.handler = async ({ body }) => {
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) return { statusCode: 403 };
+
     const { email, password } = formBody;
     const user = new User();
     await user.getByEmail(email);

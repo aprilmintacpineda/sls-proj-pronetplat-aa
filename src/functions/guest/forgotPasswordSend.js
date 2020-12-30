@@ -6,10 +6,10 @@ function hasErrors ({ email }) {
 }
 
 module.exports.handler = async ({ body }) => {
-  const formBody = JSON.parse(body);
-  if (hasErrors(formBody)) return { statusCode: 200 };
-
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) return { statusCode: 200 };
+
     const { email, isResend = false } = formBody;
     const user = new User();
     await user.getByEmail(email);

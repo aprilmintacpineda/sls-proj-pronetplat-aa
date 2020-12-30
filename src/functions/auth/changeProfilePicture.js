@@ -22,7 +22,7 @@ module.exports.handler = async ({ headers, body }) => {
     await user.getById(auth.data.id);
     const formBody = JSON.parse(body);
 
-    if (hasErrors(formBody)) return '';
+    if (hasErrors(formBody)) return { statusCode: 403 };
 
     const { mimeType } = formBody;
     const ext = mimetypes.extension(mimeType);

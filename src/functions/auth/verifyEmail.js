@@ -6,14 +6,14 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const User = require('/opt/nodejs/models/User');
 
 function hasErrors ({ verificationCode }) {
-  return validate(verificationCode, ['required', 'maxLength:11']);
+  return validate(verificationCode, ['required', 'maxLength:20']);
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  const formBody = JSON.parse(body);
-  if (hasErrors(formBody)) return { statusCode: 403 };
-
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) return { statusCode: 403 };
+
     const auth = await jwt.verify(parseAuth(headers));
     const user = new User();
     await user.getById(auth.data.id);

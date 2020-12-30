@@ -4,17 +4,17 @@ const User = require('/opt/nodejs/models/User');
 
 function hasErrors ({ confirmationCode, email, newPassword }) {
   return (
-    validate(confirmationCode, ['required']) ||
+    validate(confirmationCode, ['required', 'maxLength:20']) ||
     validate(email, ['required', 'email']) ||
     validate(newPassword, ['required', 'password'])
   );
 }
 
 module.exports.handler = async ({ body }) => {
-  const formBody = JSON.parse(body);
-  if (hasErrors(formBody)) return { statusCode: 200 };
-
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) return { statusCode: 200 };
+
     const user = new User();
     await user.getByEmail(formBody.email);
     await user.resetPassword(formBody);
