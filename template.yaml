@@ -214,7 +214,8 @@ Resources:
         S3Event:
           Type: S3
           Properties:
-            Bucket: !Ref usersS3Bucket
+            Bucket:
+              Ref: usersS3Bucket
             Events: s3:ObjectCreated:Put
             Filter:
               S3Key:
@@ -253,36 +254,6 @@ Resources:
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
-  # usersS3BucketPolicy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     Bucket: !Ref usersS3Bucket
-  #     PolicyDocument:
-  #       Statement:
-  #         - Action:
-  #             - s3:putObject
-  #             - s3:putObjectAcl
-  #           Effect: Allow
-  #           Principal: "*"
-  #           Resource:
-  #             - !Join
-  #               - ""
-  #               - - !GetAtt
-  #                   - usersS3Bucket
-  #                   - Arn
-  #                 - "/*.jpg"
-  #             - !Join
-  #               - ""
-  #               - - !GetAtt
-  #                   - usersS3Bucket
-  #                   - Arn
-  #                 - "/*.jpeg"
-  #             - !Join
-  #               - ""
-  #               - - !GetAtt
-  #                   - usersS3Bucket
-  #                   - Arn
-  #                 - "/*.png"
 
 # Outputs:
 #   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
