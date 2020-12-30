@@ -5,13 +5,14 @@ const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
-function hasErrors ({ firstName, middleName, surname, gender, jobRole }) {
+function hasErrors ({ firstName, middleName, surname, gender, jobTitle, company }) {
   return (
     validate(firstName, ['required', 'maxLength:255']) ||
     validate(middleName, ['maxLength:255']) ||
     validate(surname, ['required', 'maxLength:255']) ||
     validate(gender, ['required', 'options:male,female']) ||
-    validate(jobRole, ['required', 'maxLength:255'])
+    validate(jobTitle, ['required', 'maxLength:255']) ||
+    validate(company, ['maxLength:255'])
   );
 }
 
@@ -24,14 +25,15 @@ module.exports.handler = async ({ headers, body }) => {
 
     if (hasErrors(formBody)) return { statusCode: 403 };
 
-    const { firstName, middleName, surname, gender, jobRole } = formBody;
+    const { firstName, middleName, surname, gender, jobTitle, company } = formBody;
 
     await user.update({
       firstName,
       middleName: middleName || '',
       surname,
       gender,
-      jobRole,
+      jobTitle,
+      company: company || '',
       completedFirstSetupAt: query.Now()
     });
 
