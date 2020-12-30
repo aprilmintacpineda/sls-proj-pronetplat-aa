@@ -186,6 +186,41 @@ Resources:
             Path: /change-profile-picture
             RestApiId:
               Ref: mainBackendApi
+  profilePictureUploaded:
+    Type: AWS::Serverless::Function
+    Properties:
+      handler: src/events/s3/profilePictureUploaded.handler
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - s3:GetObject
+            Effect: Allow
+            Resource:
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.jpg"
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.jpeg"
+              - !Join
+                - ""
+                - - !GetAtt usersS3Bucket.Arn
+                  - "/*.png"
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref usersS3Bucket
+            Events: s3:ObjectCreated:Put
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: newProfilePicture_
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
