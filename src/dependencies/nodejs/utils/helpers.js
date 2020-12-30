@@ -17,7 +17,7 @@ module.exports.hasTimePassed = futureTime => {
 
 module.exports.sanitizeFormBody = data => {
   return Object.keys(data).reduce((accumulator, field) => {
-    if (typeof field === 'string')
+    if (typeof accumulator[field] === 'string')
       accumulator[field] = data[field].trim().replace(/\s{2,}/gim, ' ');
     else accumulator[field] = data[field];
 
