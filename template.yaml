@@ -197,28 +197,13 @@ Resources:
           - Action:
               - s3:GetObject
             Effect: Allow
-            Resource:
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpeg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.png"
+            Resource: "*"
       Events:
-        S3Event:
+        Upload:
           Type: S3
           Properties:
-            Bucket: !Join
-              - "-"
-              - - "proj-pronetplat-aa-users"
-                - !Ref Stage
-            Events: s3:ObjectCreated:*
+            Bucket: !Ref usersS3Bucket
+            Events: s3:ObjectCreated:Put
             Filter:
               S3Key:
                 Rules:
