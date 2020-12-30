@@ -17,10 +17,10 @@ Globals:
     MemorySize: 512
     Timeout: 60
     Runtime: nodejs12.x
-    Environment:
-      Variables:
-        STAGE: !Ref Stage
-        USERS_BUCKET: !Ref usersS3Bucket
+    # Environment:
+    #   Variables:
+    #     STAGE: !Ref Stage
+    #     USERS_BUCKET: !Ref usersS3Bucket
   Api:
     OpenApiVersion: 3.0.1
 
@@ -216,7 +216,7 @@ Resources:
           Type: S3
           Properties:
             Bucket: !Ref usersS3Bucket
-            Events: "s3:ObjectCreated:Put"
+            Events: s3:ObjectCreated:Put
             Filter:
               S3Key:
                 Rules:
