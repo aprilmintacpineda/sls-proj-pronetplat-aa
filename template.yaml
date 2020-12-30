@@ -17,10 +17,10 @@ Globals:
     MemorySize: 512
     Timeout: 60
     Runtime: nodejs12.x
-    # Environment:
-    #   Variables:
-    #     STAGE: !Ref Stage
-    #     USERS_BUCKET: !Ref usersS3Bucket
+    Environment:
+      Variables:
+        STAGE: !Ref Stage
+        USERS_BUCKET: !Ref usersS3Bucket
   Api:
     OpenApiVersion: 3.0.1
 
@@ -186,42 +186,42 @@ Resources:
             Path: /change-profile-picture
             RestApiId:
               Ref: mainBackendApi
-  profilePictureUploaded:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/events/s3/profilePictureUploaded.handler
-      MemorySize: 2048
-      Layers:
-        - !Ref dependencies
-      Policies:
-        - Statement:
-          - Action:
-              - s3:GetObject
-            Effect: Allow
-            Resource:
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpeg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.png"
-      Events:
-        Upload:
-          Type: S3
-          Properties:
-            Bucket: !Ref usersS3Bucket
-            Events: s3:ObjectCreated:Put
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: newProfilePicture_
+  # profilePictureUploaded:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/events/s3/profilePictureUploaded.handler
+  #     MemorySize: 2048
+  #     Layers:
+  #       - !Ref dependencies
+  #     Policies:
+  #       - Statement:
+  #         - Action:
+  #             - s3:GetObject
+  #           Effect: Allow
+  #           Resource:
+  #             - !Join
+  #               - ""
+  #               - - !GetAtt usersS3Bucket.Arn
+  #                 - "/*.jpg"
+  #             - !Join
+  #               - ""
+  #               - - !GetAtt usersS3Bucket.Arn
+  #                 - "/*.jpeg"
+  #             - !Join
+  #               - ""
+  #               - - !GetAtt usersS3Bucket.Arn
+  #                 - "/*.png"
+  #     Events:
+  #       Upload:
+  #         Type: S3
+  #         Properties:
+  #           Bucket: !Ref usersS3Bucket
+  #           Events: s3:ObjectCreated:Put
+  #           Filter:
+  #             S3Key:
+  #               Rules:
+  #                 - Name: prefix
+  #                   Value: newProfilePicture_
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
