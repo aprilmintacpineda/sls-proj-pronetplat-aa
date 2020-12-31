@@ -1,8 +1,8 @@
 const { query } = require('faunadb');
-const firebaseAdmin = require('firebase-admin');
 
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
+const { isValidDeviceToken } = require('/opt/nodejs/utils/firebase');
 const { verifyHash } = require('/opt/nodejs/utils/helpers');
 const User = require('/opt/nodejs/models/User');
 const RegisteredDevices = require('/opt/nodejs/models/RegisteredDevices');
@@ -18,7 +18,7 @@ function hasErrors ({ email, password, deviceToken }) {
 module.exports.handler = async ({ body }) => {
   try {
     const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) return { statusCode: 403 };
+    if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
     const { email, password, deviceToken } = formBody;
     const user = new User();
@@ -27,22 +27,7 @@ module.exports.handler = async ({ body }) => {
     if (!await verifyHash(password, user.data.hashedPassword))
       throw new Error('Incorrect password');
 
-    const {
-      results: [notifResult]
-    } = await firebaseAdmin.messaging().sendToDevice(
-      deviceToken,
-      {
-        notification: {
-          title: 'Device Registration',
-          message: 'Your device has been registered.'
-        }
-      },
-      {
-        dryRun: true
-      }
-    );
-
-    if (notifResult.error) return { statusCode: 403 };
+    if (!await isValidDeviceToken(deviceToken)) throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevices();
 

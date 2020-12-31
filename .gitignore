@@ -131,3 +131,4 @@ $RECYCLE.BIN/
 # others
 .aws-sam
 test.js
+firebase_admin.json

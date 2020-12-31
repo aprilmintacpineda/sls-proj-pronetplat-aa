@@ -10,7 +10,7 @@ function hasErrors ({ email, password }) {
 module.exports.handler = async ({ body }) => {
   try {
     const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) return { statusCode: 200 };
+    if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
     const { email, password } = formBody;
     const user = new User();
@@ -25,9 +25,10 @@ module.exports.handler = async ({ body }) => {
     }
 
     await user.create({ email, password });
+    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
   }
 
-  return { statusCode: 200 };
+  return { statusCode: 403 };
 };

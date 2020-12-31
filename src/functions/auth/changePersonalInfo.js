@@ -23,7 +23,7 @@ module.exports.handler = async ({ headers, body }) => {
     await user.getById(auth.data.id);
     const formBody = JSON.parse(body);
 
-    if (hasErrors(formBody)) return { statusCode: 403 };
+    if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
     const { firstName, middleName, surname, gender, jobTitle, company } = formBody;
 
