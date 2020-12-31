@@ -9,7 +9,10 @@ module.exports.handler = async ({ userId }) => {
     const registeredDevices = await client.query(
       query.Map(
         query.Paginate(query.Match(query.Index('registeredDevicesByUserId'), userId)),
-        query.Lambda(['ref'], query.Get(query.Var('ref')))
+        query.Lambda(
+          ['ref'],
+          query.Select(['data', 'deviceToken'], query.Get(query.Var('ref')))
+        )
       )
     );
 
