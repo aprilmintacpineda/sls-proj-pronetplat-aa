@@ -8,6 +8,9 @@ const User = require('/opt/nodejs/models/User');
 module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
   try {
     const auth = await jwt.verify(parseAuth(headers));
+
+    if (contactId === auth.data.id) throw new Error('Cannot add self to contacts');
+
     const user = new User();
     const targetUser = new User();
 
