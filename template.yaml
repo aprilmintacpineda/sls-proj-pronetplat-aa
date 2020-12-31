@@ -232,6 +232,11 @@ Resources:
           - "proj-pronetplat-aa-addToContact"
       Layers:
         - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
       Events:
         ApiEvent:
           Type: Api
