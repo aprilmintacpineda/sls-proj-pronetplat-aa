@@ -21,7 +21,7 @@ Globals:
       Variables:
         STAGE: !Ref Stage
         USERS_BUCKET: !Ref usersS3Bucket
-        PUSH_NOTIF_FN: !Ref sendPushNotifications.Arn
+        PUSH_NOTIF_FN: !Ref sendPushNotifications
   Api:
     OpenApiVersion: 3.0.1
 
