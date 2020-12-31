@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 
-const lambda = new AWS.lambda({ apiVersion: '2015-03-31' });
+const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 
 module.exports.sendPushNotification = payload => {
   lambda.invoke({
