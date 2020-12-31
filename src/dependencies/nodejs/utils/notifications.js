@@ -10,13 +10,9 @@ module.exports.sendPushNotification = payload => {
         InvocationType: 'Event',
         Payload: JSON.stringify(payload)
       },
-      (error, data) => {
-        if (error) {
-          reject(error);
-        } else {
-          console.log(JSON.stringify(data, null, 2));
-          resolve();
-        }
+      error => {
+        if (error) reject(error);
+        else resolve();
       }
     );
   });

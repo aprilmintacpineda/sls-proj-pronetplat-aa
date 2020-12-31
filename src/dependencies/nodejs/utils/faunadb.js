@@ -1,10 +1,10 @@
-const faunadb = require('faunadb');
-const { query } = faunadb;
+const { query, Client } = require('faunadb');
 
-module.exports.initClient = () =>
-  new faunadb.Client({
+module.exports.initClient = () => {
+  return new Client({
     secret: 'fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg'
   });
+};
 
 module.exports.getTimeOffset = (isPast = false) => {
   if (isPast) return query.TimeSubtract(query.Now(), 5, 'minutes');
