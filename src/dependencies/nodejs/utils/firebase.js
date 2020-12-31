@@ -1,3 +1,4 @@
+const fs = require('fs').promises;
 const firebaseAdmin = require('firebase-admin');
 const path = require('path');
 
@@ -8,6 +9,10 @@ firebaseAdmin.initializeApp({
 });
 
 module.exports.isValidDeviceToken = async deviceToken => {
+  const file = await fs.readFile(configPath, 'utf-8');
+
+  console.log(file.toString());
+
   const {
     results: [notifResult]
   } = await firebaseAdmin.messaging().sendToDevice(
