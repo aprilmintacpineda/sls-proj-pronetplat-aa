@@ -21,6 +21,7 @@ Globals:
       Variables:
         STAGE: !Ref Stage
         USERS_BUCKET: !Ref usersS3Bucket
+        PUSH_NOTIF_FN: !GetAtt sendPushNotifications.Arn
   Api:
     OpenApiVersion: 3.0.1
 
@@ -200,6 +201,12 @@ Resources:
             Path: /add-to-contact/{contactId}
             RestApiId:
               Ref: mainBackendApi
+  sendPushNotifications:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/sendPushNotifications.handler
+      Layers:
+        - !Ref dependencies
   # profilePictureUploaded:
   #   Type: AWS::Serverless::Function
   #   Properties:
