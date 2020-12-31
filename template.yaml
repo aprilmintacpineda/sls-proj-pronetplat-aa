@@ -237,7 +237,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /add-to-contact/{contactId}
+            Path: /add-to-contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
   sendPushNotifications:
