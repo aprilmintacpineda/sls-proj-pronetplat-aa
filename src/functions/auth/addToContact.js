@@ -32,7 +32,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     fullName += user.data.middleName ? ` ${user.data.middleName} ` : ' ';
     fullName += user.data.surname;
 
-    sendPushNotification({
+    await sendPushNotification({
       userId: targetUser.data.id,
       title: 'Connection request',
       body: `${fullName} wants to network with you.`
