@@ -21,7 +21,10 @@ Globals:
       Variables:
         STAGE: !Ref Stage
         USERS_BUCKET: !Ref usersS3Bucket
-        PUSH_NOTIF_FN: !Ref sendPushNotifications
+        PUSH_NOTIF_FN: !Join
+          - '-'
+            - - !Ref Stage
+              - "proj-pronetplat-aa-sendPushNotifications"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -30,6 +33,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/guest/register.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-register"
       Layers:
         - !Ref dependencies
       Policies:
@@ -50,6 +57,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/guest/forgotPasswordSend.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-forgotPasswordSend"
       Layers:
         - !Ref dependencies
       Policies:
@@ -70,6 +81,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/guest/forgotPasswordConfirm.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-forgotPasswordConfirm"
       Layers:
         - !Ref dependencies
       Policies:
@@ -90,6 +105,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/guest/login.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-login"
       Layers:
         - !Ref dependencies
       Events:
@@ -104,6 +123,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/auth/verifyEmail.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-verifyEmail"
       Layers:
         - !Ref dependencies
       Policies:
@@ -124,6 +147,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/auth/resendEmailCode.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-resendEmailCode"
       Layers:
         - !Ref dependencies
       Policies:
@@ -144,6 +171,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/auth/changePersonalInfo.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-changePersonalInfo"
       Layers:
         - !Ref dependencies
       Events:
@@ -158,6 +189,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/auth/changeProfilePicture.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-changeProfilePicture"
       Layers:
         - !Ref dependencies
       Policies:
@@ -191,6 +226,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/auth/addToContact.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-addToContact"
       Layers:
         - !Ref dependencies
       Events:
@@ -205,6 +244,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/auth/sendPushNotifications.handler
+      FunctionName: !Join
+        - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-sendPushNotifications"
       Layers:
         - !Ref dependencies
   # profilePictureUploaded:
