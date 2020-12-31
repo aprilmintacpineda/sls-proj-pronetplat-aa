@@ -186,6 +186,20 @@ Resources:
             Path: /change-profile-picture
             RestApiId:
               Ref: mainBackendApi
+  addToContact:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/addToContact.handler
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /add-to-contact/{contactId}
+            RestApiId:
+              Ref: mainBackendApi
   # profilePictureUploaded:
   #   Type: AWS::Serverless::Function
   #   Properties:

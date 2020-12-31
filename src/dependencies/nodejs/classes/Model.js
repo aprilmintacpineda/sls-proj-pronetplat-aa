@@ -26,7 +26,7 @@ function normalizeData (unnormalizedData) {
 module.exports = class Model {
   constructor ({ collection, censoredData = [] }) {
     this.collection = collection;
-    this.censoredData = censoredData;
+    this.censoredData = ['updatedAt'].concat(censoredData);
     this.wasHardDeleted = false;
   }
 
@@ -100,8 +100,7 @@ module.exports = class Model {
     // automatically considered anything that has "hashed"
     // in it's name as censored.
     return Object.keys(this.data).reduce((accumulator, key) => {
-      if (key !== 'updatedAt' && !this.censoredData.includes(key))
-        accumulator[key] = this.data[key];
+      if (!this.censoredData.includes(key)) accumulator[key] = this.data[key];
 
       return accumulator;
     }, {});
