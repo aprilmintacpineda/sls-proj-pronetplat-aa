@@ -99,7 +99,9 @@ module.exports = class Model {
   async countByIndex (index, ...values) {
     const client = initClient();
     const count = await client.query(
-      query.Count(query.Match(query.Index(index), ...values))
+      query.Count(
+        query.Select(['data'], query.Paginate(query.Match(query.Index(index), ...values)))
+      )
     );
 
     return count;

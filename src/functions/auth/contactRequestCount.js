@@ -10,6 +10,8 @@ module.exports.handler = async () => {
     console.log(error);
   }
 
+  console.log(count);
+
   return {
     statusCode: 200,
     body: count
