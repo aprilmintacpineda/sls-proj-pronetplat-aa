@@ -40,6 +40,10 @@ module.exports = class Model {
     });
   }
 
+  setRefById (id) {
+    this.ref = query.Ref(query.Collection(this.collection), id);
+  }
+
   async getById (id) {
     const client = initClient();
 

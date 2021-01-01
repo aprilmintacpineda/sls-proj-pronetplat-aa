@@ -18,9 +18,11 @@ function hasErrors ({ firstName, middleName, surname, gender, jobTitle, company 
 
 module.exports.handler = async ({ headers, body }) => {
   try {
-    const auth = await jwt.verify(parseAuth(headers));
+    const {
+      data: { id }
+    } = await jwt.verify(parseAuth(headers));
     const user = new User();
-    await user.getById(auth.data.id);
+    user.setRefById(id);
     const formBody = JSON.parse(body);
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
