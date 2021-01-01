@@ -13,13 +13,14 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
 
     const user = new User();
     const targetUser = new User();
+    const contact = new Contact();
+    const contactRequest = new ContactRequest();
+
+    // @TODO: validate that user has no pending request to target user
 
     await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
 
     if (!targetUser.data.completedFirstSetupAt) throw new Error('Target user not setup.');
-
-    const contact = new Contact();
-    const contactRequest = new ContactRequest();
 
     await Promise.all([
       contact.create({
@@ -33,9 +34,11 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
       })
     ]);
 
-    let fullName = user.data.firstName;
-    fullName += user.data.middleName ? ` ${user.data.middleName} ` : ' ';
-    fullName += user.data.surname;
+    const { profilePicture, firstName, middleName, surname } = user.data;
+
+    let fullName = firstName;
+    fullName += middleName ? ` ${middleName} ` : ' ';
+    fullName += surname;
 
     const pronoun = user.data.gender === 'male' ? 'his' : 'her';
 
@@ -43,7 +46,13 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
       userId: targetUser.data.id,
       title: 'Contact request',
       body: `${fullName} wants to add you to ${pronoun} contacts.`,
-      type: 'contact_request'
+      type: 'contact_request',
+      data: {
+        profilePicture,
+        firstName,
+        middleName,
+        surname
+      }
     });
 
     return { statusCode: 200 };
