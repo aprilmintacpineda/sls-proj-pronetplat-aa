@@ -16,6 +16,8 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
 
     await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
 
+    if (!targetUser.completedFirstSetupAt) throw new Error('Target user not setup.');
+
     const contact = new Contact();
     const networkRequest = new NetworkRequest();
 
@@ -35,11 +37,13 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     fullName += user.data.middleName ? ` ${user.data.middleName} ` : ' ';
     fullName += user.data.surname;
 
+    const pronoun = user.data.gender === 'male' ? 'his' : 'her';
+
     await sendPushNotification({
       userId: targetUser.data.id,
       notification: {
-        title: 'Connection request',
-        body: `${fullName} wants to network with you.`
+        title: 'Contact request',
+        body: `${fullName} wants to add you to ${pronoun} contacts.`
       },
       data: {
         type: 'network_request'

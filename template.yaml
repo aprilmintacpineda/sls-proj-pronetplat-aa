@@ -249,7 +249,7 @@ Resources:
   sendPushNotifications:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/sendPushNotifications.handler
+      Handler: src/functions/events/invoke/sendPushNotifications.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
