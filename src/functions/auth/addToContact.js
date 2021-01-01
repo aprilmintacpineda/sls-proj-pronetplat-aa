@@ -16,7 +16,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
 
     await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
 
-    if (!targetUser.completedFirstSetupAt) throw new Error('Target user not setup.');
+    if (!targetUser.data.completedFirstSetupAt) throw new Error('Target user not setup.');
 
     const contact = new Contact();
     const contactRequest = new ContactRequest();
@@ -41,13 +41,9 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
 
     await sendPushNotification({
       userId: targetUser.data.id,
-      notification: {
-        title: 'Contact request',
-        body: `${fullName} wants to add you to ${pronoun} contacts.`
-      },
-      data: {
-        type: 'contact_request'
-      }
+      title: 'Contact request',
+      body: `${fullName} wants to add you to ${pronoun} contacts.`,
+      type: 'contact_request'
     });
 
     return { statusCode: 200 };
