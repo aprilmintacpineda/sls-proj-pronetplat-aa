@@ -26,8 +26,8 @@ module.exports.isValidDeviceToken = async deviceToken => {
   return !notifResult.error;
 };
 
-module.exports.sendPushNotification = ({ tokens, title, body }) => {
-  return firebaseAdmin.messaging().sendToDevice(tokens, {
-    notification: { title, body }
-  });
+module.exports.sendPushNotification = ({ tokens, notification, data }) => {
+  return firebaseAdmin
+    .messaging()
+    .sendToDevice(tokens, { notification, data }, { priority: 'high' });
 };

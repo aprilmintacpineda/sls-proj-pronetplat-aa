@@ -2,8 +2,8 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
 const User = require('/opt/nodejs/models/User');
-// const NetworkRequest = require('/opt/nodejs/models/NetworkRequest');
-// const Contact = require('/opt/nodejs/models/Contact');
+const NetworkRequest = require('/opt/nodejs/models/NetworkRequest');
+const Contact = require('/opt/nodejs/models/Contact');
 
 module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
   try {
@@ -16,20 +16,20 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
 
     await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
 
-    // const contact = new Contact();
-    // const networkRequest = new NetworkRequest();
+    const contact = new Contact();
+    const networkRequest = new NetworkRequest();
 
-    // await Promise.all([
-    //   contact.create({
-    //     ownerId: user.data.id,
-    //     contactId: targetUser.data.id,
-    //     status: 'pending'
-    //   }),
-    //   networkRequest.create({
-    //     senderId: user.data.id,
-    //     recipientId: targetUser.data.id
-    //   })
-    // ]);
+    await Promise.all([
+      contact.create({
+        ownerId: user.data.id,
+        contactId: targetUser.data.id,
+        status: 'pending'
+      }),
+      networkRequest.create({
+        senderId: user.data.id,
+        recipientId: targetUser.data.id
+      })
+    ]);
 
     let fullName = user.data.firstName;
     fullName += user.data.middleName ? ` ${user.data.middleName} ` : ' ';
@@ -37,8 +37,13 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
 
     await sendPushNotification({
       userId: targetUser.data.id,
-      title: 'Connection request',
-      body: `${fullName} wants to network with you.`
+      notification: {
+        title: 'Connection request',
+        body: `${fullName} wants to network with you.`
+      },
+      data: {
+        type: 'network_request'
+      }
     });
 
     return { statusCode: 200 };

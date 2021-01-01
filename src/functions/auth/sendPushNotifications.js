@@ -2,7 +2,7 @@ const { query } = require('faunadb');
 const { sendPushNotification } = require('/opt/nodejs/utils/firebase');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
-module.exports.handler = async ({ userId, title, body }) => {
+module.exports.handler = async ({ userId, notification, data }) => {
   try {
     const client = initClient();
 
@@ -18,8 +18,8 @@ module.exports.handler = async ({ userId, title, body }) => {
 
     await sendPushNotification({
       tokens,
-      title,
-      body
+      notification,
+      data
     });
   } catch (error) {
     console.log(error);
