@@ -246,6 +246,24 @@ Resources:
             Path: /add-to-contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
+  contactRequestCount:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/contactRequestCount.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-contactRequestCount"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /contact-request-count
+            RestApiId:
+              Ref: mainBackendApi
   sendPushNotifications:
     Type: AWS::Serverless::Function
     Properties:
