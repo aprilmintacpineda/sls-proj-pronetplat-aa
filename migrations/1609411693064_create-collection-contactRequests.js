@@ -1,4 +1,4 @@
-const name = 'networkRequests';
+const name = 'contactRequests';
 
 module.exports.up = q => {
   return q.CreateCollection({ name });

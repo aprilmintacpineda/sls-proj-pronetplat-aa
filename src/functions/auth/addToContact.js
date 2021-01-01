@@ -2,7 +2,7 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
 const User = require('/opt/nodejs/models/User');
-const NetworkRequest = require('/opt/nodejs/models/NetworkRequest');
+const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 const Contact = require('/opt/nodejs/models/Contact');
 
 module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
@@ -19,7 +19,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     if (!targetUser.completedFirstSetupAt) throw new Error('Target user not setup.');
 
     const contact = new Contact();
-    const networkRequest = new NetworkRequest();
+    const contactRequest = new ContactRequest();
 
     await Promise.all([
       contact.create({
@@ -27,7 +27,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
         contactId: targetUser.data.id,
         status: 'pending'
       }),
-      networkRequest.create({
+      contactRequest.create({
         senderId: user.data.id,
         recipientId: targetUser.data.id
       })
@@ -46,7 +46,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
         body: `${fullName} wants to add you to ${pronoun} contacts.`
       },
       data: {
-        type: 'network_request'
+        type: 'contact_request'
       }
     });
 

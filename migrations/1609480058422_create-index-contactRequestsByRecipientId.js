@@ -1,9 +1,9 @@
-const name = 'networkRequestsByRecipientId';
+const name = 'contactRequestsByRecipientId';
 
 module.exports.up = q => {
   return q.CreateIndex({
     name,
-    source: q.Collection('networkRequests'),
+    source: q.Collection('contactRequests'),
     terms: [
       {
         field: ['data', 'recipientId']
