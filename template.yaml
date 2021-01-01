@@ -277,7 +277,7 @@ Resources:
   # profilePictureUploaded:
   #   Type: AWS::Serverless::Function
   #   Properties:
-  #     Handler: src/events/s3/profilePictureUploaded.handler
+  #     Handler: src/functions/events/s3/profilePictureUploaded.handler
   #     MemorySize: 2048
   #     Layers:
   #       - !Ref dependencies
