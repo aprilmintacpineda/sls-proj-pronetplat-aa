@@ -96,6 +96,15 @@ module.exports = class Model {
     this.wasHardDeleted = true;
   }
 
+  async countByIndex (index, ...values) {
+    const client = initClient();
+    const count = await client.query(
+      query.Count(query.Match(query.Index(index), ...values))
+    );
+
+    return count;
+  }
+
   toResponseData () {
     // automatically considered anything that has "hashed"
     // in it's name as censored.
