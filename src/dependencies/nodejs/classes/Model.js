@@ -133,7 +133,7 @@ module.exports = class Model {
     );
 
     return {
-      nextToken: after?.[0].id || null,
+      nextToken: after ? after[0].id : null,
       data
     };
   }
