@@ -1,7 +1,7 @@
 const Model = require('/opt/nodejs/classes/Model');
 
 module.exports = class ContactRequest extends Model {
-  static collection = 'contactRequests';
+  collection = 'contactRequests';
 
   countReceivedRequests (recipientId) {
     return this.countByIndex('contactRequestsByRecipient', recipientId);

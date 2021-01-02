@@ -43,8 +43,6 @@ module.exports = class Model {
   async getById (id) {
     const client = initClient();
 
-    console.log(this.collection);
-
     const newInstance = await client.query(
       query.Get(query.Ref(query.Collection(this.collection), id))
     );
