@@ -29,6 +29,8 @@ module.exports.sanitizeFormBody = data => {
 };
 
 function normalizeData (unnormalizedData) {
+  if (!unnormalizedData) return unnormalizedData;
+
   switch (unnormalizedData.constructor) {
     case Array:
       return unnormalizedData.map(field => normalizeData(field));
