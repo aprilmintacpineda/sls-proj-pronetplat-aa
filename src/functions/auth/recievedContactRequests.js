@@ -17,7 +17,7 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
     const options = { size: 20 };
 
     // important: Options must NOT include `after` if it's falsy
-    if (after) options.after = query.Ref(query.Collection(this.collection), after);
+    if (after) options.after = query.Ref(query.Collection('contactRequests'), after);
 
     const result = await client.query(
       query.Map(
