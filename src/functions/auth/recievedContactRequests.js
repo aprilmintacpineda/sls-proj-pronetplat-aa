@@ -43,6 +43,7 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
             query.Merge(query.Var('data'), {
               id: query.Select(['id'], query.Var('ref')),
               sender: {
+                id: query.Select(['senderId'], query.Var('data')),
                 firstName: query.Select(['firstName'], query.Var('sender')),
                 middleName: query.Select(['middleName'], query.Var('sender')),
                 surname: query.Select(['surname'], query.Var('sender')),
