@@ -112,9 +112,10 @@ module.exports = class Model {
     const options = { size: 20 };
 
     // important: Options must NOT include `after` if it's falsy
-    if (nextToken) options.after = nextToken;
+    if (nextToken)
+      options.after = query.Ref(query.Collection(this.collection), nextToken);
 
-    const { after = null, data = [] } = await client.query(
+    const { after, data = [] } = await client.query(
       query.Map(
         query.Paginate(query.Match(query.Index(index), ...values), options),
         query.Lambda(
@@ -132,7 +133,7 @@ module.exports = class Model {
     );
 
     return {
-      nextToken: after ? after[0].id : null,
+      nextToken: after?.[0].id || null,
       data
     };
   }
