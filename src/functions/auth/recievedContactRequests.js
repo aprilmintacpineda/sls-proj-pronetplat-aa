@@ -2,7 +2,10 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 
-module.exports.handler = async ({ pathParameters: { after }, headers }) => {
+module.exports.handler = async ({
+  queryStringParameters: { nextToken: after } = {},
+  headers
+}) => {
   let data = [];
   let nextToken = null;
 
