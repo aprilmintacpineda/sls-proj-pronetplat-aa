@@ -98,15 +98,14 @@ module.exports = class Model {
 
   async countByIndex (index, ...values) {
     const client = initClient();
-    const result = await client.query(
+    const {
+      after,
+      data: [data]
+    } = await client.query(
       query.Count(
         query.Paginate(query.Match(query.Index(index), ...values), { size: 99 })
       )
     );
-
-    console.log(result);
-
-    const { after, data } = result;
 
     return after ? '99+' : data;
   }

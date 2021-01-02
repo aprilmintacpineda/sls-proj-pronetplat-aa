@@ -16,13 +16,6 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     const contact = new Contact();
     const contactRequest = new ContactRequest();
 
-    console.log(
-      await contactRequest.hasPendingRequest({
-        from: contactId,
-        to: auth.data.id
-      })
-    );
-
     if (
       await contactRequest.hasPendingRequest({
         from: contactId,
