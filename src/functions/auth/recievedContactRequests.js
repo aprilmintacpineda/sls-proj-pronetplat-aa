@@ -47,7 +47,11 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
                 middleName: query.Select(['middleName'], query.Var('sender')),
                 surname: query.Select(['surname'], query.Var('sender')),
                 gender: query.Select(['gender'], query.Var('sender')),
-                profilePicture: query.Select(['profilePicture'], query.Var('sender'))
+                profilePicture: query.Select(
+                  ['profilePicture'],
+                  query.Var('sender'),
+                  null
+                )
               }
             })
           )
