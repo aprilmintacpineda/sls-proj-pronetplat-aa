@@ -109,13 +109,14 @@ module.exports = class Model {
 
   static async listByIndex (index, after, ...values) {
     const client = initClient();
+    const options = { size: 20 };
+
+    // important: Must include `after` if it's falsy
+    if (after) options.after = after;
 
     const { after: nextToken = null, data = [] } = await client.query(
       query.Map(
-        query.Paginate(query.Match(query.Index(index), ...values), {
-          size: 20,
-          after
-        }),
+        query.Paginate(query.Match(query.Index(index), ...values), options),
         query.Lambda(
           ['ref'],
           query.Let(
