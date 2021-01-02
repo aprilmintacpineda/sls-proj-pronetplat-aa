@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { parseAuth } = require('/opt/nodejs/utils/helpers');
+const { parseAuth, normalizeData } = require('/opt/nodejs/utils/helpers');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
 module.exports.handler = async ({ queryStringParameters, headers }) => {
@@ -60,7 +60,7 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
       )
     );
 
-    data = result.data || [];
+    data = normalizeData(result.data || []);
     nextToken = result.nextToken || null;
   } catch (error) {
     console.log('error', error);

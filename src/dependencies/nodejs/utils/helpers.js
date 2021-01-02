@@ -1,4 +1,7 @@
 const bcrypt = require('bcrypt');
+const {
+  values: { FaunaTime, FaunaDate }
+} = require('faunadb');
 
 module.exports.randomCode = () => Math.random().toString(32).substr(2);
 module.exports.hash = value => bcrypt.hash(value, 10);
@@ -24,3 +27,22 @@ module.exports.sanitizeFormBody = data => {
     return accumulator;
   }, {});
 };
+
+function normalizeData (unnormalizedData) {
+  switch (unnormalizedData.constructor) {
+    case Array:
+      return unnormalizedData.map(field => normalizeData(field));
+    case Object:
+      return Object.keys(unnormalizedData).reduce((accumulator, key) => {
+        accumulator[key] = normalizeData(unnormalizedData[key]);
+        return accumulator;
+      }, {});
+    case FaunaTime:
+    case FaunaDate:
+      return unnormalizedData.value;
+  }
+
+  return unnormalizedData;
+}
+
+module.exports.normalizeData = normalizeData;
