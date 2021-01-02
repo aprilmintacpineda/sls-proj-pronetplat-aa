@@ -11,7 +11,7 @@ module.exports = class ContactRequest extends Model {
     return this.countByIndex('contactRequestByUserFromTo', from, to);
   }
 
-  static listReceivedRequests ({ recipientId, after }) {
+  static listReceivedRequests (recipientId, after) {
     return this.listByIndex('contactRequestsByRecipient', after, recipientId);
   }
 };
