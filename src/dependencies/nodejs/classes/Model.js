@@ -107,14 +107,14 @@ module.exports = class Model {
     return after ? '99+' : data;
   }
 
-  static async listByIndex (index, after, ...values) {
+  static async listByIndex (index, nextToken, ...values) {
     const client = initClient();
     const options = { size: 20 };
 
-    // important: Must include `after` if it's falsy
-    if (after) options.after = after;
+    // important: Options must NOT include `after` if it's falsy
+    if (nextToken) options.after = nextToken;
 
-    const { after: nextToken = null, data = [] } = await client.query(
+    const { after = null, data = [] } = await client.query(
       query.Map(
         query.Paginate(query.Match(query.Index(index), ...values), options),
         query.Lambda(
@@ -131,7 +131,10 @@ module.exports = class Model {
       )
     );
 
-    return { nextToken, data };
+    return {
+      nextToken: after ? after[0].id : null,
+      data
+    };
   }
 
   toResponseData () {
