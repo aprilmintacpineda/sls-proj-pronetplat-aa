@@ -107,37 +107,6 @@ module.exports = class Model {
     return after ? '99+' : data;
   }
 
-  static async listByIndex (index, nextToken, ...values) {
-    const client = initClient();
-    const options = { size: 20 };
-
-    // important: Options must NOT include `after` if it's falsy
-    if (nextToken)
-      options.after = query.Ref(query.Collection(this.collection), nextToken);
-
-    const { after, data = [] } = await client.query(
-      query.Map(
-        query.Paginate(query.Match(query.Index(index), ...values), options),
-        query.Lambda(
-          ['ref'],
-          query.Let(
-            {
-              data: query.Select(['data'], query.Get(query.Var('ref')))
-            },
-            query.Merge(query.Var('data'), {
-              id: query.Select(['id'], query.Var('ref'))
-            })
-          )
-        )
-      )
-    );
-
-    return {
-      nextToken: after ? after[0].id : null,
-      data
-    };
-  }
-
   toResponseData () {
     const censoredData = (this.censoredData || []).concat(['updatedAt']);
 

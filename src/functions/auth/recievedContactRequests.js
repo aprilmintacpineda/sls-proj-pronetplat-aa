@@ -1,6 +1,8 @@
+const { query } = require('faunadb');
+
 const jwt = require('/opt/nodejs/utils/jwt');
 const { parseAuth } = require('/opt/nodejs/utils/helpers');
-const ContactRequest = require('/opt/nodejs/models/ContactRequest');
+const { initClient } = require('/opt/nodejs/utils/faunadb');
 
 module.exports.handler = async ({ queryStringParameters, headers }) => {
   const { nextToken: after = null } = queryStringParameters || {};
@@ -8,11 +10,48 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
   let nextToken = null;
 
   try {
-    const auth = await jwt.verify(parseAuth(headers));
-    const result = await ContactRequest.listReceivedRequests(auth.data.id, after);
+    const {
+      data: { id }
+    } = await jwt.verify(parseAuth(headers));
+    const client = initClient();
+    const options = { size: 20 };
 
-    data = result.data;
-    nextToken = result.nextToken;
+    // important: Options must NOT include `after` if it's falsy
+    if (after) options.after = query.Ref(query.Collection(this.collection), after);
+
+    const result = await client.query(
+      query.Map(
+        query.Paginate(
+          query.Match(query.Index('contactRequestsByRecipient'), id),
+          options
+        ),
+        query.Lambda(
+          ['ref'],
+          query.Let(
+            {
+              data: query.Select(['data'], query.Get(query.Var('ref'))),
+              sender: query.Select(
+                ['data'],
+                query.Get(query.Select(['senderId'], query.Var('data')))
+              )
+            },
+            query.Merge(query.Var('data'), {
+              id: query.Select(['id'], query.Var('ref')),
+              senderInfo: {
+                firstName: query.Select(['firstName'], query.Var('sender')),
+                middleName: query.Select(['middleName'], query.Var('sender')),
+                surname: query.Select(['surname'], query.Var('sender')),
+                gender: query.Select(['gender'], query.Var('sender')),
+                profilePicture: query.Select(['profilePicture'], query.Var('sender'))
+              }
+            })
+          )
+        )
+      )
+    );
+
+    data = result.data || [];
+    nextToken = result.nextToken || null;
   } catch (error) {
     console.log('error', error);
   }
