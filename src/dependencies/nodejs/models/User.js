@@ -15,12 +15,8 @@ const {
 } = require('/opt/nodejs/utils/sendEmail');
 
 module.exports = class User extends Model {
-  constructor () {
-    super({
-      collection: 'users',
-      censoredData: ['hashedEmailVerificationCode', 'hashedPassword']
-    });
-  }
+  static collection = 'users';
+  static censoredData = ['hashedEmailVerificationCode', 'hashedPassword'];
 
   getByEmail (email) {
     return this.getByIndex('userByEmail', email);

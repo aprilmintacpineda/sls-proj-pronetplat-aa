@@ -24,13 +24,9 @@ function normalizeData (unnormalizedData) {
 }
 
 module.exports = class Model {
-  constructor ({ collection, censoredData = [] }) {
-    this.collection = collection;
-    this.censoredData = ['updatedAt'].concat(censoredData);
-    this.wasHardDeleted = false;
-  }
+  wasHardDeleted = false;
 
-  resetInstance (newInstance) {
+  setInstance (newInstance) {
     this.instance = newInstance;
     this.ref = newInstance.ref;
 
@@ -51,7 +47,7 @@ module.exports = class Model {
       query.Get(query.Ref(query.Collection(this.collection), id))
     );
 
-    this.resetInstance(newInstance);
+    this.setInstance(newInstance);
   }
 
   async getByIndex (index, ...values) {
@@ -61,7 +57,7 @@ module.exports = class Model {
       query.Get(query.Match(query.Index(index), ...values))
     );
 
-    this.resetInstance(newInstance);
+    this.setInstance(newInstance);
   }
 
   async create (data) {
@@ -76,7 +72,7 @@ module.exports = class Model {
       })
     );
 
-    this.resetInstance(newInstance);
+    this.setInstance(newInstance);
   }
 
   async update (data) {
@@ -91,7 +87,7 @@ module.exports = class Model {
       })
     );
 
-    this.resetInstance(newInstance);
+    this.setInstance(newInstance);
   }
 
   async hardDelete () {
@@ -102,21 +98,46 @@ module.exports = class Model {
 
   async countByIndex (index, ...values) {
     const client = initClient();
-    const count = await client.query(
+    const { after, data } = await client.query(
       query.Count(
-        query.Select(['data'], query.Paginate(query.Match(query.Index(index), ...values)))
+        query.Paginate(query.Match(query.Index(index), ...values), { size: 99 })
       )
     );
 
-    return count;
+    return after ? '99+' : data;
+  }
+
+  static async listByIndex (index, after, ...values) {
+    const client = initClient();
+
+    const { after: nextToken = null, data = [] } = await client.query(
+      query.Map(
+        query.Paginate(query.Match(query.Index(index), ...values), {
+          size: 20,
+          after
+        }),
+        query.Lambda(
+          ['ref'],
+          query.Let(
+            {
+              data: query.Select(['data'], query.Get(query.Var('ref')))
+            },
+            query.Merge(query.Var('data'), {
+              id: query.Select(['id'], query.Var('ref'))
+            })
+          )
+        )
+      )
+    );
+
+    return { nextToken, data };
   }
 
   toResponseData () {
-    // automatically considered anything that has "hashed"
-    // in it's name as censored.
-    return Object.keys(this.data).reduce((accumulator, key) => {
-      if (!this.censoredData.includes(key)) accumulator[key] = this.data[key];
+    const censoredData = (this.censoredData || []).concat(['updatedAt']);
 
+    return Object.keys(this.data).reduce((accumulator, key) => {
+      if (!censoredData.includes(key)) accumulator[key] = this.data[key];
       return accumulator;
     }, {});
   }

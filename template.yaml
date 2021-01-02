@@ -264,6 +264,24 @@ Resources:
             Path: /contact-request-count
             RestApiId:
               Ref: mainBackendApi
+  recievedContactRequests:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/recievedContactRequests.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-recievedContactRequests"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /received-contact-requests
+            RestApiId:
+              Ref: mainBackendApi
   sendPushNotifications:
     Type: AWS::Serverless::Function
     Properties:
