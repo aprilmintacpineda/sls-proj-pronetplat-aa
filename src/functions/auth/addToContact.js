@@ -16,7 +16,17 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     const contact = new Contact();
     const contactRequest = new ContactRequest();
 
-    // @TODO: validate that user has no pending request to target user
+    if (
+      await contactRequest.hasPendingRequest({
+        from: contactId,
+        to: auth.data.id
+      }) ||
+      await contactRequest.hasPendingRequest({
+        from: auth.data.id,
+        to: contactId
+      })
+    )
+      return { statusCode: 422 };
 
     await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
 

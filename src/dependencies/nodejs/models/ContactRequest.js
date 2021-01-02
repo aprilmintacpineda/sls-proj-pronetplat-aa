@@ -8,4 +8,8 @@ module.exports = class ContactRequest extends Model {
   countReceivedRequests (recipientId) {
     return this.countByIndex('contactRequestsByRecipientId', recipientId);
   }
+
+  hasPendingRequest ({ from, to }) {
+    return this.countByIndex('contactRequestByUserFromTo', from, to);
+  }
 };
