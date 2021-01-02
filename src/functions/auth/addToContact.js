@@ -44,7 +44,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     //   })
     // ]);
 
-    const { profilePicture, firstName, middleName, surname } = user.data;
+    const { firstName, middleName, surname } = user.data;
 
     let fullName = firstName;
     fullName += middleName ? ` ${middleName} ` : ' ';
@@ -56,13 +56,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
       userId: targetUser.data.id,
       title: 'Contact request',
       body: `${fullName} wants to add you to ${pronoun} contacts.`,
-      type: 'contact_request',
-      data: {
-        profilePicture,
-        firstName,
-        middleName,
-        surname
-      }
+      type: 'contact_request'
     });
 
     return { statusCode: 200 };
