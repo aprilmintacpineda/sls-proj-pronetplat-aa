@@ -79,15 +79,14 @@ module.exports = class Model {
   async countByIndex (index, ...values) {
     const client = initClient();
     const {
-      after,
       data: [data]
     } = await client.query(
       query.Count(
-        query.Paginate(query.Match(query.Index(index), ...values), { size: 99 })
+        query.Paginate(query.Match(query.Index(index), ...values), { size: 9999 })
       )
     );
 
-    return after ? '99+' : data;
+    return parseInt(data);
   }
 
   toResponseData () {
