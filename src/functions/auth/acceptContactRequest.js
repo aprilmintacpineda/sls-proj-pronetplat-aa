@@ -67,6 +67,8 @@ module.exports.handler = async ({ headers, body }) => {
         jobTitle
       }
     });
+
+    return { statusCode: 200 };
   } catch (error) {
     console.log(error);
   }
