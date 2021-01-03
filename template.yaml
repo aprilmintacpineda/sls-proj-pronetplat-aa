@@ -370,7 +370,7 @@ Resources:
         - nodejs12.x
       ContentUri: src/dependencies
       LayerName: proj-pronetplat-aa
-      RetentionPolicy: Retain
+      RetentionPolicy: Delete
   ######
   # API
   #
