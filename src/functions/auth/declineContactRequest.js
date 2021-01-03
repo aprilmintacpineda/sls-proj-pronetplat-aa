@@ -1,4 +1,4 @@
-const { getAuthTokeFromHeaders } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const jwt = require('/opt/nodejs/utils/jwt');
 const validate = require('/opt/nodejs/utils/validate');
 const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
@@ -14,7 +14,7 @@ module.exports.handler = async ({ headers, body }) => {
   try {
     const {
       data: { id, firstName, middleName, surname, profilePicture }
-    } = await jwt.verify(getAuthTokeFromHeaders(headers));
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
 
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('invalid body');
