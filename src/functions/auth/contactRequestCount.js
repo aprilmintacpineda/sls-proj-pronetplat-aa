@@ -1,6 +1,6 @@
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 const jwt = require('/opt/nodejs/utils/jwt');
-const { parseAuth } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 
 module.exports.handler = async ({ headers }) => {
   let count = 0;
@@ -8,7 +8,7 @@ module.exports.handler = async ({ headers }) => {
   try {
     const {
       data: { id }
-    } = await jwt.verify(parseAuth(headers));
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const contactRequest = new ContactRequest();
     count = await contactRequest.countReceivedRequests(id);
   } catch (error) {

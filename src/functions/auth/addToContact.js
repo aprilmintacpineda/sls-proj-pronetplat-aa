@@ -1,12 +1,12 @@
 const jwt = require('/opt/nodejs/utils/jwt');
-const { parseAuth } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
 const User = require('/opt/nodejs/models/User');
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 
 module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
   try {
-    const auth = await jwt.verify(parseAuth(headers));
+    const auth = await jwt.verify(getAuthTokenFromHeaders(headers));
 
     if (contactId === auth.data.id) throw new Error('Cannot add self to contacts');
 
@@ -47,7 +47,7 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
       userId: targetUser.data.id,
       title: 'Contact request',
       body: `${fullName} wants to add you to ${pronoun} contacts.`,
-      type: 'contact_request',
+      type: 'contactRequest',
       data: {
         profilePicture,
         firstName,

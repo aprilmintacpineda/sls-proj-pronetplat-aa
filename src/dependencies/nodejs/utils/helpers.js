@@ -10,7 +10,7 @@ module.exports.randomNum = (min, max) => {
 module.exports.randomCode = () => Math.random().toString(32).substr(2);
 module.exports.hash = value => bcrypt.hash(value, 10);
 
-module.exports.parseAuth = ({ Authorization }) => {
+module.exports.getAuthTokenFromHeaders = ({ Authorization }) => {
   return Authorization.replace(/bearer/gim, '').trim();
 };
 

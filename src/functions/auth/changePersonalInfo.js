@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { parseAuth } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
@@ -21,7 +21,7 @@ module.exports.handler = async ({ headers, body }) => {
   try {
     const {
       data: { id }
-    } = await jwt.verify(parseAuth(headers));
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const user = new User();
     user.setRefById(id);
     const formBody = JSON.parse(body);

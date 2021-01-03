@@ -2,7 +2,7 @@ const aws = require('aws-sdk');
 const mimetypes = require('mime-types');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { parseAuth } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 
 const s3 = new aws.S3({
@@ -18,7 +18,7 @@ module.exports.handler = async ({ headers, body }) => {
   try {
     const {
       data: { id }
-    } = await jwt.verify(parseAuth(headers));
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const formBody = JSON.parse(body);
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');

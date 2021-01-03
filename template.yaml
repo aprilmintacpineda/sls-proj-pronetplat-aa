@@ -292,6 +292,30 @@ Resources:
             Path: /received-contact-requests
             RestApiId:
               Ref: mainBackendApi
+  acceptContactRequest:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/acceptContactRequest.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-acceptContactRequest"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendPushNotifications.Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /accept-contact-request
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
