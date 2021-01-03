@@ -22,6 +22,7 @@ module.exports.handler = async ({ body }) => {
     const user = new User();
     await user.getByEmail(formBody.email);
     await user.resetPassword(formBody);
+    await clock.waitTillEnd();
     return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
