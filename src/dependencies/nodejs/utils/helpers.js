@@ -3,6 +3,8 @@ const {
   values: { FaunaTime, FaunaDate }
 } = require('faunadb');
 
+module.exports.randomNum = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
 module.exports.randomCode = () => Math.random().toString(32).substr(2);
 module.exports.hash = value => bcrypt.hash(value, 10);
 
@@ -52,3 +54,5 @@ function normalizeData (unnormalizedData) {
 }
 
 module.exports.normalizeData = normalizeData;
+
+module.exports.wait = timeMs => new Promise(resolve => setTimeout(resolve, timeMs));

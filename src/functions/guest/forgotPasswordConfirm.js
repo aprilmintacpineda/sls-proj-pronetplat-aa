@@ -1,5 +1,4 @@
 const validate = require('/opt/nodejs/utils/validate');
-const HttpError = require('/opt/nodejs/classes/HttpError');
 const User = require('/opt/nodejs/models/User');
 
 function hasErrors ({ confirmationCode, email, newPassword }) {
@@ -18,12 +17,10 @@ module.exports.handler = async ({ body }) => {
     const user = new User();
     await user.getByEmail(formBody.email);
     await user.resetPassword(formBody);
+    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
-    if (error.constructor === HttpError) return error.toResponse();
   }
 
-  // to prevent enumeration attack
-  // we alway return 200
-  return { statusCode: 200 };
+  return { statusCode: 403 };
 };

@@ -76,7 +76,7 @@ module.exports = class User extends Model {
     // errors on this process
 
     if (hasTimePassed(this.data.passwordResetCodeExpiresAt))
-      throw new HttpError({ statusCode: 403 });
+      throw new Error('password reset code expired');
 
     if (!await verifyHash(confirmationCode, this.data.hashedResetPasswordCode)) {
       const newData = {
@@ -90,7 +90,7 @@ module.exports = class User extends Model {
       }
 
       await this.update(newData);
-      throw new HttpError({ statusCode: 403 });
+      throw new Error('incorrecrt code');
     }
 
     const hashedPassword = await hash(newPassword);
