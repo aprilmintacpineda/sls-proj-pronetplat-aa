@@ -1,6 +1,6 @@
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
-const { wait, randomNum } = require('/opt/nodejs/utils/helpers');
+const Clock = require('/opt/nodejs/classes/Clock');
 
 /**
  * to prevent this endpoint from being used to enumerate
@@ -9,14 +9,14 @@ const { wait, randomNum } = require('/opt/nodejs/utils/helpers');
  * derived from the average time it takes to process a
  * legitimate request.
  */
-const minTime = 2200;
+const minTimeSecs = 2.5;
 
 function hasErrors ({ email }) {
   return validate(email, ['required', 'email']);
 }
 
 module.exports.handler = async ({ body }) => {
-  const timeStarted = Date.now();
+  const clock = new Clock(minTimeSecs);
 
   try {
     const formBody = JSON.parse(body);
@@ -30,8 +30,7 @@ module.exports.handler = async ({ body }) => {
     console.log('error', error);
   }
 
-  const timeRemaining = Date.now() - timeStarted;
-  if (timeRemaining < minTime) await wait(timeRemaining + randomNum(0, 200));
+  await clock.waitTillEnd();
 
   // to prevent enumeration attack
   // we alway return 200
