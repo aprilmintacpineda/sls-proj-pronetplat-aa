@@ -5,14 +5,15 @@ const { parseAuth } = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
-function hasErrors ({ firstName, middleName, surname, gender, jobTitle, company }) {
+function hasErrors ({ firstName, middleName, surname, gender, jobTitle, company, bio }) {
   return (
     validate(firstName, ['required', 'maxLength:255']) ||
     validate(middleName, ['maxLength:255']) ||
     validate(surname, ['required', 'maxLength:255']) ||
     validate(gender, ['required', 'options:male,female']) ||
     validate(jobTitle, ['required', 'maxLength:255']) ||
-    validate(company, ['maxLength:255'])
+    validate(company, ['maxLength:255']) ||
+    validate(bio, ['maxLength:255'])
   );
 }
 
@@ -27,7 +28,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const { firstName, middleName, surname, gender, jobTitle, company } = formBody;
+    const { firstName, middleName, surname, gender, jobTitle, company, bio } = formBody;
 
     await user.update({
       firstName,
@@ -36,6 +37,7 @@ module.exports.handler = async ({ headers, body }) => {
       gender,
       jobTitle,
       company: company || '',
+      bio: bio || '',
       completedFirstSetupAt: query.Now()
     });
 
