@@ -1,5 +1,8 @@
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
+const Clock = require('/opt/nodejs/classes/Clock');
+
+const minTimeSecs = 2.4;
 
 function hasErrors ({ confirmationCode, email, newPassword }) {
   return (
@@ -10,6 +13,8 @@ function hasErrors ({ confirmationCode, email, newPassword }) {
 }
 
 module.exports.handler = async ({ body }) => {
+  const clock = new Clock(minTimeSecs);
+
   try {
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) return { statusCode: 200 };
@@ -21,6 +26,8 @@ module.exports.handler = async ({ body }) => {
   } catch (error) {
     console.log('error', error);
   }
+
+  await clock.waitTillEnd();
 
   return { statusCode: 403 };
 };
