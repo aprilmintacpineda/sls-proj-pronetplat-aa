@@ -15,7 +15,7 @@ module.exports.handler = async ({ headers, body }) => {
   try {
     const {
       data: { id, firstName, middleName, surname, profilePicture, bio, company, jobTitle }
-    } = await jwt.parse(getAuthTokenFromHeaders(headers));
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
 
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('invalid form body');
