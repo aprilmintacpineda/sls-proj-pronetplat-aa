@@ -1,36 +1,15 @@
-const aws = require('aws-sdk');
-const sesv2 = new aws.SESV2({
-  apiVersion: '2019-09-27'
-});
+const AWS = require('aws-sdk');
 
+const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 const baseUrl = 'https://luh5c5ormk.execute-api.ap-southeast-1.amazonaws.com/dev/';
 
-function sendEmail ({ recipient, content, subject, emailType }) {
+function sendEmail (payload) {
   return new Promise(resolve => {
-    sesv2.sendEmail(
+    lambda.invoke(
       {
-        Content: {
-          Simple: {
-            Body: {
-              Html: {
-                Data: content
-              }
-            },
-            Subject: {
-              Data: subject
-            }
-          }
-        },
-        Destination: {
-          ToAddresses: [recipient]
-        },
-        EmailTags: [
-          {
-            Name: 'Email-Type',
-            Value: emailType
-          }
-        ],
-        FromEmailAddress: 'aprilmintacpineda@gmail.com'
+        FunctionName: process.env.SEND_EMAIL_FN,
+        InvocationType: 'Event',
+        Payload: JSON.stringify(payload)
       },
       error => {
         if (error) console.log(error);

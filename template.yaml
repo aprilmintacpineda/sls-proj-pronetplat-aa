@@ -25,10 +25,17 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-sendPushNotifications"
+        SEND_EMAIL_FN: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-sendEmail"
   Api:
     OpenApiVersion: 3.0.1
 
 Resources:
+  ######
+  # Guest routes
+  #
   register:
     Type: AWS::Serverless::Function
     Properties:
@@ -42,9 +49,9 @@ Resources:
       Policies:
         - Statement:
           - Action:
-              - ses:SendEmail
+              - lambda:InvokeFunction
             Effect: Allow
-            Resource: "*"
+            Resource: !GetAtt sendEmail.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -65,10 +72,10 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            - Action:
-                - ses:SendEmail
-              Effect: Allow
-              Resource: "*"
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendEmail.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -89,10 +96,10 @@ Resources:
         - !Ref dependencies
       Policies:
         - Statement:
-            - Action:
-                - ses:SendEmail
-              Effect: Allow
-              Resource: "*"
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendEmail.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -119,6 +126,9 @@ Resources:
             Path: /login
             RestApiId:
               Ref: mainBackendApi
+  ######
+  # Auth routes
+  #
   verifyEmail:
     Type: AWS::Serverless::Function
     Properties:
@@ -132,9 +142,9 @@ Resources:
       Policies:
         - Statement:
           - Action:
-              - ses:SendEmail
+              - lambda:InvokeFunction
             Effect: Allow
-            Resource: "*"
+            Resource: !GetAtt sendEmail.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -156,9 +166,9 @@ Resources:
       Policies:
         - Statement:
           - Action:
-              - ses:SendEmail
+              - lambda:InvokeFunction
             Effect: Allow
-            Resource: "*"
+            Resource: !GetAtt sendEmail.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -282,6 +292,9 @@ Resources:
             Path: /received-contact-requests
             RestApiId:
               Ref: mainBackendApi
+  ######
+  # Invokable functions
+  #
   sendPushNotifications:
     Type: AWS::Serverless::Function
     Properties:
@@ -292,6 +305,25 @@ Resources:
           - "proj-pronetplat-aa-sendPushNotifications"
       Layers:
         - !Ref dependencies
+  sendEmail:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/events/invoke/sendEmail.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-sendEmail"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - ses:SendEmail
+            Effect: Allow
+            Resource: "*"
+  ######
+  # S3 Events
+  #
   # profilePictureUploaded:
   #   Type: AWS::Serverless::Function
   #   Properties:
@@ -328,6 +360,9 @@ Resources:
   #               Rules:
   #                 - Name: prefix
   #                   Value: newProfilePicture_
+  ######
+  # Lambda layers
+  #
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -336,10 +371,16 @@ Resources:
       ContentUri: src/dependencies
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Retain
+  ######
+  # API
+  #
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+  ######
+  # S3 buckets
+  #
   usersS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
