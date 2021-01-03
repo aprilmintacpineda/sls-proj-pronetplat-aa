@@ -1,7 +1,7 @@
 const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const jwt = require('/opt/nodejs/utils/jwt');
 const validate = require('/opt/nodejs/utils/validate');
-const { sendPushNotifications } = require('/opt/nodejs/utils/notifications');
+const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
 
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 const Contact = require('/opt/nodejs/models/Contact');
@@ -51,7 +51,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     const fullName = firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
 
-    await sendPushNotifications({
+    await sendPushNotification({
       userId: senderId,
       title: 'Contact request accepted',
       body: `${fullName} has accepted your contact request.`,
