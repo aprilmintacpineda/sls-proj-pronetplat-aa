@@ -256,14 +256,14 @@ Resources:
             Path: /add-to-contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
-  contactRequestCount:
+  badgeCount:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/contactRequestCount.handler
+      Handler: src/functions/auth/badgeCount.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-contactRequestCount"
+          - "proj-pronetplat-aa-badgeCount"
       Layers:
         - !Ref dependencies
       Events:
@@ -271,7 +271,7 @@ Resources:
           Type: Api
           Properties:
             Method: get
-            Path: /contact-request-count
+            Path: /badge-count
             RestApiId:
               Ref: mainBackendApi
   recievedContactRequests:
