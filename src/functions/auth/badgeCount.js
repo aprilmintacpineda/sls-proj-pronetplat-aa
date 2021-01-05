@@ -4,8 +4,8 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 
 const counts = {
-  receivedContactRequest: 'contactRequestsByRecipient',
-  notifications: 'notificationsByUserId'
+  receivedContactRequestCount: 'contactRequestsByRecipient',
+  notificationsCount: 'notificationsByUserId'
 };
 
 module.exports.handler = async ({ headers }) => {
