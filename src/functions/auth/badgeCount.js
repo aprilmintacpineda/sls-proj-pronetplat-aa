@@ -3,16 +3,10 @@ const { initClient } = require('/opt/nodejs/utils/faunadb');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 
-const counts = [
-  {
-    name: 'receivedContactRequest',
-    index: 'contactRequestsByRecipient'
-  },
-  {
-    name: 'notifications',
-    index: 'notificationsByUserId'
-  }
-];
+const counts = {
+  receivedContactRequest: 'contactRequestsByRecipient',
+  notifications: 'notificationsByUserId'
+};
 
 module.exports.handler = async ({ headers }) => {
   let count = 0;
@@ -25,8 +19,10 @@ module.exports.handler = async ({ headers }) => {
     const client = initClient();
 
     count = await client.query(
-      counts.reduce((accumulator, { name, index }) => {
-        accumulator[name] = query.Count(
+      Object.keys(counts).reduce((accumulator, key) => {
+        const index = counts[key];
+
+        accumulator[key] = query.Count(
           query.Select(
             ['data'],
             query.Paginate(query.Match(query.Index(index), id), { size: 1000 })
