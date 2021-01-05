@@ -9,8 +9,8 @@ const counts = [
     index: 'contactRequestsByRecipient'
   },
   {
-    name: 'receivedContactRequest',
-    index: 'contactRequestsByRecipient'
+    name: 'notifications',
+    index: 'notificationsByUserId'
   }
 ];
 

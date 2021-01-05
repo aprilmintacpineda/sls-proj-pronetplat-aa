@@ -31,7 +31,7 @@ module.exports.handler = async ({ headers, body }) => {
       notification.create({
         userId: senderId,
         type: 'contactRequestDeclined',
-        message: '{fullname} has declined your contact request.',
+        body: '{fullname} has declined your contact request.',
         actorId: id
       })
     ]);

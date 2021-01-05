@@ -45,7 +45,7 @@ module.exports.handler = async ({ headers, body }) => {
       await notification.create({
         userId: senderId,
         type: 'contactRequestAccepted',
-        message: '{fullname} has accepted your contact request.',
+        body: '{fullname} has accepted your contact request.',
         actorId: id
       })
     ]);
