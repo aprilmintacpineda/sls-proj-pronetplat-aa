@@ -15,7 +15,7 @@ const counts = [
 ];
 
 module.exports.handler = async ({ headers }) => {
-  const count = 0;
+  let count = 0;
 
   try {
     const {
@@ -24,7 +24,7 @@ module.exports.handler = async ({ headers }) => {
 
     const client = initClient();
 
-    const result = await client.query(
+    count = await client.query(
       counts.reduce((accumulator, { name, index }) => {
         accumulator[name] = query.Count(
           query.Select(
@@ -36,8 +36,6 @@ module.exports.handler = async ({ headers }) => {
         return accumulator;
       }, {})
     );
-
-    console.log(result);
   } catch (error) {
     console.log(error);
   }
