@@ -38,6 +38,6 @@ module.exports.handler = async ({ headers }) => {
 
   return {
     statusCode: 200,
-    body: count
+    body: JSON.stringify(count)
   };
 };
