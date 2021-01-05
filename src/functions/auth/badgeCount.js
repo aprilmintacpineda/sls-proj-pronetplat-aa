@@ -26,9 +26,11 @@ module.exports.handler = async ({ headers }) => {
 
     const result = await client.query(
       counts.reduce((accumulator, { name, index }) => {
-        accumulator[name] = query.Select(
-          ['data', '0'],
-          query.Count(query.Paginate(query.Match(query.Index(index), id)))
+        accumulator[name] = query.Count(
+          query.Select(
+            ['data'],
+            query.Paginate(query.Match(query.Index(index), id), { size: 1000 })
+          )
         );
 
         return accumulator;
