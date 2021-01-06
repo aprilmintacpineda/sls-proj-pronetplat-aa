@@ -274,14 +274,14 @@ Resources:
             Path: /badge-count
             RestApiId:
               Ref: mainBackendApi
-  recievedContactRequests:
+  receivedContactRequests:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/recievedContactRequests.handler
+      Handler: src/functions/auth/receivedContactRequests.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-recievedContactRequests"
+          - "proj-pronetplat-aa-receivedContactRequests"
       Layers:
         - !Ref dependencies
       Events:
@@ -290,6 +290,24 @@ Resources:
           Properties:
             Method: get
             Path: /received-contact-requests
+            RestApiId:
+              Ref: mainBackendApi
+  notifications:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/notifications.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-notifications"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /notifications
             RestApiId:
               Ref: mainBackendApi
   acceptContactRequest:
