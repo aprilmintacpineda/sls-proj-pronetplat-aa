@@ -5,10 +5,6 @@ const { getAuthTokenFromHeaders, normalizeData } = require('/opt/nodejs/utils/he
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
 module.exports.handler = async ({ queryStringParameters, headers }) => {
-  const { nextToken: after = null } = queryStringParameters || {};
-  let data = [];
-  let nextToken = null;
-
   try {
     const {
       data: { id }
@@ -17,6 +13,7 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
     const options = { size: 20 };
 
     // important: Options must NOT include `after` if it's falsy
+    const { nextToken: after = null } = queryStringParameters || {};
     if (after) options.after = query.Ref(query.Collection('contactRequests'), after);
 
     const result = await client.query(
@@ -30,20 +27,16 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
           query.Let(
             {
               data: query.Select(['data'], query.Get(query.Var('ref'))),
+              senderId: query.Select(['senderId'], query.Var('data')),
               sender: query.Select(
                 ['data'],
-                query.Get(
-                  query.Ref(
-                    query.Collection('users'),
-                    query.Select(['senderId'], query.Var('data'))
-                  )
-                )
+                query.Get(query.Ref(query.Collection('users'), query.Var('senderId')))
               )
             },
             query.Merge(query.Var('data'), {
               id: query.Select(['id'], query.Var('ref')),
               sender: {
-                id: query.Select(['senderId'], query.Var('data')),
+                id: query.Var('senderId'),
                 firstName: query.Select(['firstName'], query.Var('sender')),
                 middleName: query.Select(['middleName'], query.Var('sender')),
                 surname: query.Select(['surname'], query.Var('sender')),
@@ -63,17 +56,16 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
       )
     );
 
-    data = normalizeData(result.data || []);
-    nextToken = result.nextToken || null;
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        data: normalizeData(result.data || []),
+        nextToken: result.after ? result.after[0].id : null
+      })
+    };
   } catch (error) {
     console.log('error', error);
   }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      data,
-      nextToken
-    })
-  };
+  return { statusCode: 403 };
 };
