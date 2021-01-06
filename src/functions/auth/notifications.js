@@ -25,7 +25,10 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
             {
               data: query.Select(['data'], query.Get(query.Var('ref'))),
               actorId: query.Select(['actorId'], query.Var('data')),
-              actor: query.Get(query.Ref(query.Collection('users'), query.Var('actorId')))
+              actor: query.Select(
+                ['data'],
+                query.Get(query.Ref(query.Collection('users'), query.Var('actorId')))
+              )
             },
             query.Merge(query.Var('data'), {
               actor: {
