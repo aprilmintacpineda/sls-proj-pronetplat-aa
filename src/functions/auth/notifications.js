@@ -44,8 +44,6 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
       )
     );
 
-    console.log(result);
-
     return {
       statusCode: 200,
       body: JSON.stringify({
