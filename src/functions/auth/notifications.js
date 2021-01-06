@@ -10,7 +10,7 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
       data: { id }
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const client = initClient();
-    const options = { size: 2 };
+    const options = { size: 20 };
 
     // important: Options must NOT include `after` if it's falsy
     const { nextToken: after } = queryStringParameters || {};
