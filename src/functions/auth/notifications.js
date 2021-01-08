@@ -36,7 +36,14 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
                 firstName: query.Select(['firstName'], query.Var('actor')),
                 middleName: query.Select(['middleName'], query.Var('actor')),
                 surname: query.Select(['surname'], query.Var('actor')),
-                profilePicture: query.Select(['profilePicture'], query.Var('actor'), null)
+                profilePicture: query.Select(
+                  ['profilePicture'],
+                  query.Var('actor'),
+                  null
+                ),
+                company: query.Select(['company'], query.Var('actor'), null),
+                bio: query.Select(['bio'], query.Var('actor'), null),
+                jobTitle: query.Select(['jobTitle'], query.Var('actor'), null)
               }
             })
           )
