@@ -20,7 +20,7 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
       query.Map(
         query.Paginate(query.Match(query.Index('notificationsByUserId'), id), options),
         query.Lambda(
-          ['ref'],
+          ['createdAt', 'ref'],
           query.Let(
             {
               data: query.Select(['data'], query.Get(query.Var('ref'))),
