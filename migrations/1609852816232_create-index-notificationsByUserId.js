@@ -4,7 +4,8 @@ module.exports.up = q => {
   return q.CreateIndex({
     name,
     source: q.Collection('notifications'),
-    terms: [{ field: ['data', 'userId'] }]
+    terms: [{ field: ['data', 'userId'] }],
+    values: [{ field: ['data', 'createdAt'], reverse: true }, { field: ['ref'] }]
   });
 };
 
