@@ -4,8 +4,13 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 
 const counts = {
-  receivedContactRequestCount: 'contactRequestsByRecipient',
-  notificationsCount: 'notificationsByUserId'
+  receivedContactRequestCount: {
+    index: 'contactRequestsByRecipient'
+  },
+  notificationsCount: {
+    index: 'notificationsByUserId',
+    vars: [1]
+  }
 };
 
 module.exports.handler = async ({ headers }) => {
@@ -20,12 +25,12 @@ module.exports.handler = async ({ headers }) => {
 
     count = await client.query(
       Object.keys(counts).reduce((accumulator, key) => {
-        const index = counts[key];
+        const { index, vars } = counts[key];
 
         accumulator[key] = query.Count(
           query.Select(
             ['data'],
-            query.Paginate(query.Match(query.Index(index), id), { size: 1000 })
+            query.Paginate(query.Match(query.Index(index), id, ...vars), { size: 1000 })
           )
         );
 
