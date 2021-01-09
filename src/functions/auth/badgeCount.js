@@ -3,19 +3,17 @@ const { initClient } = require('/opt/nodejs/utils/faunadb');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 
-const counts = {
+const badgeIndexes = {
   receivedContactRequestCount: {
     index: 'contactRequestsByRecipient'
   },
   notificationsCount: {
     index: 'notificationsByUserId',
-    vars: [1]
+    params: [1]
   }
 };
 
 module.exports.handler = async ({ headers }) => {
-  let count = 0;
-
   try {
     const {
       data: { id }
@@ -23,26 +21,28 @@ module.exports.handler = async ({ headers }) => {
 
     const client = initClient();
 
-    count = await client.query(
-      Object.keys(counts).reduce((accumulator, key) => {
-        const { index, vars } = counts[key];
+    const badges = await client.query(
+      Object.keys(badgeIndexes).reduce((accumulator, key) => {
+        const { index, params = [] } = badgeIndexes[key];
 
         accumulator[key] = query.Count(
           query.Select(
             ['data'],
-            query.Paginate(query.Match(query.Index(index), id, ...vars), { size: 1000 })
+            query.Paginate(query.Match(query.Index(index), id, ...params), { size: 1000 })
           )
         );
 
         return accumulator;
       }, {})
     );
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(badges)
+    };
   } catch (error) {
     console.log(error);
   }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(count)
-  };
+  return { statusCode: 403 };
 };
