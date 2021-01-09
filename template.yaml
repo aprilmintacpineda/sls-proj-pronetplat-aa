@@ -368,12 +368,6 @@ Resources:
           - "proj-pronetplat-aa-contactDetails"
       Layers:
         - !Ref dependencies
-      Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendPushNotifications.Arn
       Events:
         ApiEvent:
           Type: Api

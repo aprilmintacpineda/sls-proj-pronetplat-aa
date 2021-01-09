@@ -12,7 +12,8 @@ module.exports = class Contact extends Model {
       console.log(contact);
 
       isInContact = true;
-    } catch (_1) {
+    } catch (error) {
+      console.log(error);
       // do nothing
     }
 
