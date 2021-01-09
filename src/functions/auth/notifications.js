@@ -29,7 +29,11 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
                 ['data'],
                 query.Get(query.Ref(query.Collection('users'), query.Var('actorId')))
               ),
-              markedAsSeen: query.Update(query.Var('ref'), { seenAt: query.Now() })
+              markedAsSeen: query.Update(query.Var('ref'), {
+                data: {
+                  seenAt: query.Now()
+                }
+              })
             },
             query.Merge(query.Var('data'), {
               actor: {
