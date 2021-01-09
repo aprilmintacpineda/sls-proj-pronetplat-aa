@@ -8,7 +8,7 @@ const badgeIndexes = {
     index: 'contactRequestsByRecipient'
   },
   notificationsCount: {
-    index: 'notificationsByUserId',
+    index: 'notificationsByUserIdIsNew',
     params: [1]
   }
 };
