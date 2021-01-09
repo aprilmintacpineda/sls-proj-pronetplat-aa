@@ -372,7 +372,7 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Method: post
+            Method: get
             Path: /contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
