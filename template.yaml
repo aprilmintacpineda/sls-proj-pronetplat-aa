@@ -358,6 +358,30 @@ Resources:
             Path: /decline-contact-request
             RestApiId:
               Ref: mainBackendApi
+  contactDetails:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/contactDetails.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-contactDetails"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendPushNotifications.Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /contacts/{contactId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
