@@ -24,14 +24,7 @@ module.exports.handler = async ({ headers }) => {
     const badges = await client.query(
       Object.keys(badgeIndexes).reduce((accumulator, key) => {
         const { index, params = [] } = badgeIndexes[key];
-
-        accumulator[key] = query.Count(
-          query.Select(
-            ['data'],
-            query.Paginate(query.Match(query.Index(index), id, ...params), { size: 1000 })
-          )
-        );
-
+        accumulator[key] = query.Count(query.Match(query.Index(index), id, ...params));
         return accumulator;
       }, {})
     );
