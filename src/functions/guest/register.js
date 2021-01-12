@@ -9,7 +9,7 @@ const Clock = require('/opt/nodejs/classes/Clock');
  * derived from the average time it takes to process a
  * legitimate request.
  */
-const minTimeSecs = 2.5;
+const minTimeMs = 2500;
 
 function hasErrors ({ email, password }) {
   return (
@@ -18,7 +18,7 @@ function hasErrors ({ email, password }) {
 }
 
 module.exports.handler = async ({ body }) => {
-  const clock = new Clock(minTimeSecs);
+  const clock = new Clock(minTimeMs);
 
   try {
     const formBody = JSON.parse(body);

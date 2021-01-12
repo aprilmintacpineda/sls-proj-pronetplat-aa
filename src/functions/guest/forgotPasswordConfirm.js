@@ -2,7 +2,7 @@ const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 const Clock = require('/opt/nodejs/classes/Clock');
 
-const minTimeSecs = 2.4;
+const minTimeMs = 2400;
 
 function hasErrors ({ confirmationCode, email, newPassword }) {
   return (
@@ -13,7 +13,7 @@ function hasErrors ({ confirmationCode, email, newPassword }) {
 }
 
 module.exports.handler = async ({ body }) => {
-  const clock = new Clock(minTimeSecs);
+  const clock = new Clock(minTimeMs);
 
   try {
     const formBody = JSON.parse(body);
