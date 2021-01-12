@@ -38,7 +38,6 @@ module.exports.handler = async ({ body }) => {
       args: [email],
       data: {
         email,
-        password,
         hashedEmailVerificationCode,
         hashedPassword,
         emailCodeCanSendAt: offsetTime,
