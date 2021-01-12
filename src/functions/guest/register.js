@@ -6,7 +6,7 @@ const validate = require('/opt/nodejs/utils/validate');
 const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
 const { sendEmailWelcomeMessage } = require('/opt/nodejs/utils/sendEmail');
 
-const minTimeMs = 3100;
+const minTimeMs = 2300;
 
 function hasErrors ({ email, password }) {
   return (
@@ -33,7 +33,7 @@ module.exports.handler = async ({ body }) => {
 
     const offsetTime = getTimeOffset();
 
-    const doesExist = await user.createIfNotExists({
+    const wasCreated = await user.createIfNotExists({
       index: 'userByEmail',
       args: [email],
       data: {
@@ -46,7 +46,7 @@ module.exports.handler = async ({ body }) => {
       }
     });
 
-    if (!doesExist) {
+    if (wasCreated) {
       await sendEmailWelcomeMessage({
         recipient: user.data.email,
         emailVerificationCode

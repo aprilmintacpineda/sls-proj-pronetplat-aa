@@ -108,11 +108,11 @@ module.exports = class Model {
         query.If(
           query.Var('doesExist'),
           {
-            doesExist: query.Var('doesExist'),
+            wasCreated: false,
             newInstance: query.Get(match)
           },
           {
-            doesExist: query.Var('doesExist'),
+            wasCreated: true,
             newInstance: query.Create(query.Collection(this.collection), {
               data: {
                 ...sanitizeFormBody(data),
@@ -124,10 +124,9 @@ module.exports = class Model {
       )
     );
 
-    const { doesExist, newInstance } = response;
-
+    const { wasCreated, newInstance } = response;
     this.setInstance(newInstance);
-    return doesExist;
+    return wasCreated;
   }
 
   async hardDelete () {
