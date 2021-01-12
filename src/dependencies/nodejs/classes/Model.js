@@ -107,29 +107,27 @@ module.exports = class Model {
         },
         query.If(
           query.Var('doesExist'),
-          query.Get(match),
-          query.Merge(
-            {},
-            {
-              doesExist: query.Var('doesExist'),
-              newInstance: query.Create(query.Collection(this.collection), {
-                data: {
-                  ...sanitizeFormBody(data),
-                  createdAt: query.Now()
-                }
-              })
-            }
-          )
+          {
+            doesExist: query.Var('doesExist'),
+            newInstance: query.Get(match)
+          },
+          {
+            doesExist: query.Var('doesExist'),
+            newInstance: query.Create(query.Collection(this.collection), {
+              data: {
+                ...sanitizeFormBody(data),
+                createdAt: query.Now()
+              }
+            })
+          }
         )
       )
     );
 
-    console.log(response);
+    const { doesExist, newInstance } = response;
 
-    return false;
-
-    // this.setInstance(newInstance);
-    // return doesExist;
+    this.setInstance(newInstance);
+    return doesExist;
   }
 
   async hardDelete () {
