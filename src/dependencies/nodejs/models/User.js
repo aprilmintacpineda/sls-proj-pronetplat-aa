@@ -22,7 +22,7 @@ module.exports = class User extends Model {
     return this.getByIndex('userByEmail', email);
   }
 
-  async create ({ password, ...data }) {
+  async createIfNotExists ({ password, ...data }) {
     const emailVerificationCode = randomCode();
 
     const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
@@ -32,7 +32,7 @@ module.exports = class User extends Model {
 
     const offsetTime = getTimeOffset();
 
-    await super.create({
+    await super.createIfNotExists({
       ...data,
       hashedEmailVerificationCode,
       hashedPassword,
