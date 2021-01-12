@@ -100,20 +100,27 @@ module.exports = class Model {
     const client = initClient();
     const match = query.Match(query.Index(index), ...args);
 
-    const newInstance = await client.query(
-      query.If(
-        query.Exists(match),
-        query.Get(match),
-        query.Create(query.Collection(this.collection), {
-          data: {
-            ...sanitizeFormBody(data),
-            createdAt: query.Now()
-          }
+    const { doesExist, newInstance } = await client.query(
+      query.Let(
+        {
+          doesExist: query.Exists(match)
+        },
+        query.If(query.Var('doesExist'), query.Get(match), {
+          doesExist: query.Var('doesExist'),
+          newInstance: query.Create(query.Collection(this.collection), {
+            data: {
+              ...sanitizeFormBody(data),
+              createdAt: query.Now()
+            }
+          })
         })
       )
     );
 
+    console.log(doesExist, newInstance);
+
     this.setInstance(newInstance);
+    return doesExist;
   }
 
   async hardDelete () {

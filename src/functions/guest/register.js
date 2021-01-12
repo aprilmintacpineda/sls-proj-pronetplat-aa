@@ -33,7 +33,7 @@ module.exports.handler = async ({ body }) => {
 
     const offsetTime = getTimeOffset();
 
-    await user.createIfNotExists({
+    const doesExist = await user.createIfNotExists({
       index: 'userByEmail',
       args: [email],
       data: {
@@ -46,10 +46,12 @@ module.exports.handler = async ({ body }) => {
       }
     });
 
-    await sendEmailWelcomeMessage({
-      recipient: user.data.email,
-      emailVerificationCode
-    });
+    if (!doesExist) {
+      await sendEmailWelcomeMessage({
+        recipient: user.data.email,
+        emailVerificationCode
+      });
+    }
   } catch (error) {
     console.log('error', error);
   }
