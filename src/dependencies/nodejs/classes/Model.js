@@ -108,15 +108,18 @@ module.exports = class Model {
         query.If(
           query.Var('doesExist'),
           query.Get(match),
-          query.Object({
-            doesExist: query.Var('doesExist'),
-            newInstance: query.Create(query.Collection(this.collection), {
-              data: {
-                ...sanitizeFormBody(data),
-                createdAt: query.Now()
-              }
-            })
-          })
+          query.Merge(
+            {},
+            {
+              doesExist: query.Var('doesExist'),
+              newInstance: query.Create(query.Collection(this.collection), {
+                data: {
+                  ...sanitizeFormBody(data),
+                  createdAt: query.Now()
+                }
+              })
+            }
+          )
         )
       )
     );
