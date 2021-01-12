@@ -1,6 +1,6 @@
 const User = require('/opt/nodejs/models/User');
 const validate = require('/opt/nodejs/utils/validate');
-const Clock = require('/opt/nodejs/utils/Clock');
+const Clock = require('/opt/nodejs/classes/Clock');
 
 /**
  * to prevent this endpoint from being used to enumerate
