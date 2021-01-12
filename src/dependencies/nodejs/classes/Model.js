@@ -96,6 +96,36 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
+  async createOrUpdate ({ index, args, data }) {
+    const client = initClient();
+    const match = query.Match(query.Index(index), ...args);
+
+    const newInstance = await client.query(
+      query.If(
+        query.Exists(match),
+        query.Let(
+          {
+            existingDocument: query.Get(match)
+          },
+          query.Update(query.Select(['ref'], query.Var('existingDocument')), {
+            data: {
+              ...sanitizeFormBody(data),
+              updatedAt: query.Now()
+            }
+          })
+        ),
+        query.Create(query.Collection(this.collection), {
+          data: {
+            ...sanitizeFormBody(data),
+            createdAt: query.Now()
+          }
+        })
+      )
+    );
+
+    this.setInstance(newInstance);
+  }
+
   async createIfNotExists ({ index, args, data }) {
     const client = initClient();
     const match = query.Match(query.Index(index), ...args);

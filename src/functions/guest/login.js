@@ -33,12 +33,13 @@ module.exports.handler = async ({ body }) => {
 
     await user.update({ lastLoginAt: query.Now() });
 
-    await registeredDevice.createIfNotExists({
+    await registeredDevice.createOrUpdate({
       index: 'registeredDeviceByUserIdDeviceToken',
       args: [user.data.id, deviceToken],
       data: {
         userId: user.data.id,
-        deviceToken
+        deviceToken,
+        expiresAt: query.TimeAdd(query.Now(), 7, 'days')
       }
     });
 

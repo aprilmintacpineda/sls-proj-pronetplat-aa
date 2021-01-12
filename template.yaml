@@ -29,10 +29,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-sendEmail"
-        INVALIDATE_DEVICETOKEN_FN: !Join
+        FORCE_EXPIRE_DEVICETOKEN_FN: !Join
           - '-'
           - - !Ref Stage
-            - "proj-pronetplat-aa-sendEmail"
+            - "proj-pronetplat-aa-forceExpireDeviceToken"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -391,6 +391,16 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendPushNotifications"
+      Layers:
+        - !Ref dependencies
+  forceExpireDeviceToken:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/events/invoke/forceExpireDeviceToken.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-forceExpireDeviceToken"
       Layers:
         - !Ref dependencies
   sendEmail:

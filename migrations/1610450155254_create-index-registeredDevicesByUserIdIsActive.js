@@ -11,7 +11,11 @@ module.exports.up = q => {
           isActive: q.Query(
             q.Lambda(
               ['document'],
-              q.If(q.ContainsPath(['data', 'invalidAt'], q.Var('document')), 1, 0)
+              q.If(
+                q.LT(q.Now(), q.Select(['data', 'expiresAt'], q.Var('document'))),
+                1,
+                0
+              )
             )
           )
         }

@@ -1,7 +1,6 @@
-const { query } = require('faunadb');
-
 const jwt = require('/opt/nodejs/utils/jwt');
 const RegisteredDevice = require('/opt/nodejs/utils/jwt');
+const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
 
 module.exports.handler = async ({ authToken, deviceToken }) => {
   try {
@@ -14,7 +13,7 @@ module.exports.handler = async ({ authToken, deviceToken }) => {
       index: 'registeredDeviceByUserIdDeviceToken',
       args: [id, deviceToken],
       data: {
-        invalidAt: query.Now()
+        expiresAt: getTimeOffset(true)
       }
     });
   } catch (error) {
