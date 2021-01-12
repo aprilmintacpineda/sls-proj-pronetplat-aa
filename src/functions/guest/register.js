@@ -39,5 +39,5 @@ module.exports.handler = async ({ body }) => {
   // to prevent enumeration attack
   // we alway return 200
   await clock.waitTillEnd();
-  return { statusCode: 403 };
+  return { statusCode: 200 };
 };
