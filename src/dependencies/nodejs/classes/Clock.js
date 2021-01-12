@@ -6,8 +6,18 @@ module.exports = class Clock {
     this.minTimeMs = minTimeMs;
   }
 
-  async waitTillEnd () {
-    const timeRemaining = this.minTimeMs - (Date.now() - this.startedAt);
-    if (timeRemaining > 0) await wait(timeRemaining + randomNum(0, 100));
+  waitTillEnd () {
+    const timeTaken = Date.now() - this.startedAt;
+    const timeRemaining = this.minTimeMs - timeTaken;
+
+    if (timeRemaining > 0) {
+      const waitingTime = timeRemaining + randomNum(0, 100);
+
+      console.log('waitTillEnd timeTaken', timeTaken);
+      console.log('waitTillEnd timeRemaining', timeRemaining);
+      console.log('waitTillEnd waitingTime', waitingTime);
+
+      return wait(waitingTime);
+    }
   }
 };
