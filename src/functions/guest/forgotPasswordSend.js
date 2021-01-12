@@ -1,15 +1,12 @@
-const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 const Clock = require('/opt/nodejs/classes/Clock');
 
-/**
- * to prevent this endpoint from being used to enumerate
- * the emails of registered users, we need to ensure that
- * it the time it takes is always above a minimum value
- * derived from the average time it takes to process a
- * legitimate request.
- */
-const minTimeMs = 2500;
+const validate = require('/opt/nodejs/utils/validate');
+const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
+const { randomCode, hash, hasTimePassed } = require('/opt/nodejs/utils/helpers');
+const { sendEmailResetPasswordCode } = require('/opt/nodejs/utils/sendEmail');
+
+const minTimeMs = 2400;
 
 function hasErrors ({ email }) {
   return validate(email, ['required', 'email']);
@@ -25,14 +22,29 @@ module.exports.handler = async ({ body }) => {
     const { email, isResend = false } = formBody;
     const user = new User();
     await user.getByEmail(email);
-    await user.resetPasswordRequest(isResend);
+
+    if (!hasTimePassed(user.data.passwordCodeCanResendAt))
+      throw new Error('passwordCodeCanResendAt has not passed yet.');
+
+    const resetPasswordCode = randomCode();
+    const hashedResetPasswordCode = await hash(resetPasswordCode);
+    const offsetTime = getTimeOffset();
+
+    await user.update({
+      hashedResetPasswordCode,
+      passwordCodeCanResendAt: offsetTime,
+      passwordResetCodeExpiresAt: offsetTime
+    });
+
+    await sendEmailResetPasswordCode({
+      recipient: user.data.email,
+      resetPasswordCode,
+      isResend
+    });
   } catch (error) {
     console.log('error', error);
   }
 
   await clock.waitTillEnd();
-
-  // to prevent enumeration attack
-  // we alway return 200
   return { statusCode: 200 };
 };

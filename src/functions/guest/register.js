@@ -1,15 +1,12 @@
 const User = require('/opt/nodejs/models/User');
-const validate = require('/opt/nodejs/utils/validate');
 const Clock = require('/opt/nodejs/classes/Clock');
 
-/**
- * to prevent this endpoint from being used to enumerate
- * the emails of registered users, we need to ensure that
- * it the time it takes is always above a minimum value
- * derived from the average time it takes to process a
- * legitimate request.
- */
-const minTimeMs = 2500;
+const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
+const validate = require('/opt/nodejs/utils/validate');
+const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
+const { sendEmailWelcomeMessage } = require('/opt/nodejs/utils/sendEmail');
+
+const minTimeMs = 3100;
 
 function hasErrors ({ email, password }) {
   return (
@@ -27,10 +24,31 @@ module.exports.handler = async ({ body }) => {
     const { email, password } = formBody;
     const user = new User();
 
+    const emailVerificationCode = randomCode();
+
+    const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
+      hash(emailVerificationCode),
+      hash(password)
+    ]);
+
+    const offsetTime = getTimeOffset();
+
     await user.createIfNotExists({
       index: 'userByEmail',
       args: [email],
-      data: { email, password }
+      data: {
+        email,
+        password,
+        hashedEmailVerificationCode,
+        hashedPassword,
+        emailCodeCanSendAt: offsetTime,
+        emailConfirmCodeExpiresAt: offsetTime
+      }
+    });
+
+    await sendEmailWelcomeMessage({
+      recipient: user.data.email,
+      emailVerificationCode
     });
   } catch (error) {
     console.log('error', error);

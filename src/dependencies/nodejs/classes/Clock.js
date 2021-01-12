@@ -6,6 +6,12 @@ module.exports = class Clock {
     this.minTimeMs = minTimeMs;
   }
 
+  /**
+   * to prevent an endpoint from being used to enumerate
+   * data, we need to ensure that the time it takes is
+   * always within a minimum value derived from the
+   * average time it takes to process a legitimate request
+   */
   waitTillEnd () {
     const timeTaken = Date.now() - this.startedAt;
     const timeRemaining = this.minTimeMs - timeTaken;
