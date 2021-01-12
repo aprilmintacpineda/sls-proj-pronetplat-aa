@@ -12,9 +12,11 @@ const User = require('/opt/nodejs/models/User');
 
 module.exports.handler = async ({ headers }) => {
   try {
-    const auth = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const {
+      data: { id }
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const user = new User();
-    await user.getById(auth.data.id);
+    await user.getById(id);
 
     if (!hasTimePassed(user.data.emailCodeCanSendAt)) return { statusCode: 429 };
 

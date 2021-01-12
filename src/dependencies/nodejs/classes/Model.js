@@ -16,10 +16,6 @@ module.exports = class Model {
     });
   }
 
-  setRefById (id) {
-    this.ref = query.Ref(query.Collection(this.collection), id);
-  }
-
   async getById (id) {
     const client = initClient();
 
@@ -70,6 +66,56 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
+  async updateById (id, data) {
+    const client = initClient();
+
+    const newInstance = await client.query(
+      query.Update(query.Ref(query.Collection(this.collection), id), {
+        data: {
+          ...sanitizeFormBody(data),
+          updatedAt: query.Now()
+        }
+      })
+    );
+
+    this.setInstance(newInstance);
+  }
+
+  async updateByIndex ({ index, data, args = [] }) {
+    const client = initClient();
+
+    const newInstance = await client.query(
+      query.Let(
+        {
+          document: query.Get(query.Match(index, ...args))
+        },
+        query.Update(query.Select(['ref'], query.Var('document')), { data })
+      )
+    );
+
+    this.setInstance(newInstance);
+  }
+
+  async createIfNotExists ({ index, args, data }) {
+    const client = initClient();
+    const match = query.Match(query.Index(index), ...args);
+
+    const newInstance = await client.query(
+      query.If(
+        query.Exists(match),
+        query.Get(match),
+        query.Create(query.Collection(this.collection), {
+          data: {
+            ...sanitizeFormBody(data),
+            createdAt: query.Now()
+          }
+        })
+      )
+    );
+
+    this.setInstance(newInstance);
+  }
+
   async hardDelete () {
     const client = initClient();
     await client.query(query.Delete(this.ref));
@@ -80,11 +126,7 @@ module.exports = class Model {
     const client = initClient();
     const {
       data: [data]
-    } = await client.query(
-      query.Count(
-        query.Paginate(query.Match(query.Index(index), ...values), { size: 9999 })
-      )
-    );
+    } = await client.query(query.Count(query.Match(query.Index(index), ...values)));
 
     return parseInt(data);
   }

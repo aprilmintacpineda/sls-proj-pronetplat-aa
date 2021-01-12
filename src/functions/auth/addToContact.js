@@ -13,18 +13,18 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     const user = new User();
     const targetUser = new User();
     const contactRequest = new ContactRequest();
-
-    if (
+    const [pendingSentRequest, pendingReceivedRequest] = await Promise.all([
       await contactRequest.hasPendingRequest({
-        from: contactId,
-        to: auth.data.id
-      }) ||
+        senderId: contactId,
+        recipientId: auth.data.id
+      }),
       await contactRequest.hasPendingRequest({
-        from: auth.data.id,
-        to: contactId
+        senderId: auth.data.id,
+        recipientId: contactId
       })
-    )
-      return { statusCode: 422 };
+    ]);
+
+    if (pendingSentRequest || pendingReceivedRequest) return { statusCode: 422 };
 
     await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
 

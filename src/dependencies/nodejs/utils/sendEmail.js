@@ -1,21 +1,11 @@
-const AWS = require('aws-sdk');
+const { invokeEvent } = require('./lambda');
 
-const lambda = new AWS.Lambda({ apiVersion: '2015-03-31' });
 const baseUrl = 'https://luh5c5ormk.execute-api.ap-southeast-1.amazonaws.com/dev/';
 
 function sendEmail (payload) {
-  return new Promise(resolve => {
-    lambda.invoke(
-      {
-        FunctionName: process.env.SEND_EMAIL_FN,
-        InvocationType: 'Event',
-        Payload: JSON.stringify(payload)
-      },
-      error => {
-        if (error) console.log(error);
-        resolve();
-      }
-    );
+  return invokeEvent({
+    functionName: process.env.SEND_EMAIL_FN,
+    payload
   });
 }
 

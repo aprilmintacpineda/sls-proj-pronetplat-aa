@@ -26,3 +26,7 @@ module.exports.verify = async token => {
   const publicKey = file.toString();
   return verifyAsync(token, publicKey, verifyConfig);
 };
+
+module.exports.TokenExpiredError = jwt.TokenExpiredError;
+module.exports.NotBeforeError = jwt.NotBeforeError;
+module.exports.JsonWebTokenError = jwt.JsonWebTokenError;

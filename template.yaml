@@ -29,6 +29,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-sendEmail"
+        INVALIDATE_DEVICETOKEN_FN: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-sendEmail"
   Api:
     OpenApiVersion: 3.0.1
 

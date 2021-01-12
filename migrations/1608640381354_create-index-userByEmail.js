@@ -1,24 +1,19 @@
-const name ='userByEmail';
+const name = 'userByEmail';
 
 module.exports.up = q => {
-  return q.CreateIndex({
-    name,
-    source: q.Collection('users'),
-    terms: [
-      {
-        field: ['data', 'email']
-      }
-    ],
-    unique: true
-  });
+  return q.If(
+    q.Not(q.Exists(q.Index(name))),
+    q.CreateIndex({
+      name,
+      source: q.Collection('users'),
+      terms: [{ field: ['data', 'email'] }],
+      unique: true
+    }),
+    null
+  );
 };
 
 module.exports.down = q => {
   const index = q.Index(name);
-
-  return q.If(
-    q.Exists(index),
-    q.Delete(index),
-    null
-  );
+  return q.If(q.Exists(index), q.Delete(index), null);
 };

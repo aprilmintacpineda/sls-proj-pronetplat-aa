@@ -30,7 +30,7 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
                 query.Get(query.Ref(query.Collection('users'), query.Var('actorId')))
               ),
               markedAsSeen: query.If(
-                query.IsNull(query.Select(['seenAt'], query.Var('data'), null)),
+                query.Not(query.ContainsField('seenAt', query.Var('data'))),
                 query.Update(query.Var('ref'), {
                   data: {
                     seenAt: query.Now()

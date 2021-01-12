@@ -5,7 +5,7 @@ const jwt = require('/opt/nodejs/utils/jwt');
 const { isValidDeviceToken } = require('/opt/nodejs/utils/firebase');
 const { verifyHash } = require('/opt/nodejs/utils/helpers');
 const User = require('/opt/nodejs/models/User');
-const RegisteredDevices = require('/opt/nodejs/models/RegisteredDevices');
+const RegisteredDevice = require('/opt/nodejs/models/RegisteredDevice');
 
 function hasErrors ({ email, password, deviceToken }) {
   return (
@@ -29,13 +29,17 @@ module.exports.handler = async ({ body }) => {
 
     if (!await isValidDeviceToken(deviceToken)) throw new Error('Invalid deviceToken.');
 
-    const registeredDevice = new RegisteredDevices();
+    const registeredDevice = new RegisteredDevice();
 
     await user.update({ lastLoginAt: query.Now() });
 
-    await registeredDevice.create({
-      userId: user.data.id,
-      deviceToken
+    await registeredDevice.createIfNotExists({
+      index: 'registeredDeviceByUserIdDeviceToken',
+      args: [user.data.id, deviceToken],
+      data: {
+        userId: user.data.id,
+        deviceToken
+      }
     });
 
     const authUser = user.toResponseData();

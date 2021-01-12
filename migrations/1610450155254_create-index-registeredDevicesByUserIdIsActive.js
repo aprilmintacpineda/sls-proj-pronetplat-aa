@@ -1,4 +1,4 @@
-const name = 'notificationsByUserIdIsNew';
+const name = 'registeredDevicesByUserIdIsActive';
 
 module.exports.up = q => {
   return q.If(
@@ -6,17 +6,17 @@ module.exports.up = q => {
     q.CreateIndex({
       name,
       source: {
-        collection: q.Collection('notifications'),
+        collection: q.Collection('registeredDevices'),
         fields: {
-          isNew: q.Query(
+          isActive: q.Query(
             q.Lambda(
               ['document'],
-              q.If(q.ContainsPath(['data', 'seenAt'], q.Var('document')), 0, 1)
+              q.If(q.ContainsPath(['data', 'invalidAt'], q.Var('document')), 1, 0)
             )
           )
         }
       },
-      terms: [{ field: ['data', 'userId'] }, { binding: 'isNew' }]
+      terms: [{ field: ['data', 'userId'] }, { binding: 'isActive' }]
     }),
     null
   );

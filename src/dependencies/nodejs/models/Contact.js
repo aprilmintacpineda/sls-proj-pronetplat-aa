@@ -7,13 +7,9 @@ module.exports = class Contact extends Model {
     let isInContact = false;
 
     try {
-      const contact = await this.getByIndex('contactByOwnerContact', ownerId, contactId);
-
-      console.log(contact);
-
+      await this.getByIndex('contactByOwnerContact', ownerId, contactId);
       isInContact = true;
     } catch (error) {
-      console.log(error);
       // do nothing
     }
 

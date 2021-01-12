@@ -29,6 +29,5 @@ module.exports.handler = async ({ body }) => {
   }
 
   await clock.waitTillEnd();
-
   return { statusCode: 403 };
 };

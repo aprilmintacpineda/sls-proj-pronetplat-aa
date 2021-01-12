@@ -22,15 +22,14 @@ module.exports.handler = async ({ headers, body }) => {
     const {
       data: { id }
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
-    const user = new User();
-    user.setRefById(id);
     const formBody = JSON.parse(body);
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
     const { firstName, middleName, surname, gender, jobTitle, company, bio } = formBody;
+    const user = new User();
 
-    await user.update({
+    await user.updateById(id, {
       firstName,
       middleName: middleName || '',
       surname,

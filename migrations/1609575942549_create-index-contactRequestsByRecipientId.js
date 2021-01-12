@@ -1,13 +1,12 @@
-const name = 'notificationsByUserId';
+const name = 'contactRequestsByRecipientId';
 
 module.exports.up = q => {
   return q.If(
     q.Not(q.Exists(q.Index(name))),
     q.CreateIndex({
       name,
-      source: q.Collection('notifications'),
-      terms: [{ field: ['data', 'userId'] }],
-      values: [{ field: ['data', 'createdAt'], reverse: true }, { field: ['ref'] }]
+      source: q.Collection('contactRequests'),
+      terms: [{ field: ['data', 'recipientId'] }]
     }),
     null
   );

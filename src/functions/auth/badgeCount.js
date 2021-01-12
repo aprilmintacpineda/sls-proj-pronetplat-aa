@@ -5,7 +5,7 @@ const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 
 const badgeIndexes = {
   receivedContactRequestCount: {
-    index: 'contactRequestsByRecipient'
+    index: 'contactRequestsByRecipientId'
   },
   notificationsCount: {
     index: 'notificationsByUserIdIsNew',

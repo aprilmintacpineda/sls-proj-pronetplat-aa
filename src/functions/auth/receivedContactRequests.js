@@ -19,7 +19,7 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
     const result = await client.query(
       query.Map(
         query.Paginate(
-          query.Match(query.Index('contactRequestsByRecipient'), id),
+          query.Match(query.Index('contactRequestsByRecipientId'), id),
           options
         ),
         query.Lambda(

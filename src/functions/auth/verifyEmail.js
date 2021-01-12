@@ -18,9 +18,11 @@ module.exports.handler = async ({ headers, body }) => {
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) return { statusCode: 403 };
 
-    const auth = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const {
+      data: { id }
+    } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const user = new User();
-    await user.getById(auth.data.id);
+    await user.getById(id);
 
     if (hasTimePassed(user.data.emailConfirmCodeExpiresAt)) return { statusCode: 410 };
 
