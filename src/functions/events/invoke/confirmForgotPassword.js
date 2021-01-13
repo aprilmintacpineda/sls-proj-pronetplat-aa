@@ -36,7 +36,7 @@ module.exports.handler = async ({ confirmationCode, email, newPassword }) => {
       passwordResetCodeExpiresAt: null
     });
 
-    await sendEmailResetPasswordSuccess(user.data.email);
+    await sendEmailResetPasswordSuccess({ recipient: user.data.email });
   } catch (error) {
     console.log('error', error);
   }

@@ -1,7 +1,5 @@
 const { invokeEvent } = require('./lambda');
 
-const baseUrl = 'https://luh5c5ormk.execute-api.ap-southeast-1.amazonaws.com/dev/';
-
 function sendEmail (payload) {
   return invokeEvent({
     functionName: process.env.fn_sendEmail,
@@ -92,12 +90,7 @@ module.exports.sendEmailResetPasswordCode = ({
   });
 };
 
-module.exports.sendEmailResetPasswordSuccess = ({ recipient, temporaryBlockToken }) => {
-  const temporaryBlockAccountLink = new URL(
-    `temporary-block-access/${temporaryBlockToken}`,
-    baseUrl
-  );
-
+module.exports.sendEmailResetPasswordSuccess = ({ recipient }) => {
   return sendEmail({
     recipient,
     content: `
@@ -108,11 +101,7 @@ module.exports.sendEmailResetPasswordSuccess = ({ recipient, temporaryBlockToken
         </p>
         <p>
           If you did not make this password reset and you suspect that your account may have been compromised,
-          you can temporarily block account access by clicking on the link below, it will log you out of all your sessions and then disable login,
           thereafter, please can contact support to ask for assistance.
-        </p>
-        <p>
-          <a href="${temporaryBlockAccountLink}">${temporaryBlockAccountLink}</a>
         </p>
       </div>
     `,
