@@ -101,7 +101,7 @@ module.exports.sendEmailResetPasswordSuccess = ({ recipient }) => {
         </p>
         <p>
           If you did not make this password reset and you suspect that your account may have been compromised,
-          thereafter, please can contact support to ask for assistance.
+          please can contact support to ask for assistance.
         </p>
       </div>
     `,
