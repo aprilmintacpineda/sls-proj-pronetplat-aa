@@ -6,7 +6,7 @@ const validate = require('/opt/nodejs/utils/validate');
 const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
 const { sendEmailWelcomeMessage } = require('/opt/nodejs/utils/sendEmail');
 
-const minTimeMs = 2300;
+const minTimeMs = 1850;
 
 function hasErrors ({ email, password }) {
   return (

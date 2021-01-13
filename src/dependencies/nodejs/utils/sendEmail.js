@@ -4,7 +4,7 @@ const baseUrl = 'https://luh5c5ormk.execute-api.ap-southeast-1.amazonaws.com/dev
 
 function sendEmail (payload) {
   return invokeEvent({
-    functionName: process.env.SEND_EMAIL_FN,
+    functionName: process.env.fn_sendEmail,
     payload
   });
 }

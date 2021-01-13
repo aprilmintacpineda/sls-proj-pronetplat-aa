@@ -103,17 +103,12 @@ module.exports = class Model {
     const newInstance = await client.query(
       query.If(
         query.Exists(match),
-        query.Let(
-          {
-            existingDocument: query.Get(match)
-          },
-          query.Update(query.Select(['ref'], query.Var('existingDocument')), {
-            data: {
-              ...sanitizeFormBody(data),
-              updatedAt: query.Now()
-            }
-          })
-        ),
+        query.Update(query.Select(['ref'], query.Get(match)), {
+          data: {
+            ...sanitizeFormBody(data),
+            updatedAt: query.Now()
+          }
+        }),
         query.Create(query.Collection(this.collection), {
           data: {
             ...sanitizeFormBody(data),
@@ -131,26 +126,21 @@ module.exports = class Model {
     const match = query.Match(query.Index(index), ...args);
 
     const response = await client.query(
-      query.Let(
+      query.If(
+        query.Exists(match),
         {
-          doesExist: query.Exists(match)
+          wasCreated: false,
+          newInstance: query.Get(match)
         },
-        query.If(
-          query.Var('doesExist'),
-          {
-            wasCreated: false,
-            newInstance: query.Get(match)
-          },
-          {
-            wasCreated: true,
-            newInstance: query.Create(query.Collection(this.collection), {
-              data: {
-                ...sanitizeFormBody(data),
-                createdAt: query.Now()
-              }
-            })
-          }
-        )
+        {
+          wasCreated: true,
+          newInstance: query.Create(query.Collection(this.collection), {
+            data: {
+              ...sanitizeFormBody(data),
+              createdAt: query.Now()
+            }
+          })
+        }
       )
     );
 

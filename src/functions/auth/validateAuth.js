@@ -36,7 +36,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     if (error.constructor === jwt.TokenExpiredError) {
       invokeEvent({
-        functionName: process.env.FORCE_EXPIRE_DEVICETOKEN_FN,
+        functionName: process.env.fn_forceExpireDeviceToken,
         payload: {
           deviceToken: formBody.deviceToken,
           authToken

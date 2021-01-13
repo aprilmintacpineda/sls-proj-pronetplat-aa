@@ -21,18 +21,22 @@ Globals:
       Variables:
         STAGE: !Ref Stage
         USERS_BUCKET: !Ref usersS3Bucket
-        PUSH_NOTIF_FN: !Join
+        fn_sendPushNotifications: !Join
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-sendPushNotifications"
-        SEND_EMAIL_FN: !Join
+        fn_sendEmail: !Join
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-sendEmail"
-        FORCE_EXPIRE_DEVICETOKEN_FN: !Join
+        fn_forceExpireDeviceToken: !Join
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-forceExpireDeviceToken"
+        fn_sendResetPasswordCode: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-sendResetPasswordCode"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -79,7 +83,7 @@ Resources:
           - Action:
               - lambda:InvokeFunction
             Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+            Resource: !GetAtt sendResetPasswordCode.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -419,6 +423,22 @@ Resources:
               - ses:SendEmail
             Effect: Allow
             Resource: "*"
+  sendResetPasswordCode:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/events/invoke/sendResetPasswordCode.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-sendResetPasswordCode"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendEmail.Arn
   ######
   # S3 Events
   #

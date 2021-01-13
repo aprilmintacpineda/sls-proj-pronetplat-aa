@@ -30,7 +30,6 @@ module.exports.handler = async ({ body }) => {
     if (!await isValidDeviceToken(deviceToken)) throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevice();
-
     await user.update({ lastLoginAt: query.Now() });
 
     await registeredDevice.createOrUpdate({
