@@ -11,7 +11,7 @@ module.exports.handler = async ({ body }) => {
     if (hasErrors(formBody)) throw new Error('Invalid form body');
 
     await invokeEvent({
-      functionName: process.env.SEND_RESET_PASSWORD_CODE_FN,
+      functionName: process.env.fn_sendForgotPasswordCode,
       payload: formBody
     });
   } catch (error) {

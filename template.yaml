@@ -33,10 +33,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-forceExpireDeviceToken"
-        fn_sendResetPasswordCode: !Join
+        fn_sendForgotPasswordCode: !Join
           - '-'
           - - !Ref Stage
-            - "proj-pronetplat-aa-sendResetPasswordCode"
+            - "proj-pronetplat-aa-sendForgotPasswordCode"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -83,7 +83,7 @@ Resources:
           - Action:
               - lambda:InvokeFunction
             Effect: Allow
-            Resource: !GetAtt sendResetPasswordCode.Arn
+            Resource: !GetAtt sendForgotPasswordCode.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -423,14 +423,14 @@ Resources:
               - ses:SendEmail
             Effect: Allow
             Resource: "*"
-  sendResetPasswordCode:
+  sendForgotPasswordCode:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/sendResetPasswordCode.handler
+      Handler: src/functions/events/invoke/sendForgotPasswordCode.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-sendResetPasswordCode"
+          - "proj-pronetplat-aa-sendForgotPasswordCode"
       Layers:
         - !Ref dependencies
       Policies:
