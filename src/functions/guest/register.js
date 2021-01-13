@@ -1,12 +1,5 @@
-const User = require('/opt/nodejs/models/User');
-const Clock = require('/opt/nodejs/classes/Clock');
-
-const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
 const validate = require('/opt/nodejs/utils/validate');
-const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
-const { sendEmailWelcomeMessage } = require('/opt/nodejs/utils/sendEmail');
-
-const minTimeMs = 1850;
+const { invokeEvent } = require('/opt/nodejs/utils/lambda');
 
 function hasErrors ({ email, password }) {
   return (
@@ -15,48 +8,17 @@ function hasErrors ({ email, password }) {
 }
 
 module.exports.handler = async ({ body }) => {
-  const clock = new Clock(minTimeMs);
-
   try {
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const { email, password } = formBody;
-    const user = new User();
-
-    const emailVerificationCode = randomCode();
-
-    const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
-      hash(emailVerificationCode),
-      hash(password)
-    ]);
-
-    const offsetTime = getTimeOffset();
-
-    const wasCreated = await user.createIfNotExists({
-      index: 'userByEmail',
-      args: [email],
-      data: {
-        email,
-        hashedEmailVerificationCode,
-        hashedPassword,
-        emailCodeCanSendAt: offsetTime,
-        emailConfirmCodeExpiresAt: offsetTime
-      }
+    await invokeEvent({
+      functionName: process.env.fn_createAccount,
+      payload: formBody
     });
-
-    if (wasCreated) {
-      await sendEmailWelcomeMessage({
-        recipient: user.data.email,
-        emailVerificationCode
-      });
-    }
   } catch (error) {
     console.log('error', error);
   }
 
-  // to prevent enumeration attack
-  // we alway return 200
-  await clock.waitTillEnd();
   return { statusCode: 200 };
 };

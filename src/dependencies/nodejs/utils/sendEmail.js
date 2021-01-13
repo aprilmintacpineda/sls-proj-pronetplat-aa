@@ -9,6 +9,8 @@ function sendEmail (payload) {
   });
 }
 
+module.exports.sendEmail = sendEmail;
+
 module.exports.sendEmailVerificationCode = ({ recipient, emailVerificationCode }) => {
   return sendEmail({
     recipient,

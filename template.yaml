@@ -37,6 +37,14 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-sendForgotPasswordCode"
+        fn_confirmForgotPassword: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-confirmForgotPassword"
+        fn_createAccount: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-createAccount"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -59,7 +67,7 @@ Resources:
           - Action:
               - lambda:InvokeFunction
             Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+            Resource: !GetAtt createAccount.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -107,7 +115,7 @@ Resources:
           - Action:
               - lambda:InvokeFunction
             Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+            Resource: !GetAtt confirmForgotPassword.Arn
       Events:
         ApiEvent:
           Type: Api
@@ -431,6 +439,38 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendForgotPasswordCode"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendEmail.Arn
+  confirmForgotPassword:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/events/invoke/confirmForgotPassword.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-confirmForgotPassword"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendEmail.Arn
+  createAccount:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/events/invoke/createAccount.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-createAccount"
       Layers:
         - !Ref dependencies
       Policies:
