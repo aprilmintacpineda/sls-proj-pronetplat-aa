@@ -85,12 +85,9 @@ module.exports = class Model {
     const client = initClient();
 
     const newInstance = await client.query(
-      query.Let(
-        {
-          document: query.Get(query.Match(index, ...args))
-        },
-        query.Update(query.Select(['ref'], query.Var('document')), { data })
-      )
+      query.Update(query.Select(['ref'], query.Get(query.Match(index, ...args))), {
+        data
+      })
     );
 
     this.setInstance(newInstance);
