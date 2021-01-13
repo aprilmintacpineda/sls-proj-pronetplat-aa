@@ -33,12 +33,12 @@ module.exports.handler = async ({ recipient, content, subject, emailType }) => {
           FromEmailAddress: 'aprilmintacpineda@gmail.com'
         },
         error => {
-          if (error) reject(reject);
+          if (error) reject(error);
           else resolve();
         }
       );
     });
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 };

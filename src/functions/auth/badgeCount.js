@@ -34,7 +34,7 @@ module.exports.handler = async ({ headers }) => {
       body: JSON.stringify(badges)
     };
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 
   return { statusCode: 403 };

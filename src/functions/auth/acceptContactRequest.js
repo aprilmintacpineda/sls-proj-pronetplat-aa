@@ -71,7 +71,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     return { statusCode: 200 };
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 
   return { statusCode: 403 };

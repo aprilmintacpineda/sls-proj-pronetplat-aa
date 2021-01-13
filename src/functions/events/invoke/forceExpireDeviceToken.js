@@ -17,6 +17,6 @@ module.exports.handler = async ({ authToken, deviceToken }) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 };
