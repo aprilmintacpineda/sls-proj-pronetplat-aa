@@ -1,8 +1,12 @@
+const { query } = require('faunadb');
+
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { invokeEvent } = require('/opt/nodejs/utils/lambda');
 const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+
 const User = require('/opt/nodejs/models/User');
+const RegisteredDevice = require('/opt/nodejs/models/RegisteredDevice');
 
 function hasError ({ deviceToken }) {
   return validate(deviceToken, ['required']);
@@ -11,18 +15,32 @@ function hasError ({ deviceToken }) {
 module.exports.handler = async ({ headers, body }) => {
   const formBody = JSON.parse(body);
   const authToken = getAuthTokenFromHeaders(headers);
+  const { deviceToken } = formBody;
 
   try {
     if (hasError(formBody)) throw new Error('invalid form body');
+
     const {
       data: { id }
     } = await jwt.verify(authToken);
 
     const user = new User();
-    await user.getById(id);
+    const registeredDevice = new RegisteredDevice();
+
+    await registeredDevice.getByIndex(
+      'registeredDeviceByUserIdDeviceToken',
+      id,
+      deviceToken
+    );
 
     const authUser = user.toResponseData();
-    const newAuthToken = await jwt.sign(authUser);
+    const [newAuthToken] = await Promise.all([
+      jwt.sign(authUser),
+      user.getById(id),
+      registeredDevice.update({
+        expiresAt: query.TimeAdd(query.Now(), 7, 'days')
+      })
+    ]);
 
     return {
       statusCode: 200,
@@ -38,7 +56,7 @@ module.exports.handler = async ({ headers, body }) => {
       invokeEvent({
         functionName: process.env.fn_forceExpireDeviceToken,
         payload: {
-          deviceToken: formBody.deviceToken,
+          deviceToken,
           authToken
         }
       });
