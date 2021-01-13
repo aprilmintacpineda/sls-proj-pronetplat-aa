@@ -22,12 +22,12 @@ module.exports.handler = async ({ headers, body }) => {
     await user.getById(id);
 
     const authUser = user.toResponseData();
-    const authToken = await jwt.sign(authUser);
+    const newAuthToken = await jwt.sign(authUser);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        authToken,
+        authToken: newAuthToken,
         authUser
       })
     };
