@@ -12,7 +12,7 @@ module.exports.up = q => {
             q.Lambda(
               ['document'],
               q.If(
-                q.LT(q.Now(), q.Select(['data', 'expiresAt'], q.Var('document'))),
+                q.LT(q.Time('now'), q.Select(['data', 'expiresAt'], q.Var('document'))),
                 1,
                 0
               )

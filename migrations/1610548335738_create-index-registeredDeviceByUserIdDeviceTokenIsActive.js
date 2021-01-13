@@ -12,7 +12,7 @@ module.exports.up = q => {
             q.Lambda(
               ['document'],
               q.If(
-                q.LT(q.Now(), q.Select(['data', 'expiresAt'], q.Var('document'))),
+                q.LT(q.Time('now'), q.Select(['data', 'expiresAt'], q.Var('document'))),
                 1,
                 0
               )
@@ -31,5 +31,6 @@ module.exports.up = q => {
 };
 
 module.exports.down = q => {
-  return q.Delete(q.Collection('Users'));
+  const index = q.Index(name);
+  return q.If(q.Exists(index), q.Delete(index), null);
 };
