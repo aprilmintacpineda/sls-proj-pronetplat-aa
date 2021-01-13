@@ -30,20 +30,21 @@ module.exports.handler = async ({ body }) => {
     if (!await isValidDeviceToken(deviceToken)) throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevice();
-    await user.update({ lastLoginAt: query.Now() });
-
-    await registeredDevice.createOrUpdate({
-      index: 'registeredDeviceByUserIdDeviceToken',
-      args: [user.data.id, deviceToken],
-      data: {
-        userId: user.data.id,
-        deviceToken,
-        expiresAt: query.TimeAdd(query.Now(), 7, 'days')
-      }
-    });
-
     const authUser = user.toResponseData();
-    const authToken = await jwt.sign(authUser);
+
+    const [authToken] = await Promise.all([
+      jwt.sign(authUser),
+      user.update({ lastLoginAt: query.Now() }),
+      registeredDevice.createOrUpdate({
+        index: 'registeredDeviceByUserIdDeviceToken',
+        args: [user.data.id, deviceToken],
+        data: {
+          userId: user.data.id,
+          deviceToken,
+          expiresAt: query.TimeAdd(query.Now(), 7, 'days')
+        }
+      })
+    ]);
 
     return {
       statusCode: 200,
