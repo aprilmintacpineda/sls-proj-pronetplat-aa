@@ -1,80 +1,66 @@
 const validationRules = {
   email (value) {
-    if (
+    return (
       value.length > 320 ||
       // eslint-disable-next-line
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         value
       )
-    )
-      return 'Invalid email.';
-
-    return '';
+    );
   },
   required (value) {
-    if (!value || !value.length) return 'Required.';
-    return '';
+    return !value || !value.length;
   },
   maxLength (value, [max]) {
-    if (value.length > max) return `Should be less than ${max} characters.`;
-    return '';
+    return value.length > max;
   },
   password (value) {
     const minLength = 8;
     const maxLength = 30;
+    const len = value.length;
 
-    if ((value.match(/[0-9]/gm) || []).length < 2) return 'Password must contain at least 2 numbers.';
-    if ((value.match(/[a-z]/gm) || []).length < 2) return 'Password must contain at least 2 small letters.';
-    if ((value.match(/[A-Z]/gm) || []).length < 2) return 'Password must contain at least 2 capital letters.';
-    if (value.length < minLength || value.length > maxLength) return `Password should be ${minLength} to ${maxLength} characters.`;
-
-    if (
+    return (
+      len < minLength ||
+      len > maxLength ||
+      (value.match(/[0-9]/gm) || []).length < 2 ||
+      (value.match(/[a-z]/gm) || []).length < 2 ||
+      (value.match(/[A-Z]/gm) || []).length < 2 ||
       (
-        value.match(/[\s\!@#$%^&*()_\-\+=\{\}\[\]|\\;:"'<>?,.\/]/gm // eslint-disable-line
-      ) || []).length < 2
-    )
-      return 'Password must contain at least 2 special characters; !@#$%^&*()_+-={}|[]\\:";\'<>?,./';
-
-    return '';
+        value.match(
+          /[\s\!@#$%^&*()_\-\+=\{\}\[\]|\\;:"'<>?,.\/]/gm // eslint-disable-line
+        ) || []
+      ).length < 2
+    );
   },
   options (value, options) {
-    if (value.constructor === Array) {
-      if (value.find(val => !options.includes(val)))
-        return 'Please select from the options.';
-    } else if (!options.includes(value)) {
-      return 'Please select from the options.';
-    }
-
-    return '';
+    if (value.constructor === Array) return value.find(val => !options.includes(val));
+    return !options.includes(value);
   },
-  matches (value, [payload, fieldName]) {
-    if (value !== payload) return `${fieldName} must match.`;
-    return '';
+  matches (value, [payload]) {
+    return value !== payload;
   }
 };
 
 function validate (value, rules) {
   const isOptional = !rules.includes('required');
-  if (!value && isOptional) return;
+  if (!value && isOptional) return false;
 
-  const numRules = rules.length;
+  return Boolean(
+    rules.find(definition => {
+      let rule = definition;
+      let payload = [];
 
-  for (let a = 0; a < numRules; a++) {
-    let rule = rules[a];
-    let payload = [];
+      const hasParameters = rule.includes(':');
+      if (hasParameters) {
+        const [_rule, _payload] = rule.split(':');
+        rule = _rule;
+        payload = _payload.split(',');
+      }
 
-    const hasParameters = rule.includes(':');
-    if (hasParameters) {
-      const [_rule, _payload] = rule.split(':');
-      rule = _rule;
-      payload = _payload.split(',');
-    }
-
-    const error = validationRules[rule](value, payload);
-    if (error) return error;
-  }
-
-  return '';
+      const error = validationRules[rule](value, payload);
+      if (error) return true;
+    })
+  );
 }
 
 module.exports = validate;
