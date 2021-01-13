@@ -392,6 +392,24 @@ Resources:
             Path: /contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
+  validateAuth:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/auth/validateAuth.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-validateAuth"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /validate-auth
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
