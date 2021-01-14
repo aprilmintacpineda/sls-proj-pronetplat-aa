@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders, normalizeData } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
 module.exports.handler = async ({ queryStringParameters, headers }) => {
@@ -59,7 +59,7 @@ module.exports.handler = async ({ queryStringParameters, headers }) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: normalizeData(result.data || []),
+        data: result.data,
         nextToken: result.after ? result.after[0].id : null
       })
     };

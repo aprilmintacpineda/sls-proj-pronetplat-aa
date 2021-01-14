@@ -39,7 +39,7 @@ module.exports.handler = async ({ headers, body }) => {
       jwt.sign(authUser),
       user.getById(id),
       registeredDevice.update({
-        expiresAt: query.TimeAdd(query.Now(), 7, 'days')
+        expiresAt: query.Format('%t', query.TimeAdd(query.Now(), 7, 'days'))
       })
     ]);
 

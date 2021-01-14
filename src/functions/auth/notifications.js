@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders, normalizeData } = require('/opt/nodejs/utils/helpers');
+const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
 module.exports.handler = async ({ headers, queryStringParameters }) => {
@@ -33,7 +33,7 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
                 query.Not(query.ContainsField('seenAt', query.Var('data'))),
                 query.Update(query.Var('ref'), {
                   data: {
-                    seenAt: query.Now()
+                    seenAt: query.Format('%t', query.Now())
                   }
                 }),
                 null
@@ -63,7 +63,7 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: normalizeData(result.data || []),
+        data: result.data,
         nextToken: result.after ? result.after[0].id : null
       })
     };

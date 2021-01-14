@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 
 const { initClient } = require('/opt/nodejs/utils/faunadb');
-const { sanitizeFormBody, normalizeData } = require('/opt/nodejs/utils/helpers');
+const { sanitizeFormBody } = require('/opt/nodejs/utils/helpers');
 
 module.exports = class Model {
   wasHardDeleted = false;
@@ -10,10 +10,8 @@ module.exports = class Model {
     this.instance = newInstance;
     this.ref = newInstance.ref;
 
-    this.data = normalizeData({
-      id: newInstance.ref.id,
-      ...newInstance.data
-    });
+    newInstance.data.id = newInstance.ref.id;
+    this.data = newInstance.data;
   }
 
   async getById (id) {
@@ -43,7 +41,7 @@ module.exports = class Model {
       query.Create(query.Collection(this.collection), {
         data: {
           ...sanitizeFormBody(data),
-          createdAt: query.Now()
+          createdAt: query.Format('%t', query.Now())
         }
       })
     );
@@ -58,7 +56,7 @@ module.exports = class Model {
       query.Update(this.ref, {
         data: {
           ...sanitizeFormBody(data),
-          updatedAt: query.Now()
+          updatedAt: query.Format('%t', query.Now())
         }
       })
     );
@@ -73,7 +71,7 @@ module.exports = class Model {
       query.Update(query.Ref(query.Collection(this.collection), id), {
         data: {
           ...sanitizeFormBody(data),
-          updatedAt: query.Now()
+          updatedAt: query.Format('%t', query.Now())
         }
       })
     );
@@ -86,7 +84,10 @@ module.exports = class Model {
 
     const newInstance = await client.query(
       query.Update(query.Select(['ref'], query.Get(query.Match(index, ...args))), {
-        data
+        data: {
+          ...sanitizeFormBody(data),
+          updatedAt: query.Format('%t', query.Now())
+        }
       })
     );
 
@@ -103,13 +104,13 @@ module.exports = class Model {
         query.Update(query.Select(['ref'], query.Get(match)), {
           data: {
             ...sanitizeFormBody(data),
-            updatedAt: query.Now()
+            updatedAt: query.Format('%t', query.Now())
           }
         }),
         query.Create(query.Collection(this.collection), {
           data: {
             ...sanitizeFormBody(data),
-            createdAt: query.Now()
+            createdAt: query.Format('%t', query.Now())
           }
         })
       )
@@ -134,7 +135,7 @@ module.exports = class Model {
           newInstance: query.Create(query.Collection(this.collection), {
             data: {
               ...sanitizeFormBody(data),
-              createdAt: query.Now()
+              createdAt: query.Format('%t', query.Now())
             }
           })
         }

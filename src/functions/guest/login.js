@@ -34,14 +34,14 @@ module.exports.handler = async ({ body }) => {
 
     const [authToken] = await Promise.all([
       jwt.sign(authUser),
-      user.update({ lastLoginAt: query.Now() }),
+      user.update({ lastLoginAt: query.Format('%t', query.Now()) }),
       registeredDevice.createOrUpdate({
         index: 'registeredDeviceByUserIdDeviceToken',
         args: [user.data.id, deviceToken],
         data: {
           userId: user.data.id,
           deviceToken,
-          expiresAt: query.TimeAdd(query.Now(), 7, 'days')
+          expiresAt: query.Format('%t', query.TimeAdd(query.Now(), 7, 'days'))
         }
       })
     ]);

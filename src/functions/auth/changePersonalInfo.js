@@ -37,7 +37,7 @@ module.exports.handler = async ({ headers, body }) => {
       jobTitle,
       company: company || '',
       bio: bio || '',
-      completedFirstSetupAt: query.Now()
+      completedFirstSetupAt: query.Format('%t', query.Now())
     });
 
     const authUser = user.toResponseData();
