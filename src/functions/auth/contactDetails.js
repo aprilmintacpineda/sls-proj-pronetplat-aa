@@ -18,11 +18,12 @@ module.exports.handler = async ({
     const contactRequest = new ContactRequest();
 
     if (!await contact.isInContact(id, contactId)) {
-      const sentContactRequest = await contactRequest //_prettier-hack
-        .getPendingRequest({
+      const sentContactRequest = await contactRequest.getPendingRequest(
+        {
           senderId: id,
           recipientId: contactId
-        });
+        }
+      );
 
       if (sentContactRequest) {
         return {
@@ -33,11 +34,12 @@ module.exports.handler = async ({
         };
       }
 
-      const receivedContactRequest = await contactRequest //_prettier-hack
-        .getPendingRequest({
+      const receivedContactRequest = await contactRequest.getPendingRequest(
+        {
           senderId: contactId,
           recipientId: id
-        });
+        }
+      );
 
       if (receivedContactRequest) {
         return {

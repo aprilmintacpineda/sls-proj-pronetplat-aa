@@ -1,6 +1,6 @@
 const alias = require('./importAliases');
 
-const ignorePattern = '^_[0-9]+$';
+const unusedVarsIgnorePattern = '^_[0-9]+$';
 
 module.exports = {
   settings: {
@@ -34,20 +34,6 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    'max-len': [
-      'error',
-      {
-        code: 70,
-        ignoreRegExpLiterals: true,
-        ignorePattern: [
-          '^(const|let) .+ = require.+\\);$',
-          "^(const|let) .+ = '.+';$",
-          "^.+: '.+',?$",
-          '^.+//_prettier-hack$'
-        ].join('|'),
-        ignoreUrls: true
-      }
-    ],
     'brace-style': ['error', '1tbs', { allowSingleLine: false }],
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-case-declarations': 0,
@@ -74,12 +60,7 @@ module.exports = {
       }
     ],
     'rest-spread-spacing': ['error', 'never'],
-    'no-inline-comments': [
-      'error',
-      {
-        ignorePattern: '_prettier-hack'
-      }
-    ],
+    'no-inline-comments': 'error',
     'no-extra-parens': ['error', 'all', { ignoreJSX: 'multi-line' }],
     'prefer-spread': ['error'],
     'prefer-const': 'error',
@@ -89,9 +70,9 @@ module.exports = {
     'no-unused-vars': [
       'error',
       {
-        varsIgnorePattern: ignorePattern,
-        argsIgnorePattern: ignorePattern,
-        caughtErrorsIgnorePattern: ignorePattern
+        varsIgnorePattern: unusedVarsIgnorePattern,
+        argsIgnorePattern: unusedVarsIgnorePattern,
+        caughtErrorsIgnorePattern: unusedVarsIgnorePattern
       }
     ],
     'no-floating-decimal': ['error'],

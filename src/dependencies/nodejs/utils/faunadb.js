@@ -13,5 +13,8 @@ module.exports.getTimeOffset = (isPast = false) => {
       query.TimeSubtract(query.Now(), 5, 'minutes')
     );
   }
-  return query.Format('%t', query.TimeAdd(query.Now(), 5, 'minutes'));
+  return query.Format(
+    '%t',
+    query.TimeAdd(query.Now(), 5, 'minutes')
+  );
 };

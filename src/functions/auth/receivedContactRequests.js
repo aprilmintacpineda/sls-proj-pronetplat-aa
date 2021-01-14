@@ -42,7 +42,10 @@ module.exports.handler = async ({
                 ['data'],
                 query.Get(query.Var('ref'))
               ),
-              senderId: query.Select(['senderId'], query.Var('data')),
+              senderId: query.Select(
+                ['senderId'],
+                query.Var('data')
+              ),
               sender: query.Select(
                 ['data'],
                 query.Get(
@@ -69,7 +72,10 @@ module.exports.handler = async ({
                   ['surname'],
                   query.Var('sender')
                 ),
-                gender: query.Select(['gender'], query.Var('sender')),
+                gender: query.Select(
+                  ['gender'],
+                  query.Var('sender')
+                ),
                 profilePicture: query.Select(
                   ['profilePicture'],
                   query.Var('sender'),

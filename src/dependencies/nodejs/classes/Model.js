@@ -67,12 +67,15 @@ module.exports = class Model {
     const client = initClient();
 
     const newInstance = await client.query(
-      query.Update(query.Ref(query.Collection(this.collection), id), {
-        data: {
-          ...sanitizeFormBody(data),
-          updatedAt: query.Format('%t', query.Now())
+      query.Update(
+        query.Ref(query.Collection(this.collection), id),
+        {
+          data: {
+            ...sanitizeFormBody(data),
+            updatedAt: query.Format('%t', query.Now())
+          }
         }
-      })
+      )
     );
 
     this.setInstance(newInstance);
@@ -83,7 +86,10 @@ module.exports = class Model {
 
     const newInstance = await client.query(
       query.Update(
-        query.Select(['ref'], query.Get(query.Match(index, ...args))),
+        query.Select(
+          ['ref'],
+          query.Get(query.Match(index, ...args))
+        ),
         {
           data: {
             ...sanitizeFormBody(data),
