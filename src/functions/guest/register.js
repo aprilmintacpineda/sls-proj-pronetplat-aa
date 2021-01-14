@@ -3,7 +3,8 @@ const { invokeEvent } = require('/opt/nodejs/utils/lambda');
 
 function hasErrors ({ email, password }) {
   return (
-    validate(email, ['required', 'email']) || validate(password, ['required', 'password'])
+    validate(email, ['required', 'email']) ||
+    validate(password, ['required', 'password'])
   );
 }
 

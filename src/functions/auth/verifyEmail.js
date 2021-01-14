@@ -24,7 +24,8 @@ module.exports.handler = async ({ headers, body }) => {
     const user = new User();
     await user.getById(id);
 
-    if (hasTimePassed(user.data.emailConfirmCodeExpiresAt)) return { statusCode: 410 };
+    if (hasTimePassed(user.data.emailConfirmCodeExpiresAt))
+      return { statusCode: 410 };
 
     if (
       !await verifyHash(
@@ -34,7 +35,10 @@ module.exports.handler = async ({ headers, body }) => {
     )
       throw new Error('Incorrect verification code');
 
-    await user.update({ emailVerifiedAt: query.Format('%t', query.Now()) });
+    await user.update({
+      emailVerifiedAt: query.Format('%t', query.Now())
+    });
+
     const authUser = user.toResponseData();
     const authToken = await jwt.sign(authUser);
 

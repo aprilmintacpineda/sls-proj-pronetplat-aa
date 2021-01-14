@@ -12,6 +12,10 @@ module.exports = class ContactRequest extends Model {
   }
 
   getPendingRequest ({ senderId, recipientId }) {
-    return this.getByIndex('contactRequestBySenderIdRecipientId', senderId, recipientId);
+    return this.getByIndex(
+      'contactRequestBySenderIdRecipientId',
+      senderId,
+      recipientId
+    );
   }
 };

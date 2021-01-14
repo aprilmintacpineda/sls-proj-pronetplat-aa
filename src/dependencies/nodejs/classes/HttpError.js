@@ -8,7 +8,8 @@ module.exports = class HttpError {
 
   toResponse () {
     const response = { statusCode: this.statusCode };
-    if (this.message) response.body = JSON.stringify({ message: this.message });
+    if (this.message)
+      response.body = JSON.stringify({ message: this.message });
     return response;
   }
 };

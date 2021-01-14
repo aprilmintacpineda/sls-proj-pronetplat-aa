@@ -2,7 +2,9 @@ const aws = require('aws-sdk');
 const mimetypes = require('mime-types');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 
 const s3 = new aws.S3({
@@ -11,7 +13,10 @@ const s3 = new aws.S3({
 });
 
 function hasErrors ({ mimeType }) {
-  return validate(mimeType, ['required', 'options:image/jpeg,image/png']);
+  return validate(mimeType, [
+    'required',
+    'options:image/jpeg,image/png'
+  ]);
 }
 
 module.exports.handler = async ({ headers, body }) => {

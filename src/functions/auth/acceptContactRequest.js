@@ -1,7 +1,11 @@
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 const jwt = require('/opt/nodejs/utils/jwt');
 const validate = require('/opt/nodejs/utils/validate');
-const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
+const {
+  sendPushNotification
+} = require('/opt/nodejs/utils/notifications');
 
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 const Contact = require('/opt/nodejs/models/Contact');
@@ -14,7 +18,16 @@ function hasErrors ({ id }) {
 module.exports.handler = async ({ headers, body }) => {
   try {
     const {
-      data: { id, firstName, middleName, surname, profilePicture, bio, company, jobTitle }
+      data: {
+        id,
+        firstName,
+        middleName,
+        surname,
+        profilePicture,
+        bio,
+        company,
+        jobTitle
+      }
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
 
     const formBody = JSON.parse(body);
@@ -22,7 +35,8 @@ module.exports.handler = async ({ headers, body }) => {
 
     const contactRequest = new ContactRequest();
     await contactRequest.getById(formBody.id);
-    if (contactRequest.data.recipientId !== id) throw new Error('user is not recipient.');
+    if (contactRequest.data.recipientId !== id)
+      throw new Error('user is not recipient.');
 
     const { senderId } = contactRequest.data;
     const contact = new Contact();
@@ -50,7 +64,8 @@ module.exports.handler = async ({ headers, body }) => {
       })
     ]);
 
-    const fullName = firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
+    const fullName =
+      firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
 
     await sendPushNotification({
       userId: senderId,

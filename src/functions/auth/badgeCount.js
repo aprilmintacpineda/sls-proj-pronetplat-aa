@@ -1,7 +1,9 @@
 const { query } = require('faunadb');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 
 const badgeIndexes = {
   receivedContactRequestCount: {
@@ -24,7 +26,11 @@ module.exports.handler = async ({ headers }) => {
     const badges = await client.query(
       Object.keys(badgeIndexes).reduce((accumulator, key) => {
         const { index, params = [] } = badgeIndexes[key];
-        accumulator[key] = query.Count(query.Match(query.Index(index), id, ...params));
+
+        accumulator[key] = query.Count(
+          query.Match(query.Index(index), id, ...params)
+        );
+
         return accumulator;
       }, {})
     );

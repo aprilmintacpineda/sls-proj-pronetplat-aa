@@ -1,10 +1,15 @@
 const { query } = require('faunadb');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
-module.exports.handler = async ({ headers, queryStringParameters }) => {
+module.exports.handler = async ({
+  headers,
+  queryStringParameters
+}) => {
   try {
     const {
       data: { id }
@@ -14,23 +19,41 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
 
     // important: Options must NOT include `after` if it's falsy
     const { nextToken: after } = queryStringParameters || {};
-    if (after) options.after = query.Ref(query.Collection('notifications'), after);
+    if (after) {
+      options.after = query.Ref(
+        query.Collection('notifications'),
+        after
+      );
+    }
 
     const result = await client.query(
       query.Map(
-        query.Paginate(query.Match(query.Index('notificationsByUserId'), id), options),
+        query.Paginate(
+          query.Match(query.Index('notificationsByUserId'), id),
+          options
+        ),
         query.Lambda(
           ['createdAt', 'ref'],
           query.Let(
             {
-              data: query.Select(['data'], query.Get(query.Var('ref'))),
+              data: query.Select(
+                ['data'],
+                query.Get(query.Var('ref'))
+              ),
               actorId: query.Select(['actorId'], query.Var('data')),
               actor: query.Select(
                 ['data'],
-                query.Get(query.Ref(query.Collection('users'), query.Var('actorId')))
+                query.Get(
+                  query.Ref(
+                    query.Collection('users'),
+                    query.Var('actorId')
+                  )
+                )
               ),
               markedAsSeen: query.If(
-                query.Not(query.ContainsField('seenAt', query.Var('data'))),
+                query.Not(
+                  query.ContainsField('seenAt', query.Var('data'))
+                ),
                 query.Update(query.Var('ref'), {
                   data: {
                     seenAt: query.Format('%t', query.Now())
@@ -42,17 +65,34 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
             query.Merge(query.Var('data'), {
               actor: {
                 id: query.Var('actorId'),
-                firstName: query.Select(['firstName'], query.Var('actor')),
-                middleName: query.Select(['middleName'], query.Var('actor')),
-                surname: query.Select(['surname'], query.Var('actor')),
+                firstName: query.Select(
+                  ['firstName'],
+                  query.Var('actor')
+                ),
+                middleName: query.Select(
+                  ['middleName'],
+                  query.Var('actor')
+                ),
+                surname: query.Select(
+                  ['surname'],
+                  query.Var('actor')
+                ),
                 profilePicture: query.Select(
                   ['profilePicture'],
                   query.Var('actor'),
                   null
                 ),
-                company: query.Select(['company'], query.Var('actor'), null),
+                company: query.Select(
+                  ['company'],
+                  query.Var('actor'),
+                  null
+                ),
                 bio: query.Select(['bio'], query.Var('actor'), null),
-                jobTitle: query.Select(['jobTitle'], query.Var('actor'), null)
+                jobTitle: query.Select(
+                  ['jobTitle'],
+                  query.Var('actor'),
+                  null
+                )
               }
             })
           )
@@ -64,7 +104,7 @@ module.exports.handler = async ({ headers, queryStringParameters }) => {
       statusCode: 200,
       body: JSON.stringify({
         data: result.data,
-        nextToken: result.after ? result.after[0].id : null
+        nextToken: result.after?.[0].id || null
       })
     };
   } catch (error) {

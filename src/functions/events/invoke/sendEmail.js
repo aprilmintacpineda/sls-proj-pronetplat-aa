@@ -4,7 +4,12 @@ const sesv2 = new AWS.SESV2({
   apiVersion: '2019-09-27'
 });
 
-module.exports.handler = async ({ recipient, content, subject, emailType }) => {
+module.exports.handler = async ({
+  recipient,
+  content,
+  subject,
+  emailType
+}) => {
   try {
     await new Promise((resolve, reject) => {
       sesv2.sendEmail(

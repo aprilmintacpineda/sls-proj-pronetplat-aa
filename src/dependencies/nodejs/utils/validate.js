@@ -33,7 +33,8 @@ const validationRules = {
     );
   },
   options (value, options) {
-    if (value.constructor === Array) return value.find(val => !options.includes(val));
+    if (value.constructor === Array)
+      return value.find(val => !options.includes(val));
     return !options.includes(value);
   },
   matches (value, [payload]) {

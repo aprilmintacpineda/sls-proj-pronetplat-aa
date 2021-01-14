@@ -1,8 +1,14 @@
 const User = require('/opt/nodejs/models/User');
 
 const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
-const { randomCode, hash, hasTimePassed } = require('/opt/nodejs/utils/helpers');
-const { sendEmailResetPasswordCode } = require('/opt/nodejs/utils/sendEmail');
+const {
+  randomCode,
+  hash,
+  hasTimePassed
+} = require('/opt/nodejs/utils/helpers');
+const {
+  sendEmailResetPasswordCode
+} = require('/opt/nodejs/utils/sendEmail');
 
 module.exports.handler = async ({ email, isResend = false }) => {
   try {

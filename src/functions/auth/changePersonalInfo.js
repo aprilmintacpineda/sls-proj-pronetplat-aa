@@ -1,11 +1,21 @@
 const { query } = require('faunadb');
 
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 const validate = require('/opt/nodejs/utils/validate');
 const User = require('/opt/nodejs/models/User');
 
-function hasErrors ({ firstName, middleName, surname, gender, jobTitle, company, bio }) {
+function hasErrors ({
+  firstName,
+  middleName,
+  surname,
+  gender,
+  jobTitle,
+  company,
+  bio
+}) {
   return (
     validate(firstName, ['required', 'maxLength:255']) ||
     validate(middleName, ['maxLength:255']) ||
@@ -26,7 +36,15 @@ module.exports.handler = async ({ headers, body }) => {
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const { firstName, middleName, surname, gender, jobTitle, company, bio } = formBody;
+    const {
+      firstName,
+      middleName,
+      surname,
+      gender,
+      jobTitle,
+      company,
+      bio
+    } = formBody;
     const user = new User();
 
     await user.updateById(id, {

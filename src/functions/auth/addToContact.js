@@ -1,19 +1,30 @@
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
-const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
+const {
+  sendPushNotification
+} = require('/opt/nodejs/utils/notifications');
 const User = require('/opt/nodejs/models/User');
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 
-module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
+module.exports.handler = async ({
+  pathParameters: { contactId },
+  headers
+}) => {
   try {
     const auth = await jwt.verify(getAuthTokenFromHeaders(headers));
 
-    if (contactId === auth.data.id) throw new Error('Cannot add self to contacts');
+    if (contactId === auth.data.id)
+      throw new Error('Cannot add self to contacts');
 
     const user = new User();
     const targetUser = new User();
     const contactRequest = new ContactRequest();
-    const [pendingSentRequest, pendingReceivedRequest] = await Promise.all([
+    const [
+      pendingSentRequest,
+      pendingReceivedRequest
+    ] = await Promise.all([
       await contactRequest.hasPendingRequest({
         senderId: contactId,
         recipientId: auth.data.id
@@ -24,18 +35,28 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
       })
     ]);
 
-    if (pendingSentRequest || pendingReceivedRequest) return { statusCode: 422 };
+    if (pendingSentRequest || pendingReceivedRequest)
+      return { statusCode: 422 };
 
-    await Promise.all([user.getById(auth.data.id), targetUser.getById(contactId)]);
+    await Promise.all([
+      user.getById(auth.data.id),
+      targetUser.getById(contactId)
+    ]);
 
-    if (!targetUser.data.completedFirstSetupAt) throw new Error('Target user not setup.');
+    if (!targetUser.data.completedFirstSetupAt)
+      throw new Error('Target user not setup.');
 
     await contactRequest.create({
       senderId: user.data.id,
       recipientId: targetUser.data.id
     });
 
-    const { profilePicture, firstName, middleName, surname } = user.data;
+    const {
+      profilePicture,
+      firstName,
+      middleName,
+      surname
+    } = user.data;
 
     let fullName = firstName;
     fullName += middleName ? ` ${middleName} ` : ' ';

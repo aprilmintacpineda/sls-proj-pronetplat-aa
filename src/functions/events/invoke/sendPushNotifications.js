@@ -1,19 +1,34 @@
 const { query } = require('faunadb');
-const { sendPushNotification } = require('/opt/nodejs/utils/firebase');
+const {
+  sendPushNotification
+} = require('/opt/nodejs/utils/firebase');
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 
-module.exports.handler = async ({ userId, title, body, type, data }) => {
+module.exports.handler = async ({
+  userId,
+  title,
+  body,
+  type,
+  data
+}) => {
   try {
     const client = initClient();
 
     const { data: tokens } = await client.query(
       query.Map(
         query.Paginate(
-          query.Match(query.Index('registeredDevicesUserIdIsActive'), userId, 1)
+          query.Match(
+            query.Index('registeredDevicesUserIdIsActive'),
+            userId,
+            1
+          )
         ),
         query.Lambda(
           ['ref'],
-          query.Select(['data', 'deviceToken'], query.Get(query.Var('ref')))
+          query.Select(
+            ['data', 'deviceToken'],
+            query.Get(query.Var('ref'))
+          )
         )
       )
     );

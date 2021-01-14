@@ -7,6 +7,11 @@ module.exports.initClient = () => {
 };
 
 module.exports.getTimeOffset = (isPast = false) => {
-  if (isPast) return query.Format('%t', query.TimeSubtract(query.Now(), 5, 'minutes'));
+  if (isPast) {
+    return query.Format(
+      '%t',
+      query.TimeSubtract(query.Now(), 5, 'minutes')
+    );
+  }
   return query.Format('%t', query.TimeAdd(query.Now(), 5, 'minutes'));
 };

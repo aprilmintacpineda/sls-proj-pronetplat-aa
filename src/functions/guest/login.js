@@ -27,7 +27,8 @@ module.exports.handler = async ({ body }) => {
     if (!await verifyHash(password, user.data.hashedPassword))
       throw new Error('Incorrect password');
 
-    if (!await isValidDeviceToken(deviceToken)) throw new Error('Invalid deviceToken.');
+    if (!await isValidDeviceToken(deviceToken))
+      throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevice();
     const authUser = user.toResponseData();
@@ -41,7 +42,10 @@ module.exports.handler = async ({ body }) => {
         data: {
           userId: user.data.id,
           deviceToken,
-          expiresAt: query.Format('%t', query.TimeAdd(query.Now(), 7, 'days'))
+          expiresAt: query.Format(
+            '%t',
+            query.TimeAdd(query.Now(), 7, 'days')
+          )
         }
       })
     ]);

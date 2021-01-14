@@ -83,12 +83,15 @@ module.exports = class Model {
     const client = initClient();
 
     const newInstance = await client.query(
-      query.Update(query.Select(['ref'], query.Get(query.Match(index, ...args))), {
-        data: {
-          ...sanitizeFormBody(data),
-          updatedAt: query.Format('%t', query.Now())
+      query.Update(
+        query.Select(['ref'], query.Get(query.Match(index, ...args))),
+        {
+          data: {
+            ...sanitizeFormBody(data),
+            updatedAt: query.Format('%t', query.Now())
+          }
         }
-      })
+      )
     );
 
     this.setInstance(newInstance);
@@ -132,12 +135,15 @@ module.exports = class Model {
         },
         {
           wasCreated: true,
-          newInstance: query.Create(query.Collection(this.collection), {
-            data: {
-              ...sanitizeFormBody(data),
-              createdAt: query.Format('%t', query.Now())
+          newInstance: query.Create(
+            query.Collection(this.collection),
+            {
+              data: {
+                ...sanitizeFormBody(data),
+                createdAt: query.Format('%t', query.Now())
+              }
             }
-          })
+          )
         }
       )
     );
@@ -157,16 +163,21 @@ module.exports = class Model {
     const client = initClient();
     const {
       data: [data]
-    } = await client.query(query.Count(query.Match(query.Index(index), ...values)));
+    } = await client.query(
+      query.Count(query.Match(query.Index(index), ...values))
+    );
 
     return parseInt(data);
   }
 
   toResponseData () {
-    const censoredData = (this.censoredData || []).concat(['updatedAt']);
+    const censoredData = (this.censoredData || []).concat([
+      'updatedAt'
+    ]);
 
     return Object.keys(this.data).reduce((accumulator, key) => {
-      if (!censoredData.includes(key)) accumulator[key] = this.data[key];
+      if (!censoredData.includes(key))
+        accumulator[key] = this.data[key];
       return accumulator;
     }, {});
   }

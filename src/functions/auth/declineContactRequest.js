@@ -1,7 +1,11 @@
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 const jwt = require('/opt/nodejs/utils/jwt');
 const validate = require('/opt/nodejs/utils/validate');
-const { sendPushNotification } = require('/opt/nodejs/utils/notifications');
+const {
+  sendPushNotification
+} = require('/opt/nodejs/utils/notifications');
 
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 const Notification = require('/opt/nodejs/models/Notification');
@@ -21,7 +25,9 @@ module.exports.handler = async ({ headers, body }) => {
 
     const contactRequest = new ContactRequest();
     await contactRequest.getById(formBody.id);
-    if (contactRequest.data.recipientId !== id) throw new Error('user is not recipient.');
+
+    if (contactRequest.data.recipientId !== id)
+      throw new Error('user is not recipient.');
 
     const notification = new Notification();
     const { senderId } = contactRequest.data;
@@ -36,7 +42,8 @@ module.exports.handler = async ({ headers, body }) => {
       })
     ]);
 
-    const fullName = firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
+    const fullName =
+      firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
 
     await sendPushNotification({
       userId: senderId,

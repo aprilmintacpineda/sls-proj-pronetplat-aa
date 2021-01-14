@@ -3,7 +3,9 @@ const { query } = require('faunadb');
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { invokeEvent } = require('/opt/nodejs/utils/lambda');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 
 const User = require('/opt/nodejs/models/User');
 const RegisteredDevice = require('/opt/nodejs/models/RegisteredDevice');
@@ -39,7 +41,10 @@ module.exports.handler = async ({ headers, body }) => {
       jwt.sign(authUser),
       user.getById(id),
       registeredDevice.update({
-        expiresAt: query.Format('%t', query.TimeAdd(query.Now(), 7, 'days'))
+        expiresAt: query.Format(
+          '%t',
+          query.TimeAdd(query.Now(), 7, 'days')
+        )
       })
     ]);
 

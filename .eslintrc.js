@@ -17,6 +17,21 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+    'max-len': [
+      'error',
+      {
+        code: 70,
+        ignoreRegExpLiterals: true,
+        ignorePattern: [
+          '^(const|let) .+ = require.+\\);$',
+          '^(const|let) .+ = \'.+\';$',
+          '^.+: \'.+\',?$',
+          '^.+//_prettier-hack$'
+        ].join('|'),
+        ignoreUrls: true
+      }
+    ],
+    'brace-style': ['error', '1tbs', { allowSingleLine: false }],
     semi: ['error', 'always'],
     quotes: ['error', 'single'],
     curly: ['error', 'multi-or-nest', 'consistent'],
@@ -29,7 +44,13 @@ module.exports = {
       }
     ],
     'rest-spread-spacing': ['error', 'never'],
-    'no-inline-comments': 'error',
+    'no-inline-comments': [
+      'error',
+      {
+        // https://github.com/prettier/prettier/issues/7884#issuecomment-760175877
+        ignorePattern: '^_prettier-hack$'
+      }
+    ],
     'no-extra-parens': ['error', 'all'],
     'prefer-spread': ['error'],
     'prefer-const': 'error',
@@ -92,8 +113,11 @@ module.exports = {
         after: true
       }
     ],
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-alert': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
+    'no-debugger':
+      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-console':
+      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-alert':
+      process.env.NODE_ENV === 'production' ? 'error' : 'warn'
   }
 };

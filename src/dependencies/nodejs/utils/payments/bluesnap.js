@@ -6,7 +6,9 @@ const CardError = require('/opt/nodejs/classes/CardError');
 const username = 'API_1602153518351925061784';
 const password = '$SPc!p18O@d0';
 
-const authToken = Buffer.from(`${username}:${password}`).toString('base64');
+const authToken = Buffer.from(`${username}:${password}`).toString(
+  'base64'
+);
 const headers = {
   Authorization: `Basic ${authToken}`,
   'Content-Type': 'application/json'
@@ -41,7 +43,11 @@ function getSubscriptionData (data) {
   };
 }
 
-module.exports.subscribe = async ({ planId, creditCard, payerInfo }) => {
+module.exports.subscribe = async ({
+  planId,
+  creditCard,
+  payerInfo
+}) => {
   let response = await fetch(
     'https://sandbox.bluesnap.com/services/2/recurring/subscriptions',
     {
@@ -119,7 +125,10 @@ module.exports.getSubscription = async ({
   };
 };
 
-module.exports.cancelSubscription = async ({ subscription, currentSubscriptionData }) => {
+module.exports.cancelSubscription = async ({
+  subscription,
+  currentSubscriptionData
+}) => {
   const status = 'CANCELED';
   const { nextChargeDate } = currentSubscriptionData;
   const { subscriptionId, planId } = subscription;

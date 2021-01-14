@@ -2,14 +2,19 @@ const User = require('/opt/nodejs/models/User');
 
 const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
 const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
-const { sendEmailWelcomeMessage } = require('/opt/nodejs/utils/sendEmail');
+const {
+  sendEmailWelcomeMessage
+} = require('/opt/nodejs/utils/sendEmail');
 
 module.exports.handler = async ({ email, password }) => {
   try {
     const user = new User();
     const emailVerificationCode = randomCode();
 
-    const [hashedEmailVerificationCode, hashedPassword] = await Promise.all([
+    const [
+      hashedEmailVerificationCode,
+      hashedPassword
+    ] = await Promise.all([
       hash(emailVerificationCode),
       hash(password)
     ]);

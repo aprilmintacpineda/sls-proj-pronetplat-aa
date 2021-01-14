@@ -1,9 +1,14 @@
 const jwt = require('/opt/nodejs/utils/jwt');
-const { getAuthTokenFromHeaders } = require('/opt/nodejs/utils/helpers');
+const {
+  getAuthTokenFromHeaders
+} = require('/opt/nodejs/utils/helpers');
 const Contact = require('/opt/nodejs/models/Contact');
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 
-module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
+module.exports.handler = async ({
+  pathParameters: { contactId },
+  headers
+}) => {
   try {
     const {
       data: { id }
@@ -13,10 +18,11 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
     const contactRequest = new ContactRequest();
 
     if (!await contact.isInContact(id, contactId)) {
-      const sentContactRequest = await contactRequest.getPendingRequest({
-        senderId: id,
-        recipientId: contactId
-      });
+      const sentContactRequest = await contactRequest //_prettier-hack
+        .getPendingRequest({
+          senderId: id,
+          recipientId: contactId
+        });
 
       if (sentContactRequest) {
         return {
@@ -27,10 +33,11 @@ module.exports.handler = async ({ pathParameters: { contactId }, headers }) => {
         };
       }
 
-      const receivedContactRequest = await contactRequest.getPendingRequest({
-        senderId: contactId,
-        recipientId: id
-      });
+      const receivedContactRequest = await contactRequest //_prettier-hack
+        .getPendingRequest({
+          senderId: contactId,
+          recipientId: id
+        });
 
       if (receivedContactRequest) {
         return {
