@@ -40,10 +40,12 @@ module.exports.sendEmailWelcomeMessage = ({ recipient, emailVerificationCode }) 
       <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">Welcome to Quaint!</h1>
         <p>
-          Thank you for using <i>Quaint; a professional networking platform for professionals,
-          business persons, and entrepreneurs to grow.</i> Your email confirmation code is below.
-          You will be asked for this verification code on your next login. You only have to enter it
-          once.
+          Thank you for using <i>Quaint; a networking platform for professionals,
+          business persons, and entrepreneurs to grow.</i>
+        </p>
+        <p>
+          Your email confirmation code is below. You will be asked for this verification
+          code on your next login. You only have to enter it once.
         </p>
         <div style="position: relative;background-color: #d0d5d1;border-radius: 4px;padding: 10px;margin-top: 50px;margin-bottom: 50px;">
           <p style="color: gray;font-size: 10px;margin: 0; padding: 0;margin-bottom: 10px;">Your confirmation code</p>
