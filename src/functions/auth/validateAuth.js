@@ -1,12 +1,10 @@
 const { query } = require('faunadb');
-
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { invokeEvent } = require('/opt/nodejs/utils/lambda');
 const {
   getAuthTokenFromHeaders
 } = require('/opt/nodejs/utils/helpers');
-
 const User = require('/opt/nodejs/models/User');
 const RegisteredDevice = require('/opt/nodejs/models/RegisteredDevice');
 

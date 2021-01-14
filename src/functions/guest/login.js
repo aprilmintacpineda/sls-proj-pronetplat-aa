@@ -1,5 +1,4 @@
 const { query } = require('faunadb');
-
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
 const { isValidDeviceToken } = require('/opt/nodejs/utils/firebase');

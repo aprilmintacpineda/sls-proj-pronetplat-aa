@@ -1,4 +1,16 @@
+const alias = require('./importAliases');
+
+const ignorePattern = '^_[0-9]+$';
+
 module.exports = {
+  settings: {
+    'import/resolver': {
+      'babel-module': {
+        extensions: ['.js'],
+        alias
+      }
+    }
+  },
   env: {
     browser: true,
     node: true,
@@ -6,8 +18,13 @@ module.exports = {
     'jest/globals': true
   },
   root: true,
-  plugins: ['jest'],
-  extends: ['eslint:recommended', 'plugin:jest/recommended'],
+  plugins: ['jest', 'module-resolver'],
+  extends: [
+    'eslint:recommended',
+    'plugin:jest/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings'
+  ],
   globals: {
     Atomics: 'readonly'
   },
@@ -24,18 +41,31 @@ module.exports = {
         ignoreRegExpLiterals: true,
         ignorePattern: [
           '^(const|let) .+ = require.+\\);$',
-          '^(const|let) .+ = \'.+\';$',
-          '^.+: \'.+\',?$',
+          "^(const|let) .+ = '.+';$",
+          "^.+: '.+',?$",
           '^.+//_prettier-hack$'
         ].join('|'),
         ignoreUrls: true
       }
     ],
     'brace-style': ['error', '1tbs', { allowSingleLine: false }],
-    semi: ['error', 'always'],
-    quotes: ['error', 'single'],
-    curly: ['error', 'multi-or-nest', 'consistent'],
+    'no-multiple-empty-lines': ['error', { max: 1 }],
+    'no-case-declarations': 0,
     'no-return-await': 'error',
+    'import/no-unresolved': 0,
+    'import/order': [
+      'error',
+      {
+        'newlines-between': 'never',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true
+        }
+      }
+    ],
+    semi: ['error', 'always'],
+    quotes: ['error', 'single', { avoidEscape: true }],
+    curly: ['error', 'multi-or-nest', 'consistent'],
     'linebreak-style': ['error', 'unix'],
     'no-duplicate-imports': [
       'error',
@@ -47,17 +77,23 @@ module.exports = {
     'no-inline-comments': [
       'error',
       {
-        // https://github.com/prettier/prettier/issues/7884#issuecomment-760175877
-        ignorePattern: '^_prettier-hack$'
+        ignorePattern: '_prettier-hack'
       }
     ],
-    'no-extra-parens': ['error', 'all'],
+    'no-extra-parens': ['error', 'all', { ignoreJSX: 'multi-line' }],
     'prefer-spread': ['error'],
     'prefer-const': 'error',
     'no-useless-call': ['error'],
     'no-trailing-spaces': ['error'],
     'space-before-blocks': ['error', 'always'],
-    'no-unused-vars': ['error'],
+    'no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: ignorePattern,
+        argsIgnorePattern: ignorePattern,
+        caughtErrorsIgnorePattern: ignorePattern
+      }
+    ],
     'no-floating-decimal': ['error'],
     'comma-dangle': ['error', 'never'],
     'array-bracket-spacing': ['error', 'never'],
@@ -91,6 +127,8 @@ module.exports = {
         after: true
       }
     ],
+    'space-in-parens': ['error', 'never'],
+    'block-spacing': 'error',
     'key-spacing': [
       'error',
       {
@@ -113,6 +151,8 @@ module.exports = {
         after: true
       }
     ],
+    eqeqeq: 'error',
+    'no-empty': 'error',
     'no-debugger':
       process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'no-console':

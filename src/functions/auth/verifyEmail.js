@@ -1,5 +1,4 @@
 const { query } = require('faunadb');
-
 const validate = require('/opt/nodejs/utils/validate');
 const {
   getAuthTokenFromHeaders,

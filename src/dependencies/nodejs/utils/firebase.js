@@ -1,5 +1,5 @@
-const firebaseAdmin = require('firebase-admin');
 const path = require('path');
+const firebaseAdmin = require('firebase-admin');
 
 const configPath = path.join(
   __dirname,

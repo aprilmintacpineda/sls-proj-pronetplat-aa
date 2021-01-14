@@ -1,5 +1,4 @@
 const { isPast } = require('date-fns');
-
 const fetch = require('node-fetch');
 const CardError = require('/opt/nodejs/classes/CardError');
 

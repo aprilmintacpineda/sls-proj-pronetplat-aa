@@ -1,6 +1,5 @@
 const aws = require('aws-sdk');
 const mimetypes = require('mime-types');
-
 const jwt = require('/opt/nodejs/utils/jwt');
 const {
   getAuthTokenFromHeaders

@@ -1,5 +1,4 @@
 const { query } = require('faunadb');
-
 const jwt = require('/opt/nodejs/utils/jwt');
 const {
   getAuthTokenFromHeaders

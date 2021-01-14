@@ -9,7 +9,6 @@ const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
 const {
   sendEmailVerificationCode
 } = require('/opt/nodejs/utils/sendEmail');
-
 const User = require('/opt/nodejs/models/User');
 
 module.exports.handler = async ({ headers }) => {

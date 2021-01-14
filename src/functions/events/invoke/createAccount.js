@@ -1,5 +1,4 @@
 const User = require('/opt/nodejs/models/User');
-
 const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
 const { randomCode, hash } = require('/opt/nodejs/utils/helpers');
 const {

@@ -6,7 +6,6 @@ const validate = require('/opt/nodejs/utils/validate');
 const {
   sendPushNotification
 } = require('/opt/nodejs/utils/notifications');
-
 const ContactRequest = require('/opt/nodejs/models/ContactRequest');
 const Notification = require('/opt/nodejs/models/Notification');
 

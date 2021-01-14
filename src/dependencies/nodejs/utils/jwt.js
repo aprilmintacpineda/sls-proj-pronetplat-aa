@@ -1,7 +1,7 @@
+const fs = require('fs').promises;
 const path = require('path');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const fs = require('fs').promises;
 
 const validityPeriod = '7d';
 

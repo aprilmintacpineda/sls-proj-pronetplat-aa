@@ -1,5 +1,4 @@
 const { query } = require('faunadb');
-
 const { initClient } = require('/opt/nodejs/utils/faunadb');
 const { sanitizeFormBody } = require('/opt/nodejs/utils/helpers');
 
