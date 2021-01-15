@@ -36,7 +36,7 @@
     "migration:migrate": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate migrate",
     "migration:create": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate create",
     "create-plans": "node scripts/createPlans.js",
-    "build": "babel src -d build"
+    "build": "babel src -d build --copy-files"
   },
   "husky": {
     "hooks": {
