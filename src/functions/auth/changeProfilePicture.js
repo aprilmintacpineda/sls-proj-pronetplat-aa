@@ -31,7 +31,7 @@ module.exports.handler = async ({ headers, body }) => {
     const ext = mimetypes.extension(mimeType);
 
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
-      Bucket: process.env.USERS_BUCKET,
+      Bucket: process.env.usersBucket,
       Expires: 15,
       ACL: 'public-read',
       Key: `newProfilePicture_${id}.${ext}`,

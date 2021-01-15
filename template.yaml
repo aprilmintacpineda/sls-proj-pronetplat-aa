@@ -19,8 +19,8 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
-        STAGE: !Ref Stage
-        USERS_BUCKET: !Ref usersS3Bucket
+        stage: !Ref Stage
+        usersBucket: !Ref usersS3Bucket
         fn_sendPushNotifications: !Join
           - '-'
           - - !Ref Stage
