@@ -35,7 +35,10 @@ module.exports.handler = async ({ headers, body }) => {
       throw new Error('Incorrect verification code');
 
     await user.update({
-      emailVerifiedAt: query.Format('%t', query.Now())
+      emailVerifiedAt: query.Format('%t', query.Now()),
+      emailConfirmCodeExpiresAt: null,
+      emailCodeCanSendAt: null,
+      hashedEmailVerificationCode: null
     });
 
     const authUser = user.toResponseData();
