@@ -39,7 +39,6 @@ module.exports.handler = async ({ headers, body }) => {
     const authUser = user.toResponseData();
     const [newAuthToken] = await Promise.all([
       jwt.sign(authUser),
-      user.getById(id),
       registeredDevice.update({
         expiresAt: query.Format(
           '%t',
