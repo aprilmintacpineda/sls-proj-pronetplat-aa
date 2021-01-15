@@ -3,7 +3,9 @@ const { initClient } = require('/opt/nodejs/utils/faunadb');
 const { sanitizeFormBody } = require('/opt/nodejs/utils/helpers');
 
 module.exports = class Model {
-  wasHardDeleted = false;
+  constructor () {
+    this.wasHardDeleted = false;
+  }
 
   setInstance (newInstance) {
     this.instance = newInstance;

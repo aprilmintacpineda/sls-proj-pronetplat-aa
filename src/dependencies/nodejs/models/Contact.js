@@ -1,7 +1,10 @@
 const Model = require('/opt/nodejs/classes/Model');
 
 module.exports = class Contact extends Model {
-  collection = 'contacts';
+  constructor () {
+    super();
+    this.collection = 'contacts';
+  }
 
   async isInContact (ownerId, contactId) {
     let isInContact = false;

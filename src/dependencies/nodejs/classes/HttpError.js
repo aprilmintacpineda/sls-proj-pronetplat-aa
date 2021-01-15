@@ -1,7 +1,6 @@
 module.exports = class HttpError {
-  type = 'httpError';
-
   constructor ({ statusCode, message = null }) {
+    this.type = 'httpError';
     this.statusCode = statusCode;
     this.message = message;
   }

@@ -1,7 +1,10 @@
 const Model = require('/opt/nodejs/classes/Model');
 
 module.exports = class ContactRequest extends Model {
-  collection = 'contactRequests';
+  constructor () {
+    super();
+    this.collection = 'contactRequests';
+  }
 
   hasPendingRequest ({ senderId, recipientId }) {
     return this.countByIndex(
