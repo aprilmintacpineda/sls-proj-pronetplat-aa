@@ -49,6 +49,7 @@ jobs:
       - name: Sam build & deploy
         run: |
           sam build
+          ls -lha .aws-sam/build/register
           sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev \
