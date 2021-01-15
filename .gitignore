@@ -133,3 +133,4 @@ $RECYCLE.BIN/
 test.js
 firebase_admin.json
 build
+src/dependencies/nodejs/resources
