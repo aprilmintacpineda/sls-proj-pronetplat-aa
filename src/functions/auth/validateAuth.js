@@ -27,11 +27,14 @@ module.exports.handler = async ({ headers, body }) => {
     const user = new User();
     const registeredDevice = new RegisteredDevice();
 
-    await registeredDevice.getByIndex(
-      'registeredDeviceByUserIdDeviceToken',
-      id,
-      deviceToken
-    );
+    await Promise.all([
+      registeredDevice.getByIndex(
+        'registeredDeviceByUserIdDeviceToken',
+        id,
+        deviceToken
+      ),
+      user.getById(id)
+    ]);
 
     const authUser = user.toResponseData();
     const [newAuthToken] = await Promise.all([
