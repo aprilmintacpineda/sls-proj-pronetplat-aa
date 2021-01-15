@@ -14,22 +14,18 @@ module.exports.handler = async ({
       data: { id }
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const client = initClient();
-    const options = { size: 20 };
-
-    // important: Options must NOT include `after` if it's falsy
     const { nextToken: after } = queryStringParameters || {};
-    if (after) {
-      options.after = query.Ref(
-        query.Collection('notifications'),
-        after
-      );
-    }
 
     const result = await client.query(
       query.Map(
         query.Paginate(
           query.Match(query.Index('notificationsByUserId'), id),
-          options
+          {
+            size: 20,
+            after: after
+              ? query.Ref(query.Collection('notifications'), after)
+              : 0
+          }
         ),
         query.Lambda(
           ['createdAt', 'ref'],

@@ -28,10 +28,9 @@ module.exports.handler = async ({ headers, body }) => {
     const registeredDevice = new RegisteredDevice();
 
     await registeredDevice.getByIndex(
-      'registeredDeviceByUserIdDeviceTokenIsActive',
+      'registeredDeviceByUserIdDeviceToken',
       id,
-      deviceToken,
-      1
+      deviceToken
     );
 
     const authUser = user.toResponseData();

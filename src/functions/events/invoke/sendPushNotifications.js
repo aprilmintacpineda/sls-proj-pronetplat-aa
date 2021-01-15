@@ -13,37 +13,27 @@ module.exports.handler = async ({
 }) => {
   try {
     const client = initClient();
+    let nextToken = '';
 
-    const { data: tokens } = await client.query(
-      query.Map(
-        query.Paginate(
-          query.Match(
-            query.Index('registeredDevicesUserIdIsActive'),
-            userId,
-            1
-          )
-        ),
-        query.Lambda(
-          ['ref'],
-          query.Select(
-            ['data', 'deviceToken'],
-            query.Get(query.Var('ref'))
-          )
-        )
-      )
-    );
+    do {
+      const result = await client.query(
+        query.Call('getActiveRegisteredDevices', userId, nextToken)
+      );
 
-    await sendPushNotification({
-      tokens,
-      notification: {
-        title,
-        body
-      },
-      data: {
-        ...data,
-        type
-      }
-    });
+      await sendPushNotification({
+        tokens: result.data,
+        notification: {
+          title,
+          body
+        },
+        data: {
+          ...data,
+          type
+        }
+      });
+
+      nextToken = result.after?.[0].id;
+    } while (nextToken);
   } catch (error) {
     console.log('error', error);
   }

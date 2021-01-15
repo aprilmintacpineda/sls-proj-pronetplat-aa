@@ -14,16 +14,7 @@ module.exports.handler = async ({
       data: { id }
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
     const client = initClient();
-    const options = { size: 20 };
-
-    // important: Options must NOT include `after` if it's falsy
     const { nextToken: after = null } = queryStringParameters || {};
-    if (after) {
-      options.after = query.Ref(
-        query.Collection('contactRequests'),
-        after
-      );
-    }
 
     const result = await client.query(
       query.Map(
@@ -32,7 +23,12 @@ module.exports.handler = async ({
             query.Index('contactRequestsByRecipientId'),
             id
           ),
-          options
+          {
+            size: 20,
+            after: after
+              ? query.Ref(query.Collection('contactRequests'), after)
+              : 0
+          }
         ),
         query.Lambda(
           ['ref'],
