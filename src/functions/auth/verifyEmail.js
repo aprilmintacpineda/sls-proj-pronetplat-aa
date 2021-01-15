@@ -23,6 +23,9 @@ module.exports.handler = async ({ headers, body }) => {
     const user = new User();
     await user.getById(id);
 
+    if (user.data.emailVerifiedAt)
+      throw new Error('Email has already been verified');
+
     if (hasTimePassed(user.data.emailConfirmCodeExpiresAt))
       return { statusCode: 410 };
 
