@@ -31,24 +31,25 @@ jobs:
           echo 'Yarn: $(yarn --version)'
           echo 'Node: $(node --version)'
 
-      - name: Generate resources
-        run: |
-          echo '${{ secrets.JWT_PRIVATE_KEY }}' > src/dependencies/nodejs/resources/jwt.key
-          echo '${{ secrets.JWT_PUBLIC_KEY }}' > src/dependencies/nodejs/resources/jwt.pub
-          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > src/dependencies/nodejs/resources/firebase_admin.json
-
       - name: Install dependencies
-        run: |
-          yarn
-          cd src/dependencies/nodejs && yarn
+        run: yarn
 
-      - name: Build
+      - name: Transpile JS
         run: |
           NODE_ENV=production yarn build
-          sam build
+          cd build/dependencies/nodejs && yarn
+      
+      - name: Generate resources
+        run: |
+          mkdir build/dependencies/nodejs/resources
+          echo '${{ secrets.JWT_PRIVATE_KEY }}' > build/dependencies/nodejs/resources/jwt.key
+          echo '${{ secrets.JWT_PUBLIC_KEY }}' > build/dependencies/nodejs/resources/jwt.pub
+          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
 
-      - name: Deploy
-        run: sam deploy --stack-name sls-proj-pronetplat-aa-dev \
-          --s3-prefix sls-proj-pronetplat-aa-dev \
-          --parameter-overrides Stage=dev \
-          --tags what="sls-proj-pronetplat-aa" stage="dev"
+      - name: Sam build & deploy
+        run: |
+          sam build
+          sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+            --s3-prefix sls-proj-pronetplat-aa-dev \
+            --parameter-overrides Stage=dev \
+            --tags what="sls-proj-pronetplat-aa" stage="dev"
