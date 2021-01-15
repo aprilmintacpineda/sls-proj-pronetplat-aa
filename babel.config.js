@@ -1,6 +1,7 @@
 const alias = require('./importAliases');
 
-module.exports = {
+const config = {
+  comments: false,
   presets: [
     [
       '@babel/preset-env',
@@ -11,14 +12,25 @@ module.exports = {
       }
     ]
   ],
-  plugins: [
-    [
-      'module-resolver',
-      {
-        root: ['./src'],
-        alias
-      }
-    ]
-  ],
+  plugins: [],
   ignore: [/node_modules/]
 };
+
+if (process.env.NODE_ENV === 'production') {
+  config.presets.push([
+    'minify',
+    {
+      builtIns: false
+    }
+  ]);
+} else {
+  config.plugins.push([
+    'module-resolver',
+    {
+      root: ['./src'],
+      alias
+    }
+  ]);
+}
+
+module.exports = config;
