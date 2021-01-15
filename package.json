@@ -3,6 +3,9 @@
   "description": "proj-pronetplat-aa",
   "version": "0.0.1",
   "private": true,
+  "files": [
+    "build"
+  ],
   "dependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
