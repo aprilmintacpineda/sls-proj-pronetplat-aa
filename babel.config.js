@@ -1,8 +1,17 @@
 const alias = require('./importAliases');
 
 module.exports = {
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: '12'
+        }
+      }
+    ]
+  ],
   plugins: [
-    '@babel/plugin-proposal-class-properties',
     [
       'module-resolver',
       {
@@ -10,5 +19,6 @@ module.exports = {
         alias
       }
     ]
-  ]
+  ],
+  ignore: [/node_modules/]
 };

@@ -38,10 +38,14 @@ jobs:
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > src/dependencies/nodejs/resources/firebase_admin.json
 
       - name: Install dependencies
-        run: cd src/dependencies/nodejs && yarn
+        run: |
+          yarn
+          cd src/dependencies/nodejs && yarn
 
       - name: Build
-        run: sam build
+        run: |
+          yarn build
+          sam build
 
       - name: Deploy
         run: sam deploy --stack-name sls-proj-pronetplat-aa-dev \

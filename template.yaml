@@ -55,7 +55,7 @@ Resources:
   register:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/guest/register.handler
+      Handler: build/functions/guest/register.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -79,7 +79,7 @@ Resources:
   forgotPasswordSend:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/guest/forgotPasswordSend.handler
+      Handler: build/functions/guest/forgotPasswordSend.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -103,7 +103,7 @@ Resources:
   forgotPasswordConfirm:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/guest/forgotPasswordConfirm.handler
+      Handler: build/functions/guest/forgotPasswordConfirm.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -127,7 +127,7 @@ Resources:
   login:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/guest/login.handler
+      Handler: build/functions/guest/login.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -148,7 +148,7 @@ Resources:
   verifyEmail:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/verifyEmail.handler
+      Handler: build/functions/auth/verifyEmail.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -172,7 +172,7 @@ Resources:
   resendEmailCode:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/resendEmailCode.handler
+      Handler: build/functions/auth/resendEmailCode.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -196,7 +196,7 @@ Resources:
   changePersonalInfo:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/changePersonalInfo.handler
+      Handler: build/functions/auth/changePersonalInfo.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -214,7 +214,7 @@ Resources:
   changeProfilePicture:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/changeProfilePicture.handler
+      Handler: build/functions/auth/changeProfilePicture.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -251,7 +251,7 @@ Resources:
   addToContact:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/addToContact.handler
+      Handler: build/functions/auth/addToContact.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -275,7 +275,7 @@ Resources:
   badgeCount:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/badgeCount.handler
+      Handler: build/functions/auth/badgeCount.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -293,7 +293,7 @@ Resources:
   receivedContactRequests:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/receivedContactRequests.handler
+      Handler: build/functions/auth/receivedContactRequests.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -311,7 +311,7 @@ Resources:
   notifications:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/notifications.handler
+      Handler: build/functions/auth/notifications.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -329,7 +329,7 @@ Resources:
   acceptContactRequest:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/acceptContactRequest.handler
+      Handler: build/functions/auth/acceptContactRequest.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -353,7 +353,7 @@ Resources:
   declineContactRequest:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/declineContactRequest.handler
+      Handler: build/functions/auth/declineContactRequest.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -377,7 +377,7 @@ Resources:
   contactDetails:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/contactDetails.handler
+      Handler: build/functions/auth/contactDetails.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -395,7 +395,7 @@ Resources:
   validateAuth:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/auth/validateAuth.handler
+      Handler: build/functions/auth/validateAuth.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -416,7 +416,7 @@ Resources:
   sendPushNotifications:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/sendPushNotifications.handler
+      Handler: build/functions/events/invoke/sendPushNotifications.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -426,7 +426,7 @@ Resources:
   forceExpireDeviceToken:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/forceExpireDeviceToken.handler
+      Handler: build/functions/events/invoke/forceExpireDeviceToken.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -436,7 +436,7 @@ Resources:
   sendEmail:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/sendEmail.handler
+      Handler: build/functions/events/invoke/sendEmail.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -452,7 +452,7 @@ Resources:
   sendForgotPasswordCode:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/sendForgotPasswordCode.handler
+      Handler: build/functions/events/invoke/sendForgotPasswordCode.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -468,7 +468,7 @@ Resources:
   confirmForgotPassword:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/confirmForgotPassword.handler
+      Handler: build/functions/events/invoke/confirmForgotPassword.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -484,7 +484,7 @@ Resources:
   createAccount:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/functions/events/invoke/createAccount.handler
+      Handler: build/functions/events/invoke/createAccount.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -503,7 +503,7 @@ Resources:
   # profilePictureUploaded:
   #   Type: AWS::Serverless::Function
   #   Properties:
-  #     Handler: src/functions/events/s3/profilePictureUploaded.handler
+  #     Handler: build/functions/events/s3/profilePictureUploaded.handler
   #     MemorySize: 2048
   #     Layers:
   #       - !Ref dependencies
@@ -544,7 +544,7 @@ Resources:
     Properties:
       CompatibleRuntimes:
         - nodejs12.x
-      ContentUri: src/dependencies
+      ContentUri: build/dependencies
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
   ######
