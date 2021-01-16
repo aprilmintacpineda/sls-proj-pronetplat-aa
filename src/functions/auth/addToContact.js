@@ -25,11 +25,11 @@ module.exports.handler = async ({
       pendingSentRequest,
       pendingReceivedRequest
     ] = await Promise.all([
-      await contactRequest.hasPendingRequest({
+      contactRequest.hasPendingRequest({
         senderId: contactId,
         recipientId: auth.data.id
       }),
-      await contactRequest.hasPendingRequest({
+      contactRequest.hasPendingRequest({
         senderId: auth.data.id,
         recipientId: contactId
       })

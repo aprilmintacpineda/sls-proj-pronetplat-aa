@@ -54,8 +54,8 @@ module.exports.handler = async ({ headers, body }) => {
     const notification = new Notification();
 
     await Promise.all([
-      await contactRequest.hardDelete(),
-      await notification.create({
+      contactRequest.hardDelete(),
+      notification.create({
         userId: senderId,
         type: 'contactRequestAccepted',
         body: '{fullname} has accepted your contact request.',
