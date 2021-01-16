@@ -35,8 +35,14 @@ module.exports.handler = async ({
       })
     ]);
 
-    if (pendingSentRequest || pendingReceivedRequest)
-      return { statusCode: 422 };
+    if (pendingSentRequest || pendingReceivedRequest) {
+      return {
+        statusCode: 422,
+        body: pendingSentRequest
+          ? 'pendingSentRequest'
+          : 'pendingReceivedRequest'
+      };
+    }
 
     await Promise.all([
       user.getById(auth.data.id),
