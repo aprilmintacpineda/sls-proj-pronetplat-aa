@@ -20,6 +20,8 @@ module.exports.handler = async ({
         query.Call('getActiveRegisteredDevices', userId, nextToken)
       );
 
+      console.log(result);
+
       await sendPushNotification({
         tokens: result.data,
         notification: {
