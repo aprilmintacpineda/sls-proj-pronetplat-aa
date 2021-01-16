@@ -61,7 +61,6 @@ module.exports = {
     ],
     'rest-spread-spacing': ['error', 'never'],
     'no-inline-comments': 'error',
-    'no-extra-parens': ['error', 'all', { ignoreJSX: 'multi-line' }],
     'prefer-spread': ['error'],
     'prefer-const': 'error',
     'no-useless-call': ['error'],
