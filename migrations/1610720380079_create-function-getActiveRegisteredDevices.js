@@ -12,7 +12,7 @@ module.exports.up = q => {
             q.Map(
               q.Paginate(
                 q.Match(
-                  q.Index('registeredDeviceByUserIdDeviceToken'),
+                  q.Index('registeredDevicesByUserId'),
                   q.Var('userId')
                 ),
                 {
