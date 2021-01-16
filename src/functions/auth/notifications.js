@@ -58,6 +58,7 @@ module.exports.handler = async ({
               )
             },
             query.Merge(query.Var('data'), {
+              id: query.Select(['id'], query.Var('ref')),
               actor: {
                 id: query.Var('actorId'),
                 firstName: query.Select(
