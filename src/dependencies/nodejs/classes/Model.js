@@ -168,13 +168,11 @@ module.exports = class Model {
 
   async countByIndex (index, ...values) {
     const client = initClient();
-    const {
-      data: [data]
-    } = await client.query(
+    const count = await client.query(
       query.Count(query.Match(query.Index(index), ...values))
     );
 
-    return parseInt(data);
+    return parseInt(count);
   }
 
   toResponseData () {
