@@ -44,6 +44,12 @@ module.exports.handler = async ({ headers, body }) => {
           '%t',
           query.TimeAdd(query.Now(), 7, 'days')
         )
+      }),
+      user.update({
+        lastLoginAt: query.Format(
+          '%t',
+          query.TimeAdd(query.Now(), 7, 'days')
+        )
       })
     ]);
 
