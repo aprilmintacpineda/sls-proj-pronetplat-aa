@@ -22,8 +22,8 @@ module.exports.handler = async ({
     const targetUser = new User();
     const contactRequest = new ContactRequest();
     const [
-      pendingSentRequest,
-      pendingReceivedRequest
+      pendingReceivedRequest,
+      pendingSentRequest
     ] = await Promise.all([
       contactRequest.hasPendingRequest({
         senderId: contactId,
@@ -34,8 +34,6 @@ module.exports.handler = async ({
         recipientId: contactId
       })
     ]);
-
-    console.log(pendingSentRequest, pendingReceivedRequest);
 
     if (pendingSentRequest || pendingReceivedRequest) {
       return {
