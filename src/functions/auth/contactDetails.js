@@ -17,7 +17,7 @@ module.exports.handler = async ({
     const contact = new Contact();
     const contactRequest = new ContactRequest();
 
-    if (!await contact.isInContact(id, contactId)) {
+    if (!(await contact.isInContact(id, contactId))) {
       const sentContactRequest = await contactRequest.getPendingRequest(
         {
           senderId: id,

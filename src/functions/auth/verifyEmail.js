@@ -30,10 +30,10 @@ module.exports.handler = async ({ headers, body }) => {
       return { statusCode: 410 };
 
     if (
-      !await verifyHash(
+      !(await verifyHash(
         formBody.verificationCode,
         user.data.hashedEmailVerificationCode
-      )
+      ))
     )
       throw new Error('Incorrect verification code');
 

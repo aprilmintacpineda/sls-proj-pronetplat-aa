@@ -21,10 +21,10 @@ module.exports.handler = async ({
       throw new Error('password reset code expired');
 
     if (
-      !await verifyHash(
+      !(await verifyHash(
         confirmationCode,
         user.data.hashedResetPasswordCode
-      )
+      ))
     )
       throw new Error('incorrect code');
 

@@ -23,10 +23,10 @@ module.exports.handler = async ({ body }) => {
     const user = new User();
     await user.getByEmail(email);
 
-    if (!await verifyHash(password, user.data.hashedPassword))
+    if (!(await verifyHash(password, user.data.hashedPassword)))
       throw new Error('Incorrect password');
 
-    if (!await isValidDeviceToken(deviceToken))
+    if (!(await isValidDeviceToken(deviceToken)))
       throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevice();
