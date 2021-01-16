@@ -24,7 +24,7 @@ module.exports.handler = async ({
             size: 20,
             after: after
               ? query.Ref(query.Collection('notifications'), after)
-              : null
+              : []
           }
         ),
         query.Lambda(

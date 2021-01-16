@@ -27,7 +27,7 @@ module.exports.handler = async ({
             size: 20,
             after: after
               ? query.Ref(query.Collection('contactRequests'), after)
-              : null
+              : []
           }
         ),
         query.Lambda(
