@@ -7,10 +7,12 @@ module.exports = class ContactRequest extends Model {
   }
 
   hasPendingRequest ({ senderId, recipientId }) {
-    return this.countByIndex(
-      'contactRequestBySenderIdRecipientId',
-      senderId,
-      recipientId
+    return Boolean(
+      this.countByIndex(
+        'contactRequestBySenderIdRecipientId',
+        senderId,
+        recipientId
+      )
     );
   }
 

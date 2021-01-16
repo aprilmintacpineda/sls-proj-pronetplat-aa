@@ -35,6 +35,8 @@ module.exports.handler = async ({
       })
     ]);
 
+    console.log(pendingSentRequest, pendingReceivedRequest);
+
     if (pendingSentRequest || pendingReceivedRequest) {
       return {
         statusCode: 422,
