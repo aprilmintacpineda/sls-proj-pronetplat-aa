@@ -15,10 +15,8 @@ module.exports = class ContactRequest extends Model {
   }
 
   async getPendingRequestIfExists ({ senderId, recipientId }) {
-    let pendingRequest = null;
-
     try {
-      pendingRequest = await this.getByIndex(
+      await this.getByIndex(
         'contactRequestBySenderIdRecipientId',
         senderId,
         recipientId
@@ -26,8 +24,6 @@ module.exports = class ContactRequest extends Model {
     } catch (error) {
       console.log('getPendingRequestIfExists', error);
     }
-
-    return pendingRequest;
   }
 
   getPendingRequest ({ senderId, recipientId }) {

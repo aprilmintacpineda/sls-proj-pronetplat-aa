@@ -5,6 +5,9 @@ const { sanitizeFormBody } = require('/opt/nodejs/utils/helpers');
 module.exports = class Model {
   constructor () {
     this.wasHardDeleted = false;
+    this.data = null;
+    this.instance = null;
+    this.ref = null;
   }
 
   setInstance (newInstance) {

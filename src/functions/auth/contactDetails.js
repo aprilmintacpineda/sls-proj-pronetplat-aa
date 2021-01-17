@@ -18,38 +18,34 @@ module.exports.handler = async ({
     const contactRequest = new ContactRequest();
 
     if (!(await contact.isInContact(id, contactId))) {
-      const sentContactRequest = await contactRequest.getPendingRequestIfExists(
-        {
-          senderId: id,
-          recipientId: contactId
-        }
-      );
+      await contactRequest.getPendingRequestIfExists({
+        senderId: id,
+        recipientId: contactId
+      });
 
-      console.log('sentContactRequest', sentContactRequest);
+      console.log('sentContactRequest', contactRequest);
 
-      if (sentContactRequest) {
+      if (contactRequest.data) {
         return {
           statusCode: 200,
           body: JSON.stringify({
-            sentContactRequestId: sentContactRequest.data.id
+            sentContactRequestId: contactRequest.data.id
           })
         };
       }
 
-      const receivedContactRequest = await contactRequest.getPendingRequestIfExists(
-        {
-          senderId: contactId,
-          recipientId: id
-        }
-      );
+      await contactRequest.getPendingRequestIfExists({
+        senderId: contactId,
+        recipientId: id
+      });
 
-      console.log('receivedContactRequest', receivedContactRequest);
+      console.log('receivedContactRequest', contactRequest);
 
-      if (receivedContactRequest) {
+      if (contactRequest.data) {
         return {
           statusCode: 200,
           body: JSON.stringify({
-            receivedContactRequestId: receivedContactRequest.data.id
+            receivedContactRequestId: contactRequest.data.id
           })
         };
       }
