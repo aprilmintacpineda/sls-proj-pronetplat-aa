@@ -29,7 +29,9 @@ module.exports.handler = async ({
         return {
           statusCode: 200,
           body: JSON.stringify({
-            sentContactRequestId: contactRequest.data.id
+            data: {
+              sentContactRequestId: contactRequest.data.id
+            }
           })
         };
       }
@@ -45,7 +47,9 @@ module.exports.handler = async ({
         return {
           statusCode: 200,
           body: JSON.stringify({
-            receivedContactRequestId: contactRequest.data.id
+            data: {
+              receivedContactRequestId: contactRequest.data.id
+            }
           })
         };
       }
