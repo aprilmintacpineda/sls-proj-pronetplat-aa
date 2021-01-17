@@ -26,7 +26,9 @@ module.exports.handler = async ({
       if (contactRequest.data) {
         return {
           statusCode: 200,
-          body: JSON.stringify(contactRequest.toResponseData())
+          body: JSON.stringify({
+            data: contactRequest.toResponseData()
+          })
         };
       }
 
@@ -38,7 +40,9 @@ module.exports.handler = async ({
       if (contactRequest.data) {
         return {
           statusCode: 200,
-          body: JSON.stringify(contactRequest.toResponseData())
+          body: JSON.stringify({
+            data: contactRequest.toResponseData()
+          })
         };
       }
 
