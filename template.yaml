@@ -7,9 +7,18 @@ Description: >
   
 Parameters:
   Stage:
-    Description: Required staged of the current build
+    Description: Stage of the current build
     Type: String
-    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - production
+
+Mappings:
+  AppPackageName:
+    dev: com.aprmp.proj-pronetplat-aa.local
+    staging: com.aprmp.proj-pronetplat-aa.staging
+    production: com.aprmp.proj-pronetplat-aa
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -19,7 +28,7 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
-        appPackageName: !Ref PackageName
+        appPackageName: !Ref AppPackageName
         stage: !Ref Stage
         usersBucket: !Ref usersS3Bucket
         fn_sendPushNotifications: !Join
