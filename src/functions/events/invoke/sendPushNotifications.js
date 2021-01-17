@@ -25,18 +25,24 @@ module.exports.handler = async ({
         ({ data: { deviceToken } }) => deviceToken
       );
 
-      await sendPushNotification({
+      const options = {
         tokens,
         notification: {
           title,
-          body,
-          imageUrl
-        },
-        data: {
+          body
+        }
+      };
+
+      if (imageUrl) options.notification.imageUrl = imageUrl;
+
+      if (data || type) {
+        options.data = {
           ...data,
           type
-        }
-      });
+        };
+      }
+
+      await sendPushNotification(options);
 
       nextToken = result.after?.[0].id;
     } while (nextToken);
