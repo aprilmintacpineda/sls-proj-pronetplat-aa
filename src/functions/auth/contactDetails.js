@@ -18,12 +18,14 @@ module.exports.handler = async ({
     const contactRequest = new ContactRequest();
 
     if (!(await contact.isInContact(id, contactId))) {
-      const sentContactRequest = await contactRequest.getPendingRequestOrNull(
+      const sentContactRequest = await contactRequest.getPendingRequestIfExists(
         {
           senderId: id,
           recipientId: contactId
         }
       );
+
+      console.log('sentContactRequest', sentContactRequest);
 
       if (sentContactRequest) {
         return {
@@ -34,12 +36,14 @@ module.exports.handler = async ({
         };
       }
 
-      const receivedContactRequest = await contactRequest.getPendingRequestOrNull(
+      const receivedContactRequest = await contactRequest.getPendingRequestIfExists(
         {
           senderId: contactId,
           recipientId: id
         }
       );
+
+      console.log('receivedContactRequest', receivedContactRequest);
 
       if (receivedContactRequest) {
         return {

@@ -14,7 +14,7 @@ module.exports = class ContactRequest extends Model {
     );
   }
 
-  async getPendingRequestOrNull ({ senderId, recipientId }) {
+  async getPendingRequestIfExists ({ senderId, recipientId }) {
     let pendingRequest = null;
 
     try {
@@ -24,7 +24,7 @@ module.exports = class ContactRequest extends Model {
         recipientId
       );
     } catch (error) {
-      console.log('getPendingRequestOrNull', error);
+      console.log('getPendingRequestIfExists', error);
     }
 
     return pendingRequest;
