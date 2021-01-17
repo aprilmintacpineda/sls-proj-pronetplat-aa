@@ -22,12 +22,10 @@ module.exports.handler = async ({
         query.Call('getActiveRegisteredDevices', userId, nextToken)
       );
 
-      const tokens = result.data.map(
-        ({ data: { deviceToken } }) => deviceToken
-      );
-
       await sendPushNotification({
-        tokens,
+        tokens: result.data.map(
+          ({ data: { deviceToken } }) => deviceToken
+        ),
         notification: {
           title,
           body,

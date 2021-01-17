@@ -1,3 +1,4 @@
+const { differenceInDays } = require('date-fns');
 const { query } = require('faunadb');
 const validate = require('/opt/nodejs/utils/validate');
 const jwt = require('/opt/nodejs/utils/jwt');
@@ -35,9 +36,22 @@ module.exports.handler = async ({ headers, body }) => {
     const contactRequest = new ContactRequest();
     await contactRequest.getById(formBody.contactRequestId);
 
-    const { senderId, recipientId } = contactRequest.data;
+    const {
+      senderId,
+      recipientId,
+      lastFollowUpAt,
+      createdAt
+    } = contactRequest.data;
 
     if (senderId !== id) throw new Error('User is not the sender');
+
+    if (
+      (!lastFollowUpAt &&
+        differenceInDays(new Date(), new Date(createdAt)) < 1) ||
+      (lastFollowUpAt &&
+        differenceInDays(new Date(), new Date(lastFollowUpAt)) < 1)
+    )
+      throw new Error('Must wait until tomorrow to send follow up');
 
     const notification = new Notification();
 
