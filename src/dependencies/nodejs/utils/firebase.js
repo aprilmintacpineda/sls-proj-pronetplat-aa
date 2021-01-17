@@ -34,8 +34,6 @@ module.exports.sendPushNotification = ({
   notification,
   data
 }) => {
-  console.log(process.env);
-
   if (tokens && tokens.length) {
     return firebaseAdmin.messaging().sendToDevice(
       tokens,
