@@ -16,9 +16,12 @@ Parameters:
 
 Mappings:
   AppPackageNameMap:
-    dev: com.aprmp.proj-pronetplat-aa.local
-    staging: com.aprmp.proj-pronetplat-aa.staging
-    production: com.aprmp.proj-pronetplat-aa
+    dev:
+      value: com.aprmp.proj-pronetplat-aa.local
+    staging:
+      value: com.aprmp.proj-pronetplat-aa.staging
+    production:
+      value: com.aprmp.proj-pronetplat-aa
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -31,6 +34,7 @@ Globals:
         appPackageName: !FindInMap
           - AppPackageNameMap
           - !Ref Stage
+          - value
         stage: !Ref Stage
         usersBucket: !Ref usersS3Bucket
         fn_sendPushNotifications: !Join
