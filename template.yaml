@@ -17,11 +17,11 @@ Parameters:
 Mappings:
   AppPackageNameMap:
     dev:
-      value: com.aprmp.proj-pronetplat-aa.local
+      value: com.aprmp.projpronetplataa.local
     staging:
-      value: com.aprmp.proj-pronetplat-aa.staging
+      value: com.aprmp.projpronetplataa.staging
     production:
-      value: com.aprmp.proj-pronetplat-aa
+      value: com.aprmp.projpronetplataa
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:

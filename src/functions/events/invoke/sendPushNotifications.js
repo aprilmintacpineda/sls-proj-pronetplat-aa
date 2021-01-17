@@ -43,7 +43,6 @@ module.exports.handler = async ({
       }
 
       await sendPushNotification(options);
-
       nextToken = result.after?.[0].id;
     } while (nextToken);
   } catch (error) {
