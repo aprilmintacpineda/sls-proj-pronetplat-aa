@@ -72,6 +72,7 @@ module.exports.handler = async ({
 
     await sendPushNotification({
       userId: targetUser.data.id,
+      imageUrl: auth.data.profilePicture,
       title: 'Contact request',
       body: `${fullName} wants to add you to ${pronoun} contacts.`,
       type: 'contactRequest',

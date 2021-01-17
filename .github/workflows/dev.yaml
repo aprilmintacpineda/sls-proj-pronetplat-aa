@@ -51,5 +51,5 @@ jobs:
           sam build
           sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
-            --parameter-overrides Stage=dev \
+            --parameter-overrides Stage=dev AppPackageName=com.aprmp.proj-pronetplat-aa.local \
             --tags what="sls-proj-pronetplat-aa" stage="dev"

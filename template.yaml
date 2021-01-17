@@ -19,6 +19,7 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
+        appPackageName: !Ref PackageName
         stage: !Ref Stage
         usersBucket: !Ref usersS3Bucket
         fn_sendPushNotifications: !Join
@@ -408,6 +409,30 @@ Resources:
           Properties:
             Method: post
             Path: /validate-auth
+            RestApiId:
+              Ref: mainBackendApi
+  sendFollowUp:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/auth/sendFollowUp.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-sendFollowUp"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - Statement:
+          - Action:
+              - lambda:InvokeFunction
+            Effect: Allow
+            Resource: !GetAtt sendPushNotifications.Arn
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /send-follow-up
             RestApiId:
               Ref: mainBackendApi
   ######

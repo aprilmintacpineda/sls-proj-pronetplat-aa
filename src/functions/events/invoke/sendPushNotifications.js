@@ -8,6 +8,7 @@ module.exports.handler = async ({
   userId,
   title,
   body,
+  imageUrl,
   type,
   data
 }) => {
@@ -28,7 +29,8 @@ module.exports.handler = async ({
         tokens,
         notification: {
           title,
-          body
+          body,
+          imageUrl
         },
         data: {
           ...data,

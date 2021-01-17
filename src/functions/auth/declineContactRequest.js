@@ -46,6 +46,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     await sendPushNotification({
       userId: senderId,
+      imageUrl: profilePicture,
       title: 'Contact request declined',
       body: `${fullName} has declined your contact request.`,
       type: 'contactRequestDeclined',

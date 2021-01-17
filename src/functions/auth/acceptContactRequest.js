@@ -68,6 +68,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     await sendPushNotification({
       userId: senderId,
+      imageUrl: profilePicture,
       title: 'Contact request accepted',
       body: `${fullName} has accepted your contact request.`,
       type: 'contactRequestAccepted',

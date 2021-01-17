@@ -35,12 +35,13 @@ module.exports.sendPushNotification = ({
   data
 }) => {
   if (tokens && tokens.length) {
-    return firebaseAdmin
-      .messaging()
-      .sendToDevice(
-        tokens,
-        { notification, data },
-        { priority: 'high' }
-      );
+    return firebaseAdmin.messaging().sendToDevice(
+      tokens,
+      { notification, data },
+      {
+        priority: 'high',
+        restrictedPackageName: process.env.appPackageName
+      }
+    );
   }
 };
