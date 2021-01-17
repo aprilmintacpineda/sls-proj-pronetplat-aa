@@ -14,6 +14,22 @@ module.exports = class ContactRequest extends Model {
     );
   }
 
+  async getPendingRequestOrNull ({ senderId, recipientId }) {
+    let pendingRequest = null;
+
+    try {
+      pendingRequest = await this.getByIndex(
+        'contactRequestBySenderIdRecipientId',
+        senderId,
+        recipientId
+      );
+    } catch (error) {
+      console.log('getPendingRequestOrNull', error);
+    }
+
+    return pendingRequest;
+  }
+
   getPendingRequest ({ senderId, recipientId }) {
     return this.getByIndex(
       'contactRequestBySenderIdRecipientId',
