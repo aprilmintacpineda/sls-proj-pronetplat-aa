@@ -33,7 +33,7 @@ module.exports.handler = async ({ headers, body }) => {
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
 
     const contactRequest = new ContactRequest();
-    await contactRequest.getById();
+    await contactRequest.getById(formBody.contactRequestId);
 
     if (contactRequest.data.senderId !== id)
       throw new Error('User is not the sender');
@@ -72,6 +72,8 @@ module.exports.handler = async ({ headers, body }) => {
         jobTitle
       }
     });
+
+    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
   }
