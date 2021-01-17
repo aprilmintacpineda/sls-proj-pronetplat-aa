@@ -15,7 +15,7 @@ Parameters:
       - production
 
 Mappings:
-  AppPackageName:
+  AppPackageNameMap:
     dev: com.aprmp.proj-pronetplat-aa.local
     staging: com.aprmp.proj-pronetplat-aa.staging
     production: com.aprmp.proj-pronetplat-aa
@@ -28,7 +28,9 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
-        appPackageName: !Ref AppPackageName
+        appPackageName: !FindInMap
+          - AppPackageNameMap
+          - !Ref Stage
         stage: !Ref Stage
         usersBucket: !Ref usersS3Bucket
         fn_sendPushNotifications: !Join
