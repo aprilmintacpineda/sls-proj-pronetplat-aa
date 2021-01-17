@@ -179,6 +179,8 @@ module.exports = class Model {
   }
 
   toResponseData () {
+    if (!this.censoredData) return this.data;
+
     return Object.keys(this.data).reduce((accumulator, key) => {
       if (!this.censoredData.includes(key))
         accumulator[key] = this.data[key];
