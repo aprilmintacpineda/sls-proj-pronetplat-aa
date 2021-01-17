@@ -50,6 +50,7 @@ module.exports.handler = async ({ headers, body }) => {
       title: 'Contact request declined',
       body: `${fullName} has declined your contact request.`,
       type: 'contactRequestDeclined',
+      category: 'notification',
       data: {
         profilePicture,
         firstName,

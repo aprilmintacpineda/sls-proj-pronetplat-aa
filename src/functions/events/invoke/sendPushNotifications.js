@@ -10,6 +10,7 @@ module.exports.handler = async ({
   body,
   imageUrl,
   type,
+  category,
   data
 }) => {
   try {
@@ -25,24 +26,19 @@ module.exports.handler = async ({
         ({ data: { deviceToken } }) => deviceToken
       );
 
-      const options = {
+      await sendPushNotification({
         tokens,
         notification: {
           title,
-          body
-        }
-      };
-
-      if (imageUrl) options.notification.imageUrl = imageUrl;
-
-      if (data || type) {
-        options.data = {
+          body,
+          imageUrl
+        },
+        data: {
           ...data,
-          type
-        };
-      }
-
-      await sendPushNotification(options);
+          type,
+          category
+        }
+      });
       nextToken = result.after?.[0].id;
     } while (nextToken);
   } catch (error) {

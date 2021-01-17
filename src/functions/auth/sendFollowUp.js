@@ -62,6 +62,7 @@ module.exports.handler = async ({ headers, body }) => {
       title: 'Contact request',
       body: `${fullName} followed up with his contact request`,
       type: 'contactRequestFollowUp',
+      category: 'notification',
       data: {
         id,
         profilePicture,

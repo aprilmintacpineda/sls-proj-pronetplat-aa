@@ -76,6 +76,7 @@ module.exports.handler = async ({
       title: 'Contact request',
       body: `${fullName} wants to add you to ${pronoun} contacts.`,
       type: 'contactRequest',
+      category: 'contactRequest',
       data: {
         profilePicture,
         firstName,
