@@ -179,12 +179,8 @@ module.exports = class Model {
   }
 
   toResponseData () {
-    const censoredData = (this.censoredData || []).concat([
-      'updatedAt'
-    ]);
-
     return Object.keys(this.data).reduce((accumulator, key) => {
-      if (!censoredData.includes(key))
+      if (!this.censoredData.includes(key))
         accumulator[key] = this.data[key];
       return accumulator;
     }, {});

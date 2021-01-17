@@ -23,16 +23,10 @@ module.exports.handler = async ({
         recipientId: contactId
       });
 
-      console.log('sentContactRequest', contactRequest);
-
       if (contactRequest.data) {
         return {
           statusCode: 200,
-          body: JSON.stringify({
-            data: {
-              sentContactRequestId: contactRequest.data.id
-            }
-          })
+          body: JSON.stringify(contactRequest.toResponseData())
         };
       }
 
@@ -41,16 +35,10 @@ module.exports.handler = async ({
         recipientId: id
       });
 
-      console.log('receivedContactRequest', contactRequest);
-
       if (contactRequest.data) {
         return {
           statusCode: 200,
-          body: JSON.stringify({
-            data: {
-              receivedContactRequestId: contactRequest.data.id
-            }
-          })
+          body: JSON.stringify(contactRequest.toResponseData())
         };
       }
 
