@@ -35,14 +35,15 @@ module.exports.handler = async ({ headers, body }) => {
     const contactRequest = new ContactRequest();
     await contactRequest.getById(formBody.contactRequestId);
 
-    if (contactRequest.data.senderId !== id)
-      throw new Error('User is not the sender');
+    const { senderId, recipientId } = contactRequest.data;
+
+    if (senderId !== id) throw new Error('User is not the sender');
 
     const notification = new Notification();
 
     await Promise.all([
       notification.create({
-        userId: id,
+        userId: recipientId,
         type: 'contactRequestFollowUp',
         body: '{fullname} followed up with his contact request',
         actorId: id
@@ -56,7 +57,7 @@ module.exports.handler = async ({ headers, body }) => {
       firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
 
     await sendPushNotification({
-      userId: id,
+      userId: recipientId,
       imageUrl: profilePicture,
       title: 'Contact request',
       body: `${fullName} followed up with his contact request`,
