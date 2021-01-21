@@ -36,7 +36,10 @@ Globals:
           - !Ref Stage
           - value
         stage: !Ref Stage
-        usersBucket: !Ref usersS3Bucket
+        usersBucket: !Join
+          - "-"
+          - - "proj-pronetplat-aa-users"
+            - !Ref Stage
         fn_sendPushNotifications: !Join
           - '-'
           - - !Ref Stage
