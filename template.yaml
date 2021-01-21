@@ -82,11 +82,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt createAccount.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref createAccount
       Events:
         ApiEvent:
           Type: Api
@@ -106,11 +103,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendForgotPasswordCode.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendForgotPasswordCode
       Events:
         ApiEvent:
           Type: Api
@@ -130,11 +124,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt confirmForgotPassword.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref confirmForgotPassword
       Events:
         ApiEvent:
           Type: Api
@@ -175,11 +166,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendEmail
       Events:
         ApiEvent:
           Type: Api
@@ -199,11 +187,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendEmail
       Events:
         ApiEvent:
           Type: Api
@@ -278,11 +263,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendPushNotifications.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
@@ -356,11 +338,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendPushNotifications.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
@@ -380,11 +359,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendPushNotifications.Arn
+        - LambdaInvokePolicy:
+            FunctionName: sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
@@ -440,11 +416,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendPushNotifications.Arn
+        - LambdaInvokePolicy:
+            FunctionName: sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
@@ -503,11 +476,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendEmail
   confirmForgotPassword:
     Type: AWS::Serverless::Function
     Properties:
@@ -519,11 +489,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendEmail
   createAccount:
     Type: AWS::Serverless::Function
     Properties:
@@ -535,11 +502,8 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - lambda:InvokeFunction
-            Effect: Allow
-            Resource: !GetAtt sendEmail.Arn
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendEmail
   ######
   # S3 Events
   #
