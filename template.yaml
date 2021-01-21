@@ -573,8 +573,7 @@ Resources:
         Upload:
           Type: S3
           Properties:
-            Bucket:
-              Ref: usersS3Bucket
+            Bucket: !Ref usersS3Bucket
             Events: s3:ObjectCreated:Put
             Filter:
               S3Key:
