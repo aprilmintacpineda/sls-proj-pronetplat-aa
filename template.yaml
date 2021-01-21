@@ -544,6 +544,10 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: build/functions/events/s3/profilePictureUploaded.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-profilePictureUploaded"
       MemorySize: 2048
       Layers:
         - !Ref dependencies
