@@ -15,7 +15,7 @@ module.exports.handler = async ({
 }) => {
   try {
     const client = initClient();
-    let nextToken = '';
+    let nextToken = null;
 
     do {
       const result = await client.query(

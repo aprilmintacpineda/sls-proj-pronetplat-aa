@@ -18,7 +18,7 @@ module.exports.up = q => {
                 {
                   size: 20,
                   after: q.If(
-                    q.Equals(q.Var('nextToken'), ''),
+                    q.IsNull(q.Var('nextToken')),
                     [],
                     q.Var('nextToken')
                   )
