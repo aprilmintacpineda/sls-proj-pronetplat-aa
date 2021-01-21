@@ -552,23 +552,11 @@ Resources:
       Layers:
         - !Ref dependencies
       Policies:
-        - Statement:
-          - Action:
-              - s3:GetObject
-            Effect: Allow
-            Resource:
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpeg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.png"
+        - S3ReadPolicy:
+            BucketName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
       Events:
         Upload:
           Type: S3
