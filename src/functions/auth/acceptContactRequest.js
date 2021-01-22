@@ -1,14 +1,14 @@
+const Contact = require('dependencies/nodejs/models/Contact');
+const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
+const Notification = require('dependencies/nodejs/models/Notification');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
-const jwt = require('/opt/nodejs/utils/jwt');
-const validate = require('/opt/nodejs/utils/validate');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
 const {
   sendPushNotification
-} = require('/opt/nodejs/utils/notifications');
-const ContactRequest = require('/opt/nodejs/models/ContactRequest');
-const Contact = require('/opt/nodejs/models/Contact');
-const Notification = require('/opt/nodejs/models/Notification');
+} = require('dependencies/nodejs/utils/notifications');
+const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ id }) {
   return validate(id, ['required']);

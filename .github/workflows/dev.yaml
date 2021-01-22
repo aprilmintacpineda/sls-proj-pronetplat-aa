@@ -38,6 +38,7 @@ jobs:
         run: |
           NODE_ENV=production yarn build
           cd build/dependencies/nodejs && yarn
+          rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
       
       - name: Generate resources
         run: |

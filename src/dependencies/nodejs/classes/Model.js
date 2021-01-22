@@ -1,6 +1,8 @@
+const { initClient } = require('dependencies/nodejs/utils/faunadb');
+const {
+  sanitizeFormBody
+} = require('dependencies/nodejs/utils/helpers');
 const { query } = require('faunadb');
-const { initClient } = require('/opt/nodejs/utils/faunadb');
-const { sanitizeFormBody } = require('/opt/nodejs/utils/helpers');
 
 module.exports = class Model {
   constructor () {
@@ -18,7 +20,17 @@ module.exports = class Model {
     this.data = newInstance.data;
   }
 
+  throwIfHasInstance (method) {
+    if (this.instance) {
+      throw new Error(
+        `Cannot do ${method} with an existing instance in model`
+      );
+    }
+  }
+
   async getById (id) {
+    this.throwIfHasInstance('getById');
+
     const client = initClient();
 
     const newInstance = await client.query(
@@ -29,6 +41,8 @@ module.exports = class Model {
   }
 
   async getByIndex (index, ...values) {
+    this.throwIfHasInstance('getByIndex');
+
     const client = initClient();
 
     const newInstance = await client.query(
@@ -39,6 +53,8 @@ module.exports = class Model {
   }
 
   async create (data) {
+    this.throwIfHasInstance('create');
+
     const client = initClient();
 
     const newInstance = await client.query(
@@ -68,25 +84,15 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  async updateById (id, data) {
-    const client = initClient();
-
-    const newInstance = await client.query(
-      query.Update(
-        query.Ref(query.Collection(this.collection), id),
-        {
-          data: {
-            ...sanitizeFormBody(data),
-            updatedAt: query.Format('%t', query.Now())
-          }
-        }
-      )
-    );
-
-    this.setInstance(newInstance);
+  updateById (id, data) {
+    this.throwIfHasInstance('updateById');
+    this.ref = query.Ref(query.Collection(this.collection), id);
+    return this.update(data);
   }
 
   async updateByIndex ({ index, data, args = [] }) {
+    this.throwIfHasInstance('updateByIndex');
+
     const client = initClient();
 
     const newInstance = await client.query(
@@ -108,6 +114,8 @@ module.exports = class Model {
   }
 
   async createOrUpdate ({ index, args, data }) {
+    this.throwIfHasInstance('createOrUpdate');
+
     const client = initClient();
     const match = query.Match(query.Index(index), ...args);
 
@@ -133,6 +141,8 @@ module.exports = class Model {
   }
 
   async createIfNotExists ({ index, args, data }) {
+    this.throwIfHasInstance('createIfNotExists');
+
     const client = initClient();
     const match = query.Match(query.Index(index), ...args);
 
@@ -169,6 +179,12 @@ module.exports = class Model {
     this.wasHardDeleted = true;
   }
 
+  hardDeleteById (id) {
+    this.throwIfHasInstance('hardDeleteById');
+    this.ref = query.Ref(query.Collection(this.collection), id);
+    return this.hardDelete();
+  }
+
   async countByIndex (index, ...values) {
     const client = initClient();
     const count = await client.query(
@@ -179,6 +195,12 @@ module.exports = class Model {
   }
 
   toResponseData () {
+    if (!this.data) {
+      throw new Error(
+        'toResponseData was called but no data exists in model.'
+      );
+    }
+
     if (!this.censoredData) return this.data;
 
     return Object.keys(this.data).reduce((accumulator, key) => {

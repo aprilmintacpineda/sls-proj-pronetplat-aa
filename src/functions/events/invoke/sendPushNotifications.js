@@ -1,8 +1,8 @@
 const { query } = require('faunadb');
+const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   sendPushNotification
-} = require('/opt/nodejs/utils/firebase');
-const { initClient } = require('/opt/nodejs/utils/faunadb');
+} = require('dependencies/nodejs/utils/firebase');
 
 module.exports.handler = async ({
   userId,

@@ -1,12 +1,12 @@
-const jwt = require('/opt/nodejs/utils/jwt');
+const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
+const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
 const {
   sendPushNotification
-} = require('/opt/nodejs/utils/notifications');
-const User = require('/opt/nodejs/models/User');
-const ContactRequest = require('/opt/nodejs/models/ContactRequest');
+} = require('dependencies/nodejs/utils/notifications');
 
 module.exports.handler = async ({
   pathParameters: { contactId },

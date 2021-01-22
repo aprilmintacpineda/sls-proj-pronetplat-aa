@@ -1,10 +1,12 @@
 const { query } = require('faunadb');
-const validate = require('/opt/nodejs/utils/validate');
-const jwt = require('/opt/nodejs/utils/jwt');
-const { isValidDeviceToken } = require('/opt/nodejs/utils/firebase');
-const { verifyHash } = require('/opt/nodejs/utils/helpers');
-const User = require('/opt/nodejs/models/User');
-const RegisteredDevice = require('/opt/nodejs/models/RegisteredDevice');
+const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
+const User = require('dependencies/nodejs/models/User');
+const {
+  isValidDeviceToken
+} = require('dependencies/nodejs/utils/firebase');
+const { verifyHash } = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
+const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ email, password, deviceToken }) {
   return (

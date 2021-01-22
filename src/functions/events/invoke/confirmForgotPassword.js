@@ -1,12 +1,12 @@
-const User = require('/opt/nodejs/models/User');
+const User = require('dependencies/nodejs/models/User');
 const {
   hash,
   verifyHash,
   hasTimePassed
-} = require('/opt/nodejs/utils/helpers');
+} = require('dependencies/nodejs/utils/helpers');
 const {
   sendEmailResetPasswordSuccess
-} = require('/opt/nodejs/utils/sendEmail');
+} = require('dependencies/nodejs/utils/sendEmail');
 
 module.exports.handler = async ({
   confirmationCode,

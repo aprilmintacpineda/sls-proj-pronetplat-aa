@@ -1,10 +1,10 @@
 const { query } = require('faunadb');
-const jwt = require('/opt/nodejs/utils/jwt');
+const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
-const validate = require('/opt/nodejs/utils/validate');
-const User = require('/opt/nodejs/models/User');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
+const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({
   firstName,

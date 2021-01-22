@@ -1,5 +1,5 @@
-const { invokeEvent } = require('/opt/nodejs/utils/lambda');
-const validate = require('/opt/nodejs/utils/validate');
+const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ confirmationCode, email, newPassword }) {
   return (

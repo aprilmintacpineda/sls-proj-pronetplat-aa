@@ -426,6 +426,24 @@ Resources:
             Path: /send-follow-up
             RestApiId:
               Ref: mainBackendApi
+  cancelContactRequest:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/auth/cancelContactRequest.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-cancelContactRequest"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /cancel-contact-request
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #

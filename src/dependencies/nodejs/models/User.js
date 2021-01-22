@@ -1,4 +1,4 @@
-const Model = require('/opt/nodejs/classes/Model');
+const Model = require('dependencies/nodejs/classes/Model');
 
 module.exports = class User extends Model {
   constructor () {

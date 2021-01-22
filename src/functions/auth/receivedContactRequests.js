@@ -1,9 +1,9 @@
 const { query } = require('faunadb');
-const jwt = require('/opt/nodejs/utils/jwt');
+const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
-const { initClient } = require('/opt/nodejs/utils/faunadb');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
 
 module.exports.handler = async ({
   queryStringParameters,

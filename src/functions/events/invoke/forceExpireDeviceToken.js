@@ -1,6 +1,8 @@
-const jwt = require('/opt/nodejs/utils/jwt');
-const RegisteredDevice = require('/opt/nodejs/utils/jwt');
-const { getTimeOffset } = require('/opt/nodejs/utils/faunadb');
+const {
+  getTimeOffset
+} = require('dependencies/nodejs/utils/faunadb');
+const jwt = require('dependencies/nodejs/utils/jwt');
+const RegisteredDevice = require('dependencies/nodejs/utils/jwt');
 
 module.exports.handler = async ({ authToken, deviceToken }) => {
   try {

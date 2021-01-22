@@ -1,24 +1,26 @@
 const { differenceInDays } = require('date-fns');
 const { query } = require('faunadb');
-const validate = require('/opt/nodejs/utils/validate');
-const jwt = require('/opt/nodejs/utils/jwt');
+const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
+const Notification = require('dependencies/nodejs/models/Notification');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
 const {
   sendPushNotification
-} = require('/opt/nodejs/utils/notifications');
-const ContactRequest = require('/opt/nodejs/models/ContactRequest');
-const Notification = require('/opt/nodejs/models/Notification');
+} = require('dependencies/nodejs/utils/notifications');
+const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors ({ contactRequestId }) {
-  return validate(contactRequestId, ['required']);
+function hasErrors ({ contactId }) {
+  return validate(contactId, ['required']);
 }
 
 module.exports.handler = async ({ headers, body }) => {
   try {
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid form body');
+
+    const { contactId } = formBody;
 
     const {
       data: {
@@ -34,16 +36,17 @@ module.exports.handler = async ({ headers, body }) => {
     } = await jwt.verify(getAuthTokenFromHeaders(headers));
 
     const contactRequest = new ContactRequest();
-    await contactRequest.getById(formBody.contactRequestId);
+    await contactRequest.getByIndex(
+      'contactRequestBySenderIdRecipientId',
+      id,
+      contactId
+    );
 
     const {
-      senderId,
       recipientId,
       lastFollowUpAt,
       createdAt
     } = contactRequest.data;
-
-    if (senderId !== id) throw new Error('User is not the sender');
 
     if (
       (!lastFollowUpAt &&

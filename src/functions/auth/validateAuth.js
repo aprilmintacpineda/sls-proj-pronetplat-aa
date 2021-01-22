@@ -1,12 +1,12 @@
 const { query } = require('faunadb');
-const validate = require('/opt/nodejs/utils/validate');
-const jwt = require('/opt/nodejs/utils/jwt');
-const { invokeEvent } = require('/opt/nodejs/utils/lambda');
+const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
+const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
-const User = require('/opt/nodejs/models/User');
-const RegisteredDevice = require('/opt/nodejs/models/RegisteredDevice');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
+const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+const validate = require('dependencies/nodejs/utils/validate');
 
 function hasError ({ deviceToken }) {
   return validate(deviceToken, ['required']);

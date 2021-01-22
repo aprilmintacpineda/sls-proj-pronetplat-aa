@@ -1699,6 +1699,11 @@ babel-plugin-module-resolver@^4.1.0:
     reselect "^4.0.0"
     resolve "^1.13.1"
 
+babel-plugin-search-and-replace@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-search-and-replace/-/babel-plugin-search-and-replace-1.1.0.tgz#ad26f2037a80034613dae61b913902d9aa58ed2c"
+  integrity sha512-qo3E08GmT43/IgfbEiAZoauYW3SILLTyt79QPZc2ME3sHvuBuRA01nQl7WnJRKZTnqUCimXSMOU+LBHxe+HTUw==
+
 babel-plugin-transform-inline-consecutive-adds@^0.4.3:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-inline-consecutive-adds/-/babel-plugin-transform-inline-consecutive-adds-0.4.3.tgz#323d47a3ea63a83a7ac3c811ae8e6941faf2b0d1"

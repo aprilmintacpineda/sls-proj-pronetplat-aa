@@ -1,10 +1,10 @@
 const aws = require('aws-sdk');
 const mimetypes = require('mime-types');
-const jwt = require('/opt/nodejs/utils/jwt');
 const {
   getAuthTokenFromHeaders
-} = require('/opt/nodejs/utils/helpers');
-const validate = require('/opt/nodejs/utils/validate');
+} = require('dependencies/nodejs/utils/helpers');
+const jwt = require('dependencies/nodejs/utils/jwt');
+const validate = require('dependencies/nodejs/utils/validate');
 
 const s3 = new aws.S3({
   apiVersion: '2006-03-01',

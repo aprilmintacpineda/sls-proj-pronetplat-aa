@@ -23,6 +23,20 @@ if (process.env.NODE_ENV === 'production') {
       builtIns: false
     }
   ]);
+
+  // we are replacing all imports from src/dependencies directory
+  // to use layers on production.
+  config.plugins.push([
+    'search-and-replace',
+    {
+      rules: [
+        {
+          search: /dependencies\/nodejs/gim,
+          replace: '/opt/nodejs'
+        }
+      ]
+    }
+  ]);
 } else {
   config.plugins.push([
     'module-resolver',
