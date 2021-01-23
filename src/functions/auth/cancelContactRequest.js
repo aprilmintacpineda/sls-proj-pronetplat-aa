@@ -5,26 +5,24 @@ const {
 const jwt = require('dependencies/nodejs/utils/jwt');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasError ({ contactRequestId }) {
-  return validate(contactRequestId, ['required']);
+function hasErrors ({ contactId }) {
+  return validate(contactId, ['required']);
 }
 
 module.exports.handler = async ({ body, headers }) => {
   try {
     const formBody = JSON.parse(body);
-    if (hasError(formBody)) throw new Error('Invalid form body');
+    if (hasErrors(formBody)) throw new Error('Invalid form body');
 
-    const { contactId } = formBody;
-
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
 
     const sentContactRequest = new ContactRequest();
     await sentContactRequest.getByIndex(
       'contactRequestBySenderIdRecipientId',
-      id,
-      contactId
+      authUser.id,
+      formBody.contactId
     );
 
     await sentContactRequest.hardDelete();
