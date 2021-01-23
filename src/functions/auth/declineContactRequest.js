@@ -9,53 +9,55 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors ({ id }) {
-  return validate(id, ['required']);
+function hasErrors ({ senderId }) {
+  return validate(senderId, ['required']);
 }
 
 module.exports.handler = async ({ headers, body }) => {
   try {
-    const {
-      data: { id, firstName, middleName, surname, profilePicture }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
 
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('invalid body');
 
     const contactRequest = new ContactRequest();
-    await contactRequest.getById(formBody.id);
-
-    if (contactRequest.data.recipientId !== id)
-      throw new Error('user is not recipient.');
+    await contactRequest.getByIndex(
+      'contactRequestBySenderIdRecipientId',
+      formBody.senderId,
+      authUser.id
+    );
 
     const notification = new Notification();
-    const { senderId } = contactRequest.data;
 
     await Promise.all([
       contactRequest.hardDelete(),
       notification.create({
-        userId: senderId,
+        userId: contactRequest.data.senderId,
         type: 'contactRequestDeclined',
         body: '{fullname} has declined your contact request.',
-        actorId: id
+        actorId: authUser.id
       })
     ]);
 
     const fullName =
-      firstName + (middleName ? ` ${middleName} ` : ' ') + surname;
+      authUser.firstName +
+      (authUser.middleName ? ` ${authUser.middleName} ` : ' ') +
+      authUser.surname;
 
     await sendPushNotification({
-      userId: senderId,
-      imageUrl: profilePicture,
+      userId: contactRequest.data.senderId,
+      imageUrl: authUser.profilePicture,
       title: 'Contact request declined',
       body: `${fullName} has declined your contact request.`,
       type: 'contactRequestDeclined',
       category: 'notification',
       data: {
-        profilePicture,
-        firstName,
-        middleName,
-        surname
+        profilePicture: authUser.profilePicture,
+        firstName: authUser.firstName,
+        middleName: authUser.middleName,
+        surname: authUser.surname
       }
     });
 
