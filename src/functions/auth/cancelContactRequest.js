@@ -9,7 +9,7 @@ function hasError ({ contactRequestId }) {
   return validate(contactRequestId, ['required']);
 }
 
-module.exports = async ({ body, headers }) => {
+module.exports.handler = async ({ body, headers }) => {
   try {
     const formBody = JSON.parse(body);
     if (hasError(formBody)) throw new Error('Invalid form body');
