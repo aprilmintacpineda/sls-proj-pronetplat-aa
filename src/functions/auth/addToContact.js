@@ -13,9 +13,11 @@ module.exports.handler = async ({
   headers
 }) => {
   try {
-    const auth = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
 
-    if (contactId === auth.data.id)
+    if (contactId === authUser.id)
       throw new Error('Cannot add self to contacts');
 
     const user = new User();
@@ -27,10 +29,10 @@ module.exports.handler = async ({
     ] = await Promise.all([
       contactRequest.hasPendingRequest({
         senderId: contactId,
-        recipientId: auth.data.id
+        recipientId: authUser.id
       }),
       contactRequest.hasPendingRequest({
-        senderId: auth.data.id,
+        senderId: authUser.id,
         recipientId: contactId
       })
     ]);
@@ -44,44 +46,38 @@ module.exports.handler = async ({
       };
     }
 
-    await Promise.all([
-      user.getById(auth.data.id),
-      targetUser.getById(contactId)
-    ]);
+    await targetUser.getById(contactId);
+
+    await Promise.all([user.getById(authUser.id)]);
 
     if (!targetUser.data.completedFirstSetupAt)
       throw new Error('Target user not setup.');
 
     await contactRequest.create({
-      senderId: user.data.id,
+      senderId: authUser.id,
       recipientId: targetUser.data.id
     });
 
-    const {
-      profilePicture,
-      firstName,
-      middleName,
-      surname
-    } = user.data;
+    let fullName = authUser.firstName;
+    fullName += authUser.middleName
+      ? ` ${authUser.middleName} `
+      : ' ';
+    fullName += authUser.surname;
 
-    let fullName = firstName;
-    fullName += middleName ? ` ${middleName} ` : ' ';
-    fullName += surname;
-
-    const pronoun = user.data.gender === 'male' ? 'his' : 'her';
+    const pronoun = authUser.gender === 'male' ? 'his' : 'her';
 
     await sendPushNotification({
       userId: targetUser.data.id,
-      imageUrl: auth.data.profilePicture,
+      imageUrl: authUser.profilePicture,
       title: 'Contact request',
       body: `${fullName} wants to add you to ${pronoun} contacts.`,
       type: 'contactRequest',
       category: 'contactRequest',
       data: {
-        profilePicture,
-        firstName,
-        middleName,
-        surname
+        profilePicture: authUser.profilePicture,
+        firstName: authUser.firstName,
+        middleName: authUser.middleName,
+        surname: authUser.surname
       }
     });
 

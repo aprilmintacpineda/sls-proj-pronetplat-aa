@@ -6,14 +6,12 @@ const RegisteredDevice = require('dependencies/nodejs/utils/jwt');
 
 module.exports.handler = async ({ authToken, deviceToken }) => {
   try {
-    const {
-      data: { id }
-    } = jwt.decode(authToken);
+    const { data: authUser } = jwt.decode(authToken);
     const registeredDevice = new RegisteredDevice();
 
     await registeredDevice.updateByIndex({
       index: 'registeredDeviceByUserIdDeviceToken',
-      args: [id, deviceToken],
+      args: [authUser.id, deviceToken],
       data: {
         expiresAt: getTimeOffset(true)
       }

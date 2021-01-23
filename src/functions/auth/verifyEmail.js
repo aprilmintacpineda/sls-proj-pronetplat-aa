@@ -44,13 +44,13 @@ module.exports.handler = async ({ headers, body }) => {
       hashedEmailVerificationCode: null
     });
 
-    const authUser = user.toResponseData();
-    const authToken = await jwt.sign(authUser);
+    const userData = user.toResponseData();
+    const authToken = await jwt.sign(userData);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        authUser,
+        userData,
         authToken
       })
     };

@@ -41,10 +41,11 @@ module.exports.handler = async ({ headers, body }) => {
       })
     ]);
 
-    const fullName =
-      authUser.firstName +
-      (authUser.middleName ? ` ${authUser.middleName} ` : ' ') +
-      authUser.surname;
+    let fullName = authUser.firstName;
+    fullName += authUser.middleName
+      ? ` ${authUser.middleName} `
+      : ' ';
+    fullName += authUser.surname;
 
     await sendPushNotification({
       userId: contactRequest.data.senderId,

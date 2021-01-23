@@ -21,28 +21,32 @@ module.exports.handler = async ({ body }) => {
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const { email, password, deviceToken } = formBody;
     const user = new User();
-    await user.getByEmail(email);
+    await user.getByEmail(formBody.email);
 
-    if (!(await verifyHash(password, user.data.hashedPassword)))
+    if (
+      !(await verifyHash(
+        formBody.password,
+        user.data.hashedPassword
+      ))
+    )
       throw new Error('Incorrect password');
 
-    if (!(await isValidDeviceToken(deviceToken)))
+    if (!(await isValidDeviceToken(formBody.deviceToken)))
       throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevice();
-    const authUser = user.toResponseData();
+    const userData = user.toResponseData();
 
     const [authToken] = await Promise.all([
-      jwt.sign(authUser),
+      jwt.sign(userData),
       user.update({ lastLoginAt: query.Format('%t', query.Now()) }),
       registeredDevice.createOrUpdate({
         index: 'registeredDeviceByUserIdDeviceToken',
-        args: [user.data.id, deviceToken],
+        args: [user.data.id, formBody.deviceToken],
         data: {
           userId: user.data.id,
-          deviceToken,
+          deviceToken: formBody.deviceToken,
           expiresAt: query.Format(
             '%t',
             query.TimeAdd(query.Now(), 7, 'days')
@@ -55,7 +59,7 @@ module.exports.handler = async ({ body }) => {
       statusCode: 200,
       body: JSON.stringify({
         authToken,
-        authUser
+        userData
       })
     };
   } catch (error) {

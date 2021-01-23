@@ -10,16 +10,19 @@ module.exports.handler = async ({
   queryStringParameters
 }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
     const client = initClient();
     const { nextToken: after } = queryStringParameters || {};
 
     const result = await client.query(
       query.Map(
         query.Paginate(
-          query.Match(query.Index('notificationsByUserId'), id),
+          query.Match(
+            query.Index('notificationsByUserId'),
+            authUser.id
+          ),
           {
             size: 20,
             after: after

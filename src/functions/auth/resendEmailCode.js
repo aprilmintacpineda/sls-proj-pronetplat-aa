@@ -15,11 +15,11 @@ const {
 
 module.exports.handler = async ({ headers }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
     const user = new User();
-    await user.getById(id);
+    await user.getById(authUser.id);
 
     if (user.data.emailVerifiedAt)
       throw new Error('Email already verified');

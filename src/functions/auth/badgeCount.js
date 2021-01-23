@@ -17,9 +17,9 @@ const badgeIndexes = {
 
 module.exports.handler = async ({ headers }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
 
     const client = initClient();
 
@@ -28,7 +28,7 @@ module.exports.handler = async ({ headers }) => {
         const { index, params = [] } = badgeIndexes[key];
 
         accumulator[key] = query.Count(
-          query.Match(query.Index(index), id, ...params)
+          query.Match(query.Index(index), authUser.id, ...params)
         );
 
         return accumulator;

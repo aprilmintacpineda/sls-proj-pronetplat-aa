@@ -20,22 +20,21 @@ function hasErrors ({ mimeType }) {
 
 module.exports.handler = async ({ headers, body }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
     const formBody = JSON.parse(body);
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const { mimeType } = formBody;
-    const ext = mimetypes.extension(mimeType);
+    const ext = mimetypes.extension(formBody.mimeType);
 
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
       Bucket: process.env.usersBucket,
       Expires: 15,
       ACL: 'public-read',
-      Key: `newProfilePicture_${id}.${ext}`,
-      ContentType: mimeType
+      Key: `newProfilePicture_${authUser.id}.${ext}`,
+      ContentType: formBody.mimeType
     });
 
     return {

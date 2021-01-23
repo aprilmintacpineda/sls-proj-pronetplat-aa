@@ -20,9 +20,7 @@ module.exports.handler = async ({ headers, body }) => {
   try {
     if (hasError(formBody)) throw new Error('invalid form body');
 
-    const {
-      data: { id }
-    } = await jwt.verify(authToken);
+    const { data: authUser } = await jwt.verify(authToken);
 
     const user = new User();
     const registeredDevice = new RegisteredDevice();
@@ -30,15 +28,15 @@ module.exports.handler = async ({ headers, body }) => {
     await Promise.all([
       registeredDevice.getByIndex(
         'registeredDeviceByUserIdDeviceToken',
-        id,
+        authUser.id,
         deviceToken
       ),
-      user.getById(id)
+      user.getById(authUser.id)
     ]);
 
-    const authUser = user.toResponseData();
+    const userData = user.toResponseData();
     const [newAuthToken] = await Promise.all([
-      jwt.sign(authUser),
+      jwt.sign(userData),
       registeredDevice.update({
         expiresAt: query.Format(
           '%t',
@@ -57,7 +55,7 @@ module.exports.handler = async ({ headers, body }) => {
       statusCode: 200,
       body: JSON.stringify({
         authToken: newAuthToken,
-        authUser
+        userData
       })
     };
   } catch (error) {

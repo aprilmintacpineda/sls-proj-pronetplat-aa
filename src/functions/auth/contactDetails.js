@@ -10,16 +10,16 @@ module.exports.handler = async ({
   headers
 }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
 
     const contact = new Contact();
     const contactRequest = new ContactRequest();
 
-    if (!(await contact.isInContact(id, contactId))) {
+    if (!(await contact.isInContact(authUser.id, contactId))) {
       await contactRequest.getPendingRequestIfExists({
-        senderId: id,
+        senderId: authUser.id,
         recipientId: contactId
       });
 
@@ -36,7 +36,7 @@ module.exports.handler = async ({
 
       await contactRequest.getPendingRequestIfExists({
         senderId: contactId,
-        recipientId: id
+        recipientId: authUser.id
       });
 
       if (contactRequest.data) {
@@ -53,8 +53,7 @@ module.exports.handler = async ({
       return { statusCode: 404 };
     }
 
-    // get contact details
-    // send back
+    // @TODO: get contact details and send back
   } catch (error) {
     console.log('error', error);
   }

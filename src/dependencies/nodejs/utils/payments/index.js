@@ -1,3 +1,3 @@
-module.exports = {
-  blueSnap: require('./blueSnap')
-};
+const blueSnap = require('./blueSnap');
+
+module.exports = { blueSnap };

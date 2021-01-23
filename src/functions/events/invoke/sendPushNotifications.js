@@ -37,6 +37,7 @@ module.exports.handler = async ({
           category
         }
       });
+
       nextToken = result.after?.[0].id;
     } while (nextToken);
   } catch (error) {

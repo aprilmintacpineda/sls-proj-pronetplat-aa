@@ -10,9 +10,9 @@ module.exports.handler = async ({
   headers
 }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
     const client = initClient();
     const { nextToken: after = null } = queryStringParameters || {};
 
@@ -21,7 +21,7 @@ module.exports.handler = async ({
         query.Paginate(
           query.Match(
             query.Index('contactRequestsByRecipientId'),
-            id
+            authUser.id
           ),
           {
             size: 20,

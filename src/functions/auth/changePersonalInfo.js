@@ -28,42 +28,33 @@ function hasErrors ({
 
 module.exports.handler = async ({ headers, body }) => {
   try {
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
     const formBody = JSON.parse(body);
 
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const {
-      firstName,
-      middleName,
-      surname,
-      gender,
-      jobTitle,
-      company,
-      bio
-    } = formBody;
     const user = new User();
 
-    await user.updateById(id, {
-      firstName,
-      middleName: middleName || '',
-      surname,
-      gender,
-      jobTitle,
-      company: company || '',
-      bio: bio || '',
+    await user.updateById(authUser.id, {
+      firstName: formBody.firstName,
+      middleName: formBody.middleName || '',
+      surname: formBody.surname,
+      gender: formBody.gender,
+      jobTitle: formBody.jobTitle,
+      company: formBody.company || '',
+      bio: formBody.bio || '',
       completedFirstSetupAt: query.Format('%t', query.Now())
     });
 
-    const authUser = user.toResponseData();
-    const authToken = await jwt.sign(authUser);
+    const userData = user.toResponseData();
+    const authToken = await jwt.sign(userData);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        authUser,
+        userData,
         authToken
       })
     };
