@@ -360,7 +360,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: sendPushNotifications
+            FunctionName: !Ref sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
@@ -417,7 +417,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: sendPushNotifications
+            FunctionName: !Ref sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
