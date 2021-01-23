@@ -24,9 +24,10 @@ module.exports.handler = async ({ headers, body }) => {
     if (hasErrors(formBody)) throw new Error('invalid form body');
 
     const contactRequest = new ContactRequest();
-    await contactRequest.getById(
+    await contactRequest.getByIndex(
       'contactRequestBySenderIdRecipientId',
-      formBody.senderId
+      formBody.senderId,
+      authUser.id
     );
 
     const contact = new Contact();
