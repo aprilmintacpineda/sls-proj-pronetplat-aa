@@ -8,7 +8,7 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors({ contactId }) {
+function hasErrors ({ contactId }) {
   return validate(contactId, ['required']);
 }
 

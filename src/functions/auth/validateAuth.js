@@ -8,7 +8,7 @@ const jwt = require('dependencies/nodejs/utils/jwt');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasError({ deviceToken }) {
+function hasError ({ deviceToken }) {
   return validate(deviceToken, ['required']);
 }
 

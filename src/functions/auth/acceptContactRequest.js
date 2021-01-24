@@ -10,7 +10,7 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors({ senderId }) {
+function hasErrors ({ senderId }) {
   return validate(senderId, ['required']);
 }
 

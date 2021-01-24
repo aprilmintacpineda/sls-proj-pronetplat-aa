@@ -1,13 +1,13 @@
+const Contact = require('dependencies/nodejs/models/Contact');
+const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
-const validate = require('dependencies/nodejs/utils/validate');
 const jwt = require('dependencies/nodejs/utils/jwt');
-const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
-const Contact = require('dependencies/nodejs/models/Contact');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors({ contactId }) {
+function hasErrors ({ contactId }) {
   return validate(contactId, ['required']);
 }
 

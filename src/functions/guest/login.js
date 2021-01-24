@@ -8,7 +8,7 @@ const { verifyHash } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors({ email, password, deviceToken }) {
+function hasErrors ({ email, password, deviceToken }) {
   return (
     validate(email, ['required', 'email']) ||
     validate(password, ['required', 'maxLength:30']) ||
