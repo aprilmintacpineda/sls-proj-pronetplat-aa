@@ -63,10 +63,14 @@ module.exports.handler = async ({ body, headers }) => {
       type: 'contactRequestCancelled',
       category: 'notification',
       data: {
+        id: authUser.id,
         profilePicture: authUser.profilePicture,
         firstName: authUser.firstName,
         middleName: authUser.middleName,
-        surname: authUser.surname
+        surname: authUser.surname,
+        bio: authUser.bio,
+        company: authUser.company,
+        jobTitle: authUser.jobTitle
       }
     });
 
