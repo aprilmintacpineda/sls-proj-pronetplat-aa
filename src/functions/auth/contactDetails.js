@@ -17,6 +17,8 @@ module.exports.handler = async ({
     const contact = new Contact();
     const contactRequest = new ContactRequest();
 
+    // @TODO: if blocked, return 401
+
     if (
       !(await contact.countByIndex(
         'contactByOwnerContact',
