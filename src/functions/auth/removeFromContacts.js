@@ -11,7 +11,7 @@ function hasErrors ({ contactId }) {
 
 module.exports.handler = async ({ body, headers }) => {
   try {
-    const formBody = JSON.stringify(body);
+    const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid form body');
 
     const { data: authUser } = await jwt.verify(
