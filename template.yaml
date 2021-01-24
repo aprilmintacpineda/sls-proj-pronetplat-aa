@@ -436,6 +436,9 @@ Resources:
           - "proj-pronetplat-aa-cancelContactRequest"
       Layers:
         - !Ref dependencies
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
@@ -472,6 +475,9 @@ Resources:
           - "proj-pronetplat-aa-blockUser"
       Layers:
         - !Ref dependencies
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendPushNotifications
       Events:
         ApiEvent:
           Type: Api
