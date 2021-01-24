@@ -18,8 +18,8 @@ module.exports = class UserBlocking extends Model {
       ),
       this.countByIndex(
         'userBlockingsByBlockerIdUserId',
-        userId1,
-        userId2
+        userId2,
+        userId1
       )
     ]);
 
