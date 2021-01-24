@@ -1,5 +1,6 @@
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const User = require('dependencies/nodejs/models/User');
+const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
@@ -24,6 +25,12 @@ module.exports.handler = async ({ body, headers }) => {
 
     if (formBody.contactId === authUser.id)
       throw new Error('Cannot add self to contacts');
+
+    const userBlocking = new UserBlocking();
+    if (
+      await userBlocking.wasBlocked(authUser.id, formBody.contactId)
+    )
+      throw new Error('User was blocked');
 
     const user = new User();
     const targetUser = new User();

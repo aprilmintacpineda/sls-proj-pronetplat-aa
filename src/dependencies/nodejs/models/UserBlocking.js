@@ -5,4 +5,24 @@ module.exports = class UserBlocking extends Model {
     super();
     this.collection = 'userBlockings';
   }
+
+  async wasBlocked (userId1, userId2) {
+    const [
+      wasBlockedByUserId1,
+      wasBlockedByUserId2
+    ] = await Promise.all([
+      this.countByIndex(
+        'userBlockingsByBlockerIdUserId',
+        userId1,
+        userId2
+      ),
+      this.countByIndex(
+        'userBlockingsByBlockerIdUserId',
+        userId1,
+        userId2
+      )
+    ]);
+
+    return Boolean(wasBlockedByUserId1, wasBlockedByUserId2);
+  }
 };

@@ -1,5 +1,6 @@
 const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
+const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
@@ -16,8 +17,10 @@ module.exports.handler = async ({
 
     const contact = new Contact();
     const contactRequest = new ContactRequest();
+    const userBlocking = new UserBlocking();
 
-    // @TODO: if blocked, return 401
+    if (await userBlocking.wasBlocked(authUser.id, contactId))
+      throw new Error('User was blocked');
 
     if (
       !(await contact.countByIndex(
