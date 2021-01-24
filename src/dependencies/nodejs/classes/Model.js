@@ -5,14 +5,14 @@ const {
 const { query } = require('faunadb');
 
 module.exports = class Model {
-  constructor () {
+  constructor() {
     this.wasHardDeleted = false;
     this.data = null;
     this.instance = null;
     this.ref = null;
   }
 
-  setInstance (newInstance) {
+  setInstance(newInstance) {
     this.instance = newInstance;
     this.ref = newInstance.ref;
 
@@ -20,7 +20,7 @@ module.exports = class Model {
     this.data = newInstance.data;
   }
 
-  throwIfHasInstance (method) {
+  throwIfHasInstance(method) {
     if (this.instance) {
       throw new Error(
         `Cannot do ${method} with an existing instance in model`
@@ -28,7 +28,7 @@ module.exports = class Model {
     }
   }
 
-  async getById (id) {
+  async getById(id) {
     this.throwIfHasInstance('getById');
 
     const client = initClient();
@@ -40,7 +40,7 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  async getByIndex (index, ...values) {
+  async getByIndex(index, ...values) {
     this.throwIfHasInstance('getByIndex');
 
     const client = initClient();
@@ -52,7 +52,7 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  async create (data) {
+  async create(data) {
     this.throwIfHasInstance('create');
 
     const client = initClient();
@@ -69,7 +69,7 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  async update (data) {
+  async update(data) {
     const client = initClient();
 
     const newInstance = await client.query(
@@ -84,13 +84,13 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  updateById (id, data) {
+  updateById(id, data) {
     this.throwIfHasInstance('updateById');
     this.ref = query.Ref(query.Collection(this.collection), id);
     return this.update(data);
   }
 
-  async updateByIndex ({ index, data, args = [] }) {
+  async updateByIndex({ index, data, args = [] }) {
     this.throwIfHasInstance('updateByIndex');
 
     const client = initClient();
@@ -113,7 +113,7 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  async createOrUpdate ({ index, args, data }) {
+  async createOrUpdate({ index, args, data }) {
     this.throwIfHasInstance('createOrUpdate');
 
     const client = initClient();
@@ -140,7 +140,7 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
-  async createIfNotExists ({ index, args, data }) {
+  async createIfNotExists({ index, args, data }) {
     this.throwIfHasInstance('createIfNotExists');
 
     const client = initClient();
@@ -173,19 +173,48 @@ module.exports = class Model {
     return wasCreated;
   }
 
-  async hardDelete () {
+  async hardDelete() {
     const client = initClient();
     await client.query(query.Delete(this.ref));
     this.wasHardDeleted = true;
   }
 
-  hardDeleteById (id) {
+  hardDeleteById(id) {
     this.throwIfHasInstance('hardDeleteById');
     this.ref = query.Ref(query.Collection(this.collection), id);
     return this.hardDelete();
   }
 
-  async countByIndex (index, ...values) {
+  async hardDeleteIfExists(index, ...args) {
+    const client = initClient();
+
+    const match = query.Match(index, ...args);
+
+    const { wasDeleted } = await client.query(
+      query.If(
+        query.Exists(match),
+        {
+          wasDeleted: false
+        },
+        query.Let(
+          {
+            document: query.Get(match),
+            deletedDocument: query.Delete(
+              query.Select(['ref'], query.Var('document'))
+            )
+          },
+          {
+            wasDeleted: true
+          }
+        )
+      )
+    );
+
+    this.wasHardDeleted = true;
+    return wasDeleted;
+  }
+
+  async countByIndex(index, ...values) {
     const client = initClient();
     const count = await client.query(
       query.Count(query.Match(query.Index(index), ...values))
@@ -194,7 +223,7 @@ module.exports = class Model {
     return parseInt(count);
   }
 
-  toResponseData () {
+  toResponseData() {
     if (!this.data) {
       throw new Error(
         'toResponseData was called but no data exists in model.'
