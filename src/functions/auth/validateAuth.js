@@ -8,17 +8,20 @@ const jwt = require('dependencies/nodejs/utils/jwt');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasError ({ deviceToken }) {
+function hasError({ deviceToken }) {
   return validate(deviceToken, ['required']);
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  const formBody = JSON.parse(body);
-  const authToken = getAuthTokenFromHeaders(headers);
-  const { deviceToken } = formBody;
+  let authToken = null;
+  let deviceToken = null;
 
   try {
+    const formBody = JSON.parse(body);
     if (hasError(formBody)) throw new Error('invalid form body');
+
+    authToken = getAuthTokenFromHeaders(headers);
+    deviceToken = formBody.deviceToken;
 
     const { data: authUser } = await jwt.verify(authToken);
     const user = new User();

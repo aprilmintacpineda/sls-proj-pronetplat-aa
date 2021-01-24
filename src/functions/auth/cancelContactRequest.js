@@ -8,7 +8,7 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors ({ contactId }) {
+function hasErrors({ contactId }) {
   return validate(contactId, ['required']);
 }
 
@@ -27,6 +27,8 @@ module.exports.handler = async ({ body, headers }) => {
       authUser.id,
       formBody.contactId
     );
+
+    // @TODO: check if user has been blocked
 
     const notification = new Notification();
     const pronoun = authUser.gender === 'male' ? 'his' : 'her';

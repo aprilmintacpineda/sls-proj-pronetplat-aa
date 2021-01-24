@@ -10,7 +10,7 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors ({ senderId }) {
+function hasErrors({ senderId }) {
   return validate(senderId, ['required']);
 }
 
@@ -29,6 +29,8 @@ module.exports.handler = async ({ headers, body }) => {
       formBody.senderId,
       authUser.id
     );
+
+    // @TODO: check if user has been blocked
 
     const contact = new Contact();
 

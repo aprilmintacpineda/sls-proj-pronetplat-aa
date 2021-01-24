@@ -64,6 +64,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-createAccount"
+        fn_userBlocked: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-userBlocked"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -477,7 +481,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotifications
+            FunctionName: !Ref userBlocked
       Events:
         ApiEvent:
           Type: Api
@@ -564,6 +568,19 @@ Resources:
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
+  userBlocked:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/events/invoke/userBlocked.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-userBlocked"
+      Layers:
+        - !Ref dependencies
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendPushNotifications
   ######
   # S3 Events
   #
