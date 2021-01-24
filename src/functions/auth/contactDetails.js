@@ -20,7 +20,7 @@ module.exports.handler = async ({
     const userBlocking = new UserBlocking();
 
     if (await userBlocking.wasBlocked(authUser.id, contactId))
-      throw new Error('User was blocked');
+      return { statusCode: 401 };
 
     if (
       !(await contact.countByIndex(
