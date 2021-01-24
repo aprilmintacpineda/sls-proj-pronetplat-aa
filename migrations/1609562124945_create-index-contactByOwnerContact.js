@@ -6,7 +6,10 @@ module.exports.up = q => {
     q.CreateIndex({
       name,
       source: q.Collection('contacts'),
-      terms: [{ field: ['data', 'ownerId'] }, { field: ['data', 'contactId'] }],
+      terms: [
+        { field: ['data', 'ownerId'] },
+        { field: ['data', 'contactId'] }
+      ],
       unique: true
     }),
     null

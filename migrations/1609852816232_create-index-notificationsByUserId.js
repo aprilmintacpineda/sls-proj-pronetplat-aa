@@ -7,7 +7,10 @@ module.exports.up = q => {
       name,
       source: q.Collection('notifications'),
       terms: [{ field: ['data', 'userId'] }],
-      values: [{ field: ['data', 'createdAt'], reverse: true }, { field: ['ref'] }]
+      values: [
+        { field: ['data', 'createdAt'], reverse: true },
+        { field: ['ref'] }
+      ]
     }),
     null
   );

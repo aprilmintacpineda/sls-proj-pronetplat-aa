@@ -11,7 +11,14 @@ module.exports.up = q => {
           isNew: q.Query(
             q.Lambda(
               ['document'],
-              q.If(q.ContainsPath(['data', 'seenAt'], q.Var('document')), 0, 1)
+              q.If(
+                q.ContainsPath(
+                  ['data', 'seenAt'],
+                  q.Var('document')
+                ),
+                0,
+                1
+              )
             )
           )
         }
