@@ -33,7 +33,7 @@ module.exports.handler = async ({
       )
     ]);
 
-    if (contactBlocked.instance) {
+    if (contactBlocked.data) {
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -42,7 +42,7 @@ module.exports.handler = async ({
       };
     }
 
-    if (blockedByUser.instance) {
+    if (blockedByUser.data) {
       return {
         statusCode: 200,
         body: JSON.stringify({

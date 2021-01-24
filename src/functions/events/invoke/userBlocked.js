@@ -20,7 +20,7 @@ module.exports.handler = async ({ authUser, contactId }) => {
       recipientId: contactId
     });
 
-    if (sentContactRequest.instance) {
+    if (sentContactRequest.data) {
       const pronoun = authUser.gender === 'male' ? 'his' : 'her';
 
       await Promise.all([
@@ -58,7 +58,7 @@ module.exports.handler = async ({ authUser, contactId }) => {
       recipientId: authUser.id
     });
 
-    if (receivedContactRequest.instance) {
+    if (receivedContactRequest.data) {
       await Promise.all([
         receivedContactRequest.hardDelete(),
         notification.create({
