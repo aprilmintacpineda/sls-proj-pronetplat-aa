@@ -33,13 +33,21 @@ module.exports.handler = async ({ headers, body }) => {
     const contact = new Contact();
 
     await Promise.all([
-      contact.create({
-        ownerId: authUser.id,
-        contactId: contactRequest.data.senderId
+      contact.createIfNotExists({
+        index: 'contactByOwnerContact',
+        args: [authUser.id, contactRequest.data.senderId],
+        data: {
+          ownerId: authUser.id,
+          contactId: contactRequest.data.senderId
+        }
       }),
-      contact.create({
-        ownerId: contactRequest.data.senderId,
-        contactId: authUser.id
+      contact.createIfNotExists({
+        index: 'contactByOwnerContact',
+        args: [contactRequest.data.senderId, authUser.id],
+        data: {
+          ownerId: contactRequest.data.senderId,
+          contactId: authUser.id
+        }
       })
     ]);
 
