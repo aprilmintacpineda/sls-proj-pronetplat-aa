@@ -17,10 +17,39 @@ module.exports.handler = async ({
 
     const contact = new Contact();
     const contactRequest = new ContactRequest();
-    const userBlocking = new UserBlocking();
+    const contactBlocked = new UserBlocking();
+    const blockedByUser = new UserBlocking();
 
-    if (await userBlocking.wasBlocked(authUser.id, contactId))
-      return { statusCode: 401 };
+    await Promise.all([
+      contactBlocked.getByIndex(
+        'userBlockingsByBlockerIdUserId',
+        authUser.id,
+        contactId
+      ),
+      blockedByUser.getByIndex(
+        'userBlockingsByBlockerIdUserId',
+        contactId,
+        authUser
+      )
+    ]);
+
+    if (contactBlocked.instance) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          contactBlocked: true
+        })
+      };
+    }
+
+    if (blockedByUser.instance) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          blockedByUser: true
+        })
+      };
+    }
 
     if (
       !(await contact.countByIndex(
