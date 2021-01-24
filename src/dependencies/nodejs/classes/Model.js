@@ -193,9 +193,6 @@ module.exports = class Model {
     const { wasDeleted } = await client.query(
       query.If(
         query.Exists(match),
-        {
-          wasDeleted: false
-        },
         query.Let(
           {
             document: query.Get(match),
@@ -206,7 +203,10 @@ module.exports = class Model {
           {
             wasDeleted: true
           }
-        )
+        ),
+        {
+          wasDeleted: false
+        }
       )
     );
 
