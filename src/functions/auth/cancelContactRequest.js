@@ -1,4 +1,5 @@
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
+const Notification = require('dependencies/nodejs/models/Notification');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
