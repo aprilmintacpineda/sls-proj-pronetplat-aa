@@ -28,12 +28,12 @@ function hasErrors ({
 
 module.exports.handler = async ({ headers, body }) => {
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) throw new Error('Invalid formBody');
+
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
-    const formBody = JSON.parse(body);
-
-    if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
     const user = new User();
 

@@ -21,7 +21,6 @@ module.exports.handler = async ({ headers, body }) => {
     if (hasError(formBody)) throw new Error('invalid form body');
 
     const { data: authUser } = await jwt.verify(authToken);
-
     const user = new User();
     const registeredDevice = new RegisteredDevice();
 

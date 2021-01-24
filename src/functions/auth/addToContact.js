@@ -7,17 +7,22 @@ const jwt = require('dependencies/nodejs/utils/jwt');
 const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
+const validate = require('dependencies/nodejs/utils/validate');
 
-module.exports.handler = async ({
-  pathParameters: { contactId },
-  headers
-}) => {
+function hasErrors ({ contactId }) {
+  return validate(contactId, ['required']);
+}
+
+module.exports.handler = async ({ body, headers }) => {
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) throw new Error('Invalid form body');
+
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
 
-    if (contactId === authUser.id)
+    if (formBody.contactId === authUser.id)
       throw new Error('Cannot add self to contacts');
 
     const user = new User();
@@ -28,12 +33,12 @@ module.exports.handler = async ({
       pendingSentRequest
     ] = await Promise.all([
       contactRequest.hasPendingRequest({
-        senderId: contactId,
+        senderId: formBody.contactId,
         recipientId: authUser.id
       }),
       contactRequest.hasPendingRequest({
         senderId: authUser.id,
-        recipientId: contactId
+        recipientId: formBody.contactId
       })
     ]);
 
@@ -46,7 +51,7 @@ module.exports.handler = async ({
       };
     }
 
-    await targetUser.getById(contactId);
+    await targetUser.getById(formBody.contactId);
 
     await Promise.all([user.getById(authUser.id)]);
 

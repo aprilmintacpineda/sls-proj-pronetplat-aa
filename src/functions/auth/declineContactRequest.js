@@ -15,12 +15,12 @@ function hasErrors ({ senderId }) {
 
 module.exports.handler = async ({ headers, body }) => {
   try {
+    const formBody = JSON.parse(body);
+    if (hasErrors(formBody)) throw new Error('invalid body');
+
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
-
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('invalid body');
 
     const contactRequest = new ContactRequest();
     await contactRequest.getByIndex(

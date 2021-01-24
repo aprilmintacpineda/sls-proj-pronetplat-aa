@@ -5,21 +5,4 @@ module.exports = class Contact extends Model {
     super();
     this.collection = 'contacts';
   }
-
-  async isInContact (ownerId, contactId) {
-    let isInContact = false;
-
-    try {
-      await this.getByIndex(
-        'contactByOwnerContact',
-        ownerId,
-        contactId
-      );
-      isInContact = true;
-    } catch (error) {
-      // do nothing
-    }
-
-    return isInContact;
-  }
 };

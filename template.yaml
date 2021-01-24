@@ -270,7 +270,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /add-to-contacts/{contactId}
+            Path: /add-to-contacts
             RestApiId:
               Ref: mainBackendApi
   badgeCount:
@@ -442,6 +442,24 @@ Resources:
           Properties:
             Method: post
             Path: /cancel-contact-request
+            RestApiId:
+              Ref: mainBackendApi
+  removeFromContacts:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/auth/removeFromContacts.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-removeFromContacts"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /remove-from-contacts
             RestApiId:
               Ref: mainBackendApi
   ######

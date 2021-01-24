@@ -17,7 +17,13 @@ module.exports.handler = async ({
     const contact = new Contact();
     const contactRequest = new ContactRequest();
 
-    if (!(await contact.isInContact(authUser.id, contactId))) {
+    if (
+      !(await contact.countByIndex(
+        'contactByOwnerContact',
+        authUser.id,
+        contactId
+      ))
+    ) {
       await contactRequest.getPendingRequestIfExists({
         senderId: authUser.id,
         recipientId: contactId

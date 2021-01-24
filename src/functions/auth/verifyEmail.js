@@ -15,7 +15,7 @@ function hasErrors ({ verificationCode }) {
 module.exports.handler = async ({ headers, body }) => {
   try {
     const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) return { statusCode: 403 };
+    if (hasErrors(formBody)) throw new Error('Invalid form body');
 
     const {
       data: { id }
