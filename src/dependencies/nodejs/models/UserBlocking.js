@@ -23,6 +23,6 @@ module.exports = class UserBlocking extends Model {
       )
     ]);
 
-    return Boolean(wasBlockedByUserId1, wasBlockedByUserId2);
+    return Boolean(wasBlockedByUserId1 || wasBlockedByUserId2);
   }
 };
