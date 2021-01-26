@@ -41,7 +41,7 @@ module.exports = class Model {
   }
 
   async getByIndexIfExists (index, ...values) {
-    this.throwIfHasInstance('getByIndex');
+    this.throwIfHasInstance('getByIndexIfExists');
 
     const client = initClient();
     const match = query.Match(query.Index(index), ...values);
