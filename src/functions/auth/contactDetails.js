@@ -21,12 +21,12 @@ module.exports.handler = async ({
     const blockedByUser = new UserBlocking();
 
     await Promise.all([
-      contactBlocked.getByIndex(
+      contactBlocked.getByIndexIfExists(
         'userBlockingsByBlockerIdUserId',
         authUser.id,
         contactId
       ),
-      blockedByUser.getByIndex(
+      blockedByUser.getByIndexIfExists(
         'userBlockingsByBlockerIdUserId',
         contactId,
         authUser.id

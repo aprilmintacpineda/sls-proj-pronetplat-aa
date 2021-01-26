@@ -40,6 +40,19 @@ module.exports = class Model {
     this.setInstance(newInstance);
   }
 
+  async getByIndexIfExists (index, ...values) {
+    this.throwIfHasInstance('getByIndex');
+
+    const client = initClient();
+    const match = query.Match(query.Index(index), ...values);
+
+    const newInstance = await client.query(
+      query.If(query.Exists(match), query.Get(match), null)
+    );
+
+    if (newInstance) this.setInstance(newInstance);
+  }
+
   async getByIndex (index, ...values) {
     this.throwIfHasInstance('getByIndex');
 
