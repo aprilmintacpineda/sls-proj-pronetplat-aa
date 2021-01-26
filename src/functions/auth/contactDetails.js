@@ -37,7 +37,9 @@ module.exports.handler = async ({
       return {
         statusCode: 200,
         body: JSON.stringify({
-          contactBlocked: true
+          data: {
+            contactBlocked: true
+          }
         })
       };
     }
@@ -46,7 +48,9 @@ module.exports.handler = async ({
       return {
         statusCode: 200,
         body: JSON.stringify({
-          blockedByUser: true
+          data: {
+            blockedByUser: true
+          }
         })
       };
     }
