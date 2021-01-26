@@ -29,7 +29,7 @@ module.exports.handler = async ({
       blockedByUser.getByIndex(
         'userBlockingsByBlockerIdUserId',
         contactId,
-        authUser
+        authUser.id
       )
     ]);
 
