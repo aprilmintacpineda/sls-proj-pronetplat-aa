@@ -8,6 +8,11 @@ const jwt = require('dependencies/nodejs/utils/jwt');
 const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
+const {
+  getPronoun,
+  getUserPublicResponseData,
+  getFullName
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ contactId }) {
@@ -70,31 +75,16 @@ module.exports.handler = async ({ body, headers }) => {
       recipientId: targetUser.data.id
     });
 
-    let fullName = authUser.firstName;
-    fullName += authUser.middleName
-      ? ` ${authUser.middleName} `
-      : ' ';
-    fullName += authUser.surname;
-
-    const pronoun = authUser.gender === 'male' ? 'his' : 'her';
-
     await sendPushNotification({
       userId: targetUser.data.id,
       imageUrl: authUser.profilePicture,
       title: 'Contact request',
-      body: `${fullName} wants to add you to ${pronoun} contacts.`,
+      body: `${getFullName(authUser)} wants to add you to ${
+        getPronoun(authUser).lowercase
+      } contacts.`,
       type: 'contactRequest',
       category: 'contactRequest',
-      data: {
-        id: authUser.id,
-        profilePicture: authUser.profilePicture,
-        firstName: authUser.firstName,
-        middleName: authUser.middleName,
-        surname: authUser.surname,
-        bio: authUser.bio,
-        company: authUser.company,
-        jobTitle: authUser.jobTitle
-      }
+      data: getUserPublicResponseData(authUser)
     });
 
     return { statusCode: 200 };

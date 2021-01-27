@@ -10,6 +10,10 @@ const jwt = require('dependencies/nodejs/utils/jwt');
 const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
+const {
+  getUserPublicResponseData,
+  getFullName
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ contactId }) {
@@ -68,29 +72,16 @@ module.exports.handler = async ({ headers, body }) => {
       })
     ]);
 
-    let fullName = authUser.firstName;
-    fullName += authUser.middleName
-      ? ` ${authUser.middleName} `
-      : ' ';
-    fullName += authUser.surname;
-
     await sendPushNotification({
       userId: contactRequest.data.recipientId,
       imageUrl: authUser.profilePicture,
       title: 'Contact request',
-      body: `${fullName} followed up with his contact request`,
+      body: `${getFullName(
+        authUser
+      )} followed up with his contact request`,
       type: 'contactRequestFollowUp',
       category: 'notification',
-      data: {
-        id: authUser.id,
-        profilePicture: authUser.profilePicture,
-        firstName: authUser.firstName,
-        middleName: authUser.middleName,
-        surname: authUser.surname,
-        bio: authUser.bio,
-        company: authUser.company,
-        jobTitle: authUser.jobTitle
-      }
+      data: getUserPublicResponseData(authUser)
     });
 
     return { statusCode: 200 };

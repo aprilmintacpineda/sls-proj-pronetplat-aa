@@ -3,15 +3,15 @@ const Notification = require('dependencies/nodejs/models/Notification');
 const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
+const {
+  getUserPublicResponseData,
+  getFullName,
+  getPronoun
+} = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({ authUser, contactId }) => {
   try {
-    let fullName = authUser.firstName;
-    fullName += authUser.middleName
-      ? ` ${authUser.middleName} `
-      : ' ';
-    fullName += authUser.surname;
-
+    const fullName = getFullName(authUser);
     const notification = new Notification();
     const sentContactRequest = new ContactRequest();
 
@@ -21,14 +21,14 @@ module.exports.handler = async ({ authUser, contactId }) => {
     });
 
     if (sentContactRequest.data) {
-      const pronoun = authUser.gender === 'male' ? 'his' : 'her';
+      const pronoun = getPronoun(authUser);
 
       await Promise.all([
         sentContactRequest.hardDelete(),
         notification.create({
           userId: sentContactRequest.data.recipientId,
           type: 'contactRequestCancelled',
-          body: `{fullname} has cancelled ${pronoun} contact request.`,
+          body: `{fullname} has cancelled ${pronoun.lowercase} contact request.`,
           actorId: authUser.id
         })
       ]);
@@ -37,15 +37,10 @@ module.exports.handler = async ({ authUser, contactId }) => {
         userId: sentContactRequest.data.recipientId,
         imageUrl: authUser.profilePicture,
         title: 'Contact request cancelled',
-        body: `${fullName} has cancelled ${pronoun} contact request.`,
+        body: `${fullName} has cancelled ${pronoun.lowercase} contact request.`,
         type: 'contactRequestCancelled',
         category: 'notification',
-        data: {
-          profilePicture: authUser.profilePicture,
-          firstName: authUser.firstName,
-          middleName: authUser.middleName,
-          surname: authUser.surname
-        }
+        data: getUserPublicResponseData(authUser)
       });
 
       return;
@@ -76,12 +71,7 @@ module.exports.handler = async ({ authUser, contactId }) => {
         body: `${fullName} has declined your contact request.`,
         type: 'contactRequestDeclined',
         category: 'notification',
-        data: {
-          profilePicture: authUser.profilePicture,
-          firstName: authUser.firstName,
-          middleName: authUser.middleName,
-          surname: authUser.surname
-        }
+        data: getUserPublicResponseData(authUser)
       });
     }
   } catch (error) {

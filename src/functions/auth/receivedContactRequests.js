@@ -4,6 +4,9 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const {
+  getUserPublicResponseDataQuery
+} = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
   queryStringParameters,
@@ -54,40 +57,10 @@ module.exports.handler = async ({
             },
             query.Merge(query.Var('data'), {
               id: query.Select(['id'], query.Var('ref')),
-              sender: {
-                id: query.Var('senderId'),
-                firstName: query.Select(
-                  ['firstName'],
-                  query.Var('sender')
-                ),
-                middleName: query.Select(
-                  ['middleName'],
-                  query.Var('sender')
-                ),
-                surname: query.Select(
-                  ['surname'],
-                  query.Var('sender')
-                ),
-                gender: query.Select(
-                  ['gender'],
-                  query.Var('sender')
-                ),
-                profilePicture: query.Select(
-                  ['profilePicture'],
-                  query.Var('sender'),
-                  null
-                ),
-                jobTitle: query.Select(
-                  ['jobTitle'],
-                  query.Var('sender')
-                ),
-                company: query.Select(
-                  ['company'],
-                  query.Var('sender'),
-                  null
-                ),
-                bio: query.Select(['bio'], query.Var('sender'), null)
-              }
+              sender: getUserPublicResponseDataQuery(
+                query.Var('senderId'),
+                query.Var('sender')
+              )
             })
           )
         )
