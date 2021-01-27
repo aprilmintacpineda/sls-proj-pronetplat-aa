@@ -204,10 +204,7 @@ module.exports = class Model {
 
     const newInstance = await client.query(
       query.Delete(
-        query.Select(
-          ['data', 'ref'],
-          query.Get(query.Match(index, ...args))
-        )
+        query.Select(['ref'], query.Get(query.Match(index, ...args)))
       )
     );
 
