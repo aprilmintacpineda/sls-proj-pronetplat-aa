@@ -9,7 +9,7 @@ const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
 const {
-  getPronoun,
+  getPersonalPronoun,
   getUserPublicResponseData,
   getFullName
 } = require('dependencies/nodejs/utils/users');
@@ -80,7 +80,7 @@ module.exports.handler = async ({ body, headers }) => {
       imageUrl: authUser.profilePicture,
       title: 'Contact request',
       body: `${getFullName(authUser)} wants to add you to ${
-        getPronoun(authUser).lowercase
+        getPersonalPronoun(authUser).possessive.lowercase
       } contacts.`,
       type: 'contactRequest',
       category: 'contactRequest',

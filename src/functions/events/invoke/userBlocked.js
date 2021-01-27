@@ -5,8 +5,7 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const {
   getUserPublicResponseData,
-  getFullName,
-  getPronoun
+  getFullName
 } = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({ authUser, contactId }) => {
@@ -21,14 +20,13 @@ module.exports.handler = async ({ authUser, contactId }) => {
     });
 
     if (sentContactRequest.data) {
-      const pronoun = getPronoun(authUser);
-
       await Promise.all([
         sentContactRequest.hardDelete(),
         notification.create({
           userId: sentContactRequest.data.recipientId,
           type: 'contactRequestCancelled',
-          body: `{fullname} has cancelled ${pronoun.lowercase} contact request.`,
+          body:
+            '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
           actorId: authUser.id
         })
       ]);
@@ -37,7 +35,7 @@ module.exports.handler = async ({ authUser, contactId }) => {
         userId: sentContactRequest.data.recipientId,
         imageUrl: authUser.profilePicture,
         title: 'Contact request cancelled',
-        body: `${fullName} has cancelled ${pronoun.lowercase} contact request.`,
+        body: `${fullName} has cancelled {genderPossessiveLowercase} contact request.`,
         type: 'contactRequestCancelled',
         category: 'notification',
         data: getUserPublicResponseData(authUser)

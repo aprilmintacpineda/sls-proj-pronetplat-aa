@@ -36,16 +36,36 @@ export function getFullName (userData) {
   );
 }
 
-export function getPronoun (userData) {
+export function getPersonalPronoun (userData) {
   if (userData.gender === 'male') {
     return {
-      ucfirst: 'He',
-      lowercase: 'he'
+      subjective: {
+        ucfirst: 'He',
+        lowercase: 'he'
+      },
+      objective: {
+        ucfirst: 'Him',
+        lowercase: 'him'
+      },
+      possessive: {
+        ucfirst: 'His',
+        lowercase: 'his'
+      }
     };
   }
 
   return {
-    ucfirst: 'She',
-    lowercase: 'she'
+    subjective: {
+      ucfirst: 'She',
+      lowercase: 'she'
+    },
+    objective: {
+      ucfirst: 'Her',
+      lowercase: 'her'
+    },
+    possessive: {
+      ucfirst: 'Her',
+      lowercase: 'her'
+    }
   };
 }

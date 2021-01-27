@@ -10,7 +10,7 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const {
   getFullName,
-  getPronoun,
+  getPersonalPronoun,
   getUserPublicResponseData
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
@@ -42,14 +42,14 @@ module.exports.handler = async ({ body, headers }) => {
       throw new Error('User was blocked');
 
     const notification = new Notification();
-    const pronoun = getPronoun(authUser);
 
     await Promise.all([
       sentContactRequest.hardDelete(),
       notification.create({
         userId: sentContactRequest.data.recipientId,
         type: 'contactRequestCancelled',
-        body: `{fullname} has cancelled ${pronoun.lowercase} contact request.`,
+        body:
+          '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
         actorId: authUser.id
       })
     ]);
@@ -59,7 +59,7 @@ module.exports.handler = async ({ body, headers }) => {
       imageUrl: authUser.profilePicture,
       title: 'Contact request cancelled',
       body: `${getFullName(authUser)} has cancelled ${
-        pronoun.lowercase
+        getPersonalPronoun(authUser).possessive.lowercase
       } contact request.`,
       type: 'contactRequestCancelled',
       category: 'notification',
