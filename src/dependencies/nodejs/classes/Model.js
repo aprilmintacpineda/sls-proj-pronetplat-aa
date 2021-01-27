@@ -188,7 +188,8 @@ module.exports = class Model {
 
   async hardDelete () {
     const client = initClient();
-    await client.query(query.Delete(this.ref));
+    const newInstance = await client.query(query.Delete(this.ref));
+    this.setInstance(newInstance);
     this.wasHardDeleted = true;
   }
 
@@ -196,6 +197,22 @@ module.exports = class Model {
     this.throwIfHasInstance('hardDeleteById');
     this.ref = query.Ref(query.Collection(this.collection), id);
     return this.hardDelete();
+  }
+
+  async hardDeleteByIndex (index, ...args) {
+    const client = initClient();
+
+    const newInstance = await client.query(
+      query.Delete(
+        query.Select(
+          ['data', 'ref'],
+          query.Get(query.Match(index, ...args))
+        )
+      )
+    );
+
+    this.setInstance(newInstance);
+    this.wasHardDeleted = true;
   }
 
   async hardDeleteIfExists (index, ...args) {
