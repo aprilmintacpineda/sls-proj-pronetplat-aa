@@ -11,16 +11,12 @@ module.exports = class UserBlocking extends Model {
       wasBlockedByUserId1,
       wasBlockedByUserId2
     ] = await Promise.all([
-      this.countByIndex(
+      this.exists(
         'userBlockingsByBlockerIdUserId',
         userId1,
         userId2
       ),
-      this.countByIndex(
-        'userBlockingsByBlockerIdUserId',
-        userId2,
-        userId1
-      )
+      this.exists('userBlockingsByBlockerIdUserId', userId2, userId1)
     ]);
 
     return Boolean(wasBlockedByUserId1 || wasBlockedByUserId2);

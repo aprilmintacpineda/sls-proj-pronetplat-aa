@@ -15,25 +15,23 @@ module.exports.handler = async ({
       getAuthTokenFromHeaders(headers)
     );
 
-    const contact = new Contact();
-    const contactRequest = new ContactRequest();
     const contactBlocked = new UserBlocking();
     const blockedByUser = new UserBlocking();
 
-    await Promise.all([
-      contactBlocked.getByIndexIfExists(
+    const [wasContactBlocked, wasBlockedByUser] = await Promise.all([
+      contactBlocked.exists(
         'userBlockingsByBlockerIdUserId',
         authUser.id,
         contactId
       ),
-      blockedByUser.getByIndexIfExists(
+      blockedByUser.exists(
         'userBlockingsByBlockerIdUserId',
         contactId,
         authUser.id
       )
     ]);
 
-    if (contactBlocked.data) {
+    if (wasContactBlocked) {
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -44,7 +42,7 @@ module.exports.handler = async ({
       };
     }
 
-    if (blockedByUser.data) {
+    if (wasBlockedByUser) {
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -55,40 +53,46 @@ module.exports.handler = async ({
       };
     }
 
+    const contact = new Contact();
+
     if (
-      !(await contact.countByIndex(
+      !(await contact.exists(
         'contactByOwnerContact',
         authUser.id,
         contactId
       ))
     ) {
-      await contactRequest.getPendingRequestIfExists({
-        senderId: authUser.id,
-        recipientId: contactId
-      });
+      const sentContactRequest = new ContactRequest();
+      const receivedContactRequest = new ContactRequest();
 
-      if (contactRequest.data) {
+      await Promise.all([
+        sentContactRequest.getPendingRequestIfExists({
+          senderId: authUser.id,
+          recipientId: contactId
+        }),
+        receivedContactRequest.getPendingRequestIfExists({
+          senderId: contactId,
+          recipientId: authUser.id
+        })
+      ]);
+
+      if (sentContactRequest.data) {
         return {
           statusCode: 200,
           body: JSON.stringify({
             data: {
-              sentContactRequest: contactRequest.toResponseData()
+              sentContactRequest: sentContactRequest.toResponseData()
             }
           })
         };
       }
 
-      await contactRequest.getPendingRequestIfExists({
-        senderId: contactId,
-        recipientId: authUser.id
-      });
-
-      if (contactRequest.data) {
+      if (receivedContactRequest.data) {
         return {
           statusCode: 200,
           body: JSON.stringify({
             data: {
-              receivedContactRequest: contactRequest.toResponseData()
+              receivedContactRequest: receivedContactRequest.toResponseData()
             }
           })
         };

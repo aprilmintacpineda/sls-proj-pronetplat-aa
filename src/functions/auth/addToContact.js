@@ -1,3 +1,4 @@
+const { query } = require('faunadb');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const User = require('dependencies/nodejs/models/User');
 const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
@@ -72,7 +73,11 @@ module.exports.handler = async ({ body, headers }) => {
 
     await contactRequest.create({
       senderId: authUser.id,
-      recipientId: targetUser.data.id
+      recipientId: targetUser.data.id,
+      canFollowUpAt: query.Format(
+        '%t',
+        query.TimeAdd(query.Now(), 1, 'day')
+      )
     });
 
     await sendPushNotification({

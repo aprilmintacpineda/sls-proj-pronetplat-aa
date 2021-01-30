@@ -241,13 +241,14 @@ module.exports = class Model {
     return wasDeleted;
   }
 
-  async countByIndex (index, ...values) {
+  async exists (index, ...values) {
     const client = initClient();
-    const count = await client.query(
-      query.Count(query.Match(query.Index(index), ...values))
+
+    const exists = await client.query(
+      query.Exists(query.Match(query.Index(index, ...values)))
     );
 
-    return parseInt(count);
+    return Boolean(exists);
   }
 
   toResponseData () {

@@ -1,10 +1,10 @@
-const { differenceInDays } = require('date-fns');
 const { query } = require('faunadb');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const Notification = require('dependencies/nodejs/models/Notification');
 const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
-  getAuthTokenFromHeaders
+  getAuthTokenFromHeaders,
+  hasTimePassed
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
@@ -44,19 +44,8 @@ module.exports.handler = async ({ headers, body }) => {
       contactId
     );
 
-    if (
-      (!contactRequest.data.lastFollowUpAt &&
-        differenceInDays(
-          new Date(),
-          new Date(contactRequest.data.createdAt)
-        ) < 1) ||
-      (contactRequest.data.lastFollowUpAt &&
-        differenceInDays(
-          new Date(),
-          new Date(contactRequest.data.lastFollowUpAt)
-        ) < 1)
-    )
-      throw new Error('Must wait until tomorrow to send follow up');
+    if (!hasTimePassed(contactRequest.data.canFollowUpAt))
+      throw new Error('canFollowUpAt has not passed yet');
 
     const notification = new Notification();
 
@@ -68,7 +57,10 @@ module.exports.handler = async ({ headers, body }) => {
         actorId: authUser.id
       }),
       contactRequest.update({
-        lastFollowUpAt: query.Format('%t', query.Now())
+        canFollowUpAt: query.Format(
+          '%t',
+          query.TimeAdd(query.Now(), 1, 'day')
+        )
       })
     ]);
 
