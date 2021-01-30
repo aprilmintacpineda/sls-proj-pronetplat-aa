@@ -245,7 +245,7 @@ module.exports = class Model {
     const client = initClient();
 
     const exists = await client.query(
-      query.Exists(query.Match(query.Index(index, ...values)))
+      query.Exists(query.Match(query.Index(index), ...values))
     );
 
     return Boolean(exists);
