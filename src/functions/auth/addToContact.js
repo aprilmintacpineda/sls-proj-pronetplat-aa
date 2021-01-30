@@ -55,12 +55,15 @@ module.exports.handler = async ({ body, headers }) => {
       })
     ]);
 
-    if (pendingSentRequest || pendingReceivedRequest) {
+    if (pendingSentRequest) {
       return {
         statusCode: 422,
-        body: pendingSentRequest
-          ? 'pendingSentRequest'
-          : 'pendingReceivedRequest'
+        body: 'pendingSentRequest'
+      };
+    } else if (pendingReceivedRequest) {
+      return {
+        statusCode: 422,
+        body: 'pendingReceivedRequest'
       };
     }
 
@@ -74,6 +77,7 @@ module.exports.handler = async ({ body, headers }) => {
     await contactRequest.create({
       senderId: authUser.id,
       recipientId: targetUser.data.id,
+      lastFollowedUpAt: query.Format('%t', query.Now()),
       canFollowUpAt: query.Format(
         '%t',
         query.TimeAdd(query.Now(), 1, 'day')

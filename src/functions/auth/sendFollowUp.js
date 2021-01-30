@@ -57,6 +57,7 @@ module.exports.handler = async ({ headers, body }) => {
         actorId: authUser.id
       }),
       contactRequest.update({
+        lastFollowedUpAt: query.Format('%t', query.Now()),
         canFollowUpAt: query.Format(
           '%t',
           query.TimeAdd(query.Now(), 1, 'day')
