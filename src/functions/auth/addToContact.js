@@ -77,7 +77,6 @@ module.exports.handler = async ({ body, headers }) => {
     await contactRequest.create({
       senderId: authUser.id,
       recipientId: targetUser.data.id,
-      lastFollowedUpAt: query.Format('%t', query.Now()),
       canFollowUpAt: query.Format(
         '%t',
         query.TimeAdd(query.Now(), 1, 'day')
