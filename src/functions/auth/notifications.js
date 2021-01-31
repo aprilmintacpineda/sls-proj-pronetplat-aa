@@ -75,9 +75,20 @@ module.exports.handler = async ({
       )
     );
 
-    await client.query(
-      query.Call('updateUserBadgeCount', 'notificationsCount', -20)
-    );
+    const unseenCount = result.data.reduce((count, current) => {
+      if (current.seenAt) return count;
+      return count + 1;
+    }, 0);
+
+    if (unseenCount) {
+      await client.query(
+        query.Call(
+          'updateUserBadgeCount',
+          'notificationsCount',
+          -unseenCount
+        )
+      );
+    }
 
     return {
       statusCode: 200,
