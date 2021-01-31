@@ -53,7 +53,8 @@ module.exports.handler = async ({ headers, body }) => {
         args: [contactRequest.data.senderId, authUser.id],
         data: {
           ownerId: contactRequest.data.senderId,
-          contactId: authUser.id
+          contactId: authUser.id,
+          lastOpenedAt: query.Format('%t', query.Now())
         }
       })
     ]);
