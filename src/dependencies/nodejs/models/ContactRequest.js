@@ -36,7 +36,7 @@ module.exports = class ContactRequest extends Model {
       this.callUDF(
         'updateUserBadgeCount',
         data.recipientId,
-        'contactRequestsCount',
+        'receivedContactRequestsCount',
         'increment'
       )
     ]);

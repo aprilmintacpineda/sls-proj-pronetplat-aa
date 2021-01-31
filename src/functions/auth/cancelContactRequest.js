@@ -50,7 +50,7 @@ module.exports.handler = async ({ body, headers }) => {
       user.callUDF(
         'updateUserBadgeCount',
         sentContactRequest.data.recipientId,
-        'contactRequestsCount',
+        'receivedContactRequestsCount',
         'decrement'
       )
     ]);

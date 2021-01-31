@@ -3,7 +3,7 @@ const name = 'updateUserBadgeCount';
 module.exports.up = q => {
   const allowedBadges = [
     'notificationsCount',
-    'contactRequestsCount'
+    'receivedContactRequestsCount'
   ];
 
   const allowedActions = ['increment', 'decrement'];
@@ -68,10 +68,10 @@ module.exports.up = q => {
                           0
                         )
                       ),
-                      contactRequestsCount: q.Max(
+                      receivedContactRequestsCount: q.Max(
                         0,
                         q.Select(
-                          ['data', 'contactRequestsCount'],
+                          ['data', 'receivedContactRequestsCount'],
                           q.Var('document'),
                           0
                         )
@@ -120,7 +120,7 @@ module.exports.up = q => {
                               q.And(
                                 q.Equals(
                                   q.Var('targetBadge'),
-                                  'contactRequestsCount'
+                                  'receivedContactRequestsCount'
                                 ),
                                 q.Equals(
                                   q.Var('action'),
@@ -128,16 +128,20 @@ module.exports.up = q => {
                                 )
                               ),
                               {
-                                contactRequestsCount: q.Add(
-                                  q.Var('contactRequestsCount'),
+                                receivedContactRequestsCount: q.Add(
+                                  q.Var(
+                                    'receivedContactRequestsCount'
+                                  ),
                                   1
                                 )
                               },
                               {
-                                contactRequestsCount: q.Max(
+                                receivedContactRequestsCount: q.Max(
                                   0,
                                   q.Subtract(
-                                    q.Var('contactRequestsCount'),
+                                    q.Var(
+                                      'receivedContactRequestsCount'
+                                    ),
                                     1
                                   )
                                 )
