@@ -84,6 +84,7 @@ module.exports.handler = async ({
       await client.query(
         query.Call(
           'updateUserBadgeCount',
+          authUser.id,
           'notificationsCount',
           -unseenCount
         )
