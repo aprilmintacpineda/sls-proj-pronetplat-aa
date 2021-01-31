@@ -1,12 +1,22 @@
 const name = 'updateUserBadgeCount';
 
 module.exports.up = q => {
-  const allowedBadges = [
-    'notificationsCount',
-    'receivedContactRequestsCount'
-  ];
+  const badgesOperations = {
+    notificationsCount: {
+      notificationsCount: q.Max(
+        0,
+        q.Add(q.Var('notificationsCount'), q.Var('amount'))
+      )
+    },
+    receivedContactRequestsCount: {
+      receivedContactRequestsCount: q.Max(
+        0,
+        q.Add(q.Var('receivedContactRequestsCount'), q.Var('amount'))
+      )
+    }
+  };
 
-  const allowedActions = ['increment', 'decrement'];
+  const allowedBadges = Object.keys(badgesOperations);
 
   const invalidTargetBadgeErrorNMsg = q.Concat(
     [
@@ -21,144 +31,59 @@ module.exports.up = q => {
     ' '
   );
 
-  const invalidActionErrorMsg = q.Concat(
-    [
-      'Invalid argument `action`:',
-      q.Concat(['`', q.Var('action'), '`'], ''),
-      'provided,',
-      q.Concat(
-        ['expecting `', q.Concat(allowedActions, '` | `'), '`'],
-        ''
-      )
-    ],
-    ' '
-  );
-
   return q.If(
     q.Not(q.Exists(q.Function(name))),
     q.CreateFunction({
       name,
       body: q.Query(
         q.Lambda(
-          ['userId', 'targetBadge', 'action'],
+          ['userId', 'targetBadge', 'amount'],
           q.If(
             q.Not(
               q.ContainsValue(q.Var('targetBadge'), allowedBadges)
             ),
             q.Abort(invalidTargetBadgeErrorNMsg),
-            q.If(
-              q.Not(
-                q.ContainsValue(q.Var('action'), allowedActions)
-              ),
-              q.Abort(invalidActionErrorMsg),
-              q.Let(
-                {
-                  ref: q.Ref(q.Collection('users'), q.Var('userId'))
-                },
-                q.If(
-                  q.Exists(q.Var('ref')),
-                  q.Let(
-                    {
-                      document: q.Get(q.Var('ref')),
-                      notificationsCount: q.Max(
-                        0,
-                        q.Select(
-                          ['data', 'notificationsCount'],
-                          q.Var('document'),
-                          0
-                        )
-                      ),
-                      receivedContactRequestsCount: q.Max(
-                        0,
-                        q.Select(
-                          ['data', 'receivedContactRequestsCount'],
-                          q.Var('document'),
-                          0
-                        )
-                      )
-                    },
-                    q.If(
-                      q.Not(
-                        q.ContainsPath(
-                          ['data', 'closedAt'],
-                          q.Var('document')
-                        )
-                      ),
-                      q.Update(q.Var('ref'), {
-                        data: q.If(
-                          q.And(
-                            q.Equals(
-                              q.Var('targetBadge'),
-                              'notificationsCount'
-                            ),
-                            q.Equals(q.Var('action'), 'increment')
-                          ),
-                          {
-                            notificationsCount: q.Add(
-                              q.Var('notificationsCount'),
-                              1
-                            )
-                          },
-                          q.If(
-                            q.And(
-                              q.Equals(
-                                q.Var('targetBadge'),
-                                'notificationsCount'
-                              ),
-                              q.Equals(q.Var('action'), 'decrement')
-                            ),
-                            {
-                              notificationsCount: q.Max(
-                                0,
-                                q.Subtract(
-                                  q.Var('notificationsCount'),
-                                  1
-                                )
-                              )
-                            },
-                            q.If(
-                              q.And(
-                                q.Equals(
-                                  q.Var('targetBadge'),
-                                  'receivedContactRequestsCount'
-                                ),
-                                q.Equals(
-                                  q.Var('action'),
-                                  'increment'
-                                )
-                              ),
-                              {
-                                receivedContactRequestsCount: q.Add(
-                                  q.Var(
-                                    'receivedContactRequestsCount'
-                                  ),
-                                  1
-                                )
-                              },
-                              {
-                                receivedContactRequestsCount: q.Max(
-                                  0,
-                                  q.Subtract(
-                                    q.Var(
-                                      'receivedContactRequestsCount'
-                                    ),
-                                    1
-                                  )
-                                )
-                              }
-                            )
-                          )
-                        )
-                      }),
-                      {
-                        statusText: 'userAccountClosed'
-                      }
-                    )
-                  ),
+            q.Let(
+              {
+                ref: q.Ref(q.Collection('users'), q.Var('userId'))
+              },
+              q.If(
+                q.Exists(q.Var('ref')),
+                q.Let(
                   {
-                    statusText: 'userDoesNotExist'
-                  }
-                )
+                    document: q.Get(q.Var('ref')),
+                    notificationsCount: q.Select(
+                      ['data', 'notificationsCount'],
+                      q.Var('document'),
+                      0
+                    ),
+                    receivedContactRequestsCount: q.Select(
+                      ['data', 'receivedContactRequestsCount'],
+                      q.Var('document'),
+                      0
+                    )
+                  },
+                  q.If(
+                    q.Not(
+                      q.ContainsPath(
+                        ['data', 'closedAt'],
+                        q.Var('document')
+                      )
+                    ),
+                    q.Update(q.Var('ref'), {
+                      data: q.Select(
+                        q.Var('targetBadge'),
+                        badgesOperations
+                      )
+                    }),
+                    {
+                      statusText: 'userAccountClosed'
+                    }
+                  )
+                ),
+                {
+                  statusText: 'userDoesNotExist'
+                }
               )
             )
           )
