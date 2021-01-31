@@ -483,6 +483,24 @@ Resources:
             Path: /unblock-user
             RestApiId:
               Ref: mainBackendApi
+  myContacts:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/auth/myContacts.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-myContacts"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /my-contacts
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
