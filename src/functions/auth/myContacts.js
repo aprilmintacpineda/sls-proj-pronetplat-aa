@@ -39,15 +39,15 @@ module.exports.handler = async ({
                 ['data', 'contactId'],
                 query.Get(query.Var('ref'))
               ),
-              contact: query.Select([
-                'data',
+              contact: query.Select(
+                ['data'],
                 query.Get(
                   query.Ref(
                     query.Collection('users'),
                     query.Var('contactId')
                   )
                 )
-              ])
+              )
             },
             getUserPublicResponseDataQuery(
               query.Var('contactId'),
