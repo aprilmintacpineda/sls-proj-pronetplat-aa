@@ -1,3 +1,4 @@
+const { query } = require('faunadb');
 const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
@@ -54,14 +55,13 @@ module.exports.handler = async ({
     }
 
     const contact = new Contact();
+    await contact.getByIndexIfExists(
+      'contactByOwnerContact',
+      authUser.id,
+      contactId
+    );
 
-    if (
-      !(await contact.exists(
-        'contactByOwnerContact',
-        authUser.id,
-        contactId
-      ))
-    ) {
+    if (!contact.instance) {
       const sentContactRequest = new ContactRequest();
       const receivedContactRequest = new ContactRequest();
 
@@ -100,6 +100,10 @@ module.exports.handler = async ({
 
       return { statusCode: 404 };
     }
+
+    await contact.update({
+      lastOpenedAt: query.Format('%t', query.Now())
+    });
 
     // @TODO: get contact details and send back
   } catch (error) {
