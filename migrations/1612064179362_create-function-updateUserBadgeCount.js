@@ -5,13 +5,27 @@ module.exports.up = q => {
     notificationsCount: {
       notificationsCount: q.Max(
         0,
-        q.Add(q.Var('notificationsCount'), q.Var('amount'))
+        q.Add(
+          q.Select(
+            ['data', 'notificationsCount'],
+            q.Var('document'),
+            0
+          ),
+          q.Var('amount')
+        )
       )
     },
     receivedContactRequestsCount: {
       receivedContactRequestsCount: q.Max(
         0,
-        q.Add(q.Var('receivedContactRequestsCount'), q.Var('amount'))
+        q.Add(
+          q.Select(
+            ['data', 'receivedContactRequestsCount'],
+            q.Var('document'),
+            0
+          ),
+          q.Var('amount')
+        )
       )
     }
   };
@@ -51,17 +65,7 @@ module.exports.up = q => {
                 q.Exists(q.Var('ref')),
                 q.Let(
                   {
-                    document: q.Get(q.Var('ref')),
-                    notificationsCount: q.Select(
-                      ['data', 'notificationsCount'],
-                      q.Var('document'),
-                      0
-                    ),
-                    receivedContactRequestsCount: q.Select(
-                      ['data', 'receivedContactRequestsCount'],
-                      q.Var('document'),
-                      0
-                    )
+                    document: q.Get(q.Var('ref'))
                   },
                   q.If(
                     q.Not(
