@@ -13,7 +13,7 @@ module.exports = class Notification extends Model {
         'updateUserBadgeCount',
         data.userId,
         'notificationsCount',
-        'increment'
+        1
       )
     ]);
   }

@@ -37,7 +37,7 @@ module.exports = class ContactRequest extends Model {
         'updateUserBadgeCount',
         data.recipientId,
         'receivedContactRequestsCount',
-        'increment'
+        1
       )
     ]);
   }

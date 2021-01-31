@@ -49,7 +49,7 @@ module.exports.handler = async ({ headers, body }) => {
         'updateUserBadgeCount',
         authUser.id,
         'receivedContactRequestsCount',
-        'decrement'
+        -1
       )
     ]);
 

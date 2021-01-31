@@ -51,7 +51,7 @@ module.exports.handler = async ({ body, headers }) => {
         'updateUserBadgeCount',
         sentContactRequest.data.recipientId,
         'receivedContactRequestsCount',
-        'decrement'
+        -1
       )
     ]);
 

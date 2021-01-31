@@ -75,6 +75,10 @@ module.exports.handler = async ({
       )
     );
 
+    await client.query(
+      query.Call('updateUserBadgeCount', 'notificationsCount', -20)
+    );
+
     return {
       statusCode: 200,
       body: JSON.stringify({
