@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { isPast } = require('date-fns');
 
 module.exports.randomNum = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -17,7 +18,7 @@ module.exports.verifyHash = (plainValue, hashedValue) => {
 };
 
 module.exports.hasTimePassed = futureTime => {
-  return !futureTime || new Date() > new Date(futureTime);
+  return !futureTime || isPast(futureTime);
 };
 
 module.exports.sanitizeFormBody = data => {
@@ -38,5 +39,6 @@ module.exports.sanitizeFormBody = data => {
   }, {});
 };
 
-module.exports.wait = timeMs =>
-  new Promise(resolve => setTimeout(resolve, timeMs));
+module.exports.wait = timeMs => {
+  return new Promise(resolve => setTimeout(resolve, timeMs));
+};

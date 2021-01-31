@@ -3,6 +3,9 @@ const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/firebase');
+const {
+  hasTimePassed
+} = require('dependencies/nodejs/utils/helpers');
 
 module.exports.handler = async ({
   userId,
@@ -22,10 +25,13 @@ module.exports.handler = async ({
         query.Call('getActiveRegisteredDevices', userId, nextToken)
       );
 
+      const tokens = result.data.reduce((accumulator, current) => {
+        if (!hasTimePassed(current.expiresAt)) return accumulator;
+        return accumulator.concat(current.data.deviceToken);
+      }, []);
+
       await sendPushNotification({
-        tokens: result.data.map(
-          ({ data: { deviceToken } }) => deviceToken
-        ),
+        tokens,
         notification: {
           title,
           body,
