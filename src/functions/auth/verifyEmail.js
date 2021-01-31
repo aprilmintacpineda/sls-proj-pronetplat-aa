@@ -41,7 +41,9 @@ module.exports.handler = async ({ headers, body }) => {
       emailVerifiedAt: query.Format('%t', query.Now()),
       emailConfirmCodeExpiresAt: null,
       emailCodeCanSendAt: null,
-      hashedEmailVerificationCode: null
+      hashedEmailVerificationCode: null,
+      notificationsCount: 0,
+      contactRequestsCount: 0
     });
 
     const userData = user.toResponseData();

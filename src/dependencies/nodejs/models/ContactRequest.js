@@ -14,16 +14,12 @@ module.exports = class ContactRequest extends Model {
     );
   }
 
-  async getPendingRequestIfExists ({ senderId, recipientId }) {
-    try {
-      await this.getByIndex(
-        'contactRequestBySenderIdRecipientId',
-        senderId,
-        recipientId
-      );
-    } catch (error) {
-      console.log('getPendingRequestIfExists', error);
-    }
+  getPendingRequestIfExists ({ senderId, recipientId }) {
+    return this.getByIndexIfExists(
+      'contactRequestBySenderIdRecipientId',
+      senderId,
+      recipientId
+    );
   }
 
   getPendingRequest ({ senderId, recipientId }) {
@@ -32,5 +28,17 @@ module.exports = class ContactRequest extends Model {
       senderId,
       recipientId
     );
+  }
+
+  async create (data) {
+    return Promise.all([
+      super.create(data),
+      this.callUDF(
+        'updateUserBadgeCount',
+        data.recipientId,
+        'contactRequestsCount',
+        'increment'
+      )
+    ]);
   }
 };

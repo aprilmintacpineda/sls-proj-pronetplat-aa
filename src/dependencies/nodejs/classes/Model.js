@@ -10,17 +10,17 @@ module.exports = class Model {
     this.data = null;
     this.instance = null;
     this.ref = null;
+    this.client = initClient();
   }
 
   setInstance (newInstance) {
     this.instance = newInstance;
     this.ref = newInstance.ref;
-
     newInstance.data.id = newInstance.ref.id;
     this.data = newInstance.data;
   }
 
-  throwIfHasInstance (method) {
+  throwIfHasRef (method) {
     if (this.instance) {
       throw new Error(
         `Cannot do ${method} with an existing instance in model`
@@ -28,12 +28,18 @@ module.exports = class Model {
     }
   }
 
+  throwIfNoRef (method) {
+    if (!this.ref) {
+      throw new Error(
+        `Cannot do ${method} with no existing instance in model`
+      );
+    }
+  }
+
   async getById (id) {
-    this.throwIfHasInstance('getById');
+    this.throwIfHasRef('getById');
 
-    const client = initClient();
-
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.Get(query.Ref(query.Collection(this.collection), id))
     );
 
@@ -41,12 +47,11 @@ module.exports = class Model {
   }
 
   async getByIndexIfExists (index, ...values) {
-    this.throwIfHasInstance('getByIndexIfExists');
+    this.throwIfHasRef('getByIndexIfExists');
 
-    const client = initClient();
     const match = query.Match(query.Index(index), ...values);
 
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.If(query.Exists(match), query.Get(match), null)
     );
 
@@ -54,11 +59,9 @@ module.exports = class Model {
   }
 
   async getByIndex (index, ...values) {
-    this.throwIfHasInstance('getByIndex');
+    this.throwIfHasRef('getByIndex');
 
-    const client = initClient();
-
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.Get(query.Match(query.Index(index), ...values))
     );
 
@@ -66,11 +69,9 @@ module.exports = class Model {
   }
 
   async create (data) {
-    this.throwIfHasInstance('create');
+    this.throwIfHasRef('create');
 
-    const client = initClient();
-
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.Create(query.Collection(this.collection), {
         data: {
           ...sanitizeFormBody(data),
@@ -83,9 +84,9 @@ module.exports = class Model {
   }
 
   async update (data) {
-    const client = initClient();
+    this.throwIfNoRef('update');
 
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.Update(this.ref, {
         data: {
           ...sanitizeFormBody(data),
@@ -98,17 +99,15 @@ module.exports = class Model {
   }
 
   updateById (id, data) {
-    this.throwIfHasInstance('updateById');
+    this.throwIfHasRef('updateById');
     this.ref = query.Ref(query.Collection(this.collection), id);
     return this.update(data);
   }
 
   async updateByIndex ({ index, data, args = [] }) {
-    this.throwIfHasInstance('updateByIndex');
+    this.throwIfHasRef('updateByIndex');
 
-    const client = initClient();
-
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.Update(
         query.Select(
           ['ref'],
@@ -127,12 +126,11 @@ module.exports = class Model {
   }
 
   async createOrUpdate ({ index, args, data }) {
-    this.throwIfHasInstance('createOrUpdate');
+    this.throwIfHasRef('createOrUpdate');
 
-    const client = initClient();
     const match = query.Match(query.Index(index), ...args);
 
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.If(
         query.Exists(match),
         query.Update(query.Select(['ref'], query.Get(match)), {
@@ -154,12 +152,11 @@ module.exports = class Model {
   }
 
   async createIfNotExists ({ index, args, data }) {
-    this.throwIfHasInstance('createIfNotExists');
+    this.throwIfHasRef('createIfNotExists');
 
-    const client = initClient();
     const match = query.Match(query.Index(index), ...args);
 
-    const response = await client.query(
+    const response = await this.client.query(
       query.If(
         query.Exists(match),
         {
@@ -187,22 +184,27 @@ module.exports = class Model {
   }
 
   async hardDelete () {
-    const client = initClient();
-    const newInstance = await client.query(query.Delete(this.ref));
+    this.throwIfNoRef('hardDelete');
+
+    const newInstance = await this.client.query(
+      query.Delete(this.ref)
+    );
+
     this.setInstance(newInstance);
     this.wasHardDeleted = true;
   }
 
   hardDeleteById (id) {
-    this.throwIfHasInstance('hardDeleteById');
+    this.throwIfHasRef('hardDeleteById');
+
     this.ref = query.Ref(query.Collection(this.collection), id);
     return this.hardDelete();
   }
 
   async hardDeleteByIndex (index, ...args) {
-    const client = initClient();
+    this.throwIfHasRef('hardDeleteByIndex');
 
-    const newInstance = await client.query(
+    const newInstance = await this.client.query(
       query.Delete(
         query.Select(['ref'], query.Get(query.Match(index, ...args)))
       )
@@ -213,11 +215,11 @@ module.exports = class Model {
   }
 
   async hardDeleteIfExists (index, ...args) {
-    const client = initClient();
+    this.throwIfHasRef('hardDeleteIfExists');
 
     const match = query.Match(index, ...args);
 
-    const { wasDeleted } = await client.query(
+    const { wasDeleted, instance } = await this.client.query(
       query.If(
         query.Exists(match),
         query.Let(
@@ -228,6 +230,7 @@ module.exports = class Model {
             )
           },
           {
+            instance: query.Var('deletedDocument'),
             wasDeleted: true
           }
         ),
@@ -237,26 +240,26 @@ module.exports = class Model {
       )
     );
 
-    this.wasHardDeleted = true;
-    return wasDeleted;
+    if (wasDeleted) {
+      this.setInstance(instance);
+      this.wasHardDeleted = true;
+    }
+
+    return Boolean(wasDeleted);
   }
 
-  async exists (index, ...values) {
-    const client = initClient();
-
-    const exists = await client.query(
+  exists (index, ...values) {
+    return this.client.query(
       query.Exists(query.Match(query.Index(index), ...values))
     );
+  }
 
-    return Boolean(exists);
+  callUDF (name, ...args) {
+    return this.client.query(query.Call(name, args));
   }
 
   toResponseData () {
-    if (!this.data) {
-      throw new Error(
-        'toResponseData was called but no data exists in model.'
-      );
-    }
+    this.throwIfNoRef('toResponseData');
 
     if (!this.censoredData) return this.data;
 

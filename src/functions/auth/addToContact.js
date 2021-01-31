@@ -38,7 +38,6 @@ module.exports.handler = async ({ body, headers }) => {
     )
       throw new Error('User was blocked');
 
-    const user = new User();
     const targetUser = new User();
     const contactRequest = new ContactRequest();
     const [
@@ -68,8 +67,6 @@ module.exports.handler = async ({ body, headers }) => {
     }
 
     await targetUser.getById(formBody.contactId);
-
-    await Promise.all([user.getById(authUser.id)]);
 
     if (!targetUser.data.completedFirstSetupAt)
       throw new Error('Target user not setup.');

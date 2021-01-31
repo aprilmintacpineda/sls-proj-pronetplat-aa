@@ -1,6 +1,6 @@
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const Notification = require('dependencies/nodejs/models/Notification');
-const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
+const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
@@ -35,13 +35,8 @@ module.exports.handler = async ({ body, headers }) => {
       formBody.contactId
     );
 
-    const userBlocking = new UserBlocking();
-    if (
-      await userBlocking.wasBlocked(authUser.id, formBody.contactId)
-    )
-      throw new Error('User was blocked');
-
     const notification = new Notification();
+    const user = new User();
 
     await Promise.all([
       sentContactRequest.hardDelete(),
@@ -51,7 +46,13 @@ module.exports.handler = async ({ body, headers }) => {
         body:
           '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
         actorId: authUser.id
-      })
+      }),
+      user.callUDF(
+        'updateUserBadgeCount',
+        sentContactRequest.data.recipientId,
+        'contactRequestsCount',
+        'decrement'
+      )
     ]);
 
     await sendPushNotification({

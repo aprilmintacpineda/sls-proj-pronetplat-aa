@@ -1,7 +1,6 @@
 const { query } = require('faunadb');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const Notification = require('dependencies/nodejs/models/Notification');
-const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
   getAuthTokenFromHeaders,
   hasTimePassed
@@ -30,12 +29,6 @@ module.exports.handler = async ({ headers, body }) => {
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
-
-    const userBlocking = new UserBlocking();
-    if (
-      await userBlocking.wasBlocked(authUser.id, formBody.contactId)
-    )
-      throw new Error('User was blocked');
 
     const contactRequest = new ContactRequest();
     await contactRequest.getByIndex(

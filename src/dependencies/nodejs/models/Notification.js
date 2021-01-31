@@ -5,4 +5,16 @@ module.exports = class Notification extends Model {
     super();
     this.collection = 'notifications';
   }
+
+  async create (data) {
+    return Promise.all([
+      super.create(data),
+      this.callUDF(
+        'updateUserBadgeCount',
+        data.userId,
+        'notificationsCount',
+        'increment'
+      )
+    ]);
+  }
 };
