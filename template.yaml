@@ -29,7 +29,7 @@ Globals:
     MemorySize: 1024
     Timeout: 30
     Runtime: nodejs12.x
-    ReservedConcurrentExecutions: 100
+    UnreservedConcurrentExecution: 100
     Environment:
       Variables:
         appPackageName: !FindInMap
