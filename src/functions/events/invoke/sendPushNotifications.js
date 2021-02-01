@@ -26,7 +26,7 @@ module.exports.handler = async ({
       );
 
       const tokens = result.data.reduce((accumulator, current) => {
-        if (!hasTimePassed(current.expiresAt)) return accumulator;
+        if (hasTimePassed(current.expiresAt)) return accumulator;
         return accumulator.concat(current.data.deviceToken);
       }, []);
 
