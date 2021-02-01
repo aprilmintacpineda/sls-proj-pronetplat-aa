@@ -29,6 +29,7 @@ Globals:
     MemorySize: 1024
     Timeout: 30
     Runtime: nodejs12.x
+    ReservedConcurrentExecutions: 100
     Environment:
       Variables:
         appPackageName: !FindInMap
@@ -628,8 +629,6 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
-      MethodSettings:
-        ThrottlingRateLimit: 200
   ######
   # S3 buckets
   #
