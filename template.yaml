@@ -27,7 +27,7 @@ Mappings:
 Globals:
   Function:
     MemorySize: 1024
-    Timeout: 60
+    Timeout: 30
     Runtime: nodejs12.x
     Environment:
       Variables:
@@ -628,6 +628,8 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      MethodSettings:
+        ThrottlingRateLimit: 200
   ######
   # S3 buckets
   #
