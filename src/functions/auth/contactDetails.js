@@ -54,6 +54,24 @@ module.exports.handler = async ({
       };
     }
 
+    const receivedContactRequest = new ContactRequest();
+
+    await receivedContactRequest.getPendingRequestIfExists({
+      senderId: contactId,
+      recipientId: authUser.id
+    });
+
+    if (receivedContactRequest.instance) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          data: {
+            receivedContactRequest: receivedContactRequest.toResponseData()
+          }
+        })
+      };
+    }
+
     const contact = new Contact();
     await contact.getByIndexIfExists(
       'contactByOwnerContact',
@@ -63,36 +81,18 @@ module.exports.handler = async ({
 
     if (!contact.instance) {
       const sentContactRequest = new ContactRequest();
-      const receivedContactRequest = new ContactRequest();
 
-      await Promise.all([
-        sentContactRequest.getPendingRequestIfExists({
-          senderId: authUser.id,
-          recipientId: contactId
-        }),
-        receivedContactRequest.getPendingRequestIfExists({
-          senderId: contactId,
-          recipientId: authUser.id
-        })
-      ]);
+      await sentContactRequest.getPendingRequestIfExists({
+        senderId: authUser.id,
+        recipientId: contactId
+      });
 
-      if (sentContactRequest.data) {
+      if (sentContactRequest.instance) {
         return {
           statusCode: 200,
           body: JSON.stringify({
             data: {
               sentContactRequest: sentContactRequest.toResponseData()
-            }
-          })
-        };
-      }
-
-      if (receivedContactRequest.data) {
-        return {
-          statusCode: 200,
-          body: JSON.stringify({
-            data: {
-              receivedContactRequest: receivedContactRequest.toResponseData()
             }
           })
         };
