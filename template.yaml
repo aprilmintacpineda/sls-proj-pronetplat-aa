@@ -502,6 +502,24 @@ Resources:
             Path: /my-contacts
             RestApiId:
               Ref: mainBackendApi
+  blockList:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/auth/blockList.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-blockList"
+      Layers:
+        - !Ref dependencies
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /block-list
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
