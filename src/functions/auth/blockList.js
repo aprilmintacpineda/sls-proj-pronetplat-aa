@@ -13,7 +13,7 @@ module.exports.handler = async ({
   queryStringParameters
 }) => {
   try {
-    const { data: authUser } = jwt.verify(
+    const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
 
