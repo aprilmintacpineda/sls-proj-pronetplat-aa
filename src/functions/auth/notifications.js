@@ -5,7 +5,7 @@ const {
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
-  getUserPublicResponseDataQuery
+  getUserPublicResponseData
 } = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
@@ -34,14 +34,13 @@ module.exports.handler = async ({
           }
         ),
         query.Lambda(
-          ['createdAt', 'ref'],
+          ['ref', 'actorId', 'createdAt'],
           query.Let(
             {
               data: query.Select(
                 ['data'],
                 query.Get(query.Var('ref'))
               ),
-              actorId: query.Select(['actorId'], query.Var('data')),
               actor: query.Select(
                 ['data'],
                 query.Get(
@@ -63,22 +62,28 @@ module.exports.handler = async ({
                 null
               )
             },
-            query.Merge(query.Var('data'), {
-              id: query.Select(['id'], query.Var('ref')),
-              actor: getUserPublicResponseDataQuery(
-                query.Var('actorId'),
-                query.Var('actor')
-              )
-            })
+            {
+              notification: query.Var('data'),
+              actor: query.Var('actor')
+            }
           )
         )
       )
     );
 
-    const unseenCount = result.data.reduce((count, current) => {
-      if (current.seenAt) return count;
-      return count + 1;
-    }, 0);
+    let unseenCount = 0;
+    const data = [];
+
+    result.data.forEach(({ notification, actor }) => {
+      if (!notification.seenAt) unseenCount++;
+
+      notification.actor = getUserPublicResponseData({
+        ...actor,
+        id: notification.actorId
+      });
+
+      data.push(notification);
+    });
 
     if (unseenCount) {
       await client.query(
@@ -94,7 +99,7 @@ module.exports.handler = async ({
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result.data,
+        data,
         nextToken: result.after?.[0].id || null
       })
     };

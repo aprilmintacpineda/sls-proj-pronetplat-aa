@@ -4,9 +4,6 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
-const {
-  getUserPublicResponseDataQuery
-} = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
   headers,
@@ -32,36 +29,26 @@ module.exports.handler = async ({
           }
         ),
         query.Lambda(
-          ['ref'],
-          query.Let(
-            {
-              contactId: query.Select(
-                ['data', 'contactId'],
-                query.Get(query.Var('ref'))
-              ),
-              contact: query.Select(
-                ['data'],
-                query.Get(
-                  query.Ref(
-                    query.Collection('users'),
-                    query.Var('contactId')
-                  )
-                )
-              )
-            },
-            getUserPublicResponseDataQuery(
-              query.Var('contactId'),
-              query.Var('contact')
+          ['ref', 'contactId'],
+          query.Get(
+            query.Ref(
+              query.Collection('users'),
+              query.Var('contactId')
             )
           )
         )
       )
     );
 
+    const data = result.data.map(document => ({
+      ...document.data,
+      id: document.ref.id
+    }));
+
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result.data,
+        data,
         nextToken: result.after?.[0].id || null
       })
     };

@@ -1,5 +1,3 @@
-const { query } = require('faunadb');
-
 export function getUserPublicResponseData (userData) {
   return {
     id: userData.id,
@@ -11,20 +9,6 @@ export function getUserPublicResponseData (userData) {
     bio: userData.bio,
     company: userData.company,
     jobTitle: userData.jobTitle
-  };
-}
-
-export function getUserPublicResponseDataQuery (id, fromVar) {
-  return {
-    id,
-    firstName: query.Select(['firstName'], fromVar),
-    middleName: query.Select(['middleName'], fromVar),
-    surname: query.Select(['surname'], fromVar),
-    profilePicture: query.Select(['profilePicture'], fromVar, null),
-    gender: query.Select(['gender'], fromVar, null),
-    bio: query.Select(['bio'], fromVar, null),
-    company: query.Select(['company'], fromVar, null),
-    jobTitle: query.Select(['jobTitle'], fromVar, null)
   };
 }
 

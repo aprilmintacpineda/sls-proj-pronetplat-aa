@@ -18,16 +18,26 @@ module.exports.handler = async ({
 }) => {
   try {
     const client = initClient();
-    let nextToken = null;
+    let after = null;
 
     do {
       const result = await client.query(
-        query.Call('getActiveRegisteredDevices', userId, nextToken)
+        query.Paginate(
+          query.Match(
+            query.Index('registeredDevicesByUserId'),
+            userId
+          ),
+          {
+            size: 20,
+            after: after || []
+          }
+        )
       );
 
-      const tokens = result.data.reduce((accumulator, current) => {
-        if (hasTimePassed(current.expiresAt)) return accumulator;
-        return accumulator.concat(current.data.deviceToken);
+      const tokens = result.data.reduce((accumulator, data) => {
+        const [, , deviceToken, expiresAt] = data;
+        if (hasTimePassed(expiresAt)) return accumulator;
+        return accumulator.concat(deviceToken);
       }, []);
 
       await sendPushNotification({
@@ -44,8 +54,8 @@ module.exports.handler = async ({
         }
       });
 
-      nextToken = result.after?.[0].id;
-    } while (nextToken);
+      after = result.after;
+    } while (after);
   } catch (error) {
     console.log('error', error);
   }

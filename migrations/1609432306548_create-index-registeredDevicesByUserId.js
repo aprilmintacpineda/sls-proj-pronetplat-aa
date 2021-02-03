@@ -6,7 +6,13 @@ module.exports.up = q => {
     q.CreateIndex({
       name,
       source: q.Collection('registeredDevices'),
-      terms: [{ field: ['data', 'userId'] }]
+      terms: [{ field: ['data', 'userId'] }],
+      values: [
+        { field: ['ref'] },
+        { field: ['data', 'userId'] },
+        { field: ['data', 'deviceToken'] },
+        { field: ['data', 'expiresAt'] }
+      ]
     }),
     null
   );
