@@ -52,13 +52,13 @@ module.exports.handler = async ({
     console.log(JSON.stringify(result, null, 2));
 
     const data = result.data.map(
-      ({ contactRequestDocument, senderDocument }) => {
-        const data = contactRequestDocument.data;
-        data.id = contactRequestDocument.ref.id;
-        data.sender = getUserPublicResponseData(senderDocument.data);
-        data.sender.id = senderDocument.ref.id;
-        return data;
-      }
+      ({ contactRequestDocument, senderDocument }) => ({
+        ...contactRequestDocument.data,
+        sender: {
+          ...getUserPublicResponseData(senderDocument.data),
+          id: senderDocument.ref.id
+        }
+      })
     );
 
     return {

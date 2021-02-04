@@ -80,9 +80,14 @@ module.exports.handler = async ({
 
     result.data.forEach(({ notification, actor }) => {
       if (!notification.seenAt) unseenCount++;
-      notification.actor = getUserPublicResponseData(actor);
-      notification.actor.id = notification.actorId;
-      data.push(notification);
+
+      data.push({
+        ...notification,
+        actor: {
+          ...getUserPublicResponseData(actor),
+          id: notification.actorId
+        }
+      });
     });
 
     if (unseenCount) {
