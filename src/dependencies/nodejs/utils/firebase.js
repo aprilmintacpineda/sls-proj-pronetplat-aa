@@ -1,5 +1,4 @@
 const path = require('path');
-const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
 const firebaseAdmin = require('firebase-admin');
 
 const configPath = path.join(
@@ -32,30 +31,6 @@ async function isValidDeviceToken (deviceToken) {
 
 module.exports.isValidDeviceToken = isValidDeviceToken;
 
-async function sendPushNotificationIfValidToken (
-  token,
-  notification,
-  data
-) {
-  const isValid = isValidDeviceToken(token);
-  if (!isValid) {
-    const registeredDevice = new RegisteredDevice();
-    await registeredDevice.hardDeleteByIndex(
-      'registeredDeviceByDeviceToken',
-      token
-    );
-  } else {
-    firebaseAdmin.messaging().sendToDevice(
-      token,
-      { notification, data },
-      {
-        priority: 'high',
-        restrictedPackageName: process.env.appPackageName
-      }
-    );
-  }
-}
-
 module.exports.sendPushNotification = ({
   tokens,
   notification,
@@ -64,10 +39,13 @@ module.exports.sendPushNotification = ({
   console.log(tokens);
 
   if (tokens && tokens.length) {
-    return Promise.all(
-      tokens.map(token =>
-        sendPushNotificationIfValidToken(token, notification, data)
-      )
+    return firebaseAdmin.messaging().sendToDevice(
+      tokens,
+      { notification, data },
+      {
+        priority: 'high',
+        restrictedPackageName: process.env.appPackageName
+      }
     );
   }
 };
