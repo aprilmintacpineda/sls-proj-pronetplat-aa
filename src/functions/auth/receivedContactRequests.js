@@ -49,10 +49,9 @@ module.exports.handler = async ({
       )
     );
 
-    console.log(JSON.stringify(result, null, 2));
-
     const data = result.data.map(({ contactRequest, sender }) => ({
       ...contactRequest.data,
+      id: contactRequest.ref.id,
       sender: {
         ...getUserPublicResponseData(sender.data),
         id: sender.ref.id
