@@ -132,12 +132,6 @@ module.exports = {
       }
     ],
     eqeqeq: 'error',
-    'no-empty': 'error',
-    'no-debugger':
-      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-console':
-      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-alert':
-      process.env.NODE_ENV === 'production' ? 'error' : 'warn'
+    'no-empty': 'error'
   }
 };

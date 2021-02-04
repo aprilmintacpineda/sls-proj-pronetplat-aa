@@ -2,7 +2,7 @@ const name = 'userBlockings';
 
 module.exports.up = q => {
   return q.If(
-    q.Not(q.Exists(q.Collection('name'))),
+    q.Not(q.Exists(q.Collection(name))),
     q.CreateCollection({ name }),
     null
   );
