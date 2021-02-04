@@ -41,22 +41,20 @@ module.exports.handler = async ({
           ['ref', 'actorId', 'createdAt'],
           query.Let(
             {
-              data: query.Select(
-                ['data'],
-                query.Get(query.Var('ref'))
-              ),
-              actor: query.Select(
-                ['data'],
-                query.Get(
-                  query.Ref(
-                    query.Collection('users'),
-                    query.Var('actorId')
-                  )
+              notification: query.Get(query.Var('ref')),
+              actor: query.Get(
+                query.Ref(
+                  query.Collection('users'),
+                  query.Var('actorId')
                 )
               ),
               markedAsSeen: query.If(
-                query.Not(
-                  query.ContainsField('seenAt', query.Var('data'))
+                query.IsNull(
+                  query.Select(
+                    ['data', 'seenAt'],
+                    query.Var('notification'),
+                    null
+                  )
                 ),
                 query.Update(query.Var('ref'), {
                   data: {
@@ -67,7 +65,7 @@ module.exports.handler = async ({
               )
             },
             {
-              notification: query.Var('data'),
+              notification: query.Var('notification'),
               actor: query.Var('actor')
             }
           )
@@ -82,10 +80,11 @@ module.exports.handler = async ({
       if (!notification.seenAt) unseenCount++;
 
       data.push({
-        ...notification,
+        ...notification.data,
+        id: notification.ref.id,
         actor: {
-          ...getUserPublicResponseData(actor),
-          id: notification.actorId
+          ...getUserPublicResponseData(actor.data),
+          id: actor.ref.id
         }
       });
     });
