@@ -4,9 +4,6 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({
@@ -38,7 +35,11 @@ module.exports.handler = async ({ headers, body }) => {
       getAuthTokenFromHeaders(headers)
     );
 
-    throwIfNotCompletedSetup(authUser);
+    if (!authUser.emailVerifiedAt)
+      throw new Error('Email not yet verified');
+
+    if (authUser.completedFirstSetupAt)
+      throw new Error('User already completed setup');
 
     const user = new User();
     await user.updateById(authUser.id, {
