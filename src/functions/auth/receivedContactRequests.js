@@ -5,7 +5,8 @@ const {
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
-  throwIfNotCompletedSetup
+  throwIfNotCompletedSetup,
+  getUserPublicResponseData
 } = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
@@ -48,22 +49,29 @@ module.exports.handler = async ({
       )
     );
 
-    console.log(result);
+    console.log(JSON.stringify(result, null, 2));
 
-    throw new Error('test');
+    const data = result.data.map(
+      ({ contactRequestDocument, senderDocument }) => {
+        const data = {
+          ...contactRequestDocument.data,
+          id: contactRequestDocument.ref.id,
+          sender: getUserPublicResponseData(senderDocument.data)
+        };
 
-    // const data = result.data.map(document => ({
-    //   ...document.data,
-    //   id: document.ref.id
-    // }));
+        data.sender.id = senderDocument.ref.id;
 
-    // return {
-    //   statusCode: 200,
-    //   body: JSON.stringify({
-    //     data,
-    //     nextToken: result.after?.[0].id || null
-    //   })
-    // };
+        return data;
+      }
+    );
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        data,
+        nextToken: result.after?.[0].id || null
+      })
+    };
   } catch (error) {
     console.log('error', error);
   }
