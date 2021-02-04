@@ -24,6 +24,13 @@ module.exports.handler = async ({ headers, body }) => {
     deviceToken = formBody.deviceToken;
 
     const { data: authUser } = await jwt.verify(authToken);
+
+    if (!authUser.completedFirstSetupAt)
+      throw new Error('User not setup');
+
+    if (!authUser.emailVerifiedAt)
+      throw new Error('Email not verified');
+
     const user = new User();
     const registeredDevice = new RegisteredDevice();
 
