@@ -36,30 +36,34 @@ module.exports.handler = async ({
               : []
           }
         ),
-        query.Lambda(
-          ['ref', 'senderId'],
-          query.Get(
+        query.Lambda(['ref', 'senderId'], {
+          contactRequest: query.Get(query.Var('ref')),
+          sender: query.Get(
             query.Ref(
               query.Collection('users'),
               query.Var('senderId')
             )
           )
-        )
+        })
       )
     );
 
-    const data = result.data.map(document => ({
-      ...document.data,
-      id: document.ref.id
-    }));
+    console.log(result);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        data,
-        nextToken: result.after?.[0].id || null
-      })
-    };
+    throw new Error('test');
+
+    // const data = result.data.map(document => ({
+    //   ...document.data,
+    //   id: document.ref.id
+    // }));
+
+    // return {
+    //   statusCode: 200,
+    //   body: JSON.stringify({
+    //     data,
+    //     nextToken: result.after?.[0].id || null
+    //   })
+    // };
   } catch (error) {
     console.log('error', error);
   }
