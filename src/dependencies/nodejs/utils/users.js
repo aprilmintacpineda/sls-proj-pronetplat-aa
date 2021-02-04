@@ -53,3 +53,8 @@ export function getPersonalPronoun (userData) {
     }
   };
 }
+
+export function throwIfNotCompletedSetup (user) {
+  if (!user.completedFirstSetupAt) throw new Error('User not setup');
+  if (!user.emailVerifiedAt) throw new Error('Email not verified');
+}

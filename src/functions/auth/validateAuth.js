@@ -6,6 +6,9 @@ const {
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+const {
+  throwIfNotCompletedSetup
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasError ({ deviceToken }) {
@@ -24,12 +27,7 @@ module.exports.handler = async ({ headers, body }) => {
     deviceToken = formBody.deviceToken;
 
     const { data: authUser } = await jwt.verify(authToken);
-
-    if (!authUser.completedFirstSetupAt)
-      throw new Error('User not setup');
-
-    if (!authUser.emailVerifiedAt)
-      throw new Error('Email not verified');
+    throwIfNotCompletedSetup(authUser);
 
     const user = new User();
     const registeredDevice = new RegisteredDevice();

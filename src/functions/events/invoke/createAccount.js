@@ -12,7 +12,6 @@ const {
 
 module.exports.handler = async ({ email, password }) => {
   try {
-    const user = new User();
     const emailVerificationCode = randomCode();
 
     const [
@@ -25,6 +24,7 @@ module.exports.handler = async ({ email, password }) => {
 
     const offsetTime = getTimeOffset();
 
+    const user = new User();
     const wasCreated = await user.createIfNotExists({
       index: 'userByEmail',
       args: [email],

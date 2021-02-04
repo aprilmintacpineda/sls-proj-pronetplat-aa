@@ -11,7 +11,8 @@ const {
 const {
   getFullName,
   getPersonalPronoun,
-  getUserPublicResponseData
+  getUserPublicResponseData,
+  throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
@@ -27,6 +28,8 @@ module.exports.handler = async ({ body, headers }) => {
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
+
+    throwIfNotCompletedSetup(authUser);
 
     const sentContactRequest = new ContactRequest();
     await sentContactRequest.getByIndex(

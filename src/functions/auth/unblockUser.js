@@ -3,6 +3,9 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const {
+  throwIfNotCompletedSetup
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ contactId }) {
@@ -18,7 +21,10 @@ module.exports.handler = async ({ body, headers }) => {
       getAuthTokenFromHeaders(headers)
     );
 
+    throwIfNotCompletedSetup(authUser);
+
     const userBlocking = new UserBlocking();
+
     await userBlocking.hardDeleteByIndex(
       'userBlockingsByBlockerIdUserId',
       authUser.id,

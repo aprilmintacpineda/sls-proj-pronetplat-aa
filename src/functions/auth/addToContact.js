@@ -12,7 +12,8 @@ const {
 const {
   getPersonalPronoun,
   getUserPublicResponseData,
-  getFullName
+  getFullName,
+  throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
@@ -28,6 +29,8 @@ module.exports.handler = async ({ body, headers }) => {
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
+
+    throwIfNotCompletedSetup(authUser);
 
     if (formBody.contactId === authUser.id)
       throw new Error('Cannot add self to contacts');
@@ -67,9 +70,7 @@ module.exports.handler = async ({ body, headers }) => {
     }
 
     await targetUser.getById(formBody.contactId);
-
-    if (!targetUser.data.completedFirstSetupAt)
-      throw new Error('Target user not setup.');
+    throwIfNotCompletedSetup(targetUser.data);
 
     await contactRequest.create({
       senderId: authUser.id,

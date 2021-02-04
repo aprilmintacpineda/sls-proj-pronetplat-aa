@@ -18,13 +18,11 @@ module.exports.handler = async ({ headers }) => {
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
-    const user = new User();
-    await user.getById(authUser.id);
 
-    if (user.data.emailVerifiedAt)
+    if (authUser.emailVerifiedAt)
       throw new Error('Email already verified');
 
-    if (!hasTimePassed(user.data.emailCodeCanSendAt))
+    if (!hasTimePassed(authUser.emailCodeCanSendAt))
       return { statusCode: 429 };
 
     const emailVerificationCode = randomCode();
@@ -35,7 +33,8 @@ module.exports.handler = async ({ headers }) => {
 
     const timeOffset = getTimeOffset();
 
-    await user.update({
+    const user = new User();
+    await user.updateById(authUser.id, {
       hashedEmailVerificationCode,
       emailCodeCanSendAt: timeOffset,
       emailConfirmCodeExpiresAt: timeOffset

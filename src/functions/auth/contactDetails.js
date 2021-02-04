@@ -6,6 +6,9 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const {
+  throwIfNotCompletedSetup
+} = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
   pathParameters: { contactId },
@@ -15,6 +18,8 @@ module.exports.handler = async ({
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
+
+    throwIfNotCompletedSetup(authUser);
 
     const contactBlocked = new UserBlocking();
     const blockedByUser = new UserBlocking();

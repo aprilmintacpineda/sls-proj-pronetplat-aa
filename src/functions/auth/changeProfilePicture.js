@@ -4,6 +4,9 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const {
+  throwIfNotCompletedSetup
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 const s3 = new aws.S3({
@@ -26,6 +29,8 @@ module.exports.handler = async ({ headers, body }) => {
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
+
+    throwIfNotCompletedSetup(authUser);
 
     const ext = mimetypes.extension(formBody.mimeType);
 

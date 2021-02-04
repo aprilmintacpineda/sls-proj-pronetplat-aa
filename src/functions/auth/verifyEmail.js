@@ -17,27 +17,26 @@ module.exports.handler = async ({ headers, body }) => {
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid form body');
 
-    const {
-      data: { id }
-    } = await jwt.verify(getAuthTokenFromHeaders(headers));
-    const user = new User();
-    await user.getById(id);
+    const { data: authUser } = await jwt.verify(
+      getAuthTokenFromHeaders(headers)
+    );
 
-    if (user.data.emailVerifiedAt)
+    if (authUser.emailVerifiedAt)
       throw new Error('Email has already been verified');
 
-    if (hasTimePassed(user.data.emailConfirmCodeExpiresAt))
+    if (hasTimePassed(authUser.emailConfirmCodeExpiresAt))
       return { statusCode: 410 };
 
     if (
       !(await verifyHash(
         formBody.verificationCode,
-        user.data.hashedEmailVerificationCode
+        authUser.hashedEmailVerificationCode
       ))
     )
       throw new Error('Incorrect verification code');
 
-    await user.update({
+    const user = new User();
+    await user.updateById(authUser.id, {
       emailVerifiedAt: query.Format('%t', query.Now()),
       emailConfirmCodeExpiresAt: null,
       emailCodeCanSendAt: null,

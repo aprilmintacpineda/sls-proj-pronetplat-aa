@@ -3,6 +3,9 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const {
+  throwIfNotCompletedSetup
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({ contactId }) {
@@ -18,14 +21,16 @@ module.exports.handler = async ({ body, headers }) => {
       getAuthTokenFromHeaders(headers)
     );
 
+    throwIfNotCompletedSetup(authUser);
+
     const contact = new Contact();
-    await contact.getByIndex(
+
+    await contact.hardDeleteByIndex(
       'contactByOwnerContact',
       authUser.id,
       formBody.contactId
     );
 
-    await contact.hardDelete();
     return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);

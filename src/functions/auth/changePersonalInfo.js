@@ -4,6 +4,9 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const {
+  throwIfNotCompletedSetup
+} = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
 function hasErrors ({
@@ -35,8 +38,9 @@ module.exports.handler = async ({ headers, body }) => {
       getAuthTokenFromHeaders(headers)
     );
 
-    const user = new User();
+    throwIfNotCompletedSetup(authUser);
 
+    const user = new User();
     await user.updateById(authUser.id, {
       firstName: formBody.firstName,
       middleName: formBody.middleName || '',

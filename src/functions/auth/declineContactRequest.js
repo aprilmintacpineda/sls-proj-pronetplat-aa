@@ -10,7 +10,8 @@ const {
 } = require('dependencies/nodejs/utils/notifications');
 const {
   getFullName,
-  getUserPublicResponseData
+  getUserPublicResponseData,
+  throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
@@ -26,6 +27,8 @@ module.exports.handler = async ({ headers, body }) => {
     const { data: authUser } = await jwt.verify(
       getAuthTokenFromHeaders(headers)
     );
+
+    throwIfNotCompletedSetup(authUser);
 
     const contactRequest = new ContactRequest();
     await contactRequest.getByIndex(
