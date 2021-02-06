@@ -73,6 +73,8 @@ module.exports.handler = async ({
       category
     };
 
+    const tokens = [];
+
     do {
       const result = await client.query(
         query.Paginate(
@@ -87,20 +89,24 @@ module.exports.handler = async ({
         )
       );
 
-      const tokens = result.data.reduce((accumulator, data) => {
-        const [expiresAt, deviceToken] = data;
-        if (hasTimePassed(expiresAt)) return accumulator;
-        return accumulator.concat(deviceToken);
-      }, []);
+      const activeTokens = result.data.reduce(
+        (accumulator, data) => {
+          const [expiresAt, deviceToken] = data;
+          if (hasTimePassed(expiresAt)) return accumulator;
+          return accumulator.concat(deviceToken);
+        },
+        []
+      );
 
-      await sendPushNotification({
-        tokens,
-        notification,
-        data
-      });
-
+      tokens.push(activeTokens);
       after = result.after;
     } while (after);
+
+    await sendPushNotification({
+      tokens,
+      notification,
+      data
+    });
   } catch (error) {
     console.log('error', error);
   }
