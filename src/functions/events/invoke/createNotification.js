@@ -20,7 +20,7 @@ module.exports.handler = async ({
   type,
   title,
   category,
-  data
+  data: _data
 }) => {
   try {
     const promises = [
@@ -60,6 +60,19 @@ module.exports.handler = async ({
       getPersonalPronoun(authUser).possessive.lowercase
     );
 
+    const notification = {
+      title,
+      body,
+      imageUrl: authUser.profilePicture
+    };
+
+    const data = {
+      ..._data,
+      ...getUserPublicResponseData(authUser),
+      type,
+      category
+    };
+
     do {
       const result = await client.query(
         query.Paginate(
@@ -82,17 +95,8 @@ module.exports.handler = async ({
 
       await sendPushNotification({
         tokens,
-        notification: {
-          title,
-          body,
-          imageUrl: authUser.profilePicture
-        },
-        data: {
-          ...data,
-          actor: getUserPublicResponseData(authUser),
-          type,
-          category
-        }
+        notification,
+        data
       });
 
       after = result.after;
