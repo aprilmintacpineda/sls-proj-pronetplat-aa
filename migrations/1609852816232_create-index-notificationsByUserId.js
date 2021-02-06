@@ -8,9 +8,9 @@ module.exports.up = q => {
       source: q.Collection('notifications'),
       terms: [{ field: ['data', 'userId'] }],
       values: [
-        { field: ['ref'] },
+        { field: ['data', 'createdAt'], reverse: true },
         { field: ['data', 'actorId'] },
-        { field: ['data', 'createdAt'], reverse: true }
+        { field: ['ref'] }
       ]
     }),
     null

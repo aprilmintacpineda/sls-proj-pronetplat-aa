@@ -37,7 +37,7 @@ module.exports.handler = async ({
               : []
           }
         ),
-        query.Lambda(['ref', 'senderId'], {
+        query.Lambda(['senderId', 'ref'], {
           contactRequest: query.Get(query.Var('ref')),
           sender: query.Get(
             query.Ref(

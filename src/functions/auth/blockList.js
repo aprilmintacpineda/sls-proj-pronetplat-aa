@@ -37,7 +37,7 @@ module.exports.handler = async ({
           }
         ),
         query.Lambda(
-          ['ref', 'userId'],
+          ['userId', 'ref'],
           query.Get(
             query.Ref(query.Collection('users'), query.Var('userId'))
           )

@@ -8,8 +8,8 @@ module.exports.up = q => {
       source: q.Collection('userBlockings'),
       terms: [{ field: ['data', 'blockerId'] }],
       values: [
-        { field: ['data', 'ref'] },
-        { field: ['data', 'userId'] }
+        { field: ['data', 'userId'] },
+        { field: ['data', 'ref'] }
       ]
     }),
     null

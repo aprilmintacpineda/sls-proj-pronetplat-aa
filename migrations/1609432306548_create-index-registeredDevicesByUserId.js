@@ -8,10 +8,10 @@ module.exports.up = q => {
       source: q.Collection('registeredDevices'),
       terms: [{ field: ['data', 'userId'] }],
       values: [
-        { field: ['ref'] },
-        { field: ['data', 'userId'] },
+        { field: ['data', 'expiresAt'] },
         { field: ['data', 'deviceToken'] },
-        { field: ['data', 'expiresAt'] }
+        { field: ['data', 'userId'] },
+        { field: ['ref'] }
       ]
     }),
     null

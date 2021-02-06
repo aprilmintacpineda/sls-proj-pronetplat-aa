@@ -39,7 +39,7 @@ module.exports.handler = async ({
           }
         ),
         query.Lambda(
-          ['ref', 'actorId', 'createdAt'],
+          ['createdAt', 'actorId', 'ref'],
           query.Let(
             {
               notification: query.Get(query.Var('ref')),

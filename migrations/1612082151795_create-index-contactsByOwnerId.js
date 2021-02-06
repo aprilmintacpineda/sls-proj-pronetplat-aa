@@ -7,7 +7,7 @@ module.exports.up = q => {
       name,
       source: q.Collection('contacts'),
       terms: [{ field: ['data', 'ownerId'] }],
-      values: [{ field: ['ref'] }, { field: ['data', 'contactId'] }]
+      values: [{ field: ['data', 'contactId'] }, { field: ['ref'] }]
     }),
     null
   );
