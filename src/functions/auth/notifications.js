@@ -4,6 +4,7 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
 const {
   getUserPublicResponseData,
   throwIfNotCompletedSetup
@@ -47,21 +48,6 @@ module.exports.handler = async ({
                   query.Collection('users'),
                   query.Var('actorId')
                 )
-              ),
-              markedAsSeen: query.If(
-                query.IsNull(
-                  query.Select(
-                    ['data', 'seenAt'],
-                    query.Var('notification'),
-                    null
-                  )
-                ),
-                query.Update(query.Var('ref'), {
-                  data: {
-                    seenAt: query.Format('%t', query.Now())
-                  }
-                }),
-                null
               )
             },
             {
@@ -73,15 +59,18 @@ module.exports.handler = async ({
       )
     );
 
-    let unseenCount = 0;
+    const unseenNotificationIds = [];
     const data = [];
 
     result.data.forEach(({ notification, actor }) => {
-      if (!notification.seenAt) unseenCount++;
+      const notificationId = notification.ref.id;
+
+      if (!notification.seenAt)
+        unseenNotificationIds.push(notificationId);
 
       data.push({
         ...notification.data,
-        id: notification.ref.id,
+        id: notificationId,
         actor: {
           ...getUserPublicResponseData(actor.data),
           id: actor.ref.id
@@ -89,15 +78,23 @@ module.exports.handler = async ({
       });
     });
 
+    const unseenCount = unseenNotificationIds.length;
+
     if (unseenCount) {
-      await client.query(
-        query.Call(
-          'updateUserBadgeCount',
-          authUser.id,
-          'notificationsCount',
-          -unseenCount
-        )
-      );
+      await Promise.all([
+        client.query(
+          query.Call(
+            'updateUserBadgeCount',
+            authUser.id,
+            'notificationsCount',
+            -unseenCount
+          )
+        ),
+        invokeEvent({
+          functionName: process.env.fn_markNotificationsAsSeen,
+          payload: unseenNotificationIds
+        })
+      ]);
     }
 
     return {

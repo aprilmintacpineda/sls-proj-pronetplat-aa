@@ -65,6 +65,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-createAccount"
+        fn_markNotificationsAsSeen: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-markNotificationsAsSeen"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -598,6 +602,16 @@ Resources:
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
+  markNotificationsAsSeen:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/events/invoke/markNotificationsAsSeen.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-markNotificationsAsSeen"
+      Layers:
+        - !Ref dependencies
   ######
   # S3 Events
   #
