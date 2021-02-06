@@ -6,3 +6,10 @@ module.exports.createNotification = payload => {
     payload
   });
 };
+
+module.exports.sendPushNotification = payload => {
+  return invokeEvent({
+    functionName: process.env.fn_sendPushNotification,
+    payload
+  });
+};

@@ -3,10 +3,7 @@ const Notification = require('dependencies/nodejs/models/Notification');
 const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   sendPushNotification
-} = require('dependencies/nodejs/utils/firebase');
-const {
-  hasTimePassed
-} = require('dependencies/nodejs/utils/helpers');
+} = require('dependencies/nodejs/utils/notifications');
 const {
   getFullName,
   getPersonalPronoun,
@@ -32,13 +29,13 @@ module.exports.handler = async ({
       })
     ];
 
-    const client = initClient();
-
     if (
       type === 'contactRequestAccepted' ||
       type === 'contactRequestCancelled' ||
       type === 'contactRequestDeclined'
     ) {
+      const client = initClient();
+
       promises.push(
         client.query(
           query.Call(
@@ -51,8 +48,6 @@ module.exports.handler = async ({
       );
     }
 
-    let after = null;
-
     body = body.replace(/{fullname}/gim, getFullName(authUser));
 
     body = body.replace(
@@ -60,52 +55,19 @@ module.exports.handler = async ({
       getPersonalPronoun(authUser).possessive.lowercase
     );
 
-    const notification = {
-      title,
-      body,
-      imageUrl: authUser.profilePicture
-    };
-
-    const data = {
-      ..._data,
-      ...getUserPublicResponseData(authUser),
-      type,
-      category
-    };
-
-    const tokens = [];
-
-    do {
-      const result = await client.query(
-        query.Paginate(
-          query.Match(
-            query.Index('registeredDevicesByUserId'),
-            userId
-          ),
-          {
-            size: 20,
-            after: after || []
-          }
-        )
-      );
-
-      const activeTokens = result.data.reduce(
-        (accumulator, data) => {
-          const [expiresAt, deviceToken] = data;
-          if (hasTimePassed(expiresAt)) return accumulator;
-          return accumulator.concat(deviceToken);
-        },
-        []
-      );
-
-      tokens.push(activeTokens);
-      after = result.after;
-    } while (after);
-
     await sendPushNotification({
-      tokens,
-      notification,
-      data
+      userId,
+      notification: {
+        title,
+        body,
+        imageUrl: authUser.profilePicture
+      },
+      data: {
+        ..._data,
+        ...getUserPublicResponseData(authUser),
+        type,
+        category
+      }
     });
   } catch (error) {
     console.log('error', error);
