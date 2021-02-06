@@ -1,3 +1,3 @@
 module.exports.handler = async event => {
-  console.log(event);
+  console.log(JSON.stringify(event));
 };
