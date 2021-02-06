@@ -1,4 +1,5 @@
 const { query } = require('faunadb');
+const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
 const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   sendPushNotification
@@ -6,12 +7,28 @@ const {
 const {
   hasTimePassed
 } = require('dependencies/nodejs/utils/helpers');
+const {
+  getUserPublicResponseData,
+  getFullName,
+  getPersonalPronoun
+} = require('dependencies/nodejs/utils/users');
 
-module.exports.handler = async ({ userId, notification, data }) => {
+function deleteExpiredToken (id) {
+  const registeredDevice = new RegisteredDevice();
+  return registeredDevice.hardDeleteById(id);
+}
+
+module.exports.handler = async ({
+  authUser,
+  userId,
+  notification,
+  data
+}) => {
   try {
     const client = initClient();
     let after = null;
     const tokens = [];
+    const expiredTokenIds = [];
 
     do {
       const result = await client.query(
@@ -27,18 +44,36 @@ module.exports.handler = async ({ userId, notification, data }) => {
         )
       );
 
-      result.data.forEach(([expiresAt, deviceToken]) => {
+      result.data.forEach(([expiresAt, deviceToken, _1, ref]) => {
         if (!hasTimePassed(expiresAt)) tokens.push(deviceToken);
+        else expiredTokenIds.push(ref.id);
       }, []);
 
       after = result.after;
     } while (after);
 
-    await sendPushNotification({
-      tokens,
-      notification,
-      data
-    });
+    await Promise.all([
+      sendPushNotification({
+        tokens,
+        notification: {
+          ...notification,
+          imageUrl: authUser.profilePicture,
+          body: notification.body
+            .replace(/{fullname}/gim, getFullName(authUser))
+            .replace(
+              /{genderPossessiveLowercase}/gim,
+              getPersonalPronoun(authUser).possessive.lowercase
+            )
+        },
+        data: {
+          ...data,
+          ...getUserPublicResponseData(authUser)
+        }
+      }),
+      expiredTokenIds.map(registeredDeviceId =>
+        deleteExpiredToken(registeredDeviceId)
+      )
+    ]);
   } catch (error) {
     console.log('error', error);
   }
