@@ -21,8 +21,9 @@ function deleteExpiredToken (id) {
 module.exports.handler = async ({
   authUser,
   userId,
-  notification,
-  data
+  data,
+  body,
+  title
 }) => {
   try {
     const client = initClient();
@@ -56,9 +57,9 @@ module.exports.handler = async ({
       sendPushNotification({
         tokens,
         notification: {
-          ...notification,
+          title,
           imageUrl: authUser.profilePicture,
-          body: notification.body
+          body: body
             .replace(/{fullname}/gim, getFullName(authUser))
             .replace(
               /{genderPossessiveLowercase}/gim,

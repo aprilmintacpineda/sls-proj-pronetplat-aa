@@ -12,7 +12,7 @@ module.exports.handler = async ({
   type,
   title,
   category,
-  data: _data
+  data
 }) => {
   try {
     const promises = [
@@ -48,12 +48,10 @@ module.exports.handler = async ({
     await sendPushNotification({
       userId,
       authUser,
-      notification: {
-        title,
-        body
-      },
+      title,
+      body,
       data: {
-        ..._data,
+        ...data,
         type,
         category
       }
