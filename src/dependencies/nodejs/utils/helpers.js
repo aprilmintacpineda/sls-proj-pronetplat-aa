@@ -18,7 +18,7 @@ module.exports.verifyHash = (plainValue, hashedValue) => {
 };
 
 module.exports.hasTimePassed = futureTime => {
-  return !futureTime || isPast(futureTime);
+  return !futureTime || !isPast(futureTime);
 };
 
 module.exports.sanitizeFormBody = data => {
