@@ -30,16 +30,17 @@ module.exports.handler = async ({
 
     const hashedPassword = await hash(newPassword);
 
-    await user.update({
-      hashedPassword,
-      hashedResetPasswordCode: null,
-      passwordCodeCanResendAt: null,
-      passwordResetCodeExpiresAt: null
-    });
-
-    await sendEmailResetPasswordSuccess({
-      recipient: user.data.email
-    });
+    await Promise.all([
+      user.update({
+        hashedPassword,
+        hashedResetPasswordCode: null,
+        passwordCodeCanResendAt: null,
+        passwordResetCodeExpiresAt: null
+      }),
+      sendEmailResetPasswordSuccess({
+        recipient: user.data.email
+      })
+    ]);
   } catch (error) {
     console.log('error', error);
   }

@@ -4,11 +4,6 @@ const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
-const {
-  getFullName,
-  getPersonalPronoun,
-  getUserPublicResponseData
-} = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
   authUser,
@@ -50,23 +45,15 @@ module.exports.handler = async ({
 
     await Promise.all(promises);
 
-    body = body.replace(/{fullname}/gim, getFullName(authUser));
-
-    body = body.replace(
-      /{genderPossessiveLowercase}/gim,
-      getPersonalPronoun(authUser).possessive.lowercase
-    );
-
     await sendPushNotification({
       userId,
+      authUser,
       notification: {
         title,
-        body,
-        imageUrl: authUser.profilePicture
+        body
       },
       data: {
         ..._data,
-        ...getUserPublicResponseData(authUser),
         type,
         category
       }

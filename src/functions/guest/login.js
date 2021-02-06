@@ -36,10 +36,8 @@ module.exports.handler = async ({ body }) => {
       throw new Error('Invalid deviceToken.');
 
     const registeredDevice = new RegisteredDevice();
-    const userData = user.toResponseData();
 
-    const [authToken] = await Promise.all([
-      jwt.sign(userData),
+    await Promise.all([
       user.update({ lastLoginAt: query.Format('%t', query.Now()) }),
       registeredDevice.createOrUpdate({
         index: 'registeredDeviceByUserIdDeviceToken',
@@ -54,6 +52,9 @@ module.exports.handler = async ({ body }) => {
         }
       })
     ]);
+
+    const userData = user.toResponseData();
+    const authToken = jwt.sign(userData);
 
     return {
       statusCode: 200,

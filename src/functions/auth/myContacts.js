@@ -45,15 +45,13 @@ module.exports.handler = async ({
       )
     );
 
-    const data = result.data.map(document => ({
-      ...document.data,
-      id: document.ref.id
-    }));
-
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data,
+        data: result.data.map(document => ({
+          ...document.data,
+          id: document.ref.id
+        })),
         nextToken: result.after?.[0].id || null
       })
     };

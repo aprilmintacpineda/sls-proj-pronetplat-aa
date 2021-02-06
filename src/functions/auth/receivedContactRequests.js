@@ -49,19 +49,17 @@ module.exports.handler = async ({
       )
     );
 
-    const data = result.data.map(({ contactRequest, sender }) => ({
-      ...contactRequest.data,
-      id: contactRequest.ref.id,
-      sender: {
-        ...getUserPublicResponseData(sender.data),
-        id: sender.ref.id
-      }
-    }));
-
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data,
+        data: result.data.map(({ contactRequest, sender }) => ({
+          ...contactRequest.data,
+          id: contactRequest.ref.id,
+          sender: {
+            ...getUserPublicResponseData(sender.data),
+            id: sender.ref.id
+          }
+        })),
         nextToken: result.after?.[0].id || null
       })
     };

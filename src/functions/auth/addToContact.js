@@ -10,9 +10,6 @@ const {
   sendPushNotification
 } = require('dependencies/nodejs/utils/notifications');
 const {
-  getPersonalPronoun,
-  getUserPublicResponseData,
-  getFullName,
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
@@ -72,26 +69,25 @@ module.exports.handler = async ({ body, headers }) => {
     await targetUser.getById(formBody.contactId);
     throwIfNotCompletedSetup(targetUser.data);
 
-    await contactRequest.create({
-      senderId: authUser.id,
-      recipientId: targetUser.data.id,
-      canFollowUpAt: query.Format(
-        '%t',
-        query.TimeAdd(query.Now(), 1, 'day')
-      )
-    });
-
-    await sendPushNotification({
-      userId: targetUser.data.id,
-      imageUrl: authUser.profilePicture,
-      title: 'Contact request',
-      body: `${getFullName(authUser)} wants to add you to ${
-        getPersonalPronoun(authUser).possessive.lowercase
-      } contacts.`,
-      type: 'contactRequest',
-      category: 'contactRequest',
-      data: getUserPublicResponseData(authUser)
-    });
+    await Promise.all([
+      contactRequest.create({
+        senderId: authUser.id,
+        recipientId: targetUser.data.id,
+        canFollowUpAt: query.Format(
+          '%t',
+          query.TimeAdd(query.Now(), 1, 'day')
+        )
+      }),
+      sendPushNotification({
+        userId: targetUser.data.id,
+        title: 'Contact request',
+        body:
+          '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
+        type: 'contactRequest',
+        category: 'contactRequest',
+        authUser
+      })
+    ]);
 
     return { statusCode: 200 };
   } catch (error) {

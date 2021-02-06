@@ -54,18 +54,19 @@ module.exports.handler = async ({ body, headers }) => {
     if (hasSentContactRequest)
       throw new Error('hasSentContactRequest');
 
-    await userBlocking.create({
-      blockerId: authUser.id,
-      userId: formBody.contactId
-    });
-
     const contact = new Contact();
 
-    await contact.hardDeleteIfExists(
-      'contactByOwnerContact',
-      authUser.id,
-      formBody.contactId
-    );
+    await Promise.all([
+      userBlocking.create({
+        blockerId: authUser.id,
+        userId: formBody.contactId
+      }),
+      contact.hardDeleteIfExists(
+        'contactByOwnerContact',
+        authUser.id,
+        formBody.contactId
+      )
+    ]);
 
     return { statusCode: 200 };
   } catch (error) {

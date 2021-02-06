@@ -34,16 +34,18 @@ module.exports.handler = async ({ headers }) => {
     const timeOffset = getTimeOffset();
 
     const user = new User();
-    await user.updateById(authUser.id, {
-      hashedEmailVerificationCode,
-      emailCodeCanSendAt: timeOffset,
-      emailConfirmCodeExpiresAt: timeOffset
-    });
 
-    await sendEmailVerificationCode({
-      recipient: user.data.email,
-      emailVerificationCode
-    });
+    await Promise.all([
+      user.updateById(authUser.id, {
+        hashedEmailVerificationCode,
+        emailCodeCanSendAt: timeOffset,
+        emailConfirmCodeExpiresAt: timeOffset
+      }),
+      sendEmailVerificationCode({
+        recipient: user.data.email,
+        emailVerificationCode
+      })
+    ]);
 
     return {
       statusCode: 200,

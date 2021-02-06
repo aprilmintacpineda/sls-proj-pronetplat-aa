@@ -55,10 +55,7 @@ module.exports.handler = async ({ headers, body }) => {
           contactId: authUser.id,
           lastOpenedAt: query.Format('%t', query.Now())
         }
-      })
-    ]);
-
-    await Promise.all([
+      }),
       contactRequest.hardDelete(),
       createNotification({
         authUser,
