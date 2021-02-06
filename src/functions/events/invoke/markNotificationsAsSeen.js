@@ -14,9 +14,15 @@ module.exports.handler = async ({
   authUser,
   unseenNotificationIds
 }) => {
+  console.log(unseenNotificationIds);
+
   const client = initClient();
 
-  await Promise.all(
+  const promises = unseenNotificationIds.map(notificationId =>
+    markAsSeen(notificationId)
+  );
+
+  promises.push(
     client.query(
       query.Call(
         'updateUserBadgeCount',
@@ -24,9 +30,8 @@ module.exports.handler = async ({
         'notificationsCount',
         -unseenNotificationIds.length
       )
-    ),
-    unseenNotificationIds.map(notificationId =>
-      markAsSeen(notificationId)
     )
   );
+
+  await Promise.all(promises);
 };
