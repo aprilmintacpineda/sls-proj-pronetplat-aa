@@ -1,4 +1,3 @@
-const { query } = require('faunadb');
 const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
@@ -38,7 +37,8 @@ module.exports.handler = async ({ headers, body }) => {
     if (!authUser.emailVerifiedAt)
       throw new Error('Email not yet verified');
 
-    const data = {
+    const user = new User();
+    await user.updateById(authUser.id, {
       firstName: formBody.firstName,
       middleName: formBody.middleName || '',
       surname: formBody.surname,
@@ -46,13 +46,7 @@ module.exports.handler = async ({ headers, body }) => {
       jobTitle: formBody.jobTitle,
       company: formBody.company || '',
       bio: formBody.bio || ''
-    };
-
-    if (!authUser.completedFirstSetupAt)
-      data.completedFirstSetupAt = query.Format('%t', query.Now());
-
-    const user = new User();
-    await user.updateById(authUser.id, data);
+    });
 
     const userData = user.toResponseData();
     const authToken = await jwt.sign(userData);

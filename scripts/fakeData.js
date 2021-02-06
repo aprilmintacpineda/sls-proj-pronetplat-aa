@@ -73,16 +73,7 @@ function generateUsers (numUsers) {
       emailCodeCanSendAt: faker.date.past().toISOString(),
       emailConfirmCodeExpiresAt: faker.date.past().toISOString(),
       emailVerifiedAt: emailVerifiedAt || null,
-      lastLoginAt: lastLoginAt || null,
-      completedFirstSetupAt: ifDefined(emailVerifiedAt, () =>
-        optional(
-          query.TimeAdd(
-            emailVerifiedAt,
-            faker.random.number({ min: 1, max: 10 }),
-            'minutes'
-          )
-        )
-      )
+      lastLoginAt: lastLoginAt || null
     };
   });
 
