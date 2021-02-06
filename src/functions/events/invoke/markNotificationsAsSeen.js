@@ -10,7 +10,10 @@ function markAsSeen (notificationId) {
   });
 }
 
-module.exports.handler = async ({ authUser, notificationIds }) => {
+module.exports.handler = async ({
+  authUser,
+  unseenNotificationIds
+}) => {
   const client = initClient();
 
   await Promise.all(
@@ -19,9 +22,11 @@ module.exports.handler = async ({ authUser, notificationIds }) => {
         'updateUserBadgeCount',
         authUser.id,
         'notificationsCount',
-        -notificationIds.length
+        -unseenNotificationIds.length
       )
     ),
-    notificationIds.map(notificationId => markAsSeen(notificationId))
+    unseenNotificationIds.map(notificationId =>
+      markAsSeen(notificationId)
+    )
   );
 };
