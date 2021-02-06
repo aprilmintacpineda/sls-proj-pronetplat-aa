@@ -48,6 +48,8 @@ module.exports.handler = async ({
       );
     }
 
+    await Promise.all(promises);
+
     body = body.replace(/{fullname}/gim, getFullName(authUser));
 
     body = body.replace(
