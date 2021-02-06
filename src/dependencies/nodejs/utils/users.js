@@ -2,12 +2,12 @@ export function getUserPublicResponseData (userData) {
   return {
     id: userData.id,
     firstName: userData.firstName,
-    middleName: userData.middleName,
+    middleName: userData.middleName || '',
     surname: userData.surname,
-    profilePicture: userData.profilePicture,
+    profilePicture: userData.profilePicture || '',
     gender: userData.gender,
-    bio: userData.bio,
-    company: userData.company,
+    bio: userData.bio || '',
+    company: userData.company || '',
     jobTitle: userData.jobTitle
   };
 }
