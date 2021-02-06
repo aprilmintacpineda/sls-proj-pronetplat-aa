@@ -274,9 +274,6 @@ Resources:
           - "proj-pronetplat-aa-addToContact"
       Layers:
         - !Ref dependencies
-      Policies:
-        - LambdaInvokePolicy:
-            FunctionName: !Ref createNotification
       Events:
         ApiEvent:
           Type: Api
