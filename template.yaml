@@ -27,6 +27,7 @@ Mappings:
 Globals:
   Function:
     MemorySize: 1024
+    ReservedConcurrentExecutions: 25
     Timeout: 30
     Runtime: nodejs12.x
     Environment:
@@ -78,7 +79,6 @@ Resources:
   register:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/register.handler
       FunctionName: !Join
         - '-'
@@ -100,7 +100,6 @@ Resources:
   forgotPasswordSend:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/forgotPasswordSend.handler
       FunctionName: !Join
         - '-'
@@ -122,7 +121,6 @@ Resources:
   forgotPasswordConfirm:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/forgotPasswordConfirm.handler
       FunctionName: !Join
         - '-'
@@ -144,7 +142,6 @@ Resources:
   login:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/login.handler
       FunctionName: !Join
         - '-'
@@ -166,7 +163,6 @@ Resources:
   verifyEmail:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/verifyEmail.handler
       FunctionName: !Join
         - '-'
@@ -188,7 +184,6 @@ Resources:
   resendEmailCode:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/resendEmailCode.handler
       FunctionName: !Join
         - '-'
@@ -210,7 +205,6 @@ Resources:
   changePersonalInfo:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/changePersonalInfo.handler
       FunctionName: !Join
         - '-'
@@ -229,7 +223,6 @@ Resources:
   changeProfilePicture:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/changeProfilePicture.handler
       FunctionName: !Join
         - '-'
@@ -267,7 +260,6 @@ Resources:
   addToContact:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/addToContact.handler
       FunctionName: !Join
         - '-'
@@ -289,7 +281,6 @@ Resources:
   receivedContactRequests:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/receivedContactRequests.handler
       FunctionName: !Join
         - '-'
@@ -308,7 +299,6 @@ Resources:
   notifications:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/notifications.handler
       FunctionName: !Join
         - '-'
@@ -330,7 +320,6 @@ Resources:
   acceptContactRequest:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/acceptContactRequest.handler
       FunctionName: !Join
         - '-'
@@ -352,7 +341,6 @@ Resources:
   declineContactRequest:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/declineContactRequest.handler
       FunctionName: !Join
         - '-'
@@ -374,7 +362,6 @@ Resources:
   contactDetails:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/contactDetails.handler
       FunctionName: !Join
         - '-'
@@ -393,7 +380,6 @@ Resources:
   validateAuth:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/validateAuth.handler
       FunctionName: !Join
         - '-'
@@ -412,7 +398,6 @@ Resources:
   sendFollowUp:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/sendFollowUp.handler
       FunctionName: !Join
         - '-'
@@ -434,7 +419,6 @@ Resources:
   cancelContactRequest:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/cancelContactRequest.handler
       FunctionName: !Join
         - '-'
@@ -456,7 +440,6 @@ Resources:
   removeFromContacts:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/removeFromContacts.handler
       FunctionName: !Join
         - '-'
@@ -475,7 +458,6 @@ Resources:
   blockUser:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/blockUser.handler
       FunctionName: !Join
         - '-'
@@ -494,7 +476,6 @@ Resources:
   unblockUser:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/unblockUser.handler
       FunctionName: !Join
         - '-'
@@ -513,7 +494,6 @@ Resources:
   myContacts:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/myContacts.handler
       FunctionName: !Join
         - '-'
@@ -532,7 +512,6 @@ Resources:
   blockList:
     Type: AWS::Serverless::Function
     Properties:
-      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/blockList.handler
       FunctionName: !Join
         - '-'
