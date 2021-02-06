@@ -78,23 +78,14 @@ module.exports.handler = async ({
       });
     });
 
-    const unseenCount = unseenNotificationIds.length;
-
-    if (unseenCount) {
-      await Promise.all([
-        client.query(
-          query.Call(
-            'updateUserBadgeCount',
-            authUser.id,
-            'notificationsCount',
-            -unseenCount
-          )
-        ),
-        invokeEvent({
-          functionName: process.env.fn_markNotificationsAsSeen,
-          payload: unseenNotificationIds
-        })
-      ]);
+    if (unseenNotificationIds.length) {
+      await invokeEvent({
+        functionName: process.env.fn_markNotificationsAsSeen,
+        payload: {
+          authUser,
+          unseenNotificationIds
+        }
+      });
     }
 
     return {
