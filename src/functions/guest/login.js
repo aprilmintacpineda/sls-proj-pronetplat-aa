@@ -54,7 +54,7 @@ module.exports.handler = async ({ body }) => {
     ]);
 
     const userData = user.toResponseData();
-    const authToken = jwt.sign(userData);
+    const authToken = await jwt.sign(userData);
 
     return {
       statusCode: 200,
