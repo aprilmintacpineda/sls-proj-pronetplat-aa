@@ -14,24 +14,28 @@ module.exports.handler = async ({
   authUser,
   unseenNotificationIds
 }) => {
-  console.log(unseenNotificationIds);
+  try {
+    console.log(unseenNotificationIds);
 
-  const client = initClient();
+    const client = initClient();
 
-  const promises = unseenNotificationIds.map(notificationId =>
-    markAsSeen(notificationId)
-  );
+    const promises = unseenNotificationIds.map(notificationId =>
+      markAsSeen(notificationId)
+    );
 
-  promises.push(
-    client.query(
-      query.Call(
-        'updateUserBadgeCount',
-        authUser.id,
-        'notificationsCount',
-        -unseenNotificationIds.length
+    promises.push(
+      client.query(
+        query.Call(
+          'updateUserBadgeCount',
+          authUser.id,
+          'notificationsCount',
+          -unseenNotificationIds.length
+        )
       )
-    )
-  );
+    );
 
-  await Promise.all(promises);
+    await Promise.all(promises);
+  } catch (error) {
+    console.log('error', error);
+  }
 };
