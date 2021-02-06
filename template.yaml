@@ -304,6 +304,9 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-notifications"
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref markNotificationsAsSeen
       Layers:
         - !Ref dependencies
       Events:
