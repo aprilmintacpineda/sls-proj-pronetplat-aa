@@ -42,7 +42,8 @@ module.exports.handler = async ({ headers, body }) => {
       emailCodeCanSendAt: null,
       hashedEmailVerificationCode: null,
       notificationsCount: 0,
-      receivedContactRequestsCount: 0
+      receivedContactRequestsCount: 0,
+      contactsCount: 0
     });
 
     const userData = user.toResponseData();

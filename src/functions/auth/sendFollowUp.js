@@ -1,17 +1,14 @@
 const { query } = require('faunadb');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
-const Notification = require('dependencies/nodejs/models/Notification');
 const {
   getAuthTokenFromHeaders,
   hasTimePassed
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
-  sendPushNotification
+  createNotification
 } = require('dependencies/nodejs/utils/notifications');
 const {
-  getUserPublicResponseData,
-  getFullName,
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
@@ -43,14 +40,14 @@ module.exports.handler = async ({ headers, body }) => {
     if (!hasTimePassed(contactRequest.data.canFollowUpAt))
       throw new Error('canFollowUpAt has not passed yet');
 
-    const notification = new Notification();
-
     await Promise.all([
-      notification.create({
+      createNotification({
+        authUser,
         userId: contactRequest.data.recipientId,
         type: 'contactRequestFollowUp',
         body: '{fullname} followed up with his contact request',
-        actorId: authUser.id
+        title: 'Contact request',
+        category: 'notification'
       }),
       contactRequest.update({
         canFollowUpAt: query.Format(
@@ -59,18 +56,6 @@ module.exports.handler = async ({ headers, body }) => {
         )
       })
     ]);
-
-    await sendPushNotification({
-      userId: contactRequest.data.recipientId,
-      imageUrl: authUser.profilePicture,
-      title: 'Contact request',
-      body: `${getFullName(
-        authUser
-      )} followed up with his contact request`,
-      type: 'contactRequestFollowUp',
-      category: 'notification',
-      data: getUserPublicResponseData(authUser)
-    });
 
     return { statusCode: 200 };
   } catch (error) {

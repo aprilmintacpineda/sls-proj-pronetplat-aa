@@ -1,17 +1,12 @@
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
-const Notification = require('dependencies/nodejs/models/Notification');
-const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
-  sendPushNotification
+  createNotification
 } = require('dependencies/nodejs/utils/notifications');
 const {
-  getFullName,
-  getPersonalPronoun,
-  getUserPublicResponseData,
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
@@ -38,37 +33,18 @@ module.exports.handler = async ({ body, headers }) => {
       formBody.contactId
     );
 
-    const notification = new Notification();
-    const user = new User();
-
     await Promise.all([
       sentContactRequest.hardDelete(),
-      notification.create({
+      createNotification({
+        authUser,
         userId: sentContactRequest.data.recipientId,
         type: 'contactRequestCancelled',
         body:
           '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
-        actorId: authUser.id
-      }),
-      user.callUDF(
-        'updateUserBadgeCount',
-        sentContactRequest.data.recipientId,
-        'receivedContactRequestsCount',
-        -1
-      )
+        title: 'Contact request cancelled',
+        category: 'notification'
+      })
     ]);
-
-    await sendPushNotification({
-      userId: sentContactRequest.data.recipientId,
-      imageUrl: authUser.profilePicture,
-      title: 'Contact request cancelled',
-      body: `${getFullName(authUser)} has cancelled ${
-        getPersonalPronoun(authUser).possessive.lowercase
-      } contact request.`,
-      type: 'contactRequestCancelled',
-      category: 'notification',
-      data: getUserPublicResponseData(authUser)
-    });
 
     return { statusCode: 200 };
   } catch (error) {

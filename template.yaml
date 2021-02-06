@@ -29,7 +29,6 @@ Globals:
     MemorySize: 1024
     Timeout: 30
     Runtime: nodejs12.x
-    ReservedConcurrentExecutions: 25
     Environment:
       Variables:
         appPackageName: !FindInMap
@@ -41,10 +40,10 @@ Globals:
           - "-"
           - - "proj-pronetplat-aa-users"
             - !Ref Stage
-        fn_sendPushNotifications: !Join
+        fn_createNotification: !Join
           - '-'
           - - !Ref Stage
-            - "proj-pronetplat-aa-sendPushNotifications"
+            - "proj-pronetplat-aa-createNotification"
         fn_sendEmail: !Join
           - '-'
           - - !Ref Stage
@@ -79,6 +78,7 @@ Resources:
   register:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/register.handler
       FunctionName: !Join
         - '-'
@@ -100,6 +100,7 @@ Resources:
   forgotPasswordSend:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/forgotPasswordSend.handler
       FunctionName: !Join
         - '-'
@@ -121,6 +122,7 @@ Resources:
   forgotPasswordConfirm:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/forgotPasswordConfirm.handler
       FunctionName: !Join
         - '-'
@@ -142,6 +144,7 @@ Resources:
   login:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/guest/login.handler
       FunctionName: !Join
         - '-'
@@ -163,6 +166,7 @@ Resources:
   verifyEmail:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/verifyEmail.handler
       FunctionName: !Join
         - '-'
@@ -184,6 +188,7 @@ Resources:
   resendEmailCode:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/resendEmailCode.handler
       FunctionName: !Join
         - '-'
@@ -205,6 +210,7 @@ Resources:
   changePersonalInfo:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/changePersonalInfo.handler
       FunctionName: !Join
         - '-'
@@ -223,6 +229,7 @@ Resources:
   changeProfilePicture:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/changeProfilePicture.handler
       FunctionName: !Join
         - '-'
@@ -260,6 +267,7 @@ Resources:
   addToContact:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/addToContact.handler
       FunctionName: !Join
         - '-'
@@ -269,7 +277,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotifications
+            FunctionName: !Ref createNotification
       Events:
         ApiEvent:
           Type: Api
@@ -281,6 +289,7 @@ Resources:
   receivedContactRequests:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/receivedContactRequests.handler
       FunctionName: !Join
         - '-'
@@ -299,6 +308,7 @@ Resources:
   notifications:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/notifications.handler
       FunctionName: !Join
         - '-'
@@ -320,6 +330,7 @@ Resources:
   acceptContactRequest:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/acceptContactRequest.handler
       FunctionName: !Join
         - '-'
@@ -329,7 +340,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotifications
+            FunctionName: !Ref createNotification
       Events:
         ApiEvent:
           Type: Api
@@ -341,6 +352,7 @@ Resources:
   declineContactRequest:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/declineContactRequest.handler
       FunctionName: !Join
         - '-'
@@ -350,7 +362,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotifications
+            FunctionName: !Ref createNotification
       Events:
         ApiEvent:
           Type: Api
@@ -362,6 +374,7 @@ Resources:
   contactDetails:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/contactDetails.handler
       FunctionName: !Join
         - '-'
@@ -380,6 +393,7 @@ Resources:
   validateAuth:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/validateAuth.handler
       FunctionName: !Join
         - '-'
@@ -398,6 +412,7 @@ Resources:
   sendFollowUp:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/sendFollowUp.handler
       FunctionName: !Join
         - '-'
@@ -407,7 +422,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotifications
+            FunctionName: !Ref createNotification
       Events:
         ApiEvent:
           Type: Api
@@ -419,6 +434,7 @@ Resources:
   cancelContactRequest:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/cancelContactRequest.handler
       FunctionName: !Join
         - '-'
@@ -428,7 +444,7 @@ Resources:
         - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotifications
+            FunctionName: !Ref createNotification
       Events:
         ApiEvent:
           Type: Api
@@ -440,6 +456,7 @@ Resources:
   removeFromContacts:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/removeFromContacts.handler
       FunctionName: !Join
         - '-'
@@ -458,6 +475,7 @@ Resources:
   blockUser:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/blockUser.handler
       FunctionName: !Join
         - '-'
@@ -476,6 +494,7 @@ Resources:
   unblockUser:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/unblockUser.handler
       FunctionName: !Join
         - '-'
@@ -494,6 +513,7 @@ Resources:
   myContacts:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/myContacts.handler
       FunctionName: !Join
         - '-'
@@ -512,6 +532,7 @@ Resources:
   blockList:
     Type: AWS::Serverless::Function
     Properties:
+      ReservedConcurrentExecutions: 25
       Handler: build/functions/auth/blockList.handler
       FunctionName: !Join
         - '-'
@@ -530,14 +551,14 @@ Resources:
   ######
   # Invokable functions
   #
-  sendPushNotifications:
+  createNotification:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: build/functions/events/invoke/sendPushNotifications.handler
+      Handler: build/functions/events/invoke/createNotification.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-sendPushNotifications"
+          - "proj-pronetplat-aa-createNotification"
       Layers:
         - !Ref dependencies
   forceExpireDeviceToken:

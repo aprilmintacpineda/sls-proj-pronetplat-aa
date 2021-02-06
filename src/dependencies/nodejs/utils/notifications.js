@@ -1,8 +1,8 @@
 const { invokeEvent } = require('./lambda');
 
-module.exports.sendPushNotification = payload => {
+module.exports.createNotification = payload => {
   return invokeEvent({
-    functionName: process.env.fn_sendPushNotifications,
+    functionName: process.env.fn_createNotification,
     payload
   });
 };

@@ -1,4 +1,5 @@
 const { query } = require('faunadb');
+const Notification = require('dependencies/nodejs/models/Notification');
 const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
   sendPushNotification
@@ -6,19 +7,58 @@ const {
 const {
   hasTimePassed
 } = require('dependencies/nodejs/utils/helpers');
+const {
+  getFullName,
+  getPersonalPronoun,
+  getUserPublicResponseData
+} = require('dependencies/nodejs/utils/users');
 
 module.exports.handler = async ({
+  authUser,
   userId,
-  title,
   body,
-  imageUrl,
   type,
+  title,
   category,
   data
 }) => {
   try {
+    const promises = [
+      new Notification().create({
+        userId,
+        type,
+        body,
+        actorId: authUser.id
+      })
+    ];
+
     const client = initClient();
+
+    if (
+      type === 'contactRequestAccepted' ||
+      type === 'contactRequestCancelled' ||
+      type === 'contactRequestDeclined'
+    ) {
+      promises.push(
+        client.query(
+          query.Call(
+            'updateUserBadgeCount',
+            authUser.id,
+            'receivedContactRequestsCount',
+            -1
+          )
+        )
+      );
+    }
+
     let after = null;
+
+    body = body.replace(/{fullname}/gim, getFullName(authUser));
+
+    body = body.replace(
+      /{genderPossessiveLowercase}/gim,
+      getPersonalPronoun(authUser).possessive.lowercase
+    );
 
     do {
       const result = await client.query(
@@ -45,10 +85,11 @@ module.exports.handler = async ({
         notification: {
           title,
           body,
-          imageUrl
+          imageUrl: authUser.profilePicture
         },
         data: {
           ...data,
+          actor: getUserPublicResponseData(authUser),
           type,
           category
         }

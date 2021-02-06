@@ -1,18 +1,14 @@
 const { query } = require('faunadb');
 const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
-const Notification = require('dependencies/nodejs/models/Notification');
-const User = require('dependencies/nodejs/models/User');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
-  sendPushNotification
+  createNotification
 } = require('dependencies/nodejs/utils/notifications');
 const {
-  getUserPublicResponseData,
-  getFullName,
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
@@ -62,36 +58,17 @@ module.exports.handler = async ({ headers, body }) => {
       })
     ]);
 
-    const notification = new Notification();
-    const user = new User();
-
     await Promise.all([
       contactRequest.hardDelete(),
-      notification.create({
+      createNotification({
+        authUser,
         userId: contactRequest.data.senderId,
         type: 'contactRequestAccepted',
         body: '{fullname} has accepted your contact request.',
-        actorId: authUser.id
-      }),
-      user.callUDF(
-        'updateUserBadgeCount',
-        authUser.id,
-        'receivedContactRequestsCount',
-        -1
-      )
+        title: 'Contact request accepted',
+        category: 'notification'
+      })
     ]);
-
-    await sendPushNotification({
-      userId: contactRequest.data.senderId,
-      imageUrl: authUser.profilePicture,
-      title: 'Contact request accepted',
-      body: `${getFullName(
-        authUser
-      )} has accepted your contact request.`,
-      type: 'contactRequestAccepted',
-      category: 'notification',
-      data: getUserPublicResponseData(authUser)
-    });
 
     return { statusCode: 200 };
   } catch (error) {
