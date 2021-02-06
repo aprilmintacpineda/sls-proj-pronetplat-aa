@@ -15,8 +15,6 @@ module.exports.handler = async ({
   unseenNotificationIds
 }) => {
   try {
-    console.log(unseenNotificationIds);
-
     const client = initClient();
 
     const promises = unseenNotificationIds.map(notificationId =>
