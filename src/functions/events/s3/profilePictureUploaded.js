@@ -1,5 +1,4 @@
 const jimp = require('jimp');
-const mimetypes = require('mime-types');
 const {
   getObjectPromise,
   uploadPromise
@@ -24,13 +23,9 @@ module.exports.handler = async event => {
       .quality(80)
       .getBufferAsync(image._originalMime);
 
-    const [filename] = objectKey.split('.').reverse()[0];
-    const [, userId, count] = filename.split('_');
-    const ext = mimetypes.extension(s3Object.ContentType);
-
     const uploaded = await uploadPromise({
       ACL: 'public-read',
-      Key: `profilePicture_${userId}_${count || 0}.${ext}`,
+      Key: objectKey,
       Bucket: bucketName,
       Body: resizedImage,
       ContentEncoding: s3Object.ContentEncoding,

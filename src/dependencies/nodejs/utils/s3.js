@@ -15,8 +15,6 @@ module.exports.getObjectPromise = params => {
 };
 
 module.exports.uploadPromise = params => {
-  console.log('uploadPromise', JSON.stringify(params, null, 2));
-
   return new Promise((resolve, reject) => {
     s3.upload(params, (error, data) => {
       if (error) reject(error);

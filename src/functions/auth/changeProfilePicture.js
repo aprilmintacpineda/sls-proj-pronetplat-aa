@@ -1,6 +1,7 @@
 const mimetypes = require('mime-types');
 const {
-  getAuthTokenFromHeaders
+  getAuthTokenFromHeaders,
+  randomNum
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const { s3 } = require('dependencies/nodejs/utils/s3');
@@ -28,19 +29,23 @@ module.exports.handler = async ({ headers, body }) => {
     throwIfNotCompletedSetup(authUser);
 
     const ext = mimetypes.extension(formBody.mimeType);
+    const objectName = `profilePicture_${
+      authUser.id
+    }_${randomNum()}.${ext}`;
 
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
       Bucket: process.env.usersBucket,
       Expires: 15,
       ACL: 'private',
-      Key: `newProfilePicture_${authUser.id}.${ext}`,
+      Key: objectName,
       ContentType: formBody.mimeType
     });
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        signedUrl
+        signedUrl,
+        profilePicture: `https://${process.env.usersBucket}.s3.ap-southeast-1.amazonaws.com/${objectName}`
       })
     };
   } catch (error) {
