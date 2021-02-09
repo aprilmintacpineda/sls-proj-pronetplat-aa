@@ -1,18 +1,13 @@
-const aws = require('aws-sdk');
 const mimetypes = require('mime-types');
 const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const { s3 } = require('dependencies/nodejs/utils/s3');
 const {
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
-
-const s3 = new aws.S3({
-  apiVersion: '2006-03-01',
-  signatureVersion: 'v4'
-});
 
 function hasErrors ({ mimeType }) {
   return validate(mimeType, [
