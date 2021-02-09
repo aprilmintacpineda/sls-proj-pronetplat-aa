@@ -1,7 +1,5 @@
 const alias = require('./importAliases');
 
-console.log('just a test change');
-
 const config = {
   comments: false,
   presets: [
