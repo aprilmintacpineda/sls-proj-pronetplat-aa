@@ -18,15 +18,14 @@ module.exports.handler = async event => {
       Key: objectKey
     });
 
-    console.log(JSON.stringify(s3Object, null, 2));
-
     const image = await jimp.read(s3Object.Body);
     const resizedImage = await image
       .contain(100, 100)
       .quality(80)
       .getBufferAsync(image._originalMime);
 
-    const [, userId, count] = objectKey.split('_');
+    const [filename] = objectKey.split('.').reverse()[0];
+    const [, userId, count] = filename.split('_');
     const ext = mimetypes.extension(s3Object.ContentType);
 
     const uploaded = await uploadPromise({

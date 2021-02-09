@@ -32,7 +32,7 @@ module.exports.handler = async ({ headers, body }) => {
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
       Bucket: process.env.usersBucket,
       Expires: 15,
-      ACL: 'public-read',
+      ACL: 'private',
       Key: `newProfilePicture_${authUser.id}.${ext}`,
       ContentType: formBody.mimeType
     });
