@@ -8,7 +8,6 @@ const {
 
 module.exports.handler = async event => {
   try {
-    console.log(JSON.stringify(event));
     const {
       bucket: { name: bucketName },
       object: { key: objectKey }
