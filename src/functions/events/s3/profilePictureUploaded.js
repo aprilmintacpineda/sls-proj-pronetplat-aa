@@ -1,7 +1,8 @@
 const jimp = require('jimp');
 const {
   getObjectPromise,
-  uploadPromise
+  uploadPromise,
+  deleteObjectPromise
 } = require('dependencies/nodejs/utils/s3');
 
 module.exports.handler = async event => {
@@ -12,27 +13,33 @@ module.exports.handler = async event => {
       object: { key: objectKey }
     } = event.Records[0].s3;
 
-    const s3Object = await getObjectPromise({
+    const uploadedS3Object = {
       Bucket: bucketName,
       Key: objectKey
-    });
+    };
 
-    const image = await jimp.read(s3Object.Body);
+    const file = await getObjectPromise(uploadedS3Object);
+
+    const image = await jimp.read(file.Body);
     const resizedImage = await image
       .contain(100, 100)
       .quality(80)
       .getBufferAsync(image._originalMime);
 
-    const uploaded = await uploadPromise({
-      ACL: 'public-read',
-      Key: objectKey,
-      Bucket: bucketName,
-      Body: resizedImage,
-      ContentEncoding: s3Object.ContentEncoding,
-      ContentType: s3Object.ContentType
-    });
-
-    console.log(uploaded);
+    await Promise.all([
+      uploadPromise({
+        ACL: 'public-read',
+        Key: objectKey.replace(
+          /newProfilePicture_/gim,
+          'profilePicture_'
+        ),
+        Bucket: bucketName,
+        Body: resizedImage,
+        ContentEncoding: file.ContentEncoding,
+        ContentType: file.ContentType
+      }),
+      deleteObjectPromise(uploadedS3Object)
+    ]);
   } catch (error) {
     console.log('error', error);
   }

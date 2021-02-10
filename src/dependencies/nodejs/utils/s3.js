@@ -14,6 +14,15 @@ module.exports.getObjectPromise = params => {
   });
 };
 
+module.exports.deleteObjectPromise = params => {
+  return new Promise((resolve, reject) => {
+    s3.deleteObject(params, (error, data) => {
+      if (error) reject(error);
+      else resolve(data);
+    });
+  });
+};
+
 module.exports.uploadPromise = params => {
   return new Promise((resolve, reject) => {
     s3.upload(params, (error, data) => {
