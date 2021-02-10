@@ -700,6 +700,11 @@ Resources:
             - HEAD
           AllowedOrigins:
             - "*"
+      MetricsConfigurations:
+        - Id: "profilePicture_"
+          Prefix: "profilePicture_"
+        - Id: "newProfilePicture_"
+          Prefix: "newProfilePicture_"
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
