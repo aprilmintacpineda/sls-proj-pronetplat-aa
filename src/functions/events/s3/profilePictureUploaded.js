@@ -43,8 +43,6 @@ module.exports.handler = async event => {
       deleteObjectPromise(uploadedS3Object)
     ]);
 
-    console.log(uploaded);
-
     const [, userId] = objectKey.split('_');
     const user = new User();
     await user.updateById(userId, {
