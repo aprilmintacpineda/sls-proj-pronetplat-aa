@@ -31,7 +31,7 @@ module.exports.handler = async event => {
       'profilePicture_'
     );
 
-    await Promise.all([
+    const [uploaded] = await Promise.all([
       uploadPromise({
         ACL: 'public-read',
         Key: profilePicture,
@@ -43,9 +43,13 @@ module.exports.handler = async event => {
       deleteObjectPromise(uploadedS3Object)
     ]);
 
+    console.log(uploaded);
+
     const [, userId] = objectKey.split('_');
     const user = new User();
-    await user.updateById(userId, { profilePicture });
+    await user.updateById(userId, {
+      profilePicture: uploaded.Location
+    });
   } catch (error) {
     console.log('error', error);
   }
