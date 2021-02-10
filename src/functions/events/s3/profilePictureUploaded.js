@@ -1,4 +1,5 @@
 const jimp = require('jimp');
+const User = require('dependencies/nodejs/models/User');
 const {
   getObjectPromise,
   uploadPromise,
@@ -26,13 +27,15 @@ module.exports.handler = async event => {
       .quality(80)
       .getBufferAsync(image._originalMime);
 
+    const profilePicture = objectKey.replace(
+      /newProfilePicture_/gim,
+      'profilePicture_'
+    );
+
     await Promise.all([
       uploadPromise({
         ACL: 'public-read',
-        Key: objectKey.replace(
-          /newProfilePicture_/gim,
-          'profilePicture_'
-        ),
+        Key: profilePicture,
         Bucket: bucketName,
         Body: resizedImage,
         ContentEncoding: file.ContentEncoding,
@@ -40,6 +43,10 @@ module.exports.handler = async event => {
       }),
       deleteObjectPromise(uploadedS3Object)
     ]);
+
+    const [, userId] = objectKey.split('_');
+    const user = new User();
+    await user.updateById(userId, { profilePicture });
   } catch (error) {
     console.log('error', error);
   }
