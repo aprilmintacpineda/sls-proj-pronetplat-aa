@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const { isPast } = require('date-fns');
 
-module.exports.randomNum = (min, max) => {
+module.exports.randomNum = (min = 11111111, max = 99999999) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
