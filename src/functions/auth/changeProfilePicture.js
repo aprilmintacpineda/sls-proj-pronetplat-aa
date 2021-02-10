@@ -29,15 +29,13 @@ module.exports.handler = async ({ headers, body }) => {
     throwIfNotCompletedSetup(authUser);
 
     const ext = mimetypes.extension(formBody.mimeType);
-    const objectName = `profilePicture_${
-      authUser.id
-    }_${randomNum()}.${ext}`;
+    const objectName = `${authUser.id}_${randomNum()}.${ext}`;
 
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
       Bucket: process.env.usersBucket,
       Expires: 15,
       ACL: 'private',
-      Key: objectName,
+      Key: `newProfilePicture_${objectName}`,
       ContentType: formBody.mimeType
     });
 
@@ -45,7 +43,7 @@ module.exports.handler = async ({ headers, body }) => {
       statusCode: 200,
       body: JSON.stringify({
         signedUrl,
-        profilePicture: `https://${process.env.usersBucket}.s3-ap-southeast-1.amazonaws.com/${objectName}`
+        profilePicture: `https://${process.env.usersBucket}.s3-ap-southeast-1.amazonaws.com/profilePicture_${objectName}`
       })
     };
   } catch (error) {
