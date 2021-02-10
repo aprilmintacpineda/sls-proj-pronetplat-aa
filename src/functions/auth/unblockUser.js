@@ -25,7 +25,7 @@ module.exports.handler = async ({ body, headers }) => {
 
     const userBlocking = new UserBlocking();
 
-    await userBlocking.hardDeleteByIndex(
+    await userBlocking.hardDeleteIfExists(
       'userBlockingsByBlockerIdUserId',
       authUser.id,
       formBody.contactId

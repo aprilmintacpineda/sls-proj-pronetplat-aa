@@ -56,7 +56,6 @@ module.exports.handler = async ({ headers, body }) => {
           lastOpenedAt: query.Format('%t', query.Now())
         }
       }),
-      contactRequest.hardDelete(),
       createNotification({
         authUser,
         userId: contactRequest.data.senderId,
@@ -64,7 +63,8 @@ module.exports.handler = async ({ headers, body }) => {
         body: '{fullname} has accepted your contact request.',
         title: 'Contact request accepted',
         category: 'notification'
-      })
+      }),
+      contactRequest.hardDelete()
     ]);
 
     return { statusCode: 200 };

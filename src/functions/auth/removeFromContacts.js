@@ -24,7 +24,7 @@ module.exports.handler = async ({ body, headers }) => {
     throwIfNotCompletedSetup(authUser);
 
     const contact = new Contact();
-    await contact.hardDeleteByIndex(
+    await contact.hardDeleteIfExists(
       'contactByOwnerContact',
       authUser.id,
       formBody.contactId

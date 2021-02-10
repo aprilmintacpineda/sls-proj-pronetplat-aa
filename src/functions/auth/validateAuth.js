@@ -33,22 +33,17 @@ module.exports.handler = async ({ headers, body }) => {
     const registeredDevice = new RegisteredDevice();
 
     await Promise.all([
-      registeredDevice.getByIndex(
-        'registeredDeviceByUserIdDeviceToken',
-        authUser.id,
-        deviceToken
-      ),
-      user.getById(authUser.id)
-    ]);
-
-    await Promise.all([
-      registeredDevice.update({
-        expiresAt: query.Format(
-          '%t',
-          query.TimeAdd(query.Now(), 7, 'days')
-        )
+      registeredDevice.updateByIndex({
+        index: 'registeredDeviceByUserIdDeviceToken',
+        args: [authUser.id, deviceToken],
+        data: {
+          expiresAt: query.Format(
+            '%t',
+            query.TimeAdd(query.Now(), 7, 'days')
+          )
+        }
       }),
-      user.update({
+      user.updateById(authUser.id, {
         lastLoginAt: query.Format(
           '%t',
           query.TimeAdd(query.Now(), 7, 'days')
@@ -70,7 +65,7 @@ module.exports.handler = async ({ headers, body }) => {
     console.log('error', error);
 
     if (error.constructor === jwt.TokenExpiredError) {
-      invokeEvent({
+      await invokeEvent({
         functionName: process.env.fn_forceExpireDeviceToken,
         payload: {
           deviceToken,

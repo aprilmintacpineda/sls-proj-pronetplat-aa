@@ -21,8 +21,26 @@ module.exports.handler = async ({
 
     throwIfNotCompletedSetup(authUser);
 
+    const contact = new Contact();
+    await contact.getByIndexIfExists(
+      'contactByOwnerContact',
+      authUser.id,
+      contactId
+    );
+
+    if (contact.instance) {
+      await contact.update({
+        lastOpenedAt: query.Format('%t', query.Now())
+      });
+
+      // @TODO: get contact details and send back
+      return { statusCode: 403 };
+    }
+
     const contactBlocked = new UserBlocking();
     const blockedByUser = new UserBlocking();
+    const receivedContactRequest = new ContactRequest();
+    const sentContactRequest = new ContactRequest();
 
     const [wasContactBlocked, wasBlockedByUser] = await Promise.all([
       contactBlocked.exists(
@@ -34,7 +52,15 @@ module.exports.handler = async ({
         'userBlockingsByBlockerIdUserId',
         contactId,
         authUser.id
-      )
+      ),
+      receivedContactRequest.getPendingRequestIfExists({
+        senderId: contactId,
+        recipientId: authUser.id
+      }),
+      sentContactRequest.getPendingRequestIfExists({
+        senderId: authUser.id,
+        recipientId: contactId
+      })
     ]);
 
     if (wasContactBlocked) {
@@ -59,13 +85,6 @@ module.exports.handler = async ({
       };
     }
 
-    const receivedContactRequest = new ContactRequest();
-
-    await receivedContactRequest.getPendingRequestIfExists({
-      senderId: contactId,
-      recipientId: authUser.id
-    });
-
     if (receivedContactRequest.instance) {
       return {
         statusCode: 200,
@@ -77,40 +96,18 @@ module.exports.handler = async ({
       };
     }
 
-    const contact = new Contact();
-    await contact.getByIndexIfExists(
-      'contactByOwnerContact',
-      authUser.id,
-      contactId
-    );
-
-    if (!contact.instance) {
-      const sentContactRequest = new ContactRequest();
-
-      await sentContactRequest.getPendingRequestIfExists({
-        senderId: authUser.id,
-        recipientId: contactId
-      });
-
-      if (sentContactRequest.instance) {
-        return {
-          statusCode: 200,
-          body: JSON.stringify({
-            data: {
-              sentContactRequest: sentContactRequest.toResponseData()
-            }
-          })
-        };
-      }
-
-      return { statusCode: 404 };
+    if (sentContactRequest.instance) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          data: {
+            sentContactRequest: sentContactRequest.toResponseData()
+          }
+        })
+      };
     }
 
-    await contact.update({
-      lastOpenedAt: query.Format('%t', query.Now())
-    });
-
-    // @TODO: get contact details and send back
+    return { statusCode: 404 };
   } catch (error) {
     console.log('error', error);
   }

@@ -34,7 +34,6 @@ module.exports.handler = async ({ body, headers }) => {
     );
 
     await Promise.all([
-      sentContactRequest.hardDelete(),
       createNotification({
         authUser,
         userId: sentContactRequest.data.recipientId,
@@ -43,7 +42,8 @@ module.exports.handler = async ({ body, headers }) => {
           '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
         title: 'Contact request cancelled',
         category: 'notification'
-      })
+      }),
+      sentContactRequest.hardDelete()
     ]);
 
     return { statusCode: 200 };
