@@ -58,7 +58,7 @@ module.exports.handler = async ({
         tokens,
         notification: {
           title,
-          imageUrl: authUser.profilePicture || '',
+          imageUrl: authUser.profilePicture,
           body: body
             .replace(/{fullname}/gim, getFullName(authUser))
             .replace(

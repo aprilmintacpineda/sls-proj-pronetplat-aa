@@ -4,7 +4,7 @@ export function getUserPublicResponseData (userData) {
     firstName: userData.firstName,
     middleName: userData.middleName || '',
     surname: userData.surname,
-    profilePicture: userData.profilePicture || '',
+    profilePicture: userData.profilePicture,
     gender: userData.gender,
     bio: userData.bio || '',
     company: userData.company || '',
@@ -59,7 +59,8 @@ export function throwIfNotCompletedSetup (user) {
     !user.firstName ||
     !user.surname ||
     !user.gender ||
-    !user.jobTitle
+    !user.jobTitle ||
+    !user.profilePicture
   )
     throw new Error('User not setup');
 
