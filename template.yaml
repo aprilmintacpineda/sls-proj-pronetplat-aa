@@ -639,6 +639,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: build/functions/events/s3/profilePictureUploaded.handler
+      MemorySize: 8192
       FunctionName: !Join
         - '-'
         - - !Ref Stage
