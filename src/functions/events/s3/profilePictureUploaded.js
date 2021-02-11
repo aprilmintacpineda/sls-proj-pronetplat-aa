@@ -22,8 +22,8 @@ module.exports.handler = async event => {
 
     const image = await jimp.read(file.Body);
     const resizedImage = await image
-      .contain(100, 100)
-      .quality(80)
+      .contain(160, 160)
+      .quality(70)
       .getBufferAsync(image._originalMime);
 
     const profilePicture = objectKey.replace(
