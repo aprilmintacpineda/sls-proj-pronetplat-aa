@@ -222,18 +222,12 @@ module.exports = class Model {
     const { wasDeleted, instance } = await this.client.query(
       query.If(
         query.Exists(match),
-        query.Let(
-          {
-            document: query.Get(match),
-            deletedDocument: query.Delete(
-              query.Select(['ref'], query.Var('document'))
-            )
-          },
-          {
-            instance: query.Var('deletedDocument'),
-            wasDeleted: true
-          }
-        ),
+        {
+          instance: query.Delete(
+            query.Select(['ref'], query.Get(match))
+          ),
+          wasDeleted: true
+        },
         {
           wasDeleted: false
         }

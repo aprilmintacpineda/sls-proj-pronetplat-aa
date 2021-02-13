@@ -38,24 +38,15 @@ module.exports.handler = async ({
               : []
           }
         ),
-        query.Lambda(
-          ['createdAt', 'actorId', 'ref'],
-          query.Let(
-            {
-              notification: query.Get(query.Var('ref')),
-              actor: query.Get(
-                query.Ref(
-                  query.Collection('users'),
-                  query.Var('actorId')
-                )
-              )
-            },
-            {
-              notification: query.Var('notification'),
-              actor: query.Var('actor')
-            }
+        query.Lambda(['createdAt', 'actorId', 'ref'], {
+          notification: query.Get(query.Var('ref')),
+          actor: query.Get(
+            query.Ref(
+              query.Collection('users'),
+              query.Var('actorId')
+            )
           )
-        )
+        })
       )
     );
 
