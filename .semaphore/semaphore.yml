@@ -16,13 +16,27 @@ auto_cancel:
 blocks:
   - name: Hello World
     task:
+      secrets:
+        - name: sls-proj-pronetplat-aa
       jobs:
         - name: Test job
           commands:
             - checkout
-            - echo "Hello from my 'main' container"
+            - sam --version
+            - yarn --version
+            - node --version
+            - git --version
             - ls -lha
-      secrets:
-        - name: AWS Account
+            # - yarn
+            # - NODE_ENV=production yarn build
+            # # install node modules on built lambda layer
+            # - cd build/dependencies/nodejs && yarn
+            # # clean unneeded files
+            # - rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
+            # # resources on lambda layer
+            # - mkdir build/dependencies/nodejs/resources
+            # - echo '${{ secrets.JWT_PRIVATE_KEY }}' > build/dependencies/nodejs/resources/jwt.key
+            # - echo '${{ secrets.JWT_PUBLIC_KEY }}' > build/dependencies/nodejs/resources/jwt.pub
+            # - echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
     skip:
       when: branch = 'master'
