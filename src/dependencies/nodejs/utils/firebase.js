@@ -41,8 +41,8 @@ module.exports.sendPushNotification = ({
       tokens,
       { notification, data },
       {
-        priority: 'high',
-        restrictedPackageName: process.env.appPackageName
+        priority: 'high'
+        // restrictedPackageName: process.env.appPackageName
       }
     );
   }
