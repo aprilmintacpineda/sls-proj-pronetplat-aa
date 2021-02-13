@@ -26,7 +26,9 @@ blocks:
             - yarn --version
             - node --version
             - git --version
-            - ls -lha
+            - ls -lha ~/ | grep "jwt.key"
+            - ls -lha ~/ | grep "jwt.pub"
+            - ls -lha ~/ | grep "firebase_admin.json"
             # - yarn
             # - NODE_ENV=production yarn build
             # # install node modules on built lambda layer
