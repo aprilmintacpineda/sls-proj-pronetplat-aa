@@ -16,8 +16,6 @@ function hasError ({ deviceToken }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  console.log('hello world');
-
   let authToken = null;
   let deviceToken = null;
 

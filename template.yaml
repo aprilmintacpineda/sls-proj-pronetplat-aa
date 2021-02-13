@@ -6,6 +6,9 @@ Description: >
   Sample SAM Template for proj-pronetplat-aa
   
 Parameters:
+  JWTSecret:
+    Description: The secret used for JWT
+    Type: String
   Stage:
     Description: Stage of the current build
     Type: String
@@ -37,6 +40,7 @@ Globals:
           - !Ref Stage
           - value
         stage: !Ref Stage
+        jwtSecret: !Ref JWTSecret
         usersBucket: !Join
           - "-"
           - - "proj-pronetplat-aa-users"

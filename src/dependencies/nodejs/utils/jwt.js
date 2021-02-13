@@ -1,5 +1,3 @@
-const fs = require('fs').promises;
-const path = require('path');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
@@ -16,19 +14,12 @@ const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
 
 module.exports.sign = async data => {
-  const file = await fs.readFile(
-    path.join(__dirname, '../resources/jwt.key')
-  );
-  const privateKey = file.toString();
-  return signAsync({ data }, privateKey, signConfig);
+  console.log(process.env.jwtSecret);
+  return signAsync({ data }, process.env.jwtSecret, signConfig);
 };
 
 module.exports.verify = async token => {
-  const file = await fs.readFile(
-    path.join(__dirname, '../resources/jwt.pub')
-  );
-  const publicKey = file.toString();
-  return verifyAsync(token, publicKey, verifyConfig);
+  return verifyAsync(token, process.env.jwtSecret, verifyConfig);
 };
 
 module.exports.TokenExpiredError = jwt.TokenExpiredError;
