@@ -14,30 +14,36 @@ auto_cancel:
   queued:
     when: 'true'
 blocks:
-  - name: Hello World
+  - name: Dev
     task:
       secrets:
         - name: sls-proj-pronetplat-aa
       jobs:
-        - name: Test job
+        - name: Build and deploy
           commands:
             - checkout
+        - name: Versions
+          commands:
             - sam --version
             - yarn --version
             - node --version
             - git --version
+        - name: Install dependencies and build source
+          commands:
             - yarn
             - NODE_ENV=production yarn build
             # install node modules on built lambda layer
             - cd build/dependencies/nodejs && yarn
             # clean unneeded files
             - rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
-            # resources on lambda layer
+        - name: Setup lambda layer resources
+          commands:
             - mkdir -p build/dependencies/nodejs/resources
             - cp ~/jwt.key build/dependencies/nodejs/resources/jwt.key
             - cp ~/jwt.pub build/dependencies/nodejs/resources/jwt.pub
             - cp ~/firebase_admin.json build/dependencies/nodejs/resources/firebase_admin.json
-            # build and deploy with AWS SAM
+        - name: Build and deploy with AWS SAM
+          commands:
             - sam build
             - >
               sam deploy --stack-name sls-proj-pronetplat-aa-dev \
