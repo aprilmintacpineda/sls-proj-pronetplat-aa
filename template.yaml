@@ -377,6 +377,9 @@ Resources:
           - "proj-pronetplat-aa-contactDetails"
       Layers:
         - !Ref dependencies
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref incrementNumTimesOpened
       Events:
         ApiEvent:
           Type: Api
