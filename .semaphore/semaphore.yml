@@ -6,7 +6,7 @@ agent:
     os_image: ubuntu1804
   containers:
     - name: main
-      image: 'aprilmintacpineda/aws-sam-cli-deploy-nodejs:0.0.2'
+      image: 'aprilmintacpineda/aws-sam-cli-deploy-nodejs:latest'
 fail_fast:
   stop:
     when: 'true'
