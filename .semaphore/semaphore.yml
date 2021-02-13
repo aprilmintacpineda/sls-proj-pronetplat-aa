@@ -22,7 +22,7 @@ blocks:
         - name: AWS SAM CLI Deployment
           commands:
             - checkout
-            - artifact pull job .aws-sam
+            # - artifact pull job dev/.aws-sam -d .aws-sam
             # versions
             - sam --version
             - yarn --version
@@ -48,6 +48,6 @@ blocks:
                 --s3-prefix sls-proj-pronetplat-aa-dev \
                 --parameter-overrides Stage=dev AppPackageName=com.aprmp.projpronetplataa.local \
                 --tags what="sls-proj-pronetplat-aa" stage="dev"
-            - artifact push job .aws-sam
+            - artifact push job .aws-sam -d dev/.aws-sam
     skip:
       when: branch = 'master'
