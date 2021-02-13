@@ -46,35 +46,38 @@ module.exports.handler = async ({
       );
 
       result.data.forEach(([expiresAt, deviceToken, _1, ref]) => {
-        if (!hasTimePassed(expiresAt)) tokens.push(deviceToken);
-        else expiredTokenIds.push(ref.id);
+        if (hasTimePassed(expiresAt)) expiredTokenIds.push(ref.id);
+        else tokens.push(deviceToken);
       }, []);
 
       after = result.after;
     } while (after);
 
-    await Promise.all([
-      sendPushNotification({
-        tokens,
-        notification: {
-          title,
-          imageUrl: authUser.profilePicture,
-          body: body
-            .replace(/{fullname}/gim, getFullName(authUser))
-            .replace(
-              /{genderPossessiveLowercase}/gim,
-              getPersonalPronoun(authUser).possessive.lowercase
-            )
-        },
-        data: {
-          ...data,
-          ...getUserPublicResponseData(authUser)
-        }
-      }),
-      expiredTokenIds.map(registeredDeviceId =>
-        deleteExpiredToken(registeredDeviceId)
-      )
-    ]);
+    await Promise.all(
+      expiredTokenIds
+        .map(registeredDeviceId =>
+          deleteExpiredToken(registeredDeviceId)
+        )
+        .concat(
+          sendPushNotification({
+            tokens,
+            notification: {
+              title,
+              imageUrl: authUser.profilePicture,
+              body: body
+                .replace(/{fullname}/gim, getFullName(authUser))
+                .replace(
+                  /{genderPossessiveLowercase}/gim,
+                  getPersonalPronoun(authUser).possessive.lowercase
+                )
+            },
+            data: {
+              ...data,
+              ...getUserPublicResponseData(authUser)
+            }
+          })
+        )
+    );
   } catch (error) {
     console.log('error', error);
   }
