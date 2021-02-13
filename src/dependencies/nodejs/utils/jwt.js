@@ -12,13 +12,14 @@ const verifyConfig = { maxAge: validityPeriod };
 
 const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
+const secret = '__JWTSecret__';
 
 module.exports.sign = async data => {
-  return signAsync({ data }, process.env.jwtSecret, signConfig);
+  return signAsync({ data }, secret, signConfig);
 };
 
 module.exports.verify = async token => {
-  return verifyAsync(token, process.env.jwtSecret, verifyConfig);
+  return verifyAsync(token, secret, verifyConfig);
 };
 
 module.exports.TokenExpiredError = jwt.TokenExpiredError;

@@ -27,8 +27,9 @@ blocks:
             - yarn --version
             - node --version
             - git --version
-            # Iinstall dependencies and build source
+            # install dependencies and build source
             - yarn
+            - node scripts/injectJWTSecret.js --secret $JWT_SECRET
             - NODE_ENV=production yarn build
             # install node modules on built lambda layer
             - cd build/dependencies/nodejs && yarn
@@ -43,7 +44,7 @@ blocks:
             - >
               sam deploy --stack-name sls-proj-pronetplat-aa-dev \
                 --s3-prefix sls-proj-pronetplat-aa-dev \
-                --parameter-overrides Stage=dev AppPackageName=com.aprmp.projpronetplataa.local JWTSecret=$JWT_SECRET \
+                --parameter-overrides Stage=dev AppPackageName=com.aprmp.projpronetplataa.local \
                 --tags what="sls-proj-pronetplat-aa" stage="dev"
     skip:
       when: branch = 'master'
