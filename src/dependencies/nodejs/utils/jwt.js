@@ -5,7 +5,7 @@ const validityPeriod = '7d';
 
 const signConfig = {
   expiresIn: validityPeriod,
-  algorithm: 'RS256'
+  algorithm: 'HS512'
 };
 
 const verifyConfig = { maxAge: validityPeriod };
