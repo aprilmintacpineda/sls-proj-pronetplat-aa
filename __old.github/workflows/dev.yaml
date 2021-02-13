@@ -1,11 +1,8 @@
-
 name: AWS SAM deployment
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the dev branch
 on:
-  push:
-    branches: [dev]
   pull_request:
     branches: [dev]
 
@@ -38,13 +35,12 @@ jobs:
         run: |
           NODE_ENV=production yarn build
           cd build/dependencies/nodejs && yarn
+          node scripts/injectJWTSecret.js --secret ${{ secrets.JWT_SECRET }}
           rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
 
       - name: Generate resources
         run: |
-          mkdir build/dependencies/nodejs/resources
-          echo '${{ secrets.JWT_PRIVATE_KEY }}' > build/dependencies/nodejs/resources/jwt.key
-          echo '${{ secrets.JWT_PUBLIC_KEY }}' > build/dependencies/nodejs/resources/jwt.pub
+          mkdir -p build/dependencies/nodejs/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
 
       - name: Sam build & deploy
