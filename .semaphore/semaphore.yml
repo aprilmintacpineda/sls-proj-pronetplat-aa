@@ -19,31 +19,26 @@ blocks:
       secrets:
         - name: sls-proj-pronetplat-aa
       jobs:
-        - name: Build and deploy
+        - name: Deployment on dev environment
           commands:
             - checkout
-        - name: Versions
-          commands:
             - sam --version
             - yarn --version
             - node --version
             - git --version
-        - name: Install dependencies and build source
-          commands:
+            # Install dependencies and build source
             - yarn
             - NODE_ENV=production yarn build
             # install node modules on built lambda layer
             - cd build/dependencies/nodejs && yarn
             # clean unneeded files
             - rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
-        - name: Setup lambda layer resources
-          commands:
+            # Setup lambda layer resources
             - mkdir -p build/dependencies/nodejs/resources
             - cp ~/jwt.key build/dependencies/nodejs/resources/jwt.key
             - cp ~/jwt.pub build/dependencies/nodejs/resources/jwt.pub
             - cp ~/firebase_admin.json build/dependencies/nodejs/resources/firebase_admin.json
-        - name: Build and deploy with AWS SAM
-          commands:
+            # Build and deploy with AWS SAM
             - sam build
             - >
               sam deploy --stack-name sls-proj-pronetplat-aa-dev \
