@@ -29,11 +29,11 @@ blocks:
             - git --version
             # install dependencies and build source
             - yarn
-            - node scripts/injectJWTSecret.js --secret $JWT_SECRET
             - NODE_ENV=production yarn build
             # install node modules on built lambda layer
             - cd build/dependencies/nodejs && yarn
             - cd ../../..
+            - node scripts/injectJWTSecret.js --secret $JWT_SECRET
             # clean unneeded files
             - rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
             # setup lambda layer resources
