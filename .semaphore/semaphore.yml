@@ -27,9 +27,9 @@ blocks:
             - node --version
             - git --version
             - pwd
-            - ls -lha /home/semaphore | grep "jwt.key"
-            - ls -lha /home/semaphore | grep "jwt.pub"
-            - ls -lha /home/semaphore | grep "firebase_admin.json"
+            - ls -lha ~/ | grep "jwt.key"
+            - ls -lha ~/ | grep "jwt.pub"
+            - ls -lha ~/ | grep "firebase_admin.json"
             # - yarn
             # - NODE_ENV=production yarn build
             # # install node modules on built lambda layer
