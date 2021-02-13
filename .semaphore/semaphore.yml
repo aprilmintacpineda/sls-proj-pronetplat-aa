@@ -2,7 +2,7 @@ version: v1.0
 name: Build and deploy through docker
 agent:
   machine:
-    type: e1-standard-4
+    type: e1-standard-2
     os_image: ubuntu1804
   containers:
     - name: main
@@ -19,9 +19,10 @@ blocks:
       secrets:
         - name: sls-proj-pronetplat-aa
       jobs:
-        - name: Deployment
+        - name: AWS SAM CLI Deployment
           commands:
             - checkout
+            - artifact pull job .aws-sam
             # versions
             - sam --version
             - yarn --version
@@ -47,5 +48,6 @@ blocks:
                 --s3-prefix sls-proj-pronetplat-aa-dev \
                 --parameter-overrides Stage=dev AppPackageName=com.aprmp.projpronetplataa.local \
                 --tags what="sls-proj-pronetplat-aa" stage="dev"
+            - artifact push job .aws-sam
     skip:
       when: branch = 'master'
