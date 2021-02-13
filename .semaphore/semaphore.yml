@@ -26,19 +26,23 @@ blocks:
             - yarn --version
             - node --version
             - git --version
-            - pwd
-            - ls -lha ~/
-            - ls -lha /
-            # - yarn
-            # - NODE_ENV=production yarn build
-            # # install node modules on built lambda layer
-            # - cd build/dependencies/nodejs && yarn
-            # # clean unneeded files
-            # - rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
-            # # resources on lambda layer
-            # - mkdir build/dependencies/nodejs/resources
-            # - echo '${{ secrets.JWT_PRIVATE_KEY }}' > build/dependencies/nodejs/resources/jwt.key
-            # - echo '${{ secrets.JWT_PUBLIC_KEY }}' > build/dependencies/nodejs/resources/jwt.pub
-            # - echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
+            - yarn
+            - NODE_ENV=production yarn build
+            # install node modules on built lambda layer
+            - cd build/dependencies/nodejs && yarn
+            # clean unneeded files
+            - rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
+            # resources on lambda layer
+            - mkdir -p build/dependencies/nodejs/resources
+            - cp ~/jwt.key build/dependencies/nodejs/resources/jwt.key
+            - cp ~/jwt.pub build/dependencies/nodejs/resources/jwt.pub
+            - cp ~/firebase_admin.json build/dependencies/nodejs/resources/firebase_admin.json
+            # build and deploy with AWS SAM
+            - sam build
+            - >
+              sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+                --s3-prefix sls-proj-pronetplat-aa-dev \
+                --parameter-overrides Stage=dev AppPackageName=com.aprmp.projpronetplataa.local \
+                --tags what="sls-proj-pronetplat-aa" stage="dev"
     skip:
       when: branch = 'master'
