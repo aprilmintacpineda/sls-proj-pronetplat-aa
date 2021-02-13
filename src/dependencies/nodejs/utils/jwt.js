@@ -14,7 +14,6 @@ const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
 
 module.exports.sign = async data => {
-  console.log(process.env.jwtSecret);
   return signAsync({ data }, process.env.jwtSecret, signConfig);
 };
 
