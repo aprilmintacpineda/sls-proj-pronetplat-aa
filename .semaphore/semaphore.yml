@@ -41,7 +41,7 @@ blocks:
             - cp ~/jwt.pub build/dependencies/nodejs/resources/jwt.pub
             - cp ~/firebase_admin.json build/dependencies/nodejs/resources/firebase_admin.json
             # build and deploy with AWS SAM
-            - artifact pull job dev/.aws-sam -d .aws-sam
+            # - artifact pull job dev/.aws-sam -d .aws-sam
             - sam build
             - >
               sam deploy --stack-name sls-proj-pronetplat-aa-dev \
