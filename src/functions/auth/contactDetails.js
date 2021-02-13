@@ -1,4 +1,3 @@
-const { query } = require('faunadb');
 const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
@@ -6,6 +5,7 @@ const {
   getAuthTokenFromHeaders
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
+const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
 const {
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
@@ -29,8 +29,11 @@ module.exports.handler = async ({
     );
 
     if (contact.instance) {
-      await contact.update({
-        lastOpenedAt: query.Format('%t', query.Now())
+      await invokeEvent({
+        functionName: process.env.fn_incrementNumTimesOpened,
+        payload: {
+          id: contact.data.id
+        }
       });
 
       // @TODO: get contact details and send back

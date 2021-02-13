@@ -1,4 +1,3 @@
-const { query } = require('faunadb');
 const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const {
@@ -44,7 +43,7 @@ module.exports.handler = async ({ headers, body }) => {
         data: {
           ownerId: authUser.id,
           contactId: contactRequest.data.senderId,
-          lastOpenedAt: query.Format('%t', query.Now())
+          numTimesOpened: 0
         }
       }),
       contact.createIfNotExists({
@@ -53,7 +52,7 @@ module.exports.handler = async ({ headers, body }) => {
         data: {
           ownerId: contactRequest.data.senderId,
           contactId: authUser.id,
-          lastOpenedAt: query.Format('%t', query.Now())
+          numTimesOpened: 0
         }
       }),
       createNotification({

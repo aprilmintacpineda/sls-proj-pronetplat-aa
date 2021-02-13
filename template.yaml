@@ -73,6 +73,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-createNotification"
+        fn_incrementNumTimesOpened: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-incrementNumTimesOpened"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -630,6 +634,16 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-markNotificationsAsSeen"
+      Layers:
+        - !Ref dependencies
+  incrementNumTimesOpened:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: build/functions/events/invoke/incrementNumTimesOpened.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-incrementNumTimesOpened"
       Layers:
         - !Ref dependencies
   ######
