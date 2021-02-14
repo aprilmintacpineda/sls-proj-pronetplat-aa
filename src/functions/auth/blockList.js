@@ -36,7 +36,7 @@ module.exports.handler = async ({
                 query.Index('userRefSortedByFullName'),
                 query.Ref(
                   query.Collection('users'),
-                  query.Var('ref')
+                  query.Var('userId')
                 )
               )
             )
