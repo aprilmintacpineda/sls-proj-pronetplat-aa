@@ -46,7 +46,7 @@
     "migration:migrate": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate migrate",
     "migration:create": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate create",
     "create-plans": "node scripts/createPlans.js",
-    "build": "rm -rf build && babel src -d build --copy-files",
+    "build": "babel src -d build --copy-files",
     "fakeData": "node scripts/fakeData.js",
     "clearData": "node scripts/clearData.js",
     "replaceJwtSecret": "node scripts/injectJWTSecret.js"
