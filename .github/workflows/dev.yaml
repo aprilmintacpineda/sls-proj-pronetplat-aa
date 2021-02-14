@@ -18,6 +18,9 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      NODE_ENV: production
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      APP_PACKAGE_NAME: com.aprmp.projpronetplataa.local
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -48,17 +51,15 @@ jobs:
 
       - name: Transpile JS
         run: |
-          NODE_ENV=production yarn build
+          yarn build
           cd build/dependencies/nodejs && yarn
           rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
+          cat build/dependencies/nodejs/utils/jwt.js
 
       - name: Inject necessary resources
         run: |
           mkdir -p build/dependencies/nodejs/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
-          yarn replaceInFile -t __JWTSecret__ -r '${{ secrets.JWT_SECRET }}' -f build/dependencies/nodejs/utils/jwt.js
-          yarn replaceInFile -t __appPackageName__ -r com.aprmp.projpronetplataa.local -f build/dependencies/nodejs/utils/firebase.js
-          cat build/dependencies/nodejs/utils/jwt.js
 
       - name: Sam build & deploy
         run: |

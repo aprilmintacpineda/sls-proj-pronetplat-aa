@@ -33,6 +33,14 @@ if (process.env.NODE_ENV === 'production') {
         {
           search: /dependencies\/nodejs/gim,
           replace: '/opt/nodejs'
+        },
+        {
+          search: /__JWTSecret__/gim,
+          replace: process.env.JWT_SECRET
+        },
+        {
+          search: /__appPackageName__/gim,
+          replace: process.env.APP_PACKAGE_NAME
         }
       ]
     }
