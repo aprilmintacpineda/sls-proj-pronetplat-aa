@@ -48,7 +48,8 @@
     "create-plans": "node scripts/createPlans.js",
     "build": "rm -rf build && babel src -d build --copy-files",
     "fakeData": "node scripts/fakeData.js",
-    "clearData": "node scripts/clearData.js"
+    "clearData": "node scripts/clearData.js",
+    "replaceJwtSecret": "node scripts/injectJWTSecret.js"
   },
   "lint-staged": {
     "*.js": [
