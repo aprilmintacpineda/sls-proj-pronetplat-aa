@@ -23,7 +23,7 @@ module.exports.handler = async ({ headers }) => {
     const registeredDevice = new RegisteredDevice();
 
     await Promise.all([
-      registeredDevice.updateByIndex({
+      registeredDevice.createOrUpdate({
         index: 'registeredDeviceByUserIdDeviceToken',
         args: [authUser.id, deviceToken],
         data: {
