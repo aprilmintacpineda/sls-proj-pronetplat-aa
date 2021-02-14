@@ -12,7 +12,7 @@ const verifyConfig = { maxAge: validityPeriod };
 
 const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
-const secret = '__JWTSecret__';
+const secret = process.env.JWT_SECRET;
 
 module.exports.sign = async data => {
   return signAsync({ data }, secret, signConfig);
