@@ -7,27 +7,18 @@ const babelConfig = require('../babel.config');
 
 const buildPath = path.join(__dirname, '../build');
 
-function mkdir (dir) {
-  if (fs.existsSync(dir)) return;
-  return fsPromises.mkdir(dir, { recursive: true });
-}
-
 async function buildFunc ({ name, fullname }) {
   let file = await fsPromises.readFile(fullname);
   file = file.toString();
 
   const { code } = await babel.transformAsync(file, babelConfig);
-  const filename = name.replace(/\.js$/, '');
-  await mkdir(path.join(buildPath, filename));
-
-  await fsPromises.writeFile(
-    path.join(buildPath, filename, name),
-    code
-  );
+  await fsPromises.writeFile(path.join(buildPath, name), code);
 }
 
 (async () => {
   delete babelConfig.ignore;
+
+  if (!fs.existsSync(buildPath)) await fsPromises.mkdir(buildPath);
 
   const functionFiles = await readDirRecursive.list(
     path.join(__dirname, '../src/functions')
