@@ -1,11 +1,3 @@
-### PRODUCTION
-
-[![Build Status](https://aprilmintacpineda.semaphoreci.com/badges/sls-proj-pronetplat-aa/branches/master.svg?key=3eb7a40a-a241-44e6-b0f0-e8ffe20f1581)](https://aprilmintacpineda.semaphoreci.com/projects/sls-proj-pronetplat-aa)
-
-### DEV
-
-[![Build Status](https://aprilmintacpineda.semaphoreci.com/badges/sls-proj-pronetplat-aa/branches/dev.svg?key=3eb7a40a-a241-44e6-b0f0-e8ffe20f1581)](https://aprilmintacpineda.semaphoreci.com/projects/sls-proj-pronetplat-aa)
-
 # Project Professional Network Platform
 
 Internally called `proj_pronetplat_aa`, the `proj` is short for **project** and the `net` is short for **networking** and the `plat` is short for **platform** while the `aa` indicates that this is the first implementation of the concept.

@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir -p build/dependencies/nodejs/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
-          sed -i 's/__JWTSecret__/${{ secrets.JWT_SECRET }}/g' build/dependencies/nodejs/utils/jwt.js
+          sed -i "" s/__JWTSecret__/${{ secrets.JWT_SECRET }}/g build/dependencies/nodejs/utils/jwt.js
           cat build/dependencies/nodejs/utils/jwt.js
 
       - name: Sam build & deploy
