@@ -10,9 +10,13 @@ module.exports.randomCode = () =>
 module.exports.hash = value => bcrypt.hash(value, 10);
 
 module.exports.checkRequiredHeaderValues = (
-  { Authorization, DeviceToken },
+  headers,
   isLoggedIn = true
 ) => {
+  console.log(JSON.stringify(headers, null, 2));
+
+  const { Authorization, DeviceToken } = headers;
+
   if (isLoggedIn && !Authorization)
     throw new Error('Authorization is missing from headers');
 
