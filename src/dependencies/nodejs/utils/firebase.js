@@ -42,7 +42,7 @@ module.exports.sendPushNotification = ({
       { notification, data },
       {
         priority: 'high'
-        // restrictedPackageName: process.env.appPackageName
+        // ,restrictedPackageName: '__appPackageName__'
       }
     );
   }

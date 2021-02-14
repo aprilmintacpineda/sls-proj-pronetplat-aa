@@ -66,7 +66,8 @@ jobs:
         run: |
           mkdir -p build/dependencies/nodejs/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
-          yarn replaceJwtSecret --secret '${{ secrets.JWT_SECRET }}'
+          yarn replaceInFile -t __JWTSecret__ -r '${{ secrets.JWT_SECRET }}' -f build/dependencies/nodejs/utils/jwt.js
+          yarn replaceInFile -t __appPackageName__ -r com.aprmp.projpronetplataa.local -f build/dependencies/nodejs/utils/firebase.js
           cat build/dependencies/nodejs/utils/jwt.js
 
       - name: Sam build & deploy
@@ -74,7 +75,7 @@ jobs:
           sam build
           sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
-            --parameter-overrides Stage=dev AppPackageName=com.aprmp.projpronetplataa.local \
+            --parameter-overrides Stage=dev \
             --tags what="sls-proj-pronetplat-aa" stage="dev"
       
       - name: Artifact sam build

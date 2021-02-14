@@ -14,15 +14,6 @@ Parameters:
       - staging
       - production
 
-Mappings:
-  AppPackageNameMap:
-    dev:
-      value: com.aprmp.projpronetplataa.local
-    staging:
-      value: com.aprmp.projpronetplataa.staging
-    production:
-      value: com.aprmp.projpronetplataa
-
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -32,10 +23,6 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
-        appPackageName: !FindInMap
-          - AppPackageNameMap
-          - !Ref Stage
-          - value
         stage: !Ref Stage
         usersBucket: !Join
           - "-"

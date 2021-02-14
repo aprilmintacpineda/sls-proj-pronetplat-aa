@@ -49,7 +49,7 @@
     "build": "babel src -d build --copy-files",
     "fakeData": "node scripts/fakeData.js",
     "clearData": "node scripts/clearData.js",
-    "replaceJwtSecret": "node scripts/injectJWTSecret.js"
+    "replaceInFile": "node scripts/replaceInFile.js"
   },
   "lint-staged": {
     "*.js": [
