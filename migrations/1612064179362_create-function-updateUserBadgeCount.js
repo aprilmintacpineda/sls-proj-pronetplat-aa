@@ -59,35 +59,23 @@ module.exports.up = q => {
             q.Abort(invalidTargetBadgeErrorNMsg),
             q.Let(
               {
-                ref: q.Ref(q.Collection('users'), q.Var('userId'))
+                ref: q.Ref(q.Collection('users'), q.Var('userId')),
+                document: q.Get(q.Var('ref'))
               },
               q.If(
-                q.Exists(q.Var('ref')),
-                q.Let(
-                  {
-                    document: q.Get(q.Var('ref'))
-                  },
-                  q.If(
-                    q.Not(
-                      q.ContainsPath(
-                        ['data', 'closedAt'],
-                        q.Var('document')
-                      )
-                    ),
-                    q.Update(q.Var('ref'), {
-                      data: q.Select(
-                        q.Var('targetBadge'),
-                        badgesOperations
-                      )
-                    }),
-                    {
-                      statusText: 'userAccountClosed'
-                    }
+                q.Not(
+                  q.ContainsPath(
+                    ['data', 'closedAt'],
+                    q.Var('document')
                   )
                 ),
-                {
-                  statusText: 'userDoesNotExist'
-                }
+                q.Update(q.Var('ref'), {
+                  data: q.Select(
+                    q.Var('targetBadge'),
+                    badgesOperations
+                  )
+                }),
+                null
               )
             )
           )
