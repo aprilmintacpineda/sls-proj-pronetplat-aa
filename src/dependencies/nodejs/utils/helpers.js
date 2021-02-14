@@ -15,18 +15,19 @@ module.exports.checkRequiredHeaderValues = (
 ) => {
   console.log(JSON.stringify(headers, null, 2));
 
-  const { Authorization, DeviceToken } = headers;
+  const authorization = headers.Authorization;
+  const deviceToken = headers['device-token'];
 
-  if (isLoggedIn && !Authorization)
+  if (isLoggedIn && !authorization)
     throw new Error('Authorization is missing from headers');
 
-  if (!DeviceToken)
+  if (!deviceToken)
     throw new Error('DeviceToken is missing from headers');
 
   return {
-    deviceToken: DeviceToken,
+    deviceToken,
     authToken: isLoggedIn
-      ? Authorization.replace(/bearer/gim, '').trim()
+      ? authorization.replace(/bearer/gim, '').trim()
       : null
   };
 };
