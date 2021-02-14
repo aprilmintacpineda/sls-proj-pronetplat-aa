@@ -37,13 +37,13 @@ jobs:
         run: |
           NODE_ENV=production yarn build
           cd build/dependencies/nodejs && yarn
-          node scripts/injectJWTSecret.js --secret ${{ secrets.JWT_SECRET }}
           rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
 
-      - name: Generate resources
+      - name: Inject necessary resources
         run: |
           mkdir -p build/dependencies/nodejs/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
+          node scripts/injectJWTSecret.js --secret ${{ secrets.JWT_SECRET }}
 
       - name: Sam build & deploy
         run: |
