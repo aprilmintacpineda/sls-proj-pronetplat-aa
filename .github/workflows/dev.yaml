@@ -40,7 +40,7 @@ jobs:
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
+          key: ${{ runner.os }}-yarn
 
       - name: Install dependencies
         run: yarn
@@ -58,7 +58,9 @@ jobs:
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
 
       - name: Deploy
-        run: sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+        run: |
+          cd build
+          sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev \
             --tags what="sls-proj-pronetplat-aa" stage="dev"
