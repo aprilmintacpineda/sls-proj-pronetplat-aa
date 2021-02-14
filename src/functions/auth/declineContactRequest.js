@@ -1,6 +1,6 @@
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const {
-  getAuthTokenFromHeaders
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
@@ -17,12 +17,12 @@ function hasErrors ({ senderId }) {
 
 module.exports.handler = async ({ headers, body }) => {
   try {
+    const { authToken } = checkRequiredHeaderValues(headers);
+
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('invalid body');
 
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { data: authUser } = await jwt.verify(authToken);
 
     throwIfNotCompletedSetup(authUser);
 

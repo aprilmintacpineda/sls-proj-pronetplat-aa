@@ -2,7 +2,7 @@ const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
-  getAuthTokenFromHeaders
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
@@ -15,9 +15,8 @@ module.exports.handler = async ({
   headers
 }) => {
   try {
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { authToken } = checkRequiredHeaderValues(headers);
+    const { data: authUser } = await jwt.verify(authToken);
 
     throwIfNotCompletedSetup(authUser);
 

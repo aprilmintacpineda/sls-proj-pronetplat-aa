@@ -1,14 +1,12 @@
 const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
-const jwt = require('dependencies/nodejs/utils/jwt');
 
-module.exports.handler = async ({ authToken, deviceToken }) => {
+module.exports.handler = async ({ deviceToken, userId }) => {
   try {
-    const { data: authUser } = jwt.decode(authToken);
     const registeredDevice = new RegisteredDevice();
 
     await registeredDevice.hardDeleteByIndex(
       'registeredDeviceByUserIdDeviceToken',
-      authUser.id,
+      userId,
       deviceToken
     );
   } catch (error) {

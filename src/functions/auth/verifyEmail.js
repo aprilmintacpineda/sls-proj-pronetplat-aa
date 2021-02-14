@@ -1,9 +1,9 @@
 const { query } = require('faunadb');
 const User = require('dependencies/nodejs/models/User');
 const {
-  getAuthTokenFromHeaders,
   verifyHash,
-  hasTimePassed
+  hasTimePassed,
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const validate = require('dependencies/nodejs/utils/validate');
@@ -14,12 +14,12 @@ function hasErrors ({ verificationCode }) {
 
 module.exports.handler = async ({ headers, body }) => {
   try {
+    const { authToken } = checkRequiredHeaderValues(headers);
+
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid form body');
 
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { data: authUser } = await jwt.verify(authToken);
 
     if (authUser.emailVerifiedAt)
       throw new Error('Email has already been verified');
@@ -47,13 +47,13 @@ module.exports.handler = async ({ headers, body }) => {
     });
 
     const userData = user.toResponseData();
-    const authToken = await jwt.sign(userData);
+    const newAuthToken = await jwt.sign(userData);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         userData,
-        authToken
+        authToken: newAuthToken
       })
     };
   } catch (error) {

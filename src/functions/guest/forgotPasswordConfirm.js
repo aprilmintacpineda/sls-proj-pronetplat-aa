@@ -1,3 +1,6 @@
+const {
+  checkRequiredHeaderValues
+} = require('dependencies/nodejs/utils/helpers');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
 const validate = require('dependencies/nodejs/utils/validate');
 
@@ -9,8 +12,10 @@ function hasErrors ({ confirmationCode, email, newPassword }) {
   );
 }
 
-module.exports.handler = async ({ body }) => {
+module.exports.handler = async ({ headers, body }) => {
   try {
+    checkRequiredHeaderValues(headers, false);
+
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid form body');
 

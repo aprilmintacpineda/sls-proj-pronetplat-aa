@@ -2,31 +2,21 @@ const { query } = require('faunadb');
 const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
 const User = require('dependencies/nodejs/models/User');
 const {
-  getAuthTokenFromHeaders
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
-const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
 const {
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
-const validate = require('dependencies/nodejs/utils/validate');
 
-function hasError ({ deviceToken }) {
-  return validate(deviceToken, ['required']);
-}
-
-module.exports.handler = async ({ headers, body }) => {
-  let authToken = null;
-  let deviceToken = null;
-
+module.exports.handler = async ({ headers }) => {
   try {
-    const formBody = JSON.parse(body);
-    if (hasError(formBody)) throw new Error('invalid form body');
-
-    authToken = getAuthTokenFromHeaders(headers);
-    deviceToken = formBody.deviceToken;
+    const { deviceToken, authToken } = checkRequiredHeaderValues(
+      headers
+    );
 
     const { data: authUser } = await jwt.verify(authToken);
+
     throwIfNotCompletedSetup(authUser);
 
     const user = new User();
@@ -63,16 +53,6 @@ module.exports.handler = async ({ headers, body }) => {
     };
   } catch (error) {
     console.log('error', error);
-
-    if (error.constructor === jwt.TokenExpiredError) {
-      await invokeEvent({
-        functionName: process.env.fn_forceExpireDeviceToken,
-        payload: {
-          deviceToken,
-          authToken
-        }
-      });
-    }
   }
 
   return { statusCode: 403 };

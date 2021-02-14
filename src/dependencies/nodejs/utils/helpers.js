@@ -9,8 +9,22 @@ module.exports.randomCode = () =>
   Math.random().toString(32).substr(2);
 module.exports.hash = value => bcrypt.hash(value, 10);
 
-module.exports.getAuthTokenFromHeaders = ({ Authorization }) => {
-  return Authorization.replace(/bearer/gim, '').trim();
+module.exports.checkRequiredHeaderValues = (
+  { Authorization, DeviceToken },
+  isLoggedIn = true
+) => {
+  if (isLoggedIn && !Authorization)
+    throw new Error('Authorization is missing from headers');
+
+  if (!DeviceToken)
+    throw new Error('DeviceToken is missing from headers');
+
+  return {
+    deviceToken: DeviceToken,
+    authToken: isLoggedIn
+      ? Authorization.replace(/bearer/gim, '').trim()
+      : null
+  };
 };
 
 module.exports.verifyHash = (plainValue, hashedValue) => {

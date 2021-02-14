@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 const { initClient } = require('dependencies/nodejs/utils/faunadb');
 const {
-  getAuthTokenFromHeaders
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
@@ -15,9 +15,8 @@ module.exports.handler = async ({
   queryStringParameters
 }) => {
   try {
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { authToken } = checkRequiredHeaderValues(headers);
+    const { data: authUser } = await jwt.verify(authToken);
 
     throwIfNotCompletedSetup(authUser);
 

@@ -3,10 +3,10 @@ const {
   getTimeOffset
 } = require('dependencies/nodejs/utils/faunadb');
 const {
-  getAuthTokenFromHeaders,
   hasTimePassed,
   randomCode,
-  hash
+  hash,
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
@@ -15,9 +15,8 @@ const {
 
 module.exports.handler = async ({ headers }) => {
   try {
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { authToken } = checkRequiredHeaderValues(headers);
+    const { data: authUser } = await jwt.verify(authToken);
 
     if (authUser.emailVerifiedAt)
       throw new Error('Email already verified');

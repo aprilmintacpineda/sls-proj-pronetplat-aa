@@ -2,7 +2,7 @@ const Contact = require('dependencies/nodejs/models/Contact');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
 const {
-  getAuthTokenFromHeaders
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
@@ -16,12 +16,12 @@ function hasErrors ({ contactId }) {
 
 module.exports.handler = async ({ body, headers }) => {
   try {
+    const { authToken } = checkRequiredHeaderValues(headers);
+
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('invalid form body');
 
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { data: authUser } = await jwt.verify(authToken);
 
     throwIfNotCompletedSetup(authUser);
 

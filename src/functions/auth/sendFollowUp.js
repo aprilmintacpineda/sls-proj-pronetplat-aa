@@ -1,8 +1,8 @@
 const { query } = require('faunadb');
 const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
 const {
-  getAuthTokenFromHeaders,
-  hasTimePassed
+  hasTimePassed,
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const {
@@ -19,14 +19,12 @@ function hasErrors ({ contactId }) {
 
 module.exports.handler = async ({ headers, body }) => {
   try {
+    const { authToken } = checkRequiredHeaderValues(headers);
+
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid form body');
 
-    const { contactId } = formBody;
-
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { data: authUser } = await jwt.verify(authToken);
 
     throwIfNotCompletedSetup(authUser);
 
@@ -34,7 +32,7 @@ module.exports.handler = async ({ headers, body }) => {
     await contactRequest.getByIndex(
       'contactRequestBySenderIdRecipientId',
       authUser.id,
-      contactId
+      formBody.contactId
     );
 
     if (!hasTimePassed(contactRequest.data.canFollowUpAt))

@@ -1,7 +1,7 @@
 const mimetypes = require('mime-types');
 const {
-  getAuthTokenFromHeaders,
-  randomNum
+  randomNum,
+  checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
 const { s3 } = require('dependencies/nodejs/utils/s3');
@@ -19,12 +19,12 @@ function hasErrors ({ mimeType }) {
 
 module.exports.handler = async ({ headers, body }) => {
   try {
+    const { authToken } = checkRequiredHeaderValues(headers);
+
     const formBody = JSON.parse(body);
     if (hasErrors(formBody)) throw new Error('Invalid formBody');
 
-    const { data: authUser } = await jwt.verify(
-      getAuthTokenFromHeaders(headers)
-    );
+    const { data: authUser } = await jwt.verify(authToken);
 
     throwIfNotCompletedSetup(authUser);
 
