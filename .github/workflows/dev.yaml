@@ -1,4 +1,4 @@
-name: AWS SAM deployment
+name: aws-sam-deployment
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the dev branch
@@ -43,7 +43,8 @@ jobs:
         run: |
           mkdir -p build/dependencies/nodejs/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
-          node scripts/injectJWTSecret.js --secret ${{ secrets.JWT_SECRET }}
+          sed -i 's/__JWTSecret__/${{ secrets.JWT_SECRET }}/g' build/dependencies/nodejs/utils/jwt.js
+          cat build/dependencies/nodejs/utils/jwt.js
 
       - name: Sam build & deploy
         run: |
