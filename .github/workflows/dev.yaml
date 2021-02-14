@@ -52,9 +52,9 @@ jobs:
       - name: Transpile JS
         run: |
           yarn build
+          cat build/dependencies/nodejs/utils/jwt.js
           cd build/dependencies/nodejs && yarn
           rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
-          cat build/dependencies/nodejs/utils/jwt.js
 
       - name: Inject necessary resources
         run: |
