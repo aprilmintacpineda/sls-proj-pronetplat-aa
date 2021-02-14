@@ -51,7 +51,7 @@ module.exports.handler = async ({ headers, body }) => {
         args: [user.data.id, deviceToken],
         data: {
           userId: user.data.id,
-          deviceToken: deviceToken,
+          deviceToken,
           expiresAt: query.Format(
             '%t',
             query.TimeAdd(query.Now(), 7, 'days')
