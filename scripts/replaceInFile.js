@@ -1,4 +1,5 @@
 const fs = require('fs').promises;
+const path = require('path');
 const cmdArgs = require('command-line-args');
 
 const options = [
@@ -24,11 +25,12 @@ const options = [
 
 (async () => {
   const { target, filePath, replacement } = cmdArgs(options);
-  const file = await fs.readFile(filePath);
+  const fileLocation = path.join(__dirname, '../', filePath);
+  const file = await fs.readFile(fileLocation);
 
   const finalContent = file
     .toString()
     .replaceAll(target, replacement);
 
-  await fs.writeFile(filePath, finalContent);
+  await fs.writeFile(fileLocation, finalContent);
 })();
