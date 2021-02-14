@@ -25,9 +25,21 @@ module.exports.handler = async ({
     const result = await client.query(
       query.Map(
         query.Paginate(
-          query.Match(
-            query.Index('userBlockingsByBlockerId'),
-            authUser.id
+          query.Join(
+            query.Match(
+              query.Index('userBlockingsByBlockerId'),
+              authUser.id
+            ),
+            query.Lambda(
+              ['userId', 'ref'],
+              query.Match(
+                query.Index('userRefSortedByFullName'),
+                query.Ref(
+                  query.Collection('users'),
+                  query.Var('ref')
+                )
+              )
+            )
           ),
           {
             size: 20,
