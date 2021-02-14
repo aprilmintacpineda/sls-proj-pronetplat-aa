@@ -33,9 +33,6 @@ jobs:
           echo "Yarn: $(yarn --version)"
           echo "Node: $(node --version)"
 
-      - name: Restore artifacts
-        uses: actions/download-artifact@v2
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -67,9 +64,3 @@ jobs:
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev \
             --tags what="sls-proj-pronetplat-aa" stage="dev"
-      
-      - name: Artifact sam build
-        uses: actions/upload-artifact@v2
-        with:
-          name: sam-build
-          path: ./.aws-sam
