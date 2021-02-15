@@ -46,7 +46,8 @@ module.exports.profilePictureUploadUrlPromise = (userId, mime) => {
       Expires: 10,
       Fields: {
         key,
-        acl: 'private'
+        acl: 'private',
+        bucket: bucketName
       },
       Conditions: [
         ['bucket', bucketName],
@@ -62,7 +63,7 @@ module.exports.profilePictureUploadUrlPromise = (userId, mime) => {
         reject(error);
       } else {
         resolve({
-          signedUrl: data.url,
+          data,
           profilePicture: `https://${bucketName}.s3-ap-southeast-1.amazonaws.com/profilePicture_${objectName}`
         });
       }
