@@ -46,8 +46,7 @@ module.exports.profilePictureUploadUrlPromise = (userId, mime) => {
       Expires: 10,
       Fields: {
         key,
-        acl: 'private',
-        bucket: bucketName
+        acl: 'private'
       },
       Conditions: [
         ['bucket', bucketName],
