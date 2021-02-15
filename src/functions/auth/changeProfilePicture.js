@@ -10,8 +10,8 @@ const {
 } = require('dependencies/nodejs/utils/users');
 const validate = require('dependencies/nodejs/utils/validate');
 
-function hasErrors ({ mimeType }) {
-  return validate(mimeType, [
+function hasErrors ({ type }) {
+  return validate(type, [
     'required',
     'options:image/jpeg,image/png'
   ]);
@@ -30,7 +30,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     const uploadUrls = await profilePictureUploadUrlPromise(
       authUser.id,
-      formBody.mimeType
+      formBody.type
     );
 
     return {

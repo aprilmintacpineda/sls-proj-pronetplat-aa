@@ -34,9 +34,9 @@ module.exports.uploadPromise = params => {
   });
 };
 
-module.exports.profilePictureUploadUrlPromise = (userId, mime) => {
+module.exports.profilePictureUploadUrlPromise = (userId, type) => {
   return new Promise((resolve, reject) => {
-    const ext = mimetypes.extension(mime);
+    const ext = mimetypes.extension(type);
     const objectName = `${userId}_${randomNum()}.${ext}`;
     const bucketName = process.env.usersBucket;
     const key = `newProfilePicture_${objectName}`;
