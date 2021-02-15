@@ -43,7 +43,7 @@ module.exports.profilePictureUploadUrlPromise = (userId, type) => {
 
     const params = {
       Bucket: bucketName,
-      Expires: 10,
+      Expires: 60,
       Fields: {
         key,
         acl: 'private'
