@@ -31,15 +31,15 @@ if (process.env.NODE_ENV === 'production') {
     {
       rules: [
         {
-          search: /dependencies\/nodejs/gim,
+          search: /dependencies\/nodejs/gm,
           replace: '/opt/nodejs'
         },
         {
-          search: /__JWTSecret__/gim,
+          search: /__JWTSecret__/gm,
           replace: process.env.JWT_SECRET
         },
         {
-          search: /__appPackageName__/gim,
+          search: /__appPackageName__/gm,
           replace: process.env.APP_PACKAGE_NAME
         }
       ]

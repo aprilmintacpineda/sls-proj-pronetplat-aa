@@ -48,7 +48,6 @@ jobs:
       - name: Transpile JS
         run: |
           NODE_ENV=production yarn build
-          cat build/dependencies/nodejs/utils/jwt.js
           cd build/dependencies/nodejs && yarn
           rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
 
