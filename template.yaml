@@ -731,6 +731,8 @@ Resources:
           Prefix: "profilePicture_"
         - Id: "newProfilePicture_"
           Prefix: "newProfilePicture_"
+      AccelerateConfiguration:
+        AccelerationStatus: Enabled
       Tags:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"

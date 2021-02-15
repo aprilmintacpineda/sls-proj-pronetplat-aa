@@ -4,7 +4,8 @@ const { randomNum } = require('./helpers');
 
 const s3 = new AWS.S3({
   apiVersion: '2006-03-01',
-  signatureVersion: 'v4'
+  signatureVersion: 'v4',
+  useAccelerateEndpoint: true
 });
 
 module.exports.getObjectPromise = params => {
