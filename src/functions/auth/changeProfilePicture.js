@@ -2,7 +2,9 @@ const {
   checkRequiredHeaderValues
 } = require('dependencies/nodejs/utils/helpers');
 const jwt = require('dependencies/nodejs/utils/jwt');
-const { s3 } = require('dependencies/nodejs/utils/s3');
+const {
+  profilePictureUploadUrlPromise
+} = require('dependencies/nodejs/utils/s3');
 const {
   throwIfNotCompletedSetup
 } = require('dependencies/nodejs/utils/users');
@@ -26,7 +28,7 @@ module.exports.handler = async ({ headers, body }) => {
 
     throwIfNotCompletedSetup(authUser);
 
-    const uploadUrls = await s3.profilePictureUploadUrlPromise(
+    const uploadUrls = await profilePictureUploadUrlPromise(
       authUser.id,
       formBody.mimeType
     );
