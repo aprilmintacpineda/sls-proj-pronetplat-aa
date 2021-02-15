@@ -49,10 +49,10 @@ module.exports.profilePictureUploadUrlPromise = (userId, mime) => {
         acl: 'private'
       },
       Conditions: [
-        ['bucket', bucketName],
+        { bucket: bucketName },
         ['content-length-range', 1024, 5242880],
-        ['eq', '$acl', 'private'],
-        ['eq', '$key', key],
+        { acl: 'private' },
+        { key },
         ['starts-with', '$Content-Type', 'image/']
       ]
     };
