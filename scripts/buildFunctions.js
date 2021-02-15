@@ -16,20 +16,25 @@ async function buildFunc ({ name, fullname }) {
 }
 
 (async () => {
-  delete babelConfig.ignore;
+  try {
+    delete babelConfig.ignore;
 
-  if (!fs.existsSync(buildPath)) await fsPromises.mkdir(buildPath);
+    if (!fs.existsSync(buildPath)) await fsPromises.mkdir(buildPath);
 
-  const functionFiles = await readDirRecursive.list(
-    path.join(__dirname, '../src/functions')
-  );
+    const functionFiles = await readDirRecursive.list(
+      path.join(__dirname, '../src/functions')
+    );
 
-  await Promise.all(
-    functionFiles.map(functionFile => buildFunc(functionFile))
-  );
+    await Promise.all(
+      functionFiles.map(functionFile => buildFunc(functionFile))
+    );
 
-  await fsPromises.copyFile(
-    path.join(__dirname, '../template.yaml'),
-    path.join(buildPath, 'template.yaml')
-  );
+    await fsPromises.copyFile(
+      path.join(__dirname, '../template.yaml'),
+      path.join(buildPath, 'template.yaml')
+    );
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 })();

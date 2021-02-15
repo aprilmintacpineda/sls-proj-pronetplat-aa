@@ -15,7 +15,7 @@ function hasErrors ({ mimeType }) {
   ]);
 }
 
-module.exports.handler = async ({ headers }) => {
+module.exports.handler = async ({ headers, body }) => {
   try {
     const { authToken } = checkRequiredHeaderValues(headers);
 
@@ -26,14 +26,14 @@ module.exports.handler = async ({ headers }) => {
 
     throwIfNotCompletedSetup(authUser);
 
-    const body = await s3.profilePictureUploadUrlPromise(
+    const uploadUrls = await s3.profilePictureUploadUrlPromise(
       authUser.id,
       formBody.mimeType
     );
 
     return {
       statusCode: 200,
-      body: JSON.stringify(body)
+      body: JSON.stringify(uploadUrls)
     };
   } catch (error) {
     console.log('error', error);
