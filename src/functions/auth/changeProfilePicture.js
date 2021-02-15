@@ -43,7 +43,7 @@ module.exports.handler = async ({ headers, body }) => {
       statusCode: 200,
       body: JSON.stringify({
         signedUrl,
-        profilePicture: `https://${process.env.usersBucket}.s3-ap-southeast-1.amazonaws.com/profilePicture_${objectName}`
+        profilePicture: `https://${process.env.usersBucket}.s3-accelerate.amazonaws.com/profilePicture_${objectName}`
       })
     };
   } catch (error) {
