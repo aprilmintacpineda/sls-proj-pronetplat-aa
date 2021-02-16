@@ -20,29 +20,11 @@ module.exports.handler = async ({
 
     throwIfNotCompletedSetup(authUser);
 
-    const contact = new Contact();
-    await contact.getByIndexIfExists(
-      'contactByOwnerContact',
-      authUser.id,
-      contactId
-    );
-
-    if (contact.instance) {
-      await invokeEvent({
-        functionName: process.env.fn_incrementNumTimesOpened,
-        payload: {
-          id: contact.data.id
-        }
-      });
-
-      // @TODO: get contact details and send back
-      return { statusCode: 403 };
-    }
-
     const contactBlocked = new UserBlocking();
     const blockedByUser = new UserBlocking();
     const receivedContactRequest = new ContactRequest();
     const sentContactRequest = new ContactRequest();
+    const contact = new Contact();
 
     const [wasContactBlocked, wasBlockedByUser] = await Promise.all([
       contactBlocked.exists(
@@ -62,7 +44,12 @@ module.exports.handler = async ({
       sentContactRequest.getPendingRequestIfExists({
         senderId: authUser.id,
         recipientId: contactId
-      })
+      }),
+      contact.getByIndexIfExists(
+        'contactByOwnerContact',
+        authUser.id,
+        contactId
+      )
     ]);
 
     if (wasContactBlocked) {
@@ -107,6 +94,18 @@ module.exports.handler = async ({
           }
         })
       };
+    }
+
+    if (contact.instance) {
+      await invokeEvent({
+        functionName: process.env.fn_incrementNumTimesOpened,
+        payload: {
+          id: contact.data.id
+        }
+      });
+
+      // @TODO: get contact details and send back
+      return { statusCode: 403 };
     }
 
     return { statusCode: 404 };
