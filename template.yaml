@@ -537,6 +537,9 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-changePassword"
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendEmail
       Events:
         ApiEvent:
           Type: Api
