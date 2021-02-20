@@ -59,8 +59,8 @@
     "build-functions": "node scripts/buildFunctions.js",
     "build-makefile": "node scripts/buildMakeFile.js",
     "build-layers": "babel src/dependencies -d build/dependencies --copy-files",
-    "copy-files": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml && cp package.json build/package.json && cp package.json build/dependencies/package.json && cp yarn.lock build/yarn.lock && cp yarn.lock build/dependencies/yarn.lock && cp makefile build/dependencies/makefile && cp makefile build/makefile",
-    "build": "rm -rf build makefile && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn copy-files",
+    "copy-files": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml && cp package.json build/package.json && cp package.json build/dependencies/package.json && cp yarn.lock build/yarn.lock && cp yarn.lock build/dependencies/yarn.lock && cp Makefile build/dependencies/Makefile && cp Makefile build/Makefile",
+    "build": "rm -rf build Makefile && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn copy-files",
     "fakeData": "node scripts/fakeData.js",
     "clearData": "node scripts/clearData.js"
   },
