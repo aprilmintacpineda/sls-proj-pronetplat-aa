@@ -50,7 +50,7 @@ jobs:
           cd build
           mkdir -p dependencies/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
-          sam build
+          sam build --parallel
           sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev \
