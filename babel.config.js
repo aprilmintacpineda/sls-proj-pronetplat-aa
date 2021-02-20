@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'production') {
     {
       rules: [
         {
-          search: /dependencies\/nodejs/gm,
+          search: /dependencies\//gm,
           replace: '/opt/nodejs'
         },
         {
