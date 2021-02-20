@@ -4,6 +4,66 @@ Internally called `proj_pronetplat_aa`, the `proj` is short for **project** and 
 
 Publicly called as **Quaint** a _professsional networking platform_, a platform for professionals, business persons, and entrepreneurs to grow.
 
+# Engineering conventions
+
+## API endpoints
+
+1. File name of functions should be the same as `FunctionName` in `template.yaml`, exlucing the prefixes.
+2. `FunctionName` should follow the format `{stage}-{proj-pronetplat-aa}-fileName`
+3. Always set `Function.Metadata.BuildMethod` to `makefile`.
+
+:-1: **INCORRECT**
+
+Example below violates conventions 1 and 2.
+
+```yaml
+logout:
+  Type: AWS::Serverless::Function
+  Properties:
+    Handler: logout.handler
+    Policies:
+      - LambdaInvokePolicy:
+          FunctionName: !Ref forceExpireDeviceToken
+    FunctionName: !Join
+      - '-'
+      - - !Ref Stage
+        - "proj-pronetplat-aa-logoutFile"
+    Events:
+      ApiEvent:
+        Type: Api
+        Properties:
+          Method: post
+          Path: /logout
+          RestApiId:
+            Ref: mainBackendApi
+```
+
+:+1: **CORRECT**
+
+```yaml
+logout:
+  Type: AWS::Serverless::Function
+  Metadata:
+    BuildMethod: makefile
+  Properties:
+    Handler: logout.handler
+    Policies:
+      - LambdaInvokePolicy:
+          FunctionName: !Ref forceExpireDeviceToken
+    FunctionName: !Join
+      - '-'
+      - - !Ref Stage
+        - "proj-pronetplat-aa-logout"
+    Events:
+      ApiEvent:
+        Type: Api
+        Properties:
+          Method: post
+          Path: /logout
+          RestApiId:
+            Ref: mainBackendApi
+```
+
 # History
 
 Started development on December of 2020, I conceptualized about this in mid 2017 when I was still actively attending tech conferences, I saw people exchanging calling cards, some of them ran out of calling cards, some of them spent more than 500 pesos just of around 300 copies of calling cards.
