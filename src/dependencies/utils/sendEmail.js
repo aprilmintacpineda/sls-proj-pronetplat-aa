@@ -239,7 +239,7 @@ module.exports.changedPasswordEmail = recipient => {
         </h1>
         <p>
           We are sending you this email to inform you that
-          you have changed your password using the change password.
+          you have changed your password using the change password form.
         </p>
         <p>
           If you did not make this change and you suspect
