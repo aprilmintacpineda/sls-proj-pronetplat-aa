@@ -22,7 +22,7 @@ Globals:
     MemorySize: 1024
     ReservedConcurrentExecutions: 25
     Timeout: 30
-    Runtime: nodejs12.x
+    Runtime: nodejs14.x
     Environment:
       Variables:
         stage: !Ref Stage
