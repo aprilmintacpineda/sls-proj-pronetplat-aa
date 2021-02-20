@@ -536,11 +536,6 @@ abort-controller@^3.0.0:
   dependencies:
     event-target-shim "^5.0.0"
 
-abortcontroller-polyfill@^1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.1.tgz#27084bac87d78a7224c8ee78135d05df430c2d2f"
-  integrity sha512-yml9NiDEH4M4p0G4AcPkg8AAa4mF3nfYF28VQxaokpO67j9H7gWgmsVWJ/f1Rn+PzsnDYvzJzWIQzCqDKRvWlA==
-
 agent-base@6:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"
@@ -636,6 +631,13 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
+browser-detect@^0.2.28:
+  version "0.2.28"
+  resolved "https://registry.yarnpkg.com/browser-detect/-/browser-detect-0.2.28.tgz#5688fc22f638390614ebea4646483403fb20ebfb"
+  integrity sha512-KeWGHqYQmHDkCFG2dIiX/2wFUgqevbw/rd6wNi9N6rZbaSJFtG5kel0HtprRwCGp8sqpQP79LzDJXf/WCx4WAw==
+  dependencies:
+    core-js "^2.5.7"
+
 btoa-lite@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/btoa-lite/-/btoa-lite-1.0.0.tgz#337766da15801210fdd956c22e9c6891ab9d0337"
@@ -723,6 +725,11 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
+
+core-js@^2.5.7:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
+  integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -868,13 +875,14 @@ fast-text-encoding@^1.0.0:
   resolved "https://registry.yarnpkg.com/fast-text-encoding/-/fast-text-encoding-1.0.3.tgz#ec02ac8e01ab8a319af182dae2681213cfe9ce53"
   integrity sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig==
 
-faunadb@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/faunadb/-/faunadb-4.0.3.tgz#0c36b22d0b9be8135b035bbe777aec9c97e58d34"
-  integrity sha512-pfXX3pwyQQfsx+wO4u8m16gQyDPJRbpjMGk5fCzq0tCT/3mPyCVlc5zTorSdBWWmLFuResP9idFrWdqo+q2IEA==
+faunadb@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/faunadb/-/faunadb-4.1.0.tgz#6f550b7a0a42ef70e2ab372cb2d17e3134e20d72"
+  integrity sha512-obEHyppvkEcGCfRXCrFBQccm6jRWQf6iyFkw+wJhuEvQUxyvA0/uTNKKxt1pJEI9In7iBC3moJ/0cHNX4uc3Nw==
   dependencies:
-    abortcontroller-polyfill "^1.7.1"
+    abort-controller "^3.0.0"
     base64-js "^1.2.0"
+    browser-detect "^0.2.28"
     btoa-lite "^1.0.0"
     cross-fetch "^3.0.6"
     dotenv "^8.2.0"
@@ -1371,7 +1379,12 @@ mime-db@1.44.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.44.0.tgz#fa11c5eb0aca1334b4233cb4d52f10c5a6272f92"
   integrity sha512-/NOTfLrsPBVeH7YtFPgsVWveuL+4SjjYxaQ1xtM1KMFj7HdxlBlxeyNLzhyJVx7r4rZGJAZ/6lkKCitSc/Nmpg==
 
-mime-db@1.45.0, "mime-db@>= 1.43.0 < 2":
+mime-db@1.46.0:
+  version "1.46.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.46.0.tgz#6267748a7f799594de3cbc8cde91def349661cee"
+  integrity sha512-svXaP8UQRZ5K7or+ZmfNhg2xX3yKDMUzqadsSqi4NCH/KomcH75MAMYAGVlvXn4+b/xOPhS3I2uHKRUzvjY7BQ==
+
+"mime-db@>= 1.43.0 < 2":
   version "1.45.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.45.0.tgz#cceeda21ccd7c3a745eba2decd55d4b73e7879ea"
   integrity sha512-CkqLUxUk15hofLoLyljJSrukZi8mAtgd+yE5uO4tqRZsdsAJKv0O+rFMhVDRJgozy+yG6md5KwuXhD4ocIoP+w==
@@ -1383,12 +1396,12 @@ mime-types@^2.0.8:
   dependencies:
     mime-db "1.44.0"
 
-mime-types@^2.1.28:
-  version "2.1.28"
-  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.28.tgz#1160c4757eab2c5363888e005273ecf79d2a0ecd"
-  integrity sha512-0TO2yJ5YHYr7M2zzT7gDU1tbwHxEUWBCLt0lscSNpcdAfFyJOVEpRYNS7EXVcTLNj/25QO8gulHC5JtTzSE2UQ==
+mime-types@^2.1.29:
+  version "2.1.29"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.29.tgz#1d4ab77da64b91f5f72489df29236563754bb1b2"
+  integrity sha512-Y/jMt/S5sR9OaqteJtslsFZKWOIIqMACsJSiHghlCAyhf7jfVYjKBmLiX8OgpWeW+fjJ2b+Az69aPFPkUOY6xQ==
   dependencies:
-    mime-db "1.45.0"
+    mime-db "1.46.0"
 
 mime@^1.3.4:
   version "1.6.0"
