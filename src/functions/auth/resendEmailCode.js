@@ -1,39 +1,19 @@
 const User = require('dependencies/models/User');
 const { getTimeOffset } = require('dependencies/utils/faunadb');
 const {
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/guards');
+const {
   hasTimePassed,
   randomCode,
-  hash,
-  checkRequiredHeaderValues
+  hash
 } = require('dependencies/utils/helpers');
-const jwt = require('dependencies/utils/jwt');
 const {
   sendEmailVerificationCode
 } = require('dependencies/utils/sendEmail');
 
-module.exports.handler = async ({ headers }) => {
-  const headerValues = checkRequiredHeaderValues(headers);
-
-  if (!headerValues) {
-    console.log('invalid headers');
-    return { statusCode: 400 };
-  }
-
-  let authUser;
-
-  try {
-    const token = await jwt.verify(headerValues.authToken);
-    authUser = token.data;
-  } catch (_1) {
-    console.log('Invalid token');
-    return { statusCode: 401 };
-  }
-
-  if (authUser.emailVerifiedAt) {
-    console.log('Email not yet confirmed');
-    return { statusCode: 403 };
-  }
-
+async function handler ({ authUser }) {
   if (!hasTimePassed(authUser.emailCodeCanSendAt)) {
     console.log('emailCodeCanSendAt has not yet passed');
     return { statusCode: 429 };
@@ -67,4 +47,13 @@ module.exports.handler = async ({ headers }) => {
       emailCodeCanSendAt: user.data.emailCodeCanSendAt
     })
   };
-};
+}
+
+module.exports.handler = httpGuard({
+  handler,
+  guards: [
+    guardTypes.auth,
+    guardTypes.deviceToken,
+    guardTypes.emailVerified
+  ]
+});

@@ -1,42 +1,15 @@
 const { query } = require('faunadb');
 const { initClient } = require('dependencies/utils/faunadb');
 const {
-  checkRequiredHeaderValues
-} = require('dependencies/utils/helpers');
-const jwt = require('dependencies/utils/jwt');
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/guards');
 const {
-  getUserPublicResponseData,
-  hasCompletedSetup
+  getUserPublicResponseData
 } = require('dependencies/utils/users');
 
-module.exports.handler = async ({
-  queryStringParameters,
-  headers
-}) => {
-  const headerValues = checkRequiredHeaderValues(headers);
-
-  if (!headerValues) {
-    console.log('Invalid headers');
-    return { statusCode: 400 };
-  }
-
-  let authUser;
-
-  try {
-    const token = await jwt.verify(headerValues.authToken);
-    authUser = token.data;
-  } catch (_1) {
-    console.log('Invalid token');
-    return { statusCode: 401 };
-  }
-
-  if (!hasCompletedSetup(authUser)) {
-    console.log('Not yet setup');
-    return { statusCode: 403 };
-  }
-
+async function handler ({ nextToken, authUser }) {
   const client = initClient();
-  const { nextToken: after = null } = queryStringParameters || {};
 
   const result = await client.query(
     query.Map(
@@ -47,8 +20,11 @@ module.exports.handler = async ({
         ),
         {
           size: 20,
-          after: after
-            ? query.Ref(query.Collection('contactRequests'), after)
+          after: nextToken
+            ? query.Ref(
+                query.Collection('contactRequests'),
+                nextToken
+              )
             : []
         }
       ),
@@ -75,4 +51,13 @@ module.exports.handler = async ({
       nextToken: result.after?.[0].id || null
     })
   };
-};
+}
+
+module.exports.handler = httpGuard({
+  handler,
+  guards: [
+    guardTypes.auth,
+    guardTypes.deviceToken,
+    guardTypes.setupComplete
+  ]
+});

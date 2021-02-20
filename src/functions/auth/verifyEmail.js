@@ -1,46 +1,17 @@
 const { query } = require('faunadb');
 const User = require('dependencies/models/User');
 const {
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/guards');
+const {
   verifyHash,
-  hasTimePassed,
-  checkRequiredHeaderValues
+  hasTimePassed
 } = require('dependencies/utils/helpers');
 const jwt = require('dependencies/utils/jwt');
 const validate = require('dependencies/utils/validate');
 
-function hasErrors ({ verificationCode }) {
-  return validate(verificationCode, ['required', 'maxLength:20']);
-}
-
-module.exports.handler = async ({ headers, body }) => {
-  const headerValues = checkRequiredHeaderValues(headers);
-
-  if (!headerValues) {
-    console.log('Invalid headers');
-    return { statusCode: 400 };
-  }
-
-  const formBody = JSON.parse(body);
-  if (hasErrors(formBody)) {
-    console.log('Invalid form body');
-    return { statusCode: 400 };
-  }
-
-  let authUser;
-
-  try {
-    const token = await jwt.verify(headerValues.authToken);
-    authUser = token.data;
-  } catch (_1) {
-    console.log('Invalid token');
-    return { statusCode: 401 };
-  }
-
-  if (authUser.emailVerifiedAt) {
-    console.log('Email has already been verified');
-    return { statusCode: 400 };
-  }
-
+async function handler ({ authUser, formBody }) {
   if (hasTimePassed(authUser.emailConfirmCodeExpiresAt)) {
     console.log('emailConfirmCode expired');
     return { statusCode: 410 };
@@ -77,4 +48,16 @@ module.exports.handler = async ({ headers, body }) => {
       authToken
     })
   };
-};
+}
+
+module.exports.handler = httpGuard({
+  handler,
+  guards: [
+    guardTypes.auth,
+    guardTypes.deviceToken,
+    guardTypes.emailVerified
+  ],
+  formValidator: ({ verificationCode }) => {
+    return validate(verificationCode, ['required', 'maxLength:20']);
+  }
+});

@@ -1,47 +1,14 @@
 const ContactRequest = require('dependencies/models/ContactRequest');
 const {
-  checkRequiredHeaderValues
-} = require('dependencies/utils/helpers');
-const jwt = require('dependencies/utils/jwt');
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/guards');
 const {
   createNotification
 } = require('dependencies/utils/notifications');
-const { hasCompletedSetup } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
-function hasErrors ({ senderId }) {
-  return validate(senderId, ['required']);
-}
-
-module.exports.handler = async ({ headers, body }) => {
-  const headerValues = checkRequiredHeaderValues(headers);
-
-  if (!headerValues) {
-    console.log('Invalid headers');
-    return { statusCode: 400 };
-  }
-
-  const formBody = JSON.parse(body);
-  if (hasErrors(formBody)) {
-    console.log('Invalid form body');
-    return { statusCode: 400 };
-  }
-
-  let authUser;
-
-  try {
-    const token = await jwt.verify(headerValues.authToken);
-    authUser = token.data;
-  } catch (_1) {
-    console.log('Invalid token');
-    return { statusCode: 401 };
-  }
-
-  if (!hasCompletedSetup(authUser)) {
-    console.log('Not yet setup');
-    return { statusCode: 403 };
-  }
-
+async function handler ({ authUser, formBody }) {
   const contactRequest = new ContactRequest();
 
   try {
@@ -68,4 +35,14 @@ module.exports.handler = async ({ headers, body }) => {
   ]);
 
   return { statusCode: 200 };
-};
+}
+
+module.exports.handler = httpGuard({
+  handler,
+  guards: [
+    guardTypes.auth,
+    guardTypes.deviceToken,
+    guardTypes.setupComplete
+  ],
+  formValidator: ({ senderId }) => validate(senderId, ['required'])
+});

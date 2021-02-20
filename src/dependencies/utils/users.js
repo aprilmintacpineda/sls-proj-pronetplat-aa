@@ -60,6 +60,7 @@ export function hasCompletedSetup (user) {
       user.surname &&
       user.gender &&
       user.jobTitle &&
-      user.profilePicture
+      user.profilePicture &&
+      user.emailVerifiedAt
   );
 }

@@ -1,0 +1,89 @@
+const jwt = require('./jwt');
+const { hasCompletedSetup } = require('./users');
+
+const guardTypes = {
+  deviceToken: 'deviceToken',
+  auth: 'auth',
+  emailVerified: 'emailVerified',
+  setupComplete: 'setupComplete'
+};
+
+module.exports.httpGuard = ({
+  handler,
+  guards,
+  formValidator = null
+}) => async httpEvent => {
+  const queryStringParameters =
+    httpEvent.queryStringParameters || {};
+
+  const results = {
+    body: httpEvent.body,
+    queryStringParameters,
+    pathParameters: httpEvent.pathParameters || {},
+    headers: httpEvent.headers,
+    nextToken: queryStringParameters.nextToken || null
+  };
+
+  if (guards.includes(guardTypes.deviceToken)) {
+    const deviceToken = httpEvent.headers['device-token'];
+
+    if (!deviceToken) {
+      console.log('Guard: no device-token in headers');
+      return { statusCode: 400 };
+    }
+
+    results.deviceToken = deviceToken;
+  }
+
+  if (formValidator) {
+    const formBody = JSON.parse(httpEvent.body);
+    if (formValidator(formBody)) {
+      console.log('invalid form body');
+      return { statusCode: 400 };
+    }
+
+    results.formBody = formBody;
+  }
+
+  if (guards.includes(guardTypes.auth)) {
+    const authorization =
+      httpEvent.headers.Authorization ||
+      httpEvent.headers.authorization;
+
+    if (!authorization) {
+      console.log('Guard: no authorization in headers');
+      return { statusCode: 401 };
+    }
+
+    let authUser;
+
+    try {
+      const token = await jwt.verify(
+        authorization.replace(/bearer /gim, '').trim()
+      );
+
+      authUser = token.data;
+    } catch (error) {
+      console.log('Guard: token error', error);
+      return { statusCode: 401 };
+    }
+
+    if (guards.includes(guardTypes.setupComplete)) {
+      if (!hasCompletedSetup(authUser)) {
+        console.log('Guard: Not yet setup');
+        return { statusCode: 403 };
+      }
+    } else if (guards.includes(guardTypes.emailVerified)) {
+      if (!authUser.emailVerifiedAt) {
+        console.log('Guard: email not verified');
+        return { statusCode: 403 };
+      }
+    }
+
+    results.authUser = authUser;
+  }
+
+  return handler(results, httpEvent);
+};
+
+module.exports.guardTypes = guardTypes;

@@ -2,44 +2,22 @@ const { query } = require('faunadb');
 const RegisteredDevice = require('dependencies/models/RegisteredDevice');
 const User = require('dependencies/models/User');
 const {
-  checkRequiredHeaderValues
-} = require('dependencies/utils/helpers');
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/guards');
 const jwt = require('dependencies/utils/jwt');
-const { hasCompletedSetup } = require('dependencies/utils/users');
 
-module.exports.handler = async ({ headers }) => {
-  const headerValues = checkRequiredHeaderValues(headers);
-
-  if (!headerValues) {
-    console.log('Invalid headers');
-    return { statusCode: 400 };
-  }
-
-  let authUser;
-
-  try {
-    const token = await jwt.verify(headerValues.authToken);
-    authUser = token.data;
-  } catch (_1) {
-    console.log('Invalid token');
-    return { statusCode: 401 };
-  }
-
-  if (!hasCompletedSetup(authUser)) {
-    console.log('Not yet setup');
-    return { statusCode: 403 };
-  }
-
+async function handler ({ authUser, deviceToken }) {
   const user = new User();
   const registeredDevice = new RegisteredDevice();
 
   await Promise.all([
     registeredDevice.createOrUpdate({
       index: 'registeredDeviceByUserIdDeviceToken',
-      args: [authUser.id, headerValues.deviceToken],
+      args: [authUser.id, deviceToken],
       data: {
         userId: authUser.id,
-        deviceToken: headerValues.deviceToken,
+        deviceToken,
         expiresAt: query.Format(
           '%t',
           query.TimeAdd(query.Now(), 7, 'days')
@@ -64,4 +42,13 @@ module.exports.handler = async ({ headers }) => {
       userData
     })
   };
-};
+}
+
+module.exports.handler = httpGuard({
+  handler,
+  guards: [
+    guardTypes.auth,
+    guardTypes.deviceToken,
+    guardTypes.setupComplete
+  ]
+});

@@ -2,38 +2,12 @@ const Contact = require('dependencies/models/Contact');
 const ContactRequest = require('dependencies/models/ContactRequest');
 const UserBlocking = require('dependencies/models/UserBlocking');
 const {
-  checkRequiredHeaderValues
-} = require('dependencies/utils/helpers');
-const jwt = require('dependencies/utils/jwt');
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/guards');
 const { invokeEvent } = require('dependencies/utils/lambda');
-const { hasCompletedSetup } = require('dependencies/utils/users');
 
-module.exports.handler = async ({
-  pathParameters: { contactId },
-  headers
-}) => {
-  const headerValues = checkRequiredHeaderValues(headers);
-
-  if (!headerValues) {
-    console.log('Invalid headers');
-    return { statusCode: 400 };
-  }
-
-  let authUser;
-
-  try {
-    const token = await jwt.verify(headerValues.authToken);
-    authUser = token.data;
-  } catch (error) {
-    console.log('invalid token');
-    return { statusCode: 401 };
-  }
-
-  if (!hasCompletedSetup(authUser)) {
-    console.log('Not yet setup');
-    return { statusCode: 403 };
-  }
-
+async function handler ({ pathParameters: { contactId }, authUser }) {
   const contactBlocked = new UserBlocking();
   const blockedByUser = new UserBlocking();
   const receivedContactRequest = new ContactRequest();
@@ -96,4 +70,13 @@ module.exports.handler = async ({
 
   // @TODO: get contact details and send back
   return { statusCode: 403 };
-};
+}
+
+module.exports.handler = httpGuard({
+  handler,
+  guards: [
+    guardTypes.auth,
+    guardTypes.deviceToken,
+    guardTypes.setupComplete
+  ]
+});

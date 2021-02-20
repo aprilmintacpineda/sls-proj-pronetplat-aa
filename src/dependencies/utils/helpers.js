@@ -9,24 +9,6 @@ module.exports.randomCode = () =>
   Math.random().toString(32).substr(2);
 module.exports.hash = value => bcrypt.hash(value, 10);
 
-module.exports.checkRequiredHeaderValues = (
-  headers,
-  isLoggedIn = true
-) => {
-  const deviceToken = headers['device-token'];
-  const authorization =
-    headers.Authorization || headers.authorization;
-
-  if ((isLoggedIn && !authorization) || !deviceToken) return false;
-
-  return {
-    deviceToken,
-    authToken: isLoggedIn
-      ? authorization.replace(/bearer /gim, '').trim()
-      : null
-  };
-};
-
 module.exports.verifyHash = (plainValue, hashedValue) => {
   return bcrypt.compare(plainValue, hashedValue);
 };
