@@ -74,15 +74,13 @@ module.exports.handler = async ({ body, headers }) => {
     })
   ]);
 
-  if (pendingSentRequest) {
+  if (pendingSentRequest || pendingReceivedRequest) {
     return {
       statusCode: 422,
-      body: 'pendingSentRequest'
-    };
-  } else if (pendingReceivedRequest) {
-    return {
-      statusCode: 422,
-      body: 'pendingReceivedRequest'
+      body: JSON.stringify({
+        pendingSentRequest,
+        pendingReceivedRequest
+      })
     };
   }
 
