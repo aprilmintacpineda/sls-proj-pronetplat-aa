@@ -37,9 +37,7 @@ module.exports.handler = async ({
         passwordCodeCanResendAt: null,
         passwordResetCodeExpiresAt: null
       }),
-      sendEmailResetPasswordSuccess({
-        recipient: user.data.email
-      })
+      sendEmailResetPasswordSuccess(user.data.email)
     ]);
   } catch (error) {
     console.log('error', error);

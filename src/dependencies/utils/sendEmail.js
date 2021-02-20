@@ -193,7 +193,7 @@ module.exports.sendEmailResetPasswordCode = ({
   });
 };
 
-module.exports.sendEmailResetPasswordSuccess = ({ recipient }) => {
+module.exports.sendEmailResetPasswordSuccess = recipient => {
   return sendEmail({
     recipient,
     content: `
@@ -220,5 +220,35 @@ module.exports.sendEmailResetPasswordSuccess = ({ recipient }) => {
     `,
     subject: 'Forgot password: Quaint',
     emailType: 'forgot-password-success'
+  });
+};
+
+module.exports.changedPasswordEmail = recipient => {
+  return sendEmail({
+    recipient,
+    content: `
+      <div
+        style="
+          width: 500px;
+          text-align: center;
+          margin: 0 auto;
+        "
+      >
+        <h1 style="margin-bottom: 50px;">
+          You have successfully changed your password.
+        </h1>
+        <p>
+          We are sending you this email to inform you that
+          you have changed your password using the change password.
+        </p>
+        <p>
+          If you did not make this change and you suspect
+          that your account may have been compromised,
+          please can contact support to ask for assistance.
+        </p>
+      </div>
+    `,
+    subject: 'Password Changed Successfully',
+    emailType: 'change-password-success'
   });
 };
