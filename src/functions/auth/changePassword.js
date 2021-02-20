@@ -44,11 +44,12 @@ module.exports.handler = async ({ headers, body }) => {
 
     const passwordHash = await hash(formBody.newPassword);
 
-    await authUser.update({
-      hashedPassword: passwordHash
-    });
-
-    await changedPasswordEmail(authUser.data.email);
+    await Promise.all([
+      authUser.update({
+        hashedPassword: passwordHash
+      }),
+      changedPasswordEmail(authUser.data.email)
+    ]);
 
     return { statusCode: 200 };
   } catch (error) {
