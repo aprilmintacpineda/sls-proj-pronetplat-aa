@@ -43,23 +43,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install dependencies
-        run: yarn
-
-      - name: Transpile JS
+      - name: Build and deploy
         run: |
+          yarn
           NODE_ENV=production yarn build
-          cd build/dependencies/nodejs && yarn
-          rm -rf build/dependencies/nodejs/package.json build/dependencies/nodejs/yarn.lock
-
-      - name: Inject necessary resources
-        run: |
-          mkdir -p build/dependencies/nodejs/resources
-          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/nodejs/resources/firebase_admin.json
-
-      - name: Deploy
-        run: |
           cd build
+          mkdir -p dependencies/resources
+          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
           sam build
           sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
