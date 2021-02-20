@@ -32,7 +32,7 @@ module.exports.handler = async ({ headers, body }) => {
     throwIfNotCompletedSetup(data);
 
     const authUser = new User();
-    authUser.getById(data.id);
+    await authUser.getById(data.id);
 
     if (
       !(await verifyHash(
