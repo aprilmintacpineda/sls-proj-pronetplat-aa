@@ -29,5 +29,5 @@ const recursiveReadDir = require('recursive-readdir-async');
   targets +=
     '\tyarn --production --cwd "$(ARTIFACTS_DIR)/nodejs/"\n';
 
-  fs.writeFile('build/makefile', `.PHONY:${phonies}\n\n${targets}`);
+  fs.writeFile('makefile', `.PHONY:${phonies}\n\n${targets}`);
 })();
