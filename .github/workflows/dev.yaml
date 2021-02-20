@@ -55,4 +55,3 @@ jobs:
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev \
             --tags what="sls-proj-pronetplat-aa" stage="dev"
-            --no-fail-on-empty-changeset
