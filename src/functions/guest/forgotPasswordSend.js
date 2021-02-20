@@ -1,8 +1,8 @@
 const {
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
-const validate = require('dependencies/nodejs/utils/validate');
+} = require('dependencies/utils/helpers');
+const { invokeEvent } = require('dependencies/utils/lambda');
+const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ email }) {
   return validate(email, ['required', 'email']);

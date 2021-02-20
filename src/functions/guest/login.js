@@ -1,15 +1,15 @@
 const { query } = require('faunadb');
-const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
-const User = require('dependencies/nodejs/models/User');
+const RegisteredDevice = require('dependencies/models/RegisteredDevice');
+const User = require('dependencies/models/User');
 const {
   isValidDeviceToken
-} = require('dependencies/nodejs/utils/firebase');
+} = require('dependencies/utils/firebase');
 const {
   verifyHash,
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
-const validate = require('dependencies/nodejs/utils/validate');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
+const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ email, password }) {
   return (

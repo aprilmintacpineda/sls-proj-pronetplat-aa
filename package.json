@@ -7,6 +7,17 @@
     "**/*.js"
   ],
   "dependencies": {
+    "bcrypt": "^5.0.0",
+    "date-fns": "^2.17.0",
+    "faunadb": "^4.1.0",
+    "firebase-admin": "^9.5.0",
+    "jimp": "^0.16.1",
+    "jsonwebtoken": "^8.5.1",
+    "mime-types": "^2.1.29",
+    "node-fetch": "^2.6.1",
+    "node-rsa": "^1.1.1"
+  },
+  "devDependencies": {
     "@babel/cli": "^7.12.17",
     "@babel/core": "^7.12.17",
     "@babel/preset-env": "^7.12.17",
@@ -14,9 +25,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-plugin-search-and-replace": "^1.1.0",
     "babel-preset-minify": "^0.5.1",
-    "husky": "5.0.9"
-  },
-  "devDependencies": {
+    "husky": "5.0.9",
     "@babel/eslint-parser": "^7.12.17",
     "babel-jest": "^26.6.3",
     "babel-plugin-module-resolver": "^4.1.0",
@@ -48,9 +57,10 @@
     "migration:create": "FAUNADB_SECRET=fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg faunadb-migrate create",
     "create-plans": "node scripts/createPlans.js",
     "build-functions": "node scripts/buildFunctions.js",
+    "build-makefile": "node scripts/buildMakeFile.js",
     "build-layers": "babel src/dependencies -d build/dependencies --copy-files",
-    "copy-sam-resources": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml",
-    "build": "rm -rf build && yarn build-functions && yarn build-layers && yarn copy-sam-resources",
+    "copy-files": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml && cp package.json build/package.json && cp package.json build/dependencies/package.json && cp yarn.lock build/yarn.lock && cp yarn.lock build/dependencies/yarn.lock && cp build/makefile build/dependencies/makefile",
+    "build": "rm -rf build && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn copy-files",
     "fakeData": "node scripts/fakeData.js",
     "clearData": "node scripts/clearData.js"
   },

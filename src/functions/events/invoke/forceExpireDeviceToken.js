@@ -1,4 +1,4 @@
-const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
+const RegisteredDevice = require('dependencies/models/RegisteredDevice');
 
 module.exports.handler = async ({ deviceToken, userId }) => {
   try {

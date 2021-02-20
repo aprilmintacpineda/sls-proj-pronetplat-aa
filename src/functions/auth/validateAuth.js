@@ -1,13 +1,13 @@
 const { query } = require('faunadb');
-const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
-const User = require('dependencies/nodejs/models/User');
+const RegisteredDevice = require('dependencies/models/RegisteredDevice');
+const User = require('dependencies/models/User');
 const {
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
 const {
   throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
+} = require('dependencies/utils/users');
 
 module.exports.handler = async ({ headers }) => {
   try {

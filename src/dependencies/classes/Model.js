@@ -1,8 +1,6 @@
-const { initClient } = require('dependencies/nodejs/utils/faunadb');
-const {
-  sanitizeFormBody
-} = require('dependencies/nodejs/utils/helpers');
 const { query } = require('faunadb');
+const { initClient } = require('dependencies/utils/faunadb');
+const { sanitizeFormBody } = require('dependencies/utils/helpers');
 
 module.exports = class Model {
   constructor () {

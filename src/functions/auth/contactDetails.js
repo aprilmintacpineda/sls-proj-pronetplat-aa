@@ -1,14 +1,14 @@
-const Contact = require('dependencies/nodejs/models/Contact');
-const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
-const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
+const Contact = require('dependencies/models/Contact');
+const ContactRequest = require('dependencies/models/ContactRequest');
+const UserBlocking = require('dependencies/models/UserBlocking');
 const {
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
-const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
+const { invokeEvent } = require('dependencies/utils/lambda');
 const {
   throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
+} = require('dependencies/utils/users');
 
 module.exports.handler = async ({
   pathParameters: { contactId },

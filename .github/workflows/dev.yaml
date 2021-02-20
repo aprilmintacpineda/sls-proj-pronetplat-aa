@@ -60,6 +60,7 @@ jobs:
       - name: Deploy
         run: |
           cd build
+          sam build
           sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev \

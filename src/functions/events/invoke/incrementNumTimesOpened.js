@@ -1,5 +1,5 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/nodejs/utils/faunadb');
+const { initClient } = require('dependencies/utils/faunadb');
 
 module.exports.handler = async ({ id }) => {
   try {

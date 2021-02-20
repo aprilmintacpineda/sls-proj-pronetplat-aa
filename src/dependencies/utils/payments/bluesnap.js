@@ -1,6 +1,6 @@
 const { isPast } = require('date-fns');
-const CardError = require('dependencies/nodejs/classes/CardError');
 const fetch = require('node-fetch');
+const CardError = require('dependencies/classes/CardError');
 
 const username = 'API_1602153518351925061784';
 const password = '$SPc!p18O@d0';

@@ -1,12 +1,12 @@
 const { query } = require('faunadb');
-const User = require('dependencies/nodejs/models/User');
+const User = require('dependencies/models/User');
 const {
   verifyHash,
   hasTimePassed,
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
-const validate = require('dependencies/nodejs/utils/validate');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
+const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ verificationCode }) {
   return validate(verificationCode, ['required', 'maxLength:20']);

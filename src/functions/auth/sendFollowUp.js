@@ -1,17 +1,17 @@
 const { query } = require('faunadb');
-const ContactRequest = require('dependencies/nodejs/models/ContactRequest');
+const ContactRequest = require('dependencies/models/ContactRequest');
 const {
   hasTimePassed,
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
 const {
   createNotification
-} = require('dependencies/nodejs/utils/notifications');
+} = require('dependencies/utils/notifications');
 const {
   throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
-const validate = require('dependencies/nodejs/utils/validate');
+} = require('dependencies/utils/users');
+const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ contactId }) {
   return validate(contactId, ['required']);

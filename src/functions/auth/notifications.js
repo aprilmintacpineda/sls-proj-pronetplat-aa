@@ -1,14 +1,14 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/nodejs/utils/faunadb');
+const { initClient } = require('dependencies/utils/faunadb');
 const {
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
-const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
+const { invokeEvent } = require('dependencies/utils/lambda');
 const {
   getUserPublicResponseData,
   throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
+} = require('dependencies/utils/users');
 
 module.exports.handler = async ({
   headers,

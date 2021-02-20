@@ -1,9 +1,9 @@
 const { query } = require('faunadb');
-const Notification = require('dependencies/nodejs/models/Notification');
-const { initClient } = require('dependencies/nodejs/utils/faunadb');
+const Notification = require('dependencies/models/Notification');
+const { initClient } = require('dependencies/utils/faunadb');
 const {
   sendPushNotification
-} = require('dependencies/nodejs/utils/notifications');
+} = require('dependencies/utils/notifications');
 
 module.exports.handler = async ({
   authUser,

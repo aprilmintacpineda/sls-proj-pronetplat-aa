@@ -1,6 +1,6 @@
 const { query } = require('faunadb');
-const Notification = require('dependencies/nodejs/models/Notification');
-const { initClient } = require('dependencies/nodejs/utils/faunadb');
+const Notification = require('dependencies/models/Notification');
+const { initClient } = require('dependencies/utils/faunadb');
 
 function markAsSeen (notificationId) {
   const notification = new Notification();

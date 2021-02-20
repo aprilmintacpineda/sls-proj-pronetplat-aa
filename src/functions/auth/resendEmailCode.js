@@ -1,17 +1,15 @@
-const User = require('dependencies/nodejs/models/User');
-const {
-  getTimeOffset
-} = require('dependencies/nodejs/utils/faunadb');
+const User = require('dependencies/models/User');
+const { getTimeOffset } = require('dependencies/utils/faunadb');
 const {
   hasTimePassed,
   randomCode,
   hash,
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
 const {
   sendEmailVerificationCode
-} = require('dependencies/nodejs/utils/sendEmail');
+} = require('dependencies/utils/sendEmail');
 
 module.exports.handler = async ({ headers }) => {
   try {

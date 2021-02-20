@@ -1,10 +1,10 @@
 const jimp = require('jimp');
-const User = require('dependencies/nodejs/models/User');
+const User = require('dependencies/models/User');
 const {
   getObjectPromise,
   uploadPromise,
   deleteObjectPromise
-} = require('dependencies/nodejs/utils/s3');
+} = require('dependencies/utils/s3');
 
 module.exports.handler = async event => {
   try {

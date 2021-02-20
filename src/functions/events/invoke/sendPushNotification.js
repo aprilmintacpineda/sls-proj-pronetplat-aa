@@ -1,17 +1,15 @@
 const { query } = require('faunadb');
-const RegisteredDevice = require('dependencies/nodejs/models/RegisteredDevice');
-const { initClient } = require('dependencies/nodejs/utils/faunadb');
+const RegisteredDevice = require('dependencies/models/RegisteredDevice');
+const { initClient } = require('dependencies/utils/faunadb');
 const {
   sendPushNotification
-} = require('dependencies/nodejs/utils/firebase');
-const {
-  hasTimePassed
-} = require('dependencies/nodejs/utils/helpers');
+} = require('dependencies/utils/firebase');
+const { hasTimePassed } = require('dependencies/utils/helpers');
 const {
   getUserPublicResponseData,
   getFullName,
   getPersonalPronoun
-} = require('dependencies/nodejs/utils/users');
+} = require('dependencies/utils/users');
 
 function deleteExpiredToken (id) {
   const registeredDevice = new RegisteredDevice();

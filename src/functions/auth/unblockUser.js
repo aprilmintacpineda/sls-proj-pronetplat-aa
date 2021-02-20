@@ -1,12 +1,12 @@
-const UserBlocking = require('dependencies/nodejs/models/UserBlocking');
+const UserBlocking = require('dependencies/models/UserBlocking');
 const {
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
 const {
   throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
-const validate = require('dependencies/nodejs/utils/validate');
+} = require('dependencies/utils/users');
+const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ contactId }) {
   return validate(contactId, ['required']);

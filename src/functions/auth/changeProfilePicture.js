@@ -2,13 +2,13 @@ const mimetypes = require('mime-types');
 const {
   randomNum,
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
-const { s3 } = require('dependencies/nodejs/utils/s3');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
+const { s3 } = require('dependencies/utils/s3');
 const {
   throwIfNotCompletedSetup
-} = require('dependencies/nodejs/utils/users');
-const validate = require('dependencies/nodejs/utils/validate');
+} = require('dependencies/utils/users');
+const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ type }) {
   return validate(type, [

@@ -1,8 +1,8 @@
 const {
   checkRequiredHeaderValues
-} = require('dependencies/nodejs/utils/helpers');
-const jwt = require('dependencies/nodejs/utils/jwt');
-const { invokeEvent } = require('dependencies/nodejs/utils/lambda');
+} = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
+const { invokeEvent } = require('dependencies/utils/lambda');
 
 module.exports.handler = async ({ headers }) => {
   try {

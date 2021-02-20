@@ -1,14 +1,9 @@
-const User = require('dependencies/nodejs/models/User');
-const {
-  getTimeOffset
-} = require('dependencies/nodejs/utils/faunadb');
-const {
-  randomCode,
-  hash
-} = require('dependencies/nodejs/utils/helpers');
+const User = require('dependencies/models/User');
+const { getTimeOffset } = require('dependencies/utils/faunadb');
+const { randomCode, hash } = require('dependencies/utils/helpers');
 const {
   sendEmailWelcomeMessage
-} = require('dependencies/nodejs/utils/sendEmail');
+} = require('dependencies/utils/sendEmail');
 
 module.exports.handler = async ({ email, password }) => {
   try {

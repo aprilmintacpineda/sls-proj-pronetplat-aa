@@ -17,6 +17,8 @@ Parameters:
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
+    Layers:
+      - !Ref dependencies
     MemorySize: 1024
     ReservedConcurrentExecutions: 25
     Timeout: 30
@@ -73,14 +75,14 @@ Resources:
   #
   register:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: register.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-register"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref createAccount
@@ -94,14 +96,14 @@ Resources:
               Ref: mainBackendApi
   forgotPasswordSend:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: forgotPasswordSend.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-forgotPasswordSend"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendForgotPasswordCode
@@ -115,14 +117,14 @@ Resources:
               Ref: mainBackendApi
   forgotPasswordConfirm:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: forgotPasswordConfirm.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-forgotPasswordConfirm"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref confirmForgotPassword
@@ -136,14 +138,14 @@ Resources:
               Ref: mainBackendApi
   login:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: login.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-login"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -157,14 +159,14 @@ Resources:
   #
   verifyEmail:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: verifyEmail.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-verifyEmail"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
@@ -178,14 +180,14 @@ Resources:
               Ref: mainBackendApi
   resendEmailCode:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: resendEmailCode.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-resendEmailCode"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
@@ -199,14 +201,14 @@ Resources:
               Ref: mainBackendApi
   changePersonalInfo:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: changePersonalInfo.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-changePersonalInfo"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -217,14 +219,14 @@ Resources:
               Ref: mainBackendApi
   changeProfilePicture:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: changeProfilePicture.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-changeProfilePicture"
-      Layers:
-        - !Ref dependencies
       Policies:
         - Statement:
           - Action:
@@ -254,6 +256,8 @@ Resources:
               Ref: mainBackendApi
   addToContact:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: addToContact.handler
       Policies:
@@ -263,8 +267,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-addToContact"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -275,14 +277,14 @@ Resources:
               Ref: mainBackendApi
   receivedContactRequests:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: receivedContactRequests.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-receivedContactRequests"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -293,6 +295,8 @@ Resources:
               Ref: mainBackendApi
   notifications:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: notifications.handler
       FunctionName: !Join
@@ -302,8 +306,6 @@ Resources:
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref markNotificationsAsSeen
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -314,14 +316,14 @@ Resources:
               Ref: mainBackendApi
   acceptContactRequest:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: acceptContactRequest.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-acceptContactRequest"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
@@ -335,14 +337,14 @@ Resources:
               Ref: mainBackendApi
   declineContactRequest:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: declineContactRequest.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-declineContactRequest"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
@@ -356,14 +358,14 @@ Resources:
               Ref: mainBackendApi
   contactDetails:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: contactDetails.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-contactDetails"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref incrementNumTimesOpened
@@ -377,14 +379,14 @@ Resources:
               Ref: mainBackendApi
   validateAuth:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: validateAuth.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-validateAuth"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -395,14 +397,14 @@ Resources:
               Ref: mainBackendApi
   sendFollowUp:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: sendFollowUp.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendFollowUp"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
@@ -416,14 +418,14 @@ Resources:
               Ref: mainBackendApi
   cancelContactRequest:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: cancelContactRequest.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-cancelContactRequest"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
@@ -437,14 +439,14 @@ Resources:
               Ref: mainBackendApi
   removeFromContacts:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: removeFromContacts.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-removeFromContacts"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -455,14 +457,14 @@ Resources:
               Ref: mainBackendApi
   blockUser:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: blockUser.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-blockUser"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -473,14 +475,14 @@ Resources:
               Ref: mainBackendApi
   unblockUser:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: unblockUser.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-unblockUser"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -491,14 +493,14 @@ Resources:
               Ref: mainBackendApi
   myContacts:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: myContacts.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-myContacts"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -509,14 +511,14 @@ Resources:
               Ref: mainBackendApi
   blockList:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: blockList.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-blockList"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -527,6 +529,8 @@ Resources:
               Ref: mainBackendApi
   logout:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: logout.handler
       Policies:
@@ -536,8 +540,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-logout"
-      Layers:
-        - !Ref dependencies
       Events:
         ApiEvent:
           Type: Api
@@ -551,6 +553,8 @@ Resources:
   #
   createNotification:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: createNotification.handler
       Policies:
@@ -560,38 +564,36 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-createNotification"
-      Layers:
-        - !Ref dependencies
   sendPushNotification:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: sendPushNotification.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendPushNotification"
-      Layers:
-        - !Ref dependencies
   forceExpireDeviceToken:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: forceExpireDeviceToken.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-forceExpireDeviceToken"
-      Layers:
-        - !Ref dependencies
   sendEmail:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: sendEmail.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendEmail"
-      Layers:
-        - !Ref dependencies
       Policies:
         - Statement:
           - Action:
@@ -600,68 +602,70 @@ Resources:
             Resource: "*"
   sendForgotPasswordCode:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: sendForgotPasswordCode.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendForgotPasswordCode"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
   confirmForgotPassword:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: confirmForgotPassword.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-confirmForgotPassword"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
   createAccount:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: createAccount.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-createAccount"
-      Layers:
-        - !Ref dependencies
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
   markNotificationsAsSeen:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: markNotificationsAsSeen.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-markNotificationsAsSeen"
-      Layers:
-        - !Ref dependencies
   incrementNumTimesOpened:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       Handler: incrementNumTimesOpened.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-incrementNumTimesOpened"
-      Layers:
-        - !Ref dependencies
   ######
   # S3 Events
   #
   profilePictureUploaded:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
       MemorySize: 4096
       Handler: profilePictureUploaded.handler
@@ -669,8 +673,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-profilePictureUploaded"
-      Layers:
-        - !Ref dependencies
       Policies:
         - S3CrudPolicy:
             BucketName: !Join
@@ -693,6 +695,8 @@ Resources:
   #
   dependencies:
     Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
     Properties:
       CompatibleRuntimes:
         - nodejs12.x

@@ -1,27 +1,24 @@
-const fs = require('fs');
-const fsPromises = fs.promises;
+const fs = require('fs').promises;
 const path = require('path');
 const babel = require('@babel/core');
-const readDirRecursive = require('recursive-readdir-async');
+const recursiveReadDir = require('recursive-readdir-async');
 const babelConfig = require('../babel.config');
 
 const buildPath = path.join(__dirname, '../build');
 
 async function buildFunc ({ name, fullname }) {
-  let file = await fsPromises.readFile(fullname);
+  let file = await fs.readFile(fullname);
   file = file.toString();
 
   const { code } = await babel.transformAsync(file, babelConfig);
-  await fsPromises.writeFile(path.join(buildPath, name), code);
+  await fs.writeFile(path.join(buildPath, name), code);
 }
 
 (async () => {
   try {
     delete babelConfig.ignore;
 
-    if (!fs.existsSync(buildPath)) await fsPromises.mkdir(buildPath);
-
-    const functionFiles = await readDirRecursive.list(
+    const functionFiles = await recursiveReadDir.list(
       path.join(__dirname, '../src/functions')
     );
 
@@ -29,7 +26,7 @@ async function buildFunc ({ name, fullname }) {
       functionFiles.map(functionFile => buildFunc(functionFile))
     );
 
-    await fsPromises.copyFile(
+    await fs.copyFile(
       path.join(__dirname, '../template.yaml'),
       path.join(buildPath, 'template.yaml')
     );
