@@ -54,15 +54,12 @@ export function getPersonalPronoun (userData) {
   };
 }
 
-export function throwIfNotCompletedSetup (user) {
-  if (
-    !user.firstName ||
-    !user.surname ||
-    !user.gender ||
-    !user.jobTitle ||
-    !user.profilePicture
-  )
-    throw new Error('User not setup');
-
-  if (!user.emailVerifiedAt) throw new Error('Email not verified');
+export function hasCompletedSetup (user) {
+  return Boolean(
+    user.firstName &&
+      user.surname &&
+      user.gender &&
+      user.jobTitle &&
+      user.profilePicture
+  );
 }

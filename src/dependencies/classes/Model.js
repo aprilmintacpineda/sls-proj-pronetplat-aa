@@ -251,8 +251,7 @@ module.exports = class Model {
   }
 
   toResponseData () {
-    this.throwIfNoRef('toResponseData');
-
+    if (!this.data) return null;
     if (!this.censoredData) return this.data;
 
     return Object.keys(this.data).reduce((accumulator, key) => {

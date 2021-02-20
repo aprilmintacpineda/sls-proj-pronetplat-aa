@@ -7,9 +7,7 @@ const jwt = require('dependencies/utils/jwt');
 const {
   createNotification
 } = require('dependencies/utils/notifications');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/utils/users');
+const { hasCompletedSetup } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ senderId }) {
@@ -17,59 +15,78 @@ function hasErrors ({ senderId }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
+  const headerValues = checkRequiredHeaderValues(headers);
+
+  if (!headerValues) {
+    console.log('invalid headers');
+    return { statusCode: 405 };
+  }
+
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('invalid form body');
+    return { statusCode: 405 };
+  }
+
+  let authUser;
+
   try {
-    const { authToken } = checkRequiredHeaderValues(headers);
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (_1) {
+    console.log('Invalid token');
+    return { statusCode: 401 };
+  }
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('invalid form body');
+  if (!hasCompletedSetup(authUser)) {
+    console.log('Not yet completed setup');
+    return { statusCode: 403 };
+  }
 
-    const { data: authUser } = await jwt.verify(authToken);
+  const contactRequest = new ContactRequest();
 
-    throwIfNotCompletedSetup(authUser);
-
-    const contactRequest = new ContactRequest();
+  try {
     await contactRequest.getByIndex(
       'contactRequestBySenderIdRecipientId',
       formBody.senderId,
       authUser.id
     );
-
-    const contact = new Contact();
-
-    await Promise.all([
-      contact.createIfNotExists({
-        index: 'contactByOwnerContact',
-        args: [authUser.id, contactRequest.data.senderId],
-        data: {
-          ownerId: authUser.id,
-          contactId: contactRequest.data.senderId,
-          numTimesOpened: 0
-        }
-      }),
-      contact.createIfNotExists({
-        index: 'contactByOwnerContact',
-        args: [contactRequest.data.senderId, authUser.id],
-        data: {
-          ownerId: contactRequest.data.senderId,
-          contactId: authUser.id,
-          numTimesOpened: 0
-        }
-      }),
-      createNotification({
-        authUser,
-        userId: contactRequest.data.senderId,
-        type: 'contactRequestAccepted',
-        body: '{fullname} has accepted your contact request.',
-        title: 'Contact request accepted',
-        category: 'notification'
-      }),
-      contactRequest.hardDelete()
-    ]);
-
-    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  const contact = new Contact();
+
+  await Promise.all([
+    contact.createIfNotExists({
+      index: 'contactByOwnerContact',
+      args: [authUser.id, contactRequest.data.senderId],
+      data: {
+        ownerId: authUser.id,
+        contactId: contactRequest.data.senderId,
+        numTimesOpened: 0
+      }
+    }),
+    contact.createIfNotExists({
+      index: 'contactByOwnerContact',
+      args: [contactRequest.data.senderId, authUser.id],
+      data: {
+        ownerId: contactRequest.data.senderId,
+        contactId: authUser.id,
+        numTimesOpened: 0
+      }
+    }),
+    createNotification({
+      authUser,
+      userId: contactRequest.data.senderId,
+      type: 'contactRequestAccepted',
+      body: '{fullname} has accepted your contact request.',
+      title: 'Contact request accepted',
+      category: 'notification'
+    }),
+    contactRequest.hardDelete()
+  ]);
+
+  return { statusCode: 200 };
 };

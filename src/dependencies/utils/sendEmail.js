@@ -223,7 +223,7 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
   });
 };
 
-module.exports.changedPasswordEmail = recipient => {
+module.exports.sendEmailChangePassword = recipient => {
   return sendEmail({
     recipient,
     content: `

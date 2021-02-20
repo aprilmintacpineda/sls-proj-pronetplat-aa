@@ -26,41 +26,53 @@ function hasErrors ({
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  try {
-    const { authToken } = checkRequiredHeaderValues(headers);
+  const headerValues = checkRequiredHeaderValues(headers);
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('Invalid formBody');
-
-    const { data: authUser } = await jwt.verify(authToken);
-
-    if (!authUser.emailVerifiedAt)
-      throw new Error('Email not yet verified');
-
-    const user = new User();
-    await user.updateById(authUser.id, {
-      firstName: formBody.firstName,
-      middleName: formBody.middleName || '',
-      surname: formBody.surname,
-      gender: formBody.gender,
-      jobTitle: formBody.jobTitle,
-      company: formBody.company || '',
-      bio: formBody.bio || ''
-    });
-
-    const userData = user.toResponseData();
-    const newAuthToken = await jwt.sign(userData);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        userData,
-        authToken: newAuthToken
-      })
-    };
-  } catch (error) {
-    console.log('error', error);
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('Invalid form body');
+    return { statusCode: 400 };
+  }
+
+  let authUser;
+
+  try {
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (_1) {
+    console.log('invalid token');
+    return { statusCode: 401 };
+  }
+
+  if (!authUser.emailVerifiedAt) {
+    console.log('Email not yet verified');
+    return { statusCode: 403 };
+  }
+
+  const user = new User();
+  await user.updateById(authUser.id, {
+    firstName: formBody.firstName,
+    middleName: formBody.middleName || '',
+    surname: formBody.surname,
+    gender: formBody.gender,
+    jobTitle: formBody.jobTitle,
+    company: formBody.company || '',
+    bio: formBody.bio || ''
+  });
+
+  const userData = user.toResponseData();
+  const authToken = await jwt.sign(userData);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      userData,
+      authToken
+    })
+  };
 };

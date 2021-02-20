@@ -6,9 +6,7 @@ const jwt = require('dependencies/utils/jwt');
 const {
   createNotification
 } = require('dependencies/utils/notifications');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/utils/users');
+const { hasCompletedSetup } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ senderId }) {
@@ -16,39 +14,58 @@ function hasErrors ({ senderId }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
+  const headerValues = checkRequiredHeaderValues(headers);
+
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
+  }
+
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('Invalid form body');
+    return { statusCode: 400 };
+  }
+
+  let authUser;
+
   try {
-    const { authToken } = checkRequiredHeaderValues(headers);
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (_1) {
+    console.log('Invalid token');
+    return { statusCode: 401 };
+  }
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('invalid body');
+  if (!hasCompletedSetup(authUser)) {
+    console.log('Not yet setup');
+    return { statusCode: 403 };
+  }
 
-    const { data: authUser } = await jwt.verify(authToken);
+  const contactRequest = new ContactRequest();
 
-    throwIfNotCompletedSetup(authUser);
-
-    const contactRequest = new ContactRequest();
+  try {
     await contactRequest.getByIndex(
       'contactRequestBySenderIdRecipientId',
       formBody.senderId,
       authUser.id
     );
-
-    await Promise.all([
-      contactRequest.hardDelete(),
-      createNotification({
-        authUser,
-        userId: contactRequest.data.senderId,
-        type: 'contactRequestDeclined',
-        body: '{fullname} has declined your contact request.',
-        title: 'Contact request declined',
-        category: 'notification'
-      })
-    ]);
-
-    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  await Promise.all([
+    contactRequest.hardDelete(),
+    createNotification({
+      authUser,
+      userId: contactRequest.data.senderId,
+      type: 'contactRequestDeclined',
+      body: '{fullname} has declined your contact request.',
+      title: 'Contact request declined',
+      category: 'notification'
+    })
+  ]);
+
+  return { statusCode: 200 };
 };

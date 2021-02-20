@@ -3,9 +3,7 @@ const {
   checkRequiredHeaderValues
 } = require('dependencies/utils/helpers');
 const jwt = require('dependencies/utils/jwt');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/utils/users');
+const { hasCompletedSetup } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ contactId }) {
@@ -13,27 +11,40 @@ function hasErrors ({ contactId }) {
 }
 
 module.exports.handler = async ({ body, headers }) => {
-  try {
-    const { authToken } = checkRequiredHeaderValues(headers);
+  const headerValues = checkRequiredHeaderValues(headers);
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('Invalid form body');
-
-    const { data: authUser } = await jwt.verify(authToken);
-
-    throwIfNotCompletedSetup(authUser);
-
-    const contact = new Contact();
-    await contact.hardDeleteIfExists(
-      'contactByOwnerContact',
-      authUser.id,
-      formBody.contactId
-    );
-
-    return { statusCode: 200 };
-  } catch (error) {
-    console.log('error', error);
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('invalid form body');
+    return { statusCode: 400 };
+  }
+
+  let authUser;
+
+  try {
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (_1) {
+    console.log('invalid token');
+    return { statusCode: 401 };
+  }
+
+  if (!hasCompletedSetup(authUser)) {
+    console.log('Not yet completed');
+    return { statusCode: 400 };
+  }
+
+  const contact = new Contact();
+  await contact.hardDeleteIfExists(
+    'contactByOwnerContact',
+    authUser.id,
+    formBody.contactId
+  );
+
+  return { statusCode: 200 };
 };

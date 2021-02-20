@@ -1,28 +1,28 @@
 const { query } = require('faunadb');
-const Notification = require('dependencies/models/Notification');
 const { initClient } = require('dependencies/utils/faunadb');
-
-function markAsSeen (notificationId) {
-  const notification = new Notification();
-
-  return notification.updateById(notificationId, {
-    seenAt: query.Format('%t', query.Now())
-  });
-}
 
 module.exports.handler = async ({
   authUser,
   unseenNotificationIds
 }) => {
-  try {
-    const client = initClient();
+  const client = initClient();
 
-    const promises = unseenNotificationIds.map(notificationId =>
-      markAsSeen(notificationId)
-    );
-
-    promises.push(
-      client.query(
+  await client.query(
+    unseenNotificationIds
+      .map(notificationId => {
+        return query.Update(
+          query.Ref(
+            query.Collection('notifications'),
+            notificationId
+          ),
+          {
+            data: {
+              seenAt: query.Format('%t', query.Now())
+            }
+          }
+        );
+      })
+      .concat(
         query.Call(
           'updateUserBadgeCount',
           authUser.id,
@@ -30,10 +30,5 @@ module.exports.handler = async ({
           -unseenNotificationIds.length
         )
       )
-    );
-
-    await Promise.all(promises);
-  } catch (error) {
-    console.log('error', error);
-  }
+  );
 };

@@ -1,5 +1,4 @@
 const { query } = require('faunadb');
-const RegisteredDevice = require('dependencies/models/RegisteredDevice');
 const { initClient } = require('dependencies/utils/faunadb');
 const {
   sendPushNotification
@@ -11,11 +10,6 @@ const {
   getPersonalPronoun
 } = require('dependencies/utils/users');
 
-function deleteExpiredToken (id) {
-  const registeredDevice = new RegisteredDevice();
-  return registeredDevice.hardDeleteById(id);
-}
-
 module.exports.handler = async ({
   authUser,
   userId,
@@ -23,60 +17,60 @@ module.exports.handler = async ({
   body,
   title
 }) => {
-  try {
-    const client = initClient();
-    let after = null;
-    const tokens = [];
-    const expiredTokenIds = [];
+  const client = initClient();
+  let after = null;
+  const tokens = [];
+  const expiredTokenIds = [];
 
-    do {
-      const result = await client.query(
-        query.Paginate(
-          query.Match(
-            query.Index('registeredDevicesByUserId'),
-            userId
-          ),
-          {
-            size: 20,
-            after: after || []
-          }
-        )
-      );
-
-      result.data.forEach(([expiresAt, deviceToken, _1, ref]) => {
-        if (hasTimePassed(expiresAt)) expiredTokenIds.push(ref.id);
-        else tokens.push(deviceToken);
-      }, []);
-
-      after = result.after;
-    } while (after);
-
-    await Promise.all(
-      expiredTokenIds
-        .map(registeredDeviceId =>
-          deleteExpiredToken(registeredDeviceId)
-        )
-        .concat(
-          sendPushNotification({
-            tokens,
-            notification: {
-              title,
-              imageUrl: authUser.profilePicture,
-              body: body
-                .replace(/{fullname}/gim, getFullName(authUser))
-                .replace(
-                  /{genderPossessiveLowercase}/gim,
-                  getPersonalPronoun(authUser).possessive.lowercase
-                )
-            },
-            data: {
-              ...data,
-              ...getUserPublicResponseData(authUser)
-            }
-          })
-        )
+  do {
+    const result = await client.query(
+      query.Paginate(
+        query.Match(
+          query.Index('registeredDevicesByUserId'),
+          userId
+        ),
+        {
+          size: 20,
+          after: after || []
+        }
+      )
     );
-  } catch (error) {
-    console.log('error', error);
-  }
+
+    result.data.forEach(([expiresAt, deviceToken, _1, ref]) => {
+      if (hasTimePassed(expiresAt)) expiredTokenIds.push(ref.id);
+      else tokens.push(deviceToken);
+    }, []);
+
+    after = result.after;
+  } while (after);
+
+  await Promise.all([
+    client.query(
+      expiredTokenIds.map(registeredDeviceId => {
+        return query.Delete(
+          query.Ref(
+            query.Collection('registeredDevices'),
+            registeredDeviceId
+          )
+        );
+      })
+    ),
+    sendPushNotification({
+      tokens,
+      notification: {
+        title,
+        imageUrl: authUser.profilePicture,
+        body: body
+          .replace(/{fullname}/gim, getFullName(authUser))
+          .replace(
+            /{genderPossessiveLowercase}/gim,
+            getPersonalPronoun(authUser).possessive.lowercase
+          )
+      },
+      data: {
+        ...data,
+        ...getUserPublicResponseData(authUser)
+      }
+    })
+  ]);
 };

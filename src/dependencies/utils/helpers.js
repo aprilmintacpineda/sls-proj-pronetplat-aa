@@ -17,11 +17,7 @@ module.exports.checkRequiredHeaderValues = (
   const authorization =
     headers.Authorization || headers.authorization;
 
-  if (isLoggedIn && !authorization)
-    throw new Error('Authorization is missing from headers');
-
-  if (!deviceToken)
-    throw new Error('DeviceToken is missing from headers');
+  if ((isLoggedIn && !authorization) || !deviceToken) return false;
 
   return {
     deviceToken,

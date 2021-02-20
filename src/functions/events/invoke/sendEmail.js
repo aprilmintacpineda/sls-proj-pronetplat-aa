@@ -10,40 +10,36 @@ module.exports.handler = async ({
   subject,
   emailType
 }) => {
-  try {
-    await new Promise((resolve, reject) => {
-      sesv2.sendEmail(
-        {
-          Content: {
-            Simple: {
-              Body: {
-                Html: {
-                  Data: content
-                }
-              },
-              Subject: {
-                Data: subject
+  await new Promise((resolve, reject) => {
+    sesv2.sendEmail(
+      {
+        Content: {
+          Simple: {
+            Body: {
+              Html: {
+                Data: content
               }
+            },
+            Subject: {
+              Data: subject
             }
-          },
-          Destination: {
-            ToAddresses: [recipient]
-          },
-          EmailTags: [
-            {
-              Name: 'Email-Type',
-              Value: emailType
-            }
-          ],
-          FromEmailAddress: 'aprilmintacpineda@gmail.com'
+          }
         },
-        error => {
-          if (error) reject(error);
-          else resolve();
-        }
-      );
-    });
-  } catch (error) {
-    console.log('error', error);
-  }
+        Destination: {
+          ToAddresses: [recipient]
+        },
+        EmailTags: [
+          {
+            Name: 'Email-Type',
+            Value: emailType
+          }
+        ],
+        FromEmailAddress: 'aprilmintacpineda@gmail.com'
+      },
+      error => {
+        if (error) reject(error);
+        else resolve();
+      }
+    );
+  });
 };

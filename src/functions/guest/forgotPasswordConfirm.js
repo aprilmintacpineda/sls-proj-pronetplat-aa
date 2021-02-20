@@ -13,19 +13,21 @@ function hasErrors ({ confirmationCode, email, newPassword }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  try {
-    checkRequiredHeaderValues(headers, false);
-
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('Invalid form body');
-
-    await invokeEvent({
-      functionName: process.env.fn_confirmForgotPassword,
-      payload: formBody
-    });
-  } catch (error) {
-    console.log('error', error);
+  if (!checkRequiredHeaderValues(headers, false)) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 200 };
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('Invalid form body');
+    return { statusCode: 400 };
+  }
+
+  await invokeEvent({
+    functionName: process.env.fn_confirmForgotPassword,
+    payload: formBody
+  });
+
+  return { statusCode: 202 };
 };

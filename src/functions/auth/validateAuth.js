@@ -5,57 +5,63 @@ const {
   checkRequiredHeaderValues
 } = require('dependencies/utils/helpers');
 const jwt = require('dependencies/utils/jwt');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/utils/users');
+const { hasCompletedSetup } = require('dependencies/utils/users');
 
 module.exports.handler = async ({ headers }) => {
+  const headerValues = checkRequiredHeaderValues(headers);
+
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
+  }
+
+  let authUser;
+
   try {
-    const { deviceToken, authToken } = checkRequiredHeaderValues(
-      headers
-    );
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (_1) {
+    console.log('Invalid token');
+    return { statusCode: 401 };
+  }
 
-    const { data: authUser } = await jwt.verify(authToken);
+  if (!hasCompletedSetup(authUser)) {
+    console.log('Not yet setup');
+    return { statusCode: 403 };
+  }
 
-    throwIfNotCompletedSetup(authUser);
+  const user = new User();
+  const registeredDevice = new RegisteredDevice();
 
-    const user = new User();
-    const registeredDevice = new RegisteredDevice();
-
-    await Promise.all([
-      registeredDevice.createOrUpdate({
-        index: 'registeredDeviceByUserIdDeviceToken',
-        args: [authUser.id, deviceToken],
-        data: {
-          userId: authUser.id,
-          deviceToken,
-          expiresAt: query.Format(
-            '%t',
-            query.TimeAdd(query.Now(), 7, 'days')
-          )
-        }
-      }),
-      user.updateById(authUser.id, {
-        lastLoginAt: query.Format(
+  await Promise.all([
+    registeredDevice.createOrUpdate({
+      index: 'registeredDeviceByUserIdDeviceToken',
+      args: [authUser.id, headerValues.deviceToken],
+      data: {
+        userId: authUser.id,
+        deviceToken: headerValues.deviceToken,
+        expiresAt: query.Format(
           '%t',
           query.TimeAdd(query.Now(), 7, 'days')
         )
-      })
-    ]);
+      }
+    }),
+    user.updateById(authUser.id, {
+      lastLoginAt: query.Format(
+        '%t',
+        query.TimeAdd(query.Now(), 7, 'days')
+      )
+    })
+  ]);
 
-    const userData = user.toResponseData();
-    const newAuthToken = await jwt.sign(userData);
+  const userData = user.toResponseData();
+  const authToken = await jwt.sign(userData);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        authToken: newAuthToken,
-        userData
-      })
-    };
-  } catch (error) {
-    console.log('error', error);
-  }
-
-  return { statusCode: 403 };
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      authToken,
+      userData
+    })
+  };
 };

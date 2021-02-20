@@ -14,17 +14,21 @@ function hasErrors ({ email, password }) {
 module.exports.handler = async ({ headers, body }) => {
   try {
     checkRequiredHeaderValues(headers, false);
-
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('Invalid formBody');
-
-    await invokeEvent({
-      functionName: process.env.fn_createAccount,
-      payload: formBody
-    });
-  } catch (error) {
-    console.log('error', error);
+  } catch (_1) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 200 };
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('Invalid form body');
+    return { statusCode: 400 };
+  }
+
+  await invokeEvent({
+    functionName: process.env.fn_createAccount,
+    payload: formBody
+  });
+
+  return { statusCode: 202 };
 };

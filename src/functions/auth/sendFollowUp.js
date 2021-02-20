@@ -8,9 +8,7 @@ const jwt = require('dependencies/utils/jwt');
 const {
   createNotification
 } = require('dependencies/utils/notifications');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/utils/users');
+const { hasCompletedSetup } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ contactId }) {
@@ -18,47 +16,68 @@ function hasErrors ({ contactId }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
+  const headerValues = checkRequiredHeaderValues(headers);
+
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
+  }
+
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('Invalid form body');
+    return { statusCode: 400 };
+  }
+
+  let authUser;
+
   try {
-    const { authToken } = checkRequiredHeaderValues(headers);
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (error) {
+    console.log('Invalid token');
+    return { statusCode: 401 };
+  }
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('Invalid form body');
+  if (!hasCompletedSetup(authUser)) {
+    console.log('Not yet setup');
+    return { statusCode: 403 };
+  }
 
-    const { data: authUser } = await jwt.verify(authToken);
+  const contactRequest = new ContactRequest();
 
-    throwIfNotCompletedSetup(authUser);
-
-    const contactRequest = new ContactRequest();
+  try {
     await contactRequest.getByIndex(
       'contactRequestBySenderIdRecipientId',
       authUser.id,
       formBody.contactId
     );
-
-    if (!hasTimePassed(contactRequest.data.canFollowUpAt))
-      throw new Error('canFollowUpAt has not passed yet');
-
-    await Promise.all([
-      createNotification({
-        authUser,
-        userId: contactRequest.data.recipientId,
-        type: 'contactRequestFollowUp',
-        body: '{fullname} followed up with his contact request',
-        title: 'Contact request',
-        category: 'notification'
-      }),
-      contactRequest.update({
-        canFollowUpAt: query.Format(
-          '%t',
-          query.TimeAdd(query.Now(), 1, 'day')
-        )
-      })
-    ]);
-
-    return { statusCode: 200 };
   } catch (error) {
-    console.log('error', error);
+    console.log(error);
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  if (!hasTimePassed(contactRequest.data.canFollowUpAt)) {
+    console.log('canFollowUpAt has not passed yet');
+    return { statusCode: 429 };
+  }
+
+  await Promise.all([
+    createNotification({
+      authUser,
+      userId: contactRequest.data.recipientId,
+      type: 'contactRequestFollowUp',
+      body: '{fullname} followed up with his contact request',
+      title: 'Contact request',
+      category: 'notification'
+    }),
+    contactRequest.update({
+      canFollowUpAt: query.Format(
+        '%t',
+        query.TimeAdd(query.Now(), 1, 'day')
+      )
+    })
+  ]);
+
+  return { statusCode: 200 };
 };

@@ -13,33 +13,33 @@ module.exports.handler = async ({
   email,
   newPassword
 }) => {
-  try {
-    const user = new User();
-    await user.getByEmail(email);
+  const user = new User();
+  await user.getByEmail(email);
 
-    if (hasTimePassed(user.data.passwordResetCodeExpiresAt))
-      throw new Error('password reset code expired');
-
-    if (
-      !(await verifyHash(
-        confirmationCode,
-        user.data.hashedResetPasswordCode
-      ))
-    )
-      throw new Error('incorrect code');
-
-    const hashedPassword = await hash(newPassword);
-
-    await Promise.all([
-      user.update({
-        hashedPassword,
-        hashedResetPasswordCode: null,
-        passwordCodeCanResendAt: null,
-        passwordResetCodeExpiresAt: null
-      }),
-      sendEmailResetPasswordSuccess(user.data.email)
-    ]);
-  } catch (error) {
-    console.log('error', error);
+  if (hasTimePassed(user.data.passwordResetCodeExpiresAt)) {
+    console.log('password reset code expired');
+    return;
   }
+
+  if (
+    !(await verifyHash(
+      confirmationCode,
+      user.data.hashedResetPasswordCode
+    ))
+  ) {
+    console.log('incorrect code');
+    return;
+  }
+
+  const hashedPassword = await hash(newPassword);
+
+  await Promise.all([
+    user.update({
+      hashedPassword,
+      hashedResetPasswordCode: null,
+      passwordCodeCanResendAt: null,
+      passwordResetCodeExpiresAt: null
+    }),
+    sendEmailResetPasswordSuccess(user.data.email)
+  ]);
 };

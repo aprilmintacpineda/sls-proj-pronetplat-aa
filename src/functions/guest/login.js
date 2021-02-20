@@ -19,60 +19,57 @@ function hasErrors ({ email, password }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  try {
-    const { deviceToken } = checkRequiredHeaderValues(
-      headers,
-      false
-    );
+  const headerValues = checkRequiredHeaderValues(headers, false);
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('Invalid formBody');
-
-    const user = new User();
-    await user.getByEmail(formBody.email);
-
-    if (
-      !(await verifyHash(
-        formBody.password,
-        user.data.hashedPassword
-      ))
-    )
-      throw new Error('Incorrect password');
-
-    if (!(await isValidDeviceToken(deviceToken)))
-      throw new Error('Invalid deviceToken.');
-
-    const registeredDevice = new RegisteredDevice();
-
-    await Promise.all([
-      user.update({ lastLoginAt: query.Format('%t', query.Now()) }),
-      registeredDevice.createOrUpdate({
-        index: 'registeredDeviceByUserIdDeviceToken',
-        args: [user.data.id, deviceToken],
-        data: {
-          userId: user.data.id,
-          deviceToken,
-          expiresAt: query.Format(
-            '%t',
-            query.TimeAdd(query.Now(), 7, 'days')
-          )
-        }
-      })
-    ]);
-
-    const userData = user.toResponseData();
-    const authToken = await jwt.sign(userData);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        authToken,
-        userData
-      })
-    };
-  } catch (error) {
-    console.log('error', error);
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('Invalid form body');
+    return { statusCode: 400 };
+  }
+
+  const user = new User();
+  await user.getByEmail(formBody.email);
+
+  if (
+    !(await verifyHash(
+      formBody.password,
+      user.data.hashedPassword
+    )) ||
+    !(await isValidDeviceToken(headerValues.deviceToken))
+  )
+    return { statusCode: 403 };
+
+  const registeredDevice = new RegisteredDevice();
+
+  await Promise.all([
+    user.update({ lastLoginAt: query.Format('%t', query.Now()) }),
+    registeredDevice.createOrUpdate({
+      index: 'registeredDeviceByUserIdDeviceToken',
+      args: [user.data.id, headerValues.deviceToken],
+      data: {
+        userId: user.data.id,
+        deviceToken: headerValues.deviceToken,
+        expiresAt: query.Format(
+          '%t',
+          query.TimeAdd(query.Now(), 7, 'days')
+        )
+      }
+    })
+  ]);
+
+  const userData = user.toResponseData();
+  const authToken = await jwt.sign(userData);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      authToken,
+      userData
+    })
+  };
 };

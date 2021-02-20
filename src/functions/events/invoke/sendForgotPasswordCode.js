@@ -10,30 +10,28 @@ const {
 } = require('dependencies/utils/sendEmail');
 
 module.exports.handler = async ({ email, isResend = false }) => {
-  try {
-    const user = new User();
-    await user.getByEmail(email);
+  const user = new User();
+  await user.getByEmail(email);
 
-    if (!hasTimePassed(user.data.passwordCodeCanResendAt))
-      throw new Error('passwordCodeCanResendAt has not passed yet.');
-
-    const resetPasswordCode = randomCode();
-    const offsetTime = getTimeOffset();
-    const hashedResetPasswordCode = await hash(resetPasswordCode);
-
-    await Promise.all([
-      user.update({
-        hashedResetPasswordCode,
-        passwordCodeCanResendAt: offsetTime,
-        passwordResetCodeExpiresAt: offsetTime
-      }),
-      sendEmailResetPasswordCode({
-        recipient: user.data.email,
-        resetPasswordCode,
-        isResend
-      })
-    ]);
-  } catch (error) {
-    console.log('error', error);
+  if (!hasTimePassed(user.data.passwordCodeCanResendAt)) {
+    console.log('passwordCodeCanResendAt has not passed yet.');
+    return;
   }
+
+  const resetPasswordCode = randomCode();
+  const offsetTime = getTimeOffset();
+  const hashedResetPasswordCode = await hash(resetPasswordCode);
+
+  await Promise.all([
+    user.update({
+      hashedResetPasswordCode,
+      passwordCodeCanResendAt: offsetTime,
+      passwordResetCodeExpiresAt: offsetTime
+    }),
+    sendEmailResetPasswordCode({
+      recipient: user.data.email,
+      resetPasswordCode,
+      isResend
+    })
+  ]);
 };

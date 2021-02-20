@@ -8,8 +8,8 @@ module.exports = class UserBlocking extends Model {
 
   async wasBlocked (userId1, userId2) {
     const [
-      wasBlockedByUserId1,
-      wasBlockedByUserId2
+      wasBlockedByUser1,
+      wasBlockedByUser2
     ] = await Promise.all([
       this.exists(
         'userBlockingsByBlockerIdUserId',
@@ -19,6 +19,6 @@ module.exports = class UserBlocking extends Model {
       this.exists('userBlockingsByBlockerIdUserId', userId2, userId1)
     ]);
 
-    return Boolean(wasBlockedByUserId1 || wasBlockedByUserId2);
+    return Boolean(wasBlockedByUser1 || wasBlockedByUser2);
   }
 };

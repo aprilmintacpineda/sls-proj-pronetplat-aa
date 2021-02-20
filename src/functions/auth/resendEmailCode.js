@@ -12,47 +12,59 @@ const {
 } = require('dependencies/utils/sendEmail');
 
 module.exports.handler = async ({ headers }) => {
-  try {
-    const { authToken } = checkRequiredHeaderValues(headers);
-    const { data: authUser } = await jwt.verify(authToken);
+  const headerValues = checkRequiredHeaderValues(headers);
 
-    if (authUser.emailVerifiedAt)
-      throw new Error('Email already verified');
-
-    if (!hasTimePassed(authUser.emailCodeCanSendAt))
-      return { statusCode: 429 };
-
-    const emailVerificationCode = randomCode();
-
-    const hashedEmailVerificationCode = await hash(
-      emailVerificationCode
-    );
-
-    const timeOffset = getTimeOffset();
-
-    const user = new User();
-
-    await Promise.all([
-      user.updateById(authUser.id, {
-        hashedEmailVerificationCode,
-        emailCodeCanSendAt: timeOffset,
-        emailConfirmCodeExpiresAt: timeOffset
-      }),
-      sendEmailVerificationCode({
-        recipient: user.data.email,
-        emailVerificationCode
-      })
-    ]);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        emailCodeCanSendAt: user.data.emailCodeCanSendAt
-      })
-    };
-  } catch (error) {
-    console.log('error', error);
+  if (!headerValues) {
+    console.log('invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  let authUser;
+
+  try {
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (_1) {
+    console.log('Invalid token');
+    return { statusCode: 401 };
+  }
+
+  if (authUser.emailVerifiedAt) {
+    console.log('Email not yet confirmed');
+    return { statusCode: 403 };
+  }
+
+  if (!hasTimePassed(authUser.emailCodeCanSendAt)) {
+    console.log('emailCodeCanSendAt has not yet passed');
+    return { statusCode: 429 };
+  }
+
+  const emailVerificationCode = randomCode();
+
+  const hashedEmailVerificationCode = await hash(
+    emailVerificationCode
+  );
+
+  const timeOffset = getTimeOffset();
+
+  const user = new User();
+
+  await Promise.all([
+    user.updateById(authUser.id, {
+      hashedEmailVerificationCode,
+      emailCodeCanSendAt: timeOffset,
+      emailConfirmCodeExpiresAt: timeOffset
+    }),
+    sendEmailVerificationCode({
+      recipient: user.data.email,
+      emailVerificationCode
+    })
+  ]);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      emailCodeCanSendAt: user.data.emailCodeCanSendAt
+    })
+  };
 };

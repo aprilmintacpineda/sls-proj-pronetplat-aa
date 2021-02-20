@@ -6,39 +6,35 @@ const {
 } = require('dependencies/utils/sendEmail');
 
 module.exports.handler = async ({ email, password }) => {
-  try {
-    const emailVerificationCode = randomCode();
+  const emailVerificationCode = randomCode();
 
-    const [
+  const [
+    hashedEmailVerificationCode,
+    hashedPassword
+  ] = await Promise.all([
+    hash(emailVerificationCode),
+    hash(password)
+  ]);
+
+  const offsetTime = getTimeOffset();
+
+  const user = new User();
+  const wasCreated = await user.createIfNotExists({
+    index: 'userByEmail',
+    args: [email],
+    data: {
+      email,
       hashedEmailVerificationCode,
-      hashedPassword
-    ] = await Promise.all([
-      hash(emailVerificationCode),
-      hash(password)
-    ]);
-
-    const offsetTime = getTimeOffset();
-
-    const user = new User();
-    const wasCreated = await user.createIfNotExists({
-      index: 'userByEmail',
-      args: [email],
-      data: {
-        email,
-        hashedEmailVerificationCode,
-        hashedPassword,
-        emailCodeCanSendAt: offsetTime,
-        emailConfirmCodeExpiresAt: offsetTime
-      }
-    });
-
-    if (wasCreated) {
-      await sendEmailWelcomeMessage({
-        recipient: user.data.email,
-        emailVerificationCode
-      });
+      hashedPassword,
+      emailCodeCanSendAt: offsetTime,
+      emailConfirmCodeExpiresAt: offsetTime
     }
-  } catch (error) {
-    console.log('error', error);
+  });
+
+  if (wasCreated) {
+    await sendEmailWelcomeMessage({
+      recipient: user.data.email,
+      emailVerificationCode
+    });
   }
 };

@@ -6,11 +6,9 @@ const {
 } = require('dependencies/utils/helpers');
 const jwt = require('dependencies/utils/jwt');
 const {
-  changedPasswordEmail
+  sendEmailChangePassword
 } = require('dependencies/utils/sendEmail');
-const {
-  throwIfNotCompletedSetup
-} = require('dependencies/utils/users');
+const { hasCompletedSetup } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 function hasErrors ({ currentPassword, newPassword }) {
@@ -21,40 +19,55 @@ function hasErrors ({ currentPassword, newPassword }) {
 }
 
 module.exports.handler = async ({ headers, body }) => {
-  try {
-    const { authToken } = checkRequiredHeaderValues(headers);
+  const headerValues = checkRequiredHeaderValues(headers);
 
-    const formBody = JSON.parse(body);
-    if (hasErrors(formBody)) throw new Error('invalid form');
-
-    const { data } = await jwt.verify(authToken);
-
-    throwIfNotCompletedSetup(data);
-
-    const authUser = new User();
-    await authUser.getById(data.id);
-
-    if (
-      !(await verifyHash(
-        formBody.currentPassword,
-        authUser.data.hashedPassword
-      ))
-    )
-      throw new Error('Invalid password');
-
-    const passwordHash = await hash(formBody.newPassword);
-
-    await Promise.all([
-      authUser.update({
-        hashedPassword: passwordHash
-      }),
-      changedPasswordEmail(authUser.data.email)
-    ]);
-
-    return { statusCode: 200 };
-  } catch (error) {
-    console.log('error', error);
+  if (!headerValues) {
+    console.log('Invalid headers');
+    return { statusCode: 400 };
   }
 
-  return { statusCode: 403 };
+  const formBody = JSON.parse(body);
+  if (hasErrors(formBody)) {
+    console.log('invalid form body');
+    return { statusCode: 400 };
+  }
+
+  let authUser;
+
+  try {
+    const token = await jwt.verify(headerValues.authToken);
+    authUser = token.data;
+  } catch (error) {
+    console.log('invalid token');
+    return { statusCode: 401 };
+  }
+
+  if (!hasCompletedSetup(authUser)) {
+    console.log('Not completed setup yet');
+    return { statusCode: 403 };
+  }
+
+  const user = new User();
+  await user.getById(authUser.id);
+
+  if (
+    !(await verifyHash(
+      formBody.currentPassword,
+      user.data.hashedPassword
+    ))
+  ) {
+    console.log('Invalid password');
+    return { statusCode: 403 };
+  }
+
+  const passwordHash = await hash(formBody.newPassword);
+
+  await Promise.all([
+    user.update({
+      hashedPassword: passwordHash
+    }),
+    sendEmailChangePassword(user.data.email)
+  ]);
+
+  return { statusCode: 200 };
 };
