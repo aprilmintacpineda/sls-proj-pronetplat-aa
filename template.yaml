@@ -527,6 +527,24 @@ Resources:
             Path: /block-list
             RestApiId:
               Ref: mainBackendApi
+  changePassword:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: changePassword.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-changePassword"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /change-password
+            RestApiId:
+              Ref: mainBackendApi
   logout:
     Type: AWS::Serverless::Function
     Metadata:
