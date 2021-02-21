@@ -18,7 +18,7 @@ export function getUserData (user) {
     email: user.data.email,
     firstName: user.data.firstName,
     middleName: user.data.middleName,
-    lastName: user.data.lastName,
+    surname: user.data.surname,
     gender: user.data.gender,
     bio: user.data.bio,
     jobTitle: user.data.jobTitle,

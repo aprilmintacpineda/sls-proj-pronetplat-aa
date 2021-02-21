@@ -38,6 +38,8 @@ async function handler ({ authUser, deviceToken }) {
     )
   );
 
+  console.log(user, process.env.faunadbSecret);
+
   const userData = getUserData(user);
   const authToken = await jwt.sign(userData);
 
