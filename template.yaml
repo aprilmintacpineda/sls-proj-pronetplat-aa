@@ -31,6 +31,7 @@ Globals:
   Function:
     Layers:
       - !Ref dependencies
+      - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
     MemorySize: 1024
     ReservedConcurrentExecutions: 25
     Timeout: 30
