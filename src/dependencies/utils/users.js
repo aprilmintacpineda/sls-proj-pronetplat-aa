@@ -25,7 +25,8 @@ export function getUserData (user) {
     profilePicture: user.data.profilePicture,
     company: user.data.company,
     notificationsCount: user.data.notificationsCount,
-    contactRequestsCount: user.data.contactRequestsCount,
+    receivedContactRequestsCount:
+      user.data.receivedContactRequestsCount,
     emailCodeCanSendAt: user.data.emailCodeCanSendAt,
     emailConfirmCodeExpiresAt: user.data.emailConfirmCodeExpiresAt,
     emailVerifiedAt: user.data.emailVerifiedAt,
