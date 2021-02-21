@@ -390,16 +390,16 @@ Resources:
             Path: /decline-contact-request
             RestApiId:
               Ref: mainBackendApi
-  contactDetails:
+  contactProfile:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: contactDetails.handler
+      Handler: contactProfile.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-contactDetails"
+          - "proj-pronetplat-aa-contactProfile"
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
@@ -618,6 +618,28 @@ Resources:
           Properties:
             Method: post
             Path: /logout
+            RestApiId:
+              Ref: mainBackendApi
+  contactDetailAdd:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: contactDetailAdd.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+        - LambdaInvokePolicy:
+            FunctionName: !Ref forceExpireDeviceToken
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-contactDetailAdd"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /contact-details-add
             RestApiId:
               Ref: mainBackendApi
   ######

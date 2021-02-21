@@ -1,4 +1,5 @@
 const { query, Client } = require('faunadb');
+const { sanitizeFormBody } = require('./helpers');
 
 module.exports.initClient = () => {
   return new Client({
@@ -9,7 +10,7 @@ module.exports.initClient = () => {
 function update (ref, data) {
   return query.Update(ref, {
     data: {
-      ...data,
+      ...sanitizeFormBody(data),
       updatedAt: query.Format('%t', query.Now())
     }
   });
@@ -24,7 +25,7 @@ module.exports.updateById = (collection, id, data) => {
 function create (collection, data) {
   return query.Create(query.Collection(collection), {
     data: {
-      ...data,
+      ...sanitizeFormBody(data),
       createdAt: query.Format('%t', query.Now()),
       updatedAt: query.Format('%t', query.Now())
     }
@@ -48,14 +49,6 @@ module.exports.createOrUpdate = ({
   );
 };
 
-module.exports.getByIndex = (index, ...args) => {
-  return query.Get(query.Match(query.Index(index), ...args));
-};
-
-module.exports.getById = (collection, id) => {
-  return query.Get(query.Ref(query.Collection(collection), id));
-};
-
 module.exports.createIfNotExists = ({
   index,
   args,
@@ -65,13 +58,16 @@ module.exports.createIfNotExists = ({
   return query.If(
     query.Exists(query.Match(query.Index(index), ...args)),
     null,
-    query.Create(query.Collection(collection), {
-      data: {
-        ...data,
-        createdAt: query.Format('%t', query.Now())
-      }
-    })
+    create(collection, data)
   );
+};
+
+module.exports.getByIndex = (index, ...args) => {
+  return query.Get(query.Match(query.Index(index), ...args));
+};
+
+module.exports.getById = (collection, id) => {
+  return query.Get(query.Ref(query.Collection(collection), id));
 };
 
 module.exports.hasCompletedSetupQuery = inValue => {
