@@ -5,6 +5,15 @@ Description: >
 
   Sample SAM Template for proj-pronetplat-aa
   
+Mappings:
+  AppPackageNameMap:
+    dev:
+      value: com.aprmp.projpronetplataa.local
+    staging:
+      value: com.aprmp.projpronetplataa.staging
+    production:
+      value: com.aprmp.projpronetplataa
+
 Parameters:
   Stage:
     Description: Stage of the current build
@@ -13,6 +22,9 @@ Parameters:
       - dev
       - staging
       - production
+  FaunadbSecret:
+    Description: Faunadb secret
+    Type: String
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -27,7 +39,10 @@ Globals:
       Variables:
         stage: !Ref Stage
         faunadbSecret: !Ref FaunadbSecret
-        appPackageName: !Ref AppPackageName
+        appPackageName: !FindInMap
+          - AppPackageNameMap
+          - !Ref Stage
+          - value
         usersBucket: !Join
           - "-"
           - - "proj-pronetplat-aa-users"
