@@ -35,7 +35,7 @@ async function handler ({ authUser, nextToken }) {
         }
       ),
       query.Lambda(
-        ['firstName', 'middleName', 'lastName', 'ref'],
+        ['firstName', 'middleName', 'surname', 'ref'],
         query.Get(query.Var('ref'))
       )
     )

@@ -10,7 +10,7 @@ module.exports.up = q => {
       values: [
         { field: ['data', 'firstName'] },
         { field: ['data', 'middleName'] },
-        { field: ['data', 'lastName'] },
+        { field: ['data', 'surname'] },
         { field: ['ref'] }
       ]
     }),
