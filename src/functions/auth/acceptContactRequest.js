@@ -1,5 +1,9 @@
-const Contact = require('dependencies/models/Contact');
-const ContactRequest = require('dependencies/models/ContactRequest');
+const { query } = require('faunadb');
+const {
+  initClient,
+  getByIndex,
+  createIfNotExists
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -10,40 +14,49 @@ const {
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const contactRequest = new ContactRequest();
+  const faunadb = initClient();
+
+  let contactRequest;
 
   try {
-    await contactRequest.getByIndex(
-      'contactRequestBySenderIdRecipientId',
-      formBody.senderId,
-      authUser.id
+    contactRequest = await faunadb.query(
+      getByIndex(
+        'contactRequestBySenderIdRecipientId',
+        formBody.senderId,
+        authUser.id
+      )
     );
   } catch (error) {
     console.log('error', error);
     return { statusCode: 400 };
   }
 
-  const contact = new Contact();
-
   await Promise.all([
-    contact.createIfNotExists({
-      index: 'contactByOwnerContact',
-      args: [authUser.id, contactRequest.data.senderId],
-      data: {
-        ownerId: authUser.id,
-        contactId: contactRequest.data.senderId,
-        numTimesOpened: 0
-      }
-    }),
-    contact.createIfNotExists({
-      index: 'contactByOwnerContact',
-      args: [contactRequest.data.senderId, authUser.id],
-      data: {
-        ownerId: contactRequest.data.senderId,
-        contactId: authUser.id,
-        numTimesOpened: 0
-      }
-    }),
+    faunadb.query(
+      query.Do(
+        createIfNotExists({
+          collection: 'contacts',
+          index: 'contactByOwnerContact',
+          args: [authUser.id, contactRequest.data.senderId],
+          data: {
+            ownerId: authUser.id,
+            contactId: contactRequest.data.senderId,
+            numTimesOpened: 0
+          }
+        }),
+        createIfNotExists({
+          collection: 'contacts',
+          index: 'contactByOwnerContact',
+          args: [contactRequest.data.senderId, authUser.id],
+          data: {
+            ownerId: contactRequest.data.senderId,
+            contactId: authUser.id,
+            numTimesOpened: 0
+          }
+        }),
+        query.Delete(contactRequest.ref)
+      )
+    ),
     createNotification({
       authUser,
       userId: contactRequest.data.senderId,
@@ -51,8 +64,7 @@ async function handler ({ authUser, formBody }) {
       body: '{fullname} has accepted your contact request.',
       title: 'Contact request accepted',
       category: 'notification'
-    }),
-    contactRequest.hardDelete()
+    })
   ]);
 
   return { statusCode: 200 };

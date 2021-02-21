@@ -1,37 +1,55 @@
-const User = require('dependencies/models/User');
-const { getTimeOffset } = require('dependencies/utils/faunadb');
+const { query } = require('faunadb');
 const {
-  randomCode,
-  hash,
-  hasTimePassed
-} = require('dependencies/utils/helpers');
+  getTimeOffset,
+  initClient,
+  getByIndex
+} = require('dependencies/utils/faunadb');
+const { randomCode, hash } = require('dependencies/utils/helpers');
 const {
   sendEmailResetPasswordCode
 } = require('dependencies/utils/sendEmail');
 
 module.exports.handler = async ({ email, isResend = false }) => {
-  const user = new User();
-  await user.getByEmail(email);
+  const faunadb = initClient();
 
-  if (!hasTimePassed(user.data.passwordCodeCanResendAt)) {
-    console.log('passwordCodeCanResendAt has not passed yet.');
+  const resetPasswordCode = randomCode();
+
+  try {
+    const offsetTime = getTimeOffset();
+    const hashedResetPasswordCode = await hash(resetPasswordCode);
+
+    await faunadb.query(
+      query.Let(
+        {
+          user: getByIndex('userByEmail', email)
+        },
+        query.If(
+          query.LT(
+            query.Now(),
+            query.Time(
+              query.Select(
+                ['data', 'passwordCodeCanResendAt'],
+                query.Var('user')
+              )
+            )
+          ),
+          query.Abort('passwordCodeCanResendAtNotPastYet'),
+          query.Update(query.Select(['ref'], query.Var('user')), {
+            hashedResetPasswordCode,
+            passwordCodeCanResendAt: offsetTime,
+            passwordResetCodeExpiresAt: offsetTime
+          })
+        )
+      )
+    );
+  } catch (error) {
+    console.log('error', error);
     return;
   }
 
-  const resetPasswordCode = randomCode();
-  const offsetTime = getTimeOffset();
-  const hashedResetPasswordCode = await hash(resetPasswordCode);
-
-  await Promise.all([
-    user.update({
-      hashedResetPasswordCode,
-      passwordCodeCanResendAt: offsetTime,
-      passwordResetCodeExpiresAt: offsetTime
-    }),
-    sendEmailResetPasswordCode({
-      recipient: user.data.email,
-      resetPasswordCode,
-      isResend
-    })
-  ]);
+  await sendEmailResetPasswordCode({
+    recipient: email,
+    resetPasswordCode,
+    isResend
+  });
 };

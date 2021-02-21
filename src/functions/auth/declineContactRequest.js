@@ -1,4 +1,7 @@
-const ContactRequest = require('dependencies/models/ContactRequest');
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -9,30 +12,29 @@ const {
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const contactRequest = new ContactRequest();
+  const faunadb = initClient();
 
   try {
-    await contactRequest.getByIndex(
-      'contactRequestBySenderIdRecipientId',
-      formBody.senderId,
-      authUser.id
+    await faunadb.query(
+      hardDeleteByIndex(
+        'contactRequestBySenderIdRecipientId',
+        formBody.senderId,
+        authUser.id
+      )
     );
   } catch (error) {
     console.log('error', error);
     return { statusCode: 400 };
   }
 
-  await Promise.all([
-    contactRequest.hardDelete(),
-    createNotification({
-      authUser,
-      userId: contactRequest.data.senderId,
-      type: 'contactRequestDeclined',
-      body: '{fullname} has declined your contact request.',
-      title: 'Contact request declined',
-      category: 'notification'
-    })
-  ]);
+  await createNotification({
+    authUser,
+    userId: formBody.senderId,
+    type: 'contactRequestDeclined',
+    body: '{fullname} has declined your contact request.',
+    title: 'Contact request declined',
+    category: 'notification'
+  });
 
   return { statusCode: 200 };
 }

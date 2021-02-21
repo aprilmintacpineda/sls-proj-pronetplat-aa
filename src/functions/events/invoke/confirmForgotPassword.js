@@ -1,4 +1,8 @@
-const User = require('dependencies/models/User');
+const {
+  initClient,
+  getByIndex,
+  update
+} = require('dependencies/utils/faunadb');
 const {
   hash,
   verifyHash,
@@ -13,8 +17,9 @@ module.exports.handler = async ({
   email,
   newPassword
 }) => {
-  const user = new User();
-  await user.getByEmail(email);
+  const faunadb = initClient();
+
+  const user = await faunadb.query(getByIndex('userByEmail', email));
 
   if (hasTimePassed(user.data.passwordResetCodeExpiresAt)) {
     console.log('password reset code expired');
@@ -33,13 +38,14 @@ module.exports.handler = async ({
 
   const hashedPassword = await hash(newPassword);
 
-  await Promise.all([
-    user.update({
+  await faunadb.query(
+    update(user.ref, {
       hashedPassword,
       hashedResetPasswordCode: null,
       passwordCodeCanResendAt: null,
       passwordResetCodeExpiresAt: null
-    }),
-    sendEmailResetPasswordSuccess(user.data.email)
-  ]);
+    })
+  );
+
+  await sendEmailResetPasswordSuccess(user.data.email);
 };

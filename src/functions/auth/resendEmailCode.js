@@ -1,5 +1,8 @@
-const User = require('dependencies/models/User');
-const { getTimeOffset } = require('dependencies/utils/faunadb');
+const {
+  getTimeOffset,
+  initClient,
+  updateById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -26,20 +29,20 @@ async function handler ({ authUser }) {
   );
 
   const timeOffset = getTimeOffset();
+  const faunadb = initClient();
 
-  const user = new User();
-
-  await Promise.all([
-    user.updateById(authUser.id, {
+  const user = await faunadb.query(
+    updateById(authUser.id, {
       hashedEmailVerificationCode,
       emailCodeCanSendAt: timeOffset,
       emailConfirmCodeExpiresAt: timeOffset
-    }),
-    sendEmailVerificationCode({
-      recipient: user.data.email,
-      emailVerificationCode
     })
-  ]);
+  );
+
+  await sendEmailVerificationCode({
+    recipient: user.data.email,
+    emailVerificationCode
+  });
 
   return {
     statusCode: 200,

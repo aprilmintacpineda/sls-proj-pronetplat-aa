@@ -22,10 +22,12 @@ Globals:
     MemorySize: 1024
     ReservedConcurrentExecutions: 25
     Timeout: 30
-    Runtime: nodejs14.x
+    Runtime: nodejs12.x
     Environment:
       Variables:
         stage: !Ref Stage
+        faunadbSecret: !Ref FaunadbSecret
+        appPackageName: !Ref AppPackageName
         usersBucket: !Join
           - "-"
           - - "proj-pronetplat-aa-users"

@@ -1,4 +1,7 @@
-const UserBlocking = require('dependencies/models/UserBlocking');
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -6,12 +9,14 @@ const {
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const userBlocking = new UserBlocking();
+  const faunadb = initClient();
 
-  await userBlocking.hardDeleteIfExists(
-    'userBlockingsByBlockerIdUserId',
-    authUser.id,
-    formBody.contactId
+  await faunadb.query(
+    hardDeleteByIndex(
+      'userBlockingsByBlockerIdUserId',
+      authUser.id,
+      formBody.contactId
+    )
   );
 
   return { statusCode: 200 };

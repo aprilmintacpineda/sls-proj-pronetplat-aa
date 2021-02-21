@@ -1,27 +1,48 @@
-export function getUserPublicResponseData (userData) {
+export function getUserPublicResponseData (user) {
   return {
-    id: userData.id,
-    firstName: userData.firstName,
-    middleName: userData.middleName || '',
-    surname: userData.surname,
-    profilePicture: userData.profilePicture,
-    gender: userData.gender,
-    bio: userData.bio || '',
-    company: userData.company || '',
-    jobTitle: userData.jobTitle
+    id: user.ref.i,
+    firstName: user.data.firstName,
+    middleName: user.data.middleName || '',
+    surname: user.data.surname,
+    profilePicture: user.data.profilePicture,
+    gender: user.data.gender,
+    bio: user.data.bio || '',
+    company: user.data.company || '',
+    jobTitle: user.data.jobTitle
   };
 }
 
-export function getFullName (userData) {
+export function getUserData (user) {
+  return {
+    id: user.ref.id,
+    email: user.data.email,
+    firstName: user.data.firstName,
+    middleName: user.data.middleName,
+    lastName: user.data.lastName,
+    gender: user.data.gender,
+    bio: user.data.bio,
+    jobTitle: user.data.jobTitle,
+    profilePicture: user.data.profilePicture,
+    company: user.data.company,
+    notificationsCount: user.data.notificationsCount,
+    contactRequestsCount: user.data.contactRequestsCount,
+    emailCodeCanSendAt: user.data.emailCodeCanSendAt,
+    emailConfirmCodeExpiresAt: user.data.emailConfirmCodeExpiresAt,
+    emailVerifiedAt: user.data.emailVerifiedAt,
+    lastLoginAt: user.data.lastLoginAt
+  };
+}
+
+export function getFullName (user) {
   return (
-    userData.firstName +
-    (userData.middleName ? ` ${userData.middleName} ` : ' ') +
-    userData.surname
+    user.data.firstName +
+    (user.data.middleName ? ` ${user.data.middleName} ` : ' ') +
+    user.data.surname
   );
 }
 
-export function getPersonalPronoun (userData) {
-  if (userData.gender === 'male') {
+export function getPersonalPronoun (user) {
+  if (user.data.gender === 'male') {
     return {
       subjective: {
         ucfirst: 'He',
@@ -56,11 +77,11 @@ export function getPersonalPronoun (userData) {
 
 export function hasCompletedSetup (user) {
   return Boolean(
-    user.firstName &&
-      user.surname &&
-      user.gender &&
-      user.jobTitle &&
-      user.profilePicture &&
-      user.emailVerifiedAt
+    user.data.firstName &&
+      user.data.surname &&
+      user.data.gender &&
+      user.data.jobTitle &&
+      user.data.profilePicture &&
+      user.data.emailVerifiedAt
   );
 }

@@ -1,5 +1,8 @@
-const User = require('dependencies/models/User');
-const { getTimeOffset } = require('dependencies/utils/faunadb');
+const {
+  getTimeOffset,
+  initClient,
+  createIfNotExists
+} = require('dependencies/utils/faunadb');
 const { randomCode, hash } = require('dependencies/utils/helpers');
 const {
   sendEmailWelcomeMessage
@@ -17,21 +20,24 @@ module.exports.handler = async ({ email, password }) => {
   ]);
 
   const offsetTime = getTimeOffset();
+  const faunadb = initClient();
 
-  const user = new User();
-  const wasCreated = await user.createIfNotExists({
-    index: 'userByEmail',
-    args: [email],
-    data: {
-      email,
-      hashedEmailVerificationCode,
-      hashedPassword,
-      emailCodeCanSendAt: offsetTime,
-      emailConfirmCodeExpiresAt: offsetTime
-    }
-  });
+  const user = await faunadb.query(
+    createIfNotExists({
+      collection: 'users',
+      index: 'userByEmail',
+      args: [email],
+      data: {
+        email,
+        hashedEmailVerificationCode,
+        hashedPassword,
+        emailCodeCanSendAt: offsetTime,
+        emailConfirmCodeExpiresAt: offsetTime
+      }
+    })
+  );
 
-  if (wasCreated) {
+  if (user) {
     await sendEmailWelcomeMessage({
       recipient: user.data.email,
       emailVerificationCode

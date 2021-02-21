@@ -1,11 +1,16 @@
-const RegisteredDevice = require('dependencies/models/RegisteredDevice');
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
 
 module.exports.handler = async ({ deviceToken, userId }) => {
-  const registeredDevice = new RegisteredDevice();
+  const faunadb = initClient();
 
-  await registeredDevice.hardDeleteByIndex(
-    'registeredDeviceByUserIdDeviceToken',
-    userId,
-    deviceToken
+  await faunadb.query(
+    hardDeleteByIndex(
+      'registeredDeviceByUserIdDeviceToken',
+      userId,
+      deviceToken
+    )
   );
 };

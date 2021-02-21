@@ -1,6 +1,5 @@
 const { query } = require('faunadb');
-const Notification = require('dependencies/models/Notification');
-const { initClient } = require('dependencies/utils/faunadb');
+const { initClient, create } = require('dependencies/utils/faunadb');
 const {
   sendPushNotification
 } = require('dependencies/utils/notifications');
@@ -14,8 +13,8 @@ module.exports.handler = async ({
   category,
   data
 }) => {
-  const promises = [
-    new Notification().create({
+  const queries = [
+    create('notifications', {
       userId,
       type,
       body,
@@ -28,21 +27,18 @@ module.exports.handler = async ({
     type === 'contactRequestCancelled' ||
     type === 'contactRequestDeclined'
   ) {
-    const client = initClient();
-
-    promises.push(
-      client.query(
-        query.Call(
-          'updateUserBadgeCount',
-          authUser.id,
-          'receivedContactRequestsCount',
-          -1
-        )
+    queries.push(
+      query.Call(
+        'updateUserBadgeCount',
+        authUser.id,
+        'receivedContactRequestsCount',
+        -1
       )
     );
   }
 
-  await Promise.all(promises);
+  const client = initClient();
+  await client.query(query.Do(...queries));
 
   await sendPushNotification({
     userId,

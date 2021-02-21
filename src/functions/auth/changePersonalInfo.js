@@ -1,24 +1,31 @@
-const User = require('dependencies/models/User');
+const {
+  initClient,
+  updateById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
 const jwt = require('dependencies/utils/jwt');
+const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const user = new User();
-  await user.updateById(authUser.id, {
-    firstName: formBody.firstName,
-    middleName: formBody.middleName || '',
-    surname: formBody.surname,
-    gender: formBody.gender,
-    jobTitle: formBody.jobTitle,
-    company: formBody.company || '',
-    bio: formBody.bio || ''
-  });
+  const faunadb = initClient();
 
-  const userData = user.toResponseData();
+  const user = await faunadb.query(
+    updateById('users', authUser.id, {
+      firstName: formBody.firstName,
+      middleName: formBody.middleName || '',
+      surname: formBody.surname,
+      gender: formBody.gender,
+      jobTitle: formBody.jobTitle,
+      company: formBody.company || '',
+      bio: formBody.bio || ''
+    })
+  );
+
+  const userData = getUserData(user);
   const authToken = await jwt.sign(userData);
 
   return {

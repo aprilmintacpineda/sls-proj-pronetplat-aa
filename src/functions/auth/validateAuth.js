@@ -1,38 +1,44 @@
 const { query } = require('faunadb');
-const RegisteredDevice = require('dependencies/models/RegisteredDevice');
-const User = require('dependencies/models/User');
+const {
+  initClient,
+  createOrUpdate,
+  updateById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
 const jwt = require('dependencies/utils/jwt');
+const { getUserData } = require('dependencies/utils/users');
 
 async function handler ({ authUser, deviceToken }) {
-  const user = new User();
-  const registeredDevice = new RegisteredDevice();
+  const faunadb = initClient();
 
-  await Promise.all([
-    registeredDevice.createOrUpdate({
-      index: 'registeredDeviceByUserIdDeviceToken',
-      args: [authUser.id, deviceToken],
-      data: {
-        userId: authUser.id,
-        deviceToken,
-        expiresAt: query.Format(
+  const user = await faunadb.query(
+    query.Do(
+      createOrUpdate({
+        collection: 'registeredDevices',
+        index: 'registeredDeviceByUserIdDeviceToken',
+        args: [authUser.id, deviceToken],
+        data: {
+          userId: authUser.id,
+          deviceToken,
+          expiresAt: query.Format(
+            '%t',
+            query.TimeAdd(query.Now(), 7, 'days')
+          )
+        }
+      }),
+      updateById('users', authUser.id, {
+        lastLoginAt: query.Format(
           '%t',
           query.TimeAdd(query.Now(), 7, 'days')
         )
-      }
-    }),
-    user.updateById(authUser.id, {
-      lastLoginAt: query.Format(
-        '%t',
-        query.TimeAdd(query.Now(), 7, 'days')
-      )
-    })
-  ]);
+      })
+    )
+  );
 
-  const userData = user.toResponseData();
+  const userData = getUserData(user);
   const authToken = await jwt.sign(userData);
 
   return {

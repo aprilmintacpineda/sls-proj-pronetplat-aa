@@ -1,6 +1,9 @@
-const Contact = require('dependencies/models/Contact');
-const ContactRequest = require('dependencies/models/ContactRequest');
-const UserBlocking = require('dependencies/models/UserBlocking');
+const { query } = require('faunadb');
+const {
+  initClient,
+  getByIndex,
+  toResponseData
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -8,68 +11,150 @@ const {
 const { invokeEvent } = require('dependencies/utils/lambda');
 
 async function handler ({ pathParameters: { contactId }, authUser }) {
-  const contactBlocked = new UserBlocking();
-  const blockedByUser = new UserBlocking();
-  const receivedContactRequest = new ContactRequest();
-  const sentContactRequest = new ContactRequest();
-  const contact = new Contact();
+  const faunadb = initClient();
 
-  const [wasContactBlocked, wasBlockedByUser] = await Promise.all([
-    contactBlocked.exists(
-      'userBlockingsByBlockerIdUserId',
-      authUser.id,
-      contactId
-    ),
-    blockedByUser.exists(
-      'userBlockingsByBlockerIdUserId',
-      contactId,
-      authUser.id
-    ),
-    receivedContactRequest.getPendingRequestIfExists({
-      senderId: contactId,
-      recipientId: authUser.id
-    }),
-    sentContactRequest.getPendingRequestIfExists({
-      senderId: authUser.id,
-      recipientId: contactId
-    }),
-    contact.getByIndexIfExists(
-      'contactByOwnerContact',
-      authUser.id,
-      contactId
-    )
-  ]);
+  let result;
 
-  if (
-    wasContactBlocked ||
-    wasBlockedByUser ||
-    receivedContactRequest.instance ||
-    sentContactRequest.instance
-  ) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        data: {
-          contactBlocked: wasContactBlocked,
-          blockedByUser: wasBlockedByUser,
-          receivedContactRequest: receivedContactRequest.toResponseData(),
-          sentContactRequest: sentContactRequest.toResponseData()
-        }
-      })
-    };
+  try {
+    result = await faunadb.query(
+      query.If(
+        query.Exists(
+          query.Match(
+            query.Index('userBlockingsByBlockerIdUserId'),
+            authUser.id,
+            contactId
+          )
+        ),
+        query.Abort('contactBlocked'),
+        query.If(
+          query.Exists(
+            query.Match(
+              query.Index('userBlockingsByBlockerIdUserId'),
+              contactId,
+              authUser.id
+            )
+          ),
+          query.Abort('blockedByUser'),
+          query.If(
+            query.Exists(
+              query.Match(
+                query.Index('contactRequestBySenderIdRecipientId'),
+                authUser.id,
+                contactId
+              )
+            ),
+            {
+              sentContactRequest: getByIndex(
+                'contactRequestBySenderIdRecipientId',
+                authUser.id,
+                contactId
+              )
+            },
+            query.If(
+              query.Exists(
+                query.Match(
+                  query.Index('contactRequestBySenderIdRecipientId'),
+                  contactId,
+                  authUser.id
+                )
+              ),
+              {
+                receivedContactRequest: getByIndex(
+                  'contactRequestBySenderIdRecipientId',
+                  contactId,
+                  authUser.id
+                )
+              },
+              query.If(
+                query.Exists(
+                  query.Match(
+                    query.Index('contactByOwnerContact'),
+                    authUser.id,
+                    contactId
+                  )
+                ),
+                {
+                  // @TODO: get contact details and send back
+                  data: [],
+                  after: null
+                },
+                query.Abort('contactDoesNotExist')
+              )
+            )
+          )
+        )
+      )
+    );
+
+    if (result.sentContactRequest) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          data: {
+            sentContactRequest: toResponseData(
+              result.sentContactRequest
+            )
+          }
+        })
+      };
+    }
+
+    if (result.receivedContactRequest) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          data: {
+            receivedContactRequest: toResponseData(
+              result.receivedContactRequest
+            )
+          }
+        })
+      };
+    }
+  } catch (error) {
+    console.log('error', error);
+
+    switch (error.description) {
+      case 'contactBlocked':
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            data: {
+              contactBlocked: true
+            }
+          })
+        };
+      case 'blockedByUser':
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            data: {
+              blockedByUser: true
+            }
+          })
+        };
+      case 'contactDoesNotExist':
+        return { statusCode: 404 };
+    }
+
+    return { statusCode: 500 };
   }
-
-  if (!contact.instance) return { statusCode: 404 };
 
   await invokeEvent({
     functionName: process.env.fn_incrementNumTimesOpened,
-    payload: {
-      id: contact.data.id
-    }
+    payload: { id: contactId }
   });
 
-  // @TODO: get contact details and send back
-  return { statusCode: 403 };
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      data: result.data.map(contactDetail => ({
+        ...contactDetail.data,
+        id: contactDetail.ref.id
+      })),
+      nextToken: result.after?.[0].id || null
+    })
+  };
 }
 
 module.exports.handler = httpGuard({

@@ -1,4 +1,8 @@
-const User = require('dependencies/models/User');
+const {
+  initClient,
+  update,
+  getById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -10,8 +14,9 @@ const {
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const user = new User();
-  await user.getById(authUser.id);
+  const faunadb = initClient();
+
+  const user = await faunadb.query(getById('users', authUser.id));
 
   if (
     !(await verifyHash(
@@ -23,14 +28,13 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 403 };
   }
 
-  const passwordHash = await hash(formBody.newPassword);
+  await faunadb.query(
+    update(user.ref, {
+      hashedPassword: await hash(formBody.newPassword)
+    })
+  );
 
-  await Promise.all([
-    user.update({
-      hashedPassword: passwordHash
-    }),
-    sendEmailChangePassword(user.data.email)
-  ]);
+  await sendEmailChangePassword(user.data.email);
 
   return { statusCode: 200 };
 }

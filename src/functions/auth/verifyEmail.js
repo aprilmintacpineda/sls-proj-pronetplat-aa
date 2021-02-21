@@ -1,5 +1,8 @@
 const { query } = require('faunadb');
-const User = require('dependencies/models/User');
+const {
+  initClient,
+  updateById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -9,6 +12,7 @@ const {
   hasTimePassed
 } = require('dependencies/utils/helpers');
 const jwt = require('dependencies/utils/jwt');
+const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
@@ -27,18 +31,20 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 403 };
   }
 
-  const user = new User();
-  await user.updateById(authUser.id, {
-    emailVerifiedAt: query.Format('%t', query.Now()),
-    emailConfirmCodeExpiresAt: null,
-    emailCodeCanSendAt: null,
-    hashedEmailVerificationCode: null,
-    notificationsCount: 0,
-    receivedContactRequestsCount: 0,
-    contactsCount: 0
-  });
+  const faunadb = initClient();
+  const user = await faunadb.query(
+    updateById('users', authUser.id, {
+      emailVerifiedAt: query.Format('%t', query.Now()),
+      emailConfirmCodeExpiresAt: null,
+      emailCodeCanSendAt: null,
+      hashedEmailVerificationCode: null,
+      notificationsCount: 0,
+      receivedContactRequestsCount: 0,
+      contactsCount: 0
+    })
+  );
 
-  const userData = user.toResponseData();
+  const userData = getUserData(user);
   const authToken = await jwt.sign(userData);
 
   return {

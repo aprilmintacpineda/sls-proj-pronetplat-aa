@@ -7,7 +7,7 @@ const config = {
       '@babel/preset-env',
       {
         targets: {
-          node: '14'
+          node: '12'
         }
       }
     ]
@@ -37,10 +37,6 @@ if (process.env.NODE_ENV === 'production') {
         {
           search: /__JWTSecret__/gm,
           replace: process.env.JWT_SECRET
-        },
-        {
-          search: /__appPackageName__/gm,
-          replace: process.env.APP_PACKAGE_NAME
         }
       ]
     }

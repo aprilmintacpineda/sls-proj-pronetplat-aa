@@ -1,50 +1,71 @@
 const { query } = require('faunadb');
-const ContactRequest = require('dependencies/models/ContactRequest');
+const {
+  initClient,
+  getByIndex,
+  update
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
-const { hasTimePassed } = require('dependencies/utils/helpers');
 const {
   createNotification
 } = require('dependencies/utils/notifications');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const contactRequest = new ContactRequest();
+  const faunadb = initClient();
 
   try {
-    await contactRequest.getByIndex(
-      'contactRequestBySenderIdRecipientId',
-      authUser.id,
-      formBody.contactId
+    await faunadb.query(
+      query.Let(
+        {
+          contactRequest: getByIndex(
+            'contactRequestBySenderIdRecipientId',
+            authUser.id,
+            formBody.contactId
+          )
+        },
+        query.If(
+          query.LT(
+            query.Now(),
+            query.Time(
+              query.Select(
+                ['data', 'canFollowUpAt'],
+                query.Var('contactRequest')
+              )
+            )
+          ),
+          query.Abort('canFollowUpAtNotPastYet'),
+          update(
+            query.Select(['ref'], query.Var('contactRequest')),
+            {
+              canFollowUpAt: query.Format(
+                '%t',
+                query.TimeAdd(query.Now(), 1, 'day')
+              )
+            }
+          )
+        )
+      )
     );
   } catch (error) {
-    console.log(error);
-    return { statusCode: 400 };
+    console.log('error', error);
+
+    if (error.description === 'canFollowUpAtNotPastYet')
+      return { statusCode: 429 };
+
+    return { statusCode: 500 };
   }
 
-  if (!hasTimePassed(contactRequest.data.canFollowUpAt)) {
-    console.log('canFollowUpAt has not passed yet');
-    return { statusCode: 429 };
-  }
-
-  await Promise.all([
-    createNotification({
-      authUser,
-      userId: contactRequest.data.recipientId,
-      type: 'contactRequestFollowUp',
-      body: '{fullname} followed up with his contact request',
-      title: 'Contact request',
-      category: 'notification'
-    }),
-    contactRequest.update({
-      canFollowUpAt: query.Format(
-        '%t',
-        query.TimeAdd(query.Now(), 1, 'day')
-      )
-    })
-  ]);
+  await createNotification({
+    authUser,
+    userId: formBody.contactId,
+    type: 'contactRequestFollowUp',
+    body: '{fullname} followed up with his contact request',
+    title: 'Contact request',
+    category: 'notification'
+  });
 
   return { statusCode: 200 };
 }

@@ -1,4 +1,7 @@
-const Contact = require('dependencies/models/Contact');
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -6,12 +9,14 @@ const {
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const contact = new Contact();
+  const faunadb = initClient();
 
-  await contact.hardDeleteIfExists(
-    'contactByOwnerContact',
-    authUser.id,
-    formBody.contactId
+  await faunadb.query(
+    hardDeleteByIndex(
+      'contactByOwnerContact',
+      authUser.id,
+      formBody.contactId
+    )
   );
 
   return { statusCode: 200 };
