@@ -1,5 +1,4 @@
 const jwt = require('./jwt');
-const { hasCompletedSetup } = require('./users');
 
 const guardTypes = {
   deviceToken: 'deviceToken',
@@ -66,7 +65,14 @@ module.exports.httpGuard = ({
       );
 
       if (guards.includes(guardTypes.setupComplete)) {
-        if (!hasCompletedSetup(authUser)) {
+        if (
+          !authUser.firstName ||
+          !authUser.surname ||
+          !authUser.gender ||
+          !authUser.jobTitle ||
+          !authUser.profilePicture ||
+          !authUser.emailVerifiedAt
+        ) {
           console.log('Guard: Not yet setup');
           return { statusCode: 403 };
         }

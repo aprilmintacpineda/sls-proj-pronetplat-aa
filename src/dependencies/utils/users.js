@@ -74,14 +74,3 @@ export function getPersonalPronoun (user) {
     }
   };
 }
-
-export function hasCompletedSetup (user) {
-  return Boolean(
-    user.data.firstName &&
-      user.data.surname &&
-      user.data.gender &&
-      user.data.jobTitle &&
-      user.data.profilePicture &&
-      user.data.emailVerifiedAt
-  );
-}
