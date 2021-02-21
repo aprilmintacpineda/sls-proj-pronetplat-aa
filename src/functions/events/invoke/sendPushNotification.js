@@ -5,7 +5,7 @@ const {
 } = require('dependencies/utils/firebase');
 const { hasTimePassed } = require('dependencies/utils/helpers');
 const {
-  getUserPublicResponseData,
+  getPublicUserData,
   getFullName,
   getPersonalPronoun
 } = require('dependencies/utils/users');
@@ -69,7 +69,10 @@ module.exports.handler = async ({
       },
       data: {
         ...data,
-        ...getUserPublicResponseData(authUser)
+        ...getPublicUserData({
+          ref: { id: authUser.id },
+          data: authUser
+        })
       }
     })
   ]);

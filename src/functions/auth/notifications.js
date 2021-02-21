@@ -5,9 +5,7 @@ const {
   guardTypes
 } = require('dependencies/utils/guards');
 const { invokeEvent } = require('dependencies/utils/lambda');
-const {
-  getUserPublicResponseData
-} = require('dependencies/utils/users');
+const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ nextToken, authUser }) {
   const client = initClient();
@@ -47,10 +45,7 @@ async function handler ({ nextToken, authUser }) {
     data.push({
       ...notification.data,
       id: notificationId,
-      actor: {
-        ...getUserPublicResponseData(actor.data),
-        id: actor.ref.id
-      }
+      actor: getPublicUserData(actor)
     });
   });
 

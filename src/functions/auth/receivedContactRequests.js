@@ -4,9 +4,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
-const {
-  getUserPublicResponseData
-} = require('dependencies/utils/users');
+const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ nextToken, authUser }) {
   const client = initClient();
@@ -43,10 +41,7 @@ async function handler ({ nextToken, authUser }) {
       data: result.data.map(({ contactRequest, sender }) => ({
         ...contactRequest.data,
         id: contactRequest.ref.id,
-        sender: {
-          ...getUserPublicResponseData(sender.data),
-          id: sender.ref.id
-        }
+        sender: getPublicUserData(sender)
       })),
       nextToken: result.after?.[0].id || null
     })

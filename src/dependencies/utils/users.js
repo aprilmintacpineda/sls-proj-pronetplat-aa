@@ -1,6 +1,6 @@
-export function getUserPublicResponseData (user) {
+export function getPublicUserData (user) {
   return {
-    id: user.ref.i,
+    id: user.ref.id,
     firstName: user.data.firstName,
     middleName: user.data.middleName || '',
     surname: user.data.surname,

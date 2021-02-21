@@ -59,11 +59,6 @@ module.exports.httpGuard = ({
         authorization.replace(/Bearer /gim, '').trim()
       );
 
-      console.log(
-        authorization.replace(/Bearer /gim, '').trim(),
-        JSON.stringify(authUser, null, 2)
-      );
-
       if (guards.includes(guardTypes.setupComplete)) {
         if (
           !authUser.firstName ||
