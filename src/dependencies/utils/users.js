@@ -33,16 +33,16 @@ export function getUserData (user) {
   };
 }
 
-export function getFullName (user) {
+export function getFullName (userData) {
   return (
-    user.data.firstName +
-    (user.data.middleName ? ` ${user.data.middleName} ` : ' ') +
-    user.data.surname
+    userData.firstName +
+    (userData.middleName ? ` ${userData.middleName} ` : ' ') +
+    userData.surname
   );
 }
 
-export function getPersonalPronoun (user) {
-  if (user.data.gender === 'male') {
+export function getPersonalPronoun (userData) {
+  if (userData.gender === 'male') {
     return {
       subjective: {
         ucfirst: 'He',
