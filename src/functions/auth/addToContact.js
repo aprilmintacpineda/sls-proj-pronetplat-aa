@@ -76,7 +76,11 @@ async function handler ({ authUser, formBody }) {
       '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
     type: 'contactRequest',
     category: 'contactRequest',
-    authUser
+    authUser,
+    data: {
+      type: 'contactRequest',
+      category: 'contactRequest'
+    }
   });
 
   return { statusCode: 200 };
