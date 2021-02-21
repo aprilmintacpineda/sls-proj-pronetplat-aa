@@ -22,7 +22,7 @@ module.exports.handler = async ({
     }),
     query.Call(
       'updateUserBadgeCount',
-      data.userId,
+      userId,
       'notificationsCount',
       1
     )
