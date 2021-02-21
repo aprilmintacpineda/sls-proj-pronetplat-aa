@@ -14,7 +14,7 @@ const validate = require('dependencies/utils/validate');
 async function handler ({ authUser, formBody }) {
   const faunadb = initClient();
 
-  const contactRequest = await faunadb.query(
+  await faunadb.query(
     hardDeleteByIndex(
       'contactRequestBySenderIdRecipientId',
       authUser.id,
@@ -24,12 +24,12 @@ async function handler ({ authUser, formBody }) {
 
   await createNotification({
     authUser,
-    userId: contactRequest.data.recipientId,
-    type: 'contactRequestCancelled',
+    userId: formBody.contactId,
     body:
       '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
     title: 'Contact request cancelled',
-    category: 'notification'
+    category: 'notification',
+    type: 'contactRequestCancelled'
   });
 
   return { statusCode: 200 };

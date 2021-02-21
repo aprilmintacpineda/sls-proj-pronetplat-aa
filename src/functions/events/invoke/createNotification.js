@@ -36,7 +36,7 @@ module.exports.handler = async ({
     queries.push(
       query.Call(
         'updateUserBadgeCount',
-        authUser.id,
+        userId,
         'receivedContactRequestsCount',
         -1
       )
