@@ -19,7 +19,13 @@ module.exports.handler = async ({
       type,
       body,
       actorId: authUser.id
-    })
+    }),
+    query.Call(
+      'updateUserBadgeCount',
+      data.userId,
+      'notificationsCount',
+      1
+    )
   ];
 
   if (

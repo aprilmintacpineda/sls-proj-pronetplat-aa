@@ -40,14 +40,22 @@ async function handler ({ authUser, formBody }) {
           hasCompletedSetupQuery(
             getById('users', formBody.contactId)
           ),
-          create('contactRequests', {
-            senderId: authUser.id,
-            recipientId: formBody.contactId,
-            canFollowUpAt: query.Format(
-              '%t',
-              query.TimeAdd(query.Now(), 1, 'day')
+          query.Do(
+            create('contactRequests', {
+              senderId: authUser.id,
+              recipientId: formBody.contactId,
+              canFollowUpAt: query.Format(
+                '%t',
+                query.TimeAdd(query.Now(), 1, 'day')
+              )
+            }),
+            query.Call(
+              'updateUserBadgeCount',
+              formBody.contactId,
+              'receivedContactRequestsCount',
+              1
             )
-          }),
+          ),
           query.Abort('NotYetSetup')
         )
       )
