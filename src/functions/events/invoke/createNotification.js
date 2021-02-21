@@ -28,15 +28,23 @@ module.exports.handler = async ({
     )
   ];
 
-  if (
+  if (type === 'contactRequestCancelled') {
+    queries.push(
+      query.Call(
+        'updateUserBadgeCount',
+        userId,
+        'receivedContactRequestsCount',
+        -1
+      )
+    );
+  } else if (
     type === 'contactRequestAccepted' ||
-    type === 'contactRequestCancelled' ||
     type === 'contactRequestDeclined'
   ) {
     queries.push(
       query.Call(
         'updateUserBadgeCount',
-        userId,
+        authUser.id,
         'receivedContactRequestsCount',
         -1
       )
