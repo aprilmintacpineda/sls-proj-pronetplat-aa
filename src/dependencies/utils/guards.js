@@ -55,32 +55,33 @@ module.exports.httpGuard = ({
       return { statusCode: 401 };
     }
 
-    let authUser;
-
     try {
-      const token = await jwt.verify(
-        authorization.replace(/bearer /gim, '').trim()
+      const { data: authUser } = await jwt.verify(
+        authorization.replace(/Bearer /gim, '').trim()
       );
 
-      authUser = token.data;
+      console.log(
+        authorization.replace(/Bearer /gim, '').trim(),
+        JSON.stringify(authUser, null, 2)
+      );
+
+      if (guards.includes(guardTypes.setupComplete)) {
+        if (!hasCompletedSetup(authUser)) {
+          console.log('Guard: Not yet setup');
+          return { statusCode: 403 };
+        }
+      } else if (guards.includes(guardTypes.emailVerified)) {
+        if (!authUser.emailVerifiedAt) {
+          console.log('Guard: email not verified');
+          return { statusCode: 403 };
+        }
+      }
+
+      results.authUser = authUser;
     } catch (error) {
       console.log('Guard: token error', error);
       return { statusCode: 401 };
     }
-
-    if (guards.includes(guardTypes.setupComplete)) {
-      if (!hasCompletedSetup(authUser)) {
-        console.log('Guard: Not yet setup');
-        return { statusCode: 403 };
-      }
-    } else if (guards.includes(guardTypes.emailVerified)) {
-      if (!authUser.emailVerifiedAt) {
-        console.log('Guard: email not verified');
-        return { statusCode: 403 };
-      }
-    }
-
-    results.authUser = authUser;
   }
 
   return handler(results, httpEvent);
