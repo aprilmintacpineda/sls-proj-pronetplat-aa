@@ -628,8 +628,6 @@ Resources:
       Handler: contactDetailAdd.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref forceExpireDeviceToken
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -640,6 +638,26 @@ Resources:
           Properties:
             Method: post
             Path: /contact-details-add
+            RestApiId:
+              Ref: mainBackendApi
+  contactDetailsList:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: contactDetailsList.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-contactDetailsList"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /contact-details
             RestApiId:
               Ref: mainBackendApi
   ######
