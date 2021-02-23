@@ -34,10 +34,28 @@ module.exports.handler = httpGuard({
     guardTypes.setupComplete
   ],
   formValidator: ({ type, value, description }) => {
+    let valueInvalid = false;
+
+    switch (type) {
+      case 'email':
+        valueInvalid = validate(value, ['required', 'email']);
+        break;
+      case 'website':
+        valueInvalid = validate(value, ['required', 'url']);
+        break;
+      default:
+        valueInvalid = validate(value, [
+          'required',
+          'maxLength:255'
+        ]);
+        break;
+    }
+
     return (
+      valueInvalid ||
       validate(type, [
         'required',
-        'options:mobile,telephone,url,email'
+        'options:mobile,telephone,website,email'
       ]) ||
       validate(value, ['required', 'maxLength:255']) ||
       validate(description, ['required', 'maxLength:150'])
