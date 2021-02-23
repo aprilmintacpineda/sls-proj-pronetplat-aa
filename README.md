@@ -6,13 +6,11 @@ Publicly called as **Quaint** a _professsional networking platform_, a platform 
 
 # Engineering conventions
 
-1. File name of functions should be the same as `FunctionName` in `template.yaml`, exlucing the prefixes.
-2. `FunctionName` should follow the format `{stage}-{proj-pronetplat-aa}-fileName`
+1. `FunctionName` should follow the format `{stage}-{proj-pronetplat-aa}-fileName`
+2. File name of functions should be the same as `FunctionName` in `template.yaml`, exlucing the prefixes.
 3. Always set `Function.Metadata.BuildMethod` to `makefile`.
 
 :-1: **INCORRECT**
-
-Example below violates conventions 1 and 2.
 
 ```yaml
 logout:
@@ -22,10 +20,7 @@ logout:
     Policies:
       - LambdaInvokePolicy:
           FunctionName: !Ref forceExpireDeviceToken
-    FunctionName: !Join
-      - '-'
-      - - !Ref Stage
-        - "proj-pronetplat-aa-logoutFile"
+    FunctionName: "proj-pronetplat-aa-logoutFile"
     Events:
       ApiEvent:
         Type: Api
@@ -41,17 +36,19 @@ logout:
 ```yaml
 logout:
   Type: AWS::Serverless::Function
-  Metadata:
-    BuildMethod: makefile
++ Metadata:
++   BuildMethod: makefile
   Properties:
     Handler: logout.handler
     Policies:
       - LambdaInvokePolicy:
           FunctionName: !Ref forceExpireDeviceToken
-    FunctionName: !Join
-      - '-'
-      - - !Ref Stage
-        - "proj-pronetplat-aa-logout"
+-   FunctionName: "proj-pronetplat-aa-logoutFile"
++   FunctionName: !Join
++     - '-'
++     - - !Ref Stage
++       - "proj-pronetplat-aa-logoutFile"
++       - "proj-pronetplat-aa-logout"
     Events:
       ApiEvent:
         Type: Api
