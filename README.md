@@ -33,11 +33,11 @@ logout:
 
 :+1: **CORRECT**
 
-```yaml
+```diff
 logout:
   Type: AWS::Serverless::Function
 + Metadata:
-+   BuildMethod: makefile
++  BuildMethod: makefile
   Properties:
     Handler: logout.handler
     Policies:
@@ -47,8 +47,8 @@ logout:
 +   FunctionName: !Join
 +     - '-'
 +     - - !Ref Stage
-+       - "proj-pronetplat-aa-logoutFile"
-+       - "proj-pronetplat-aa-logout"
++        - "proj-pronetplat-aa-logoutFile"
++        - "proj-pronetplat-aa-logout"
     Events:
       ApiEvent:
         Type: Api
