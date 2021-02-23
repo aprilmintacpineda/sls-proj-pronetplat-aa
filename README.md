@@ -10,28 +10,7 @@ Publicly called as **Quaint** a _professsional networking platform_, a platform 
 2. File name of functions should be the same as `FunctionName` in `template.yaml`, exlucing the prefixes.
 3. Always set `Function.Metadata.BuildMethod` to `makefile`.
 
-:-1: **INCORRECT**
-
-```yaml
-logout:
-  Type: AWS::Serverless::Function
-  Properties:
-    Handler: logout.handler
-    Policies:
-      - LambdaInvokePolicy:
-          FunctionName: !Ref forceExpireDeviceToken
-    FunctionName: "proj-pronetplat-aa-logoutFile"
-    Events:
-      ApiEvent:
-        Type: Api
-        Properties:
-          Method: post
-          Path: /logout
-          RestApiId:
-            Ref: mainBackendApi
-```
-
-:+1: **CORRECT**
+:+1: **THIS IS CORRECT**
 
 ```diff
 logout:
