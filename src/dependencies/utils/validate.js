@@ -9,10 +9,16 @@ const validationRules = {
     );
   },
   url (value) {
-    // eslint-disable-next-line
-    return /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(
-      value
+    return (
+      value.length > 1000 ||
+      // eslint-disable-next-line
+      /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(
+        value
+      )
     );
+  },
+  contactOther (value) {
+    return !this.email(value) || !this.url(value);
   },
   required (value) {
     return !value || !value.length;

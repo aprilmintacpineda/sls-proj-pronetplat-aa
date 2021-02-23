@@ -46,7 +46,8 @@ module.exports.handler = httpGuard({
       default:
         valueInvalid = validate(value, [
           'required',
-          'maxLength:255'
+          'maxLength:255',
+          'contactOther'
         ]);
         break;
     }
