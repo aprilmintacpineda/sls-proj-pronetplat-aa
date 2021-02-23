@@ -11,6 +11,7 @@ async function handler ({ authUser, formBody }) {
   const contactDetail = await faunadb.query(
     create('contactDetails', {
       userId: authUser.id,
+      type: formBody.type,
       value: formBody.value,
       description: formBody.description
     })
@@ -32,8 +33,12 @@ module.exports.handler = httpGuard({
     guardTypes.deviceToken,
     guardTypes.setupComplete
   ],
-  formValidator: ({ value, description }) => {
+  formValidator: ({ type, value, description }) => {
     return (
+      validate(type, [
+        'required',
+        'options:mobile,telephone,url,email'
+      ]) ||
       validate(value, ['required', 'maxLength:255']) ||
       validate(description, ['required', 'maxLength:150'])
     );
