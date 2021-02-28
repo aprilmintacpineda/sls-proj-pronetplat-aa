@@ -11,9 +11,8 @@ const {
 const {
   createNotification
 } = require('dependencies/utils/notifications');
-const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, formBody }) {
+async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
 
   try {
@@ -23,7 +22,7 @@ async function handler ({ authUser, formBody }) {
           contactRequest: getByIndex(
             'contactRequestBySenderIdRecipientId',
             authUser.id,
-            formBody.contactId
+            contactId
           )
         },
         query.If(
@@ -60,7 +59,7 @@ async function handler ({ authUser, formBody }) {
 
   await createNotification({
     authUser,
-    userId: formBody.contactId,
+    userId: contactId,
     type: 'contactRequestFollowUp',
     body: '{fullname} followed up with his contact request',
     title: 'Contact request',
@@ -76,6 +75,5 @@ module.exports.handler = httpGuard({
     guardTypes.auth,
     guardTypes.deviceToken,
     guardTypes.setupComplete
-  ],
-  formValidator: ({ contactId }) => validate(contactId, ['required'])
+  ]
 });

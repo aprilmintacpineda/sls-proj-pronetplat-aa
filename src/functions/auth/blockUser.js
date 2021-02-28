@@ -12,32 +12,29 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
-const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, formBody }) {
+async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
 
   try {
     await faunadb.query(
       query.If(
         query.Or(
-          isOnBlockList(authUser, formBody.contactId),
-          hasPendingContactRequest(authUser, formBody.contactId)
+          isOnBlockList(authUser, contactId),
+          hasPendingContactRequest(authUser, contactId)
         ),
-        query.Abort('isOnBlockList or hasPendingContactRequest'),
+        query.Abort('isOnBlockListhasPendingContactRequest'),
         query.If(
-          hasCompletedSetupQuery(
-            getById('users', formBody.contactId)
-          ),
+          hasCompletedSetupQuery(getById('users', contactId)),
           query.Do(
             create('userBlockings', {
               blockerId: authUser.id,
-              userId: formBody.contactId
+              userId: contactId
             }),
             hardDeleteIfExists(
               'contactByOwnerContact',
               authUser.id,
-              formBody.contactId
+              contactId
             )
           ),
           query.Abort('NotYetSetup')
@@ -49,7 +46,7 @@ async function handler ({ authUser, formBody }) {
 
     if (
       error.description ===
-        'isOnBlockList or hasPendingContactRequest' ||
+        'isOnBlockListhasPendingContactRequest' ||
       error.description === 'NotYetSetup'
     )
       return { statusCode: 400 };
@@ -66,6 +63,5 @@ module.exports.handler = httpGuard({
     guardTypes.auth,
     guardTypes.deviceToken,
     guardTypes.setupComplete
-  ],
-  formValidator: ({ contactId }) => validate(contactId, ['required'])
+  ]
 });

@@ -9,16 +9,15 @@ const {
 const {
   createNotification
 } = require('dependencies/utils/notifications');
-const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, formBody }) {
+async function handler ({ authUser, params: { senderId } }) {
   const faunadb = initClient();
 
   try {
     await faunadb.query(
       hardDeleteByIndex(
         'contactRequestBySenderIdRecipientId',
-        formBody.senderId,
+        senderId,
         authUser.id
       )
     );
@@ -29,7 +28,7 @@ async function handler ({ authUser, formBody }) {
 
   await createNotification({
     authUser,
-    userId: formBody.senderId,
+    userId: senderId,
     type: 'contactRequestDeclined',
     body: '{fullname} has declined your contact request.',
     title: 'Contact request declined',
@@ -45,6 +44,5 @@ module.exports.handler = httpGuard({
     guardTypes.auth,
     guardTypes.deviceToken,
     guardTypes.setupComplete
-  ],
-  formValidator: ({ senderId }) => validate(senderId, ['required'])
+  ]
 });

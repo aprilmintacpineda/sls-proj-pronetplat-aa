@@ -6,16 +6,15 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
-const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, formBody }) {
+async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
 
   await faunadb.query(
     hardDeleteByIndex(
       'contactByOwnerContact',
       authUser.id,
-      formBody.contactId
+      contactId
     )
   );
 
@@ -28,6 +27,5 @@ module.exports.handler = httpGuard({
     guardTypes.auth,
     guardTypes.deviceToken,
     guardTypes.setupComplete
-  ],
-  formValidator: ({ contactId }) => validate(contactId, ['required'])
+  ]
 });

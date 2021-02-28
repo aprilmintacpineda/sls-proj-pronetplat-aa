@@ -14,19 +14,16 @@ const {
 const {
   sendPushNotification
 } = require('dependencies/utils/notifications');
-const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, formBody }) {
-  if (formBody.contactId === authUser.id) {
+async function handler ({ authUser, params: { contactId } }) {
+  if (contactId === authUser.id) {
     console.log('Cannot add self to contacts');
     return { statusCode: 400 };
   }
 
   const faunadb = initClient();
 
-  if (
-    await faunadb.query(isOnBlockList(authUser, formBody.contactId))
-  ) {
+  if (await faunadb.query(isOnBlockList(authUser, contactId))) {
     console.log('On block list');
     return { statusCode: 400 };
   }
@@ -34,16 +31,14 @@ async function handler ({ authUser, formBody }) {
   try {
     await faunadb.query(
       query.If(
-        hasPendingContactRequest(authUser, formBody.contactId),
+        hasPendingContactRequest(authUser, contactId),
         query.Abort('hasPendingRequest'),
         query.If(
-          hasCompletedSetupQuery(
-            getById('users', formBody.contactId)
-          ),
+          hasCompletedSetupQuery(getById('users', contactId)),
           query.Do(
             create('contactRequests', {
               senderId: authUser.id,
-              recipientId: formBody.contactId,
+              recipientId: contactId,
               canFollowUpAt: query.Format(
                 '%t',
                 query.TimeAdd(query.Now(), 1, 'day')
@@ -51,7 +46,7 @@ async function handler ({ authUser, formBody }) {
             }),
             query.Call(
               'updateUserBadgeCount',
-              formBody.contactId,
+              contactId,
               'receivedContactRequestsCount',
               1
             )
@@ -70,7 +65,7 @@ async function handler ({ authUser, formBody }) {
   }
 
   await sendPushNotification({
-    userId: formBody.contactId,
+    userId: contactId,
     title: 'Contact request',
     body:
       '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
@@ -92,6 +87,5 @@ module.exports.handler = httpGuard({
     guardTypes.auth,
     guardTypes.deviceToken,
     guardTypes.setupComplete
-  ],
-  formValidator: ({ contactId }) => validate(contactId, ['required'])
+  ]
 });

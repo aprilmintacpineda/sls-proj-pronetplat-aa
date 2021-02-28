@@ -301,7 +301,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /add-to-contacts
+            Path: /add-to-contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
   receivedContactRequests:
@@ -365,7 +365,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /accept-contact-request
+            Path: /accept-contact-request/{senderId}
             RestApiId:
               Ref: mainBackendApi
   declineContactRequest:
@@ -387,7 +387,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /decline-contact-request
+            Path: /decline-contact-request/{senderId}
             RestApiId:
               Ref: mainBackendApi
   contactProfile:
@@ -451,7 +451,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /send-follow-up
+            Path: /send-follow-up/{contactId}
             RestApiId:
               Ref: mainBackendApi
   cancelContactRequest:
@@ -473,7 +473,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /cancel-contact-request
+            Path: /cancel-contact-request/{contactId}
             RestApiId:
               Ref: mainBackendApi
   removeFromContacts:
@@ -493,7 +493,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /remove-from-contacts
+            Path: /remove-from-contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
   blockUser:
@@ -513,7 +513,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /block-user
+            Path: /block-user/{contactId}
             RestApiId:
               Ref: mainBackendApi
   unblockUser:
@@ -533,7 +533,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /unblock-user
+            Path: /unblock-user/{contactId}
             RestApiId:
               Ref: mainBackendApi
   myContacts:
