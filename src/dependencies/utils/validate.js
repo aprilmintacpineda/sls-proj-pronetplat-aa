@@ -11,8 +11,9 @@ const validationRules = {
   url (value) {
     return (
       value.length > 1000 ||
+      /^http:\/\//.test(value) ||
       // eslint-disable-next-line
-      !/^((https?:\/\/)?[a-zA-Z0-9_-]+\.)?[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)?([a-zA-Z0-9\/]+)?\/?$/.test(
+      !/(?:(?:http|https):\/\/)?([-a-zA-Z0-9.]{2,256}\.[a-z]{2,10})\b(?:\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gim.test(
         value
       )
     );

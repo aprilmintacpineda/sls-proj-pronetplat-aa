@@ -69,7 +69,7 @@ module.exports.handler = httpGuard({
         'options:mobile,telephone,website,email'
       ]) ||
       validate(value, valueValidationRules) ||
-      validate(description, ['required', 'maxLength:150'])
+      validate(description, ['required', 'maxLength:100'])
     );
   }
 });
