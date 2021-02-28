@@ -10,7 +10,10 @@ const {
 } = require('dependencies/utils/guards');
 const { invokeEvent } = require('dependencies/utils/lambda');
 
-async function handler ({ params: { contactId }, authUser }) {
+async function handler ({
+  params: { contactId, nextToken },
+  authUser
+}) {
   const faunadb = initClient();
 
   let result;
@@ -73,11 +76,24 @@ async function handler ({ params: { contactId }, authUser }) {
                     contactId
                   )
                 ),
-                {
-                  // @TODO: get contact details and send back
-                  data: [],
-                  after: null
-                },
+                query.Map(
+                  query.Paginate(
+                    query.Match(
+                      query.Index('contactDetailsByUserId'),
+                      contactId
+                    ),
+                    {
+                      size: 20,
+                      after: nextToken
+                        ? query.Ref(
+                            query.Collection('contactDetails'),
+                            nextToken
+                          )
+                        : []
+                    }
+                  ),
+                  query.Lambda(['ref'], query.Get(query.Var('ref')))
+                ),
                 query.Abort('contactDoesNotExist')
               )
             )
