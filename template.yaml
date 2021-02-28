@@ -637,7 +637,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /contact-details-add
+            Path: /contact-details
             RestApiId:
               Ref: mainBackendApi
   contactDetailsList:
@@ -677,7 +677,27 @@ Resources:
           Type: Api
           Properties:
             Method: delete
-            Path: /contact-details-delete/{contactDetailId}
+            Path: /contact-details/{contactDetailId}
+            RestApiId:
+              Ref: mainBackendApi
+  contactDetailUpdate:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: contactDetailUpdate.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-contactDetailUpdate"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: patch
+            Path: /contact-details/{contactDetailId}
             RestApiId:
               Ref: mainBackendApi
   ######

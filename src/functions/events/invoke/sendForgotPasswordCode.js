@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   getTimeOffset,
   initClient,
-  getByIndex
+  getByIndex,
+  selectRef
 } = require('dependencies/utils/faunadb');
 const { randomCode, hash } = require('dependencies/utils/helpers');
 const {
@@ -34,7 +35,7 @@ module.exports.handler = async ({ email, isResend = false }) => {
             )
           ),
           query.Abort('passwordCodeCanResendAtNotPastYet'),
-          query.Update(query.Select(['ref'], query.Var('user')), {
+          query.Update(selectRef(query.Var('user')), {
             hashedResetPasswordCode,
             passwordCodeCanResendAt: offsetTime,
             passwordResetCodeExpiresAt: offsetTime

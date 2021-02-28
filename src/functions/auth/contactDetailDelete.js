@@ -1,7 +1,8 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  getById
+  getById,
+  selectRef
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -28,7 +29,7 @@ async function handler ({ authUser, params: { contactDetailId } }) {
             )
           ),
           query.Abort('authUserDoesNotOwnDocument'),
-          query.Delete(query.Select(['ref'], query.Var('document')))
+          query.Delete(selectRef(query.Var('document')))
         )
       )
     );

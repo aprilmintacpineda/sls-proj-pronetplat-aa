@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   getByIndex,
-  update
+  update,
+  selectRef
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -36,15 +37,12 @@ async function handler ({ authUser, params: { contactId } }) {
             )
           ),
           query.Abort('canFollowUpAtNotPastYet'),
-          update(
-            query.Select(['ref'], query.Var('contactRequest')),
-            {
-              canFollowUpAt: query.Format(
-                '%t',
-                query.TimeAdd(query.Now(), 1, 'day')
-              )
-            }
-          )
+          update(selectRef(query.Var('contactRequest')), {
+            canFollowUpAt: query.Format(
+              '%t',
+              query.TimeAdd(query.Now(), 1, 'day')
+            )
+          })
         )
       )
     );

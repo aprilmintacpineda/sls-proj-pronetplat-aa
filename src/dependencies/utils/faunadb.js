@@ -7,22 +7,23 @@ module.exports.initClient = () => {
   });
 };
 
-function update (ref, data) {
+module.exports.update = (ref, data) => {
   return query.Update(ref, {
     data: {
       ...sanitizeFormBody(data),
       updatedAt: query.Format('%t', query.Now())
     }
   });
-}
-
-module.exports.update = update;
-
-module.exports.updateById = (collection, id, data) => {
-  return update(query.Ref(query.Collection(collection), id), data);
 };
 
-function create (collection, data) {
+module.exports.updateById = (collection, id, data) => {
+  return this.update(
+    query.Ref(query.Collection(collection), id),
+    data
+  );
+};
+
+module.exports.create = (collection, data) => {
   return query.Create(query.Collection(collection), {
     data: {
       ...sanitizeFormBody(data),
@@ -30,9 +31,7 @@ function create (collection, data) {
       updatedAt: query.Format('%t', query.Now())
     }
   });
-}
-
-module.exports.create = create;
+};
 
 module.exports.createOrUpdate = ({
   index,
@@ -44,8 +43,8 @@ module.exports.createOrUpdate = ({
 
   return query.If(
     query.Exists(match),
-    update(query.Select(['ref'], query.Get(match)), data),
-    create(collection, data)
+    this.update(this.selectRef(query.Get(match)), data),
+    this.create(collection, data)
   );
 };
 
@@ -58,7 +57,7 @@ module.exports.createIfNotExists = ({
   return query.If(
     query.Exists(query.Match(query.Index(index), ...args)),
     null,
-    create(collection, data)
+    this.create(collection, data)
   );
 };
 
@@ -124,7 +123,7 @@ module.exports.hardDeleteIfExists = (index, args) => {
 
   return query.If(
     query.Exists(match),
-    query.Delete(query.Select(['ref'], query.Get(match))),
+    query.Delete(this.selectRef(query.Get(match))),
     null
   );
 };
@@ -150,6 +149,10 @@ module.exports.getTimeOffset = (isPast = false) => {
     '%t',
     query.TimeAdd(query.Now(), 5, 'minutes')
   );
+};
+
+module.exports.selectRef = from => {
+  return query.Select(['ref'], from);
 };
 
 module.exports.toResponseData = response => ({
