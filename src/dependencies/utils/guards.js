@@ -44,7 +44,7 @@ module.exports.httpGuard = ({
   }
 
   if (guards.includes(guardTypes.auth)) {
-    const authorization = httpEvent.headers.authorization;
+    const authorization = httpEvent.headers.Authorization;
 
     if (!authorization) {
       console.log('Guard: no authorization in headers');
