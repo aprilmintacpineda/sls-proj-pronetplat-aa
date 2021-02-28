@@ -1,9 +1,7 @@
-const { query } = require('faunadb');
 const {
   initClient,
   getById,
-  update,
-  selectRef
+  updateIfOwnedByUser
 } = require('dependencies/utils/faunadb');
 const {
   guardTypes,
@@ -19,24 +17,14 @@ async function handler ({
   const faunadb = initClient();
 
   const contactDetail = await faunadb.query(
-    query.Let(
+    updateIfOwnedByUser(
+      authUser.id,
+      getById('contactDetails', contactDetailId),
       {
-        document: getById('contactDetails', contactDetailId)
-      },
-      query.If(
-        query.Not(
-          query.Equals(
-            query.Select(['data', 'userId'], query.Var('document')),
-            authUser.id
-          )
-        ),
-        query.Abort('authUserDoesNotOwnDocument'),
-        update(selectRef(query.Var('document')), {
-          type: formBody.type,
-          value: formBody.value,
-          description: formBody.description
-        })
-      )
+        type: formBody.type,
+        value: formBody.value,
+        description: formBody.description
+      }
     )
   );
 

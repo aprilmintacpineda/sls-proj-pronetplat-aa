@@ -1,8 +1,7 @@
-const { query } = require('faunadb');
 const {
   initClient,
   getById,
-  selectRef
+  hardDeleteIfOwnedByUser
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -14,23 +13,9 @@ async function handler ({ authUser, params: { contactDetailId } }) {
     const faunadb = initClient();
 
     await faunadb.query(
-      query.Let(
-        {
-          document: getById('contactDetails', contactDetailId)
-        },
-        query.If(
-          query.Not(
-            query.Equals(
-              query.Select(
-                ['data', 'userId'],
-                query.Var('document')
-              ),
-              authUser.id
-            )
-          ),
-          query.Abort('authUserDoesNotOwnDocument'),
-          query.Delete(selectRef(query.Var('document')))
-        )
+      hardDeleteIfOwnedByUser(
+        authUser.id,
+        getById('contactDetails', contactDetailId)
       )
     );
   } catch (error) {

@@ -155,6 +155,48 @@ module.exports.selectRef = from => {
   return query.Select(['ref'], from);
 };
 
+module.exports.ifOwnedByUser = (
+  userId,
+  getExpression,
+  doExpression
+) => {
+  return query.Let(
+    {
+      document: getExpression
+    },
+    query.If(
+      query.Not(
+        query.Equals(
+          query.Select(['data', 'userId'], query.Var('document')),
+          userId
+        )
+      ),
+      query.Abort('authUserDoesNotOwnDocument'),
+      doExpression
+    )
+  );
+};
+
+module.exports.updateIfOwnedByUser = (
+  userId,
+  getExpression,
+  data
+) => {
+  return this.ifOwnedByUser(
+    userId,
+    getExpression,
+    this.update(this.selectRef(query.Var('document')), data)
+  );
+};
+
+module.exports.hardDeleteIfOwnedByUser = (userId, getExpression) => {
+  return this.ifOwnedByUser(
+    userId,
+    getExpression,
+    query.Delete(this.selectRef(query.Var('document')))
+  );
+};
+
 module.exports.toResponseData = response => ({
   ...response.data,
   id: response.ref.id
