@@ -7,7 +7,7 @@ const {
 const { invokeEvent } = require('dependencies/utils/lambda');
 const { getPublicUserData } = require('dependencies/utils/users');
 
-async function handler ({ nextToken, authUser }) {
+async function handler ({ params: { nextToken }, authUser }) {
   const client = initClient();
 
   const result = await client.query(

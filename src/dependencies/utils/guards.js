@@ -12,15 +12,13 @@ module.exports.httpGuard = ({
   guards,
   formValidator = null
 }) => async httpEvent => {
-  const queryStringParameters =
-    httpEvent.queryStringParameters || {};
-
   const results = {
     body: httpEvent.body,
-    queryStringParameters,
-    pathParameters: httpEvent.pathParameters || {},
     headers: httpEvent.headers,
-    nextToken: queryStringParameters.nextToken || null
+    params: {
+      ...(httpEvent.queryStringParameters || {}),
+      ...(httpEvent.pathParameters || {})
+    }
   };
 
   if (guards.includes(guardTypes.deviceToken)) {

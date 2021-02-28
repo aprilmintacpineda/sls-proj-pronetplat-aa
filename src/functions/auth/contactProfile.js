@@ -10,7 +10,7 @@ const {
 } = require('dependencies/utils/guards');
 const { invokeEvent } = require('dependencies/utils/lambda');
 
-async function handler ({ pathParameters: { contactId }, authUser }) {
+async function handler ({ params: { contactId }, authUser }) {
   const faunadb = initClient();
 
   let result;

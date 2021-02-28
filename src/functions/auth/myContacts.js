@@ -5,7 +5,7 @@ const {
   guardTypes
 } = require('dependencies/utils/guards');
 
-async function handler ({ nextToken, authUser }) {
+async function handler ({ params: { nextToken }, authUser }) {
   const client = initClient();
 
   const result = await client.query(

@@ -5,7 +5,7 @@ const {
   guardTypes
 } = require('dependencies/utils/guards');
 
-async function handler ({ authUser, nextToken }) {
+async function handler ({ authUser, params: { nextToken } }) {
   const faunadb = initClient();
 
   const result = await faunadb.query(
