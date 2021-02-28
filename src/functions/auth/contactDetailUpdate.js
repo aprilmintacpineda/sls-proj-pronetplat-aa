@@ -21,7 +21,7 @@ async function handler ({
   const contactDetail = await faunadb.query(
     query.Let(
       {
-        document: getById(contactDetailId)
+        document: getById('contactDetails', contactDetailId)
       },
       query.If(
         query.Not(
