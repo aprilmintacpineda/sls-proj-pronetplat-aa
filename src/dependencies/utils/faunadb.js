@@ -1,29 +1,18 @@
 const { query, Client } = require('faunadb');
 const { sanitizeFormBody } = require('./helpers');
 
-module.exports.initClient = () => {
-  return new Client({
-    secret: process.env.faunadbSecret
-  });
-};
-
-module.exports.update = (ref, data) => {
+function update (ref, data) {
   return query.Update(ref, {
     data: {
       ...sanitizeFormBody(data),
       updatedAt: query.Format('%t', query.Now())
     }
   });
-};
+}
 
-module.exports.updateById = (collection, id, data) => {
-  return this.update(
-    query.Ref(query.Collection(collection), id),
-    data
-  );
-};
+module.exports.update = update;
 
-module.exports.create = (collection, data) => {
+function create (collection, data) {
   return query.Create(query.Collection(collection), {
     data: {
       ...sanitizeFormBody(data),
@@ -31,6 +20,44 @@ module.exports.create = (collection, data) => {
       updatedAt: query.Format('%t', query.Now())
     }
   });
+}
+
+module.exports.create = create;
+
+function selectRef (from) {
+  return query.Select(['ref'], from);
+}
+
+module.exports.selectRef = selectRef;
+
+function ifOwnedByUser (userId, getExpression, doExpression) {
+  return query.Let(
+    {
+      document: getExpression
+    },
+    query.If(
+      query.Not(
+        query.Equals(
+          query.Select(['data', 'userId'], query.Var('document')),
+          userId
+        )
+      ),
+      query.Abort('authUserDoesNotOwnDocument'),
+      doExpression
+    )
+  );
+}
+
+module.exports.ifOwnedByUser = ifOwnedByUser;
+
+module.exports.initClient = () => {
+  return new Client({
+    secret: process.env.faunadbSecret
+  });
+};
+
+module.exports.updateById = (collection, id, data) => {
+  return update(query.Ref(query.Collection(collection), id), data);
 };
 
 module.exports.createOrUpdate = ({
@@ -43,8 +70,8 @@ module.exports.createOrUpdate = ({
 
   return query.If(
     query.Exists(match),
-    this.update(this.selectRef(query.Get(match)), data),
-    this.create(collection, data)
+    update(selectRef(query.Get(match)), data),
+    create(collection, data)
   );
 };
 
@@ -57,7 +84,7 @@ module.exports.createIfNotExists = ({
   return query.If(
     query.Exists(query.Match(query.Index(index), ...args)),
     null,
-    this.create(collection, data)
+    create(collection, data)
   );
 };
 
@@ -123,7 +150,7 @@ module.exports.hardDeleteIfExists = (index, args) => {
 
   return query.If(
     query.Exists(match),
-    query.Delete(this.selectRef(query.Get(match))),
+    query.Delete(selectRef(query.Get(match))),
     null
   );
 };
@@ -151,49 +178,23 @@ module.exports.getTimeOffset = (isPast = false) => {
   );
 };
 
-module.exports.selectRef = from => {
-  return query.Select(['ref'], from);
-};
-
-module.exports.ifOwnedByUser = (
-  userId,
-  getExpression,
-  doExpression
-) => {
-  return query.Let(
-    {
-      document: getExpression
-    },
-    query.If(
-      query.Not(
-        query.Equals(
-          query.Select(['data', 'userId'], query.Var('document')),
-          userId
-        )
-      ),
-      query.Abort('authUserDoesNotOwnDocument'),
-      doExpression
-    )
-  );
-};
-
 module.exports.updateIfOwnedByUser = (
   userId,
   getExpression,
   data
 ) => {
-  return this.ifOwnedByUser(
+  return ifOwnedByUser(
     userId,
     getExpression,
-    this.update(this.selectRef(query.Var('document')), data)
+    update(selectRef(query.Var('document')), data)
   );
 };
 
 module.exports.hardDeleteIfOwnedByUser = (userId, getExpression) => {
-  return this.ifOwnedByUser(
+  return ifOwnedByUser(
     userId,
     getExpression,
-    query.Delete(this.selectRef(query.Var('document')))
+    query.Delete(selectRef(query.Var('document')))
   );
 };
 
