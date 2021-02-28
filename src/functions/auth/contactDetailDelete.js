@@ -9,15 +9,13 @@ const {
 } = require('dependencies/utils/guards');
 
 async function handler ({ authUser, params: { contactDetailId } }) {
-  console.log(contactDetailId);
-
   try {
     const faunadb = initClient();
 
     await faunadb.query(
       query.Let(
         {
-          document: getById(contactDetailId)
+          document: getById('contactDetails', contactDetailId)
         },
         query.If(
           query.Not(
