@@ -34,6 +34,7 @@ module.exports.httpGuard = ({
 
   if (formValidator) {
     const formBody = JSON.parse(httpEvent.body);
+
     if (formValidator(formBody)) {
       console.log('invalid form body');
       return { statusCode: 400 };
@@ -43,9 +44,7 @@ module.exports.httpGuard = ({
   }
 
   if (guards.includes(guardTypes.auth)) {
-    const authorization =
-      httpEvent.headers.Authorization ||
-      httpEvent.headers.authorization;
+    const authorization = httpEvent.headers.authorization;
 
     if (!authorization) {
       console.log('Guard: no authorization in headers');

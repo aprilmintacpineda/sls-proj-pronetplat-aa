@@ -660,6 +660,26 @@ Resources:
             Path: /contact-details
             RestApiId:
               Ref: mainBackendApi
+  contactDetailDelete:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: contactDetailDelete.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-contactDetailDelete"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /contact-details-delete/{contactDetailId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
