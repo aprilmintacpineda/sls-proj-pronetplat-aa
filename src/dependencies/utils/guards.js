@@ -16,8 +16,8 @@ module.exports.httpGuard = ({
     body: httpEvent.body,
     headers: httpEvent.headers,
     params: {
-      ...(httpEvent.queryStringParameters || {}),
-      ...(httpEvent.pathParameters || {})
+      ...httpEvent.queryStringParameters,
+      ...httpEvent.pathParameters
     }
   };
 
