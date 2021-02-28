@@ -145,7 +145,7 @@ module.exports.hasPendingContactRequest = (authUser, contactId) => {
   );
 };
 
-module.exports.hardDeleteIfExists = (index, args) => {
+module.exports.hardDeleteIfExists = (index, ...args) => {
   const match = query.Match(query.Index(index), ...args);
 
   return query.If(
