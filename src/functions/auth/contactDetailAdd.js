@@ -38,20 +38,17 @@ module.exports.handler = httpGuard({
 
     switch (type) {
       case 'email':
-        valueValidationRules = validate(value, [
-          'required',
-          'email'
-        ]);
+        valueValidationRules = ['required', 'email'];
         break;
       case 'website':
-        valueValidationRules = validate(value, ['required', 'url']);
+        valueValidationRules = ['required', 'url'];
         break;
       default:
-        valueValidationRules = validate(value, [
+        valueValidationRules = [
           'required',
           'maxLength:255',
           'contactOther'
-        ]);
+        ];
         break;
     }
 
