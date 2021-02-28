@@ -9,6 +9,8 @@ const {
 } = require('dependencies/utils/guards');
 
 async function handler ({ authUser, params: { contactDetailId } }) {
+  console.log(contactDetailId);
+
   try {
     const faunadb = initClient();
 
@@ -33,7 +35,7 @@ async function handler ({ authUser, params: { contactDetailId } }) {
       )
     );
   } catch (error) {
-    console.log('error');
+    console.log('error', error);
 
     if (error.decription === 'authUserDoesNotOwnDocument')
       return { statusCode: 403 };
