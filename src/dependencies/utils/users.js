@@ -30,7 +30,8 @@ export function getUserData (user) {
     emailCodeCanSendAt: user.data.emailCodeCanSendAt,
     emailConfirmCodeExpiresAt: user.data.emailConfirmCodeExpiresAt,
     emailVerifiedAt: user.data.emailVerifiedAt,
-    lastLoginAt: user.data.lastLoginAt
+    lastLoginAt: user.data.lastLoginAt,
+    createdAt: user.data.createdAt
   };
 }
 
