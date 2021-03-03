@@ -41,6 +41,13 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      
+      - name: Install sam
+        run: |
+          curl -sL https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip -o aws-sam-cli-linux-x86_64.zip
+          unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+          rm -rf aws-sam-cli-linux-x86_64.zip
+          ./sam-installation/install
 
       - name: Build and deploy
         run: |
