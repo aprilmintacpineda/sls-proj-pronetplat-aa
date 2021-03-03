@@ -876,6 +876,32 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      EndpointConfiguration:
+        Type: REGIONAL
+  mainBackendWebAcl:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      DefaultAction:
+        Block: {}
+      Scope: REGIONAL
+      Rules:
+        - Action:
+            Allow: {}
+          Name: "Allowed Countries"
+          Statement:
+            GeoMatchStatement:
+              CountryCodes:
+                - AU
+                - PH
+          VisibilityConfig: 
+            CloudWatchMetricsEnabled: true
+            MetricName: Allowed counties access
+            SampledRequestsEnabled: true
+  mainBackendWebAclAssociations:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties: 
+      ResourceArn: !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/${mainBackendApi}/stages/${Stage}"
+      WebACLArn: !GetAtt mainBackendWebAcl.Arn
   ######
   # S3 buckets
   #
