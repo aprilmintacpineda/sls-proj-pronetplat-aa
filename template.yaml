@@ -901,9 +901,6 @@ Resources:
               CountryCodes:
                 - AU
                 - PH
-            RateBasedStatement:
-              AggregateKeyType: IP
-              Limit: 1500
           VisibilityConfig: 
             CloudWatchMetricsEnabled: true
             MetricName: !Join
