@@ -25,12 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@master
 
-      - name: Versions
-        run: |
-          echo "SAM: $(sam --version)"
-          echo "Yarn: $(yarn --version)"
-          echo "Node: $(node --version)"
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -47,7 +41,13 @@ jobs:
           curl -sL https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip -o aws-sam-cli-linux-x86_64.zip
           unzip -o -q aws-sam-cli-linux-x86_64.zip -d sam-installation
           rm -rf aws-sam-cli-linux-x86_64.zip
-          ./sam-installation/install
+          sudo ./sam-installation/install
+
+      - name: Versions
+        run: |
+          echo "SAM: $(sam --version)"
+          echo "Yarn: $(yarn --version)"
+          echo "Node: $(node --version)"
 
       - name: Build and deploy
         run: |
