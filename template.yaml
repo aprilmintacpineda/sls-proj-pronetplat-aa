@@ -894,6 +894,22 @@ Resources:
         SampledRequestsEnabled: true
       Rules:
         - Action:
+            Block: {}
+          Name: RateLimit
+          Statement:
+            RateBasedStatement:
+              AggregateKeyType: IP
+              Limit: 1500
+          VisibilityConfig: 
+            CloudWatchMetricsEnabled: true
+            MetricName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+                - webacl-rate-limit
+            SampledRequestsEnabled: true
+          Priority: 0
+        - Action:
             Allow: {}
           Name: AllowedCounties
           Statement:
@@ -910,22 +926,6 @@ Resources:
                 - webacl-allowed-countries
             SampledRequestsEnabled: true
           Priority: 1
-        - Action:
-            Block: {}
-          Name: RateLimit
-          Statement:
-            RateBasedStatement:
-              AggregateKeyType: IP
-              Limit: 1500
-          VisibilityConfig: 
-            CloudWatchMetricsEnabled: true
-            MetricName: !Join
-              - "-"
-              - - "proj-pronetplat-aa-users"
-                - !Ref Stage
-                - webacl-rate-limit
-            SampledRequestsEnabled: true
-          Priority: 2
   mainBackendWebAclAssociations:
     Type: AWS::WAFv2::WebACLAssociation
     Properties: 
