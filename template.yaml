@@ -884,6 +884,10 @@ Resources:
       DefaultAction:
         Block: {}
       Scope: REGIONAL
+      VisibilityConfig: 
+        CloudWatchMetricsEnabled: true
+        MetricName: Allowed counties access
+        SampledRequestsEnabled: true
       Rules:
         - Action:
             Allow: {}
