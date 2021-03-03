@@ -881,7 +881,6 @@ Resources:
   mainBackendWebAcl:
     Type: AWS::WAFv2::WebACL
     Properties:
-      Name: MainBackendWebAcl
       DefaultAction:
         Block: {}
       Scope: REGIONAL
@@ -892,7 +891,7 @@ Resources:
       Rules:
         - Action:
             Allow: {}
-          Name: "Allowed Countries"
+          Name: AllowedCounties
           Statement:
             GeoMatchStatement:
               CountryCodes:
