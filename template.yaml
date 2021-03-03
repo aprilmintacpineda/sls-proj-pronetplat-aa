@@ -881,6 +881,7 @@ Resources:
   mainBackendWebAcl:
     Type: AWS::WAFv2::WebACL
     Properties:
+      Name: MainBackendWebAcl
       DefaultAction:
         Block: {}
       Scope: REGIONAL
