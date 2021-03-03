@@ -48,6 +48,7 @@ jobs:
           echo "SAM: $(sam --version)"
           echo "Yarn: $(yarn --version)"
           echo "Node: $(node --version)"
+          which sam
 
       - name: Build and deploy
         run: |
@@ -56,8 +57,8 @@ jobs:
           cd build
           mkdir -p dependencies/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
-          sam build --parallel
-          sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+          /usr/local/bin/sam build --parallel
+          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET }} \
             --tags what="sls-proj-pronetplat-aa" stage="dev"
