@@ -901,6 +901,7 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: Allowed counties access
             SampledRequestsEnabled: true
+          Priority: 1
   mainBackendWebAclAssociations:
     Type: AWS::WAFv2::WebACLAssociation
     Properties: 
