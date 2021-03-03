@@ -45,10 +45,9 @@ jobs:
 
       - name: Versions
         run: |
-          echo "SAM: $(sam --version)"
+          echo "SAM: $(/usr/local/bin/sam --version)"
           echo "Yarn: $(yarn --version)"
           echo "Node: $(node --version)"
-          which sam
 
       - name: Build and deploy
         run: |
