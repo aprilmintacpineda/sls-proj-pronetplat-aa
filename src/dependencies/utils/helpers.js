@@ -5,8 +5,16 @@ module.exports.randomNum = (min = 11111111, max = 99999999) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-module.exports.randomCode = () =>
-  Math.random().toString(32).substr(2);
+module.exports.randomCode = () => {
+  let code = '';
+
+  // lowercase "L" and uppercase "i" are both ambiguous
+  do code = Math.random().toString(32).substr(2);
+  while (code.includes('l') || code.includes('I'));
+
+  return code;
+};
+
 module.exports.hash = value => bcrypt.hash(value, 10);
 
 module.exports.verifyHash = (plainValue, hashedValue) => {
