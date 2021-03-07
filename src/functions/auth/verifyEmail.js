@@ -1,4 +1,3 @@
-const { isPast } = require('date-fns');
 const { query } = require('faunadb');
 const {
   initClient,
@@ -17,16 +16,6 @@ const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const expiresAt = new Date(authUser.emailConfirmCodeExpiresAt);
-  const now = new Date();
-
-  console.log(
-    expiresAt,
-    now,
-    isPast(new Date(expiresAt)),
-    expiresAt < now
-  );
-
   if (hasTimePassed(authUser.emailConfirmCodeExpiresAt)) {
     console.log('emailConfirmCode expired');
     return { statusCode: 410 };
