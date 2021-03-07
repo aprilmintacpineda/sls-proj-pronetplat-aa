@@ -164,17 +164,12 @@ module.exports.hardDeleteByIndex = (index, ...args) => {
   );
 };
 
-module.exports.getTimeOffset = (isPast = false) => {
-  if (isPast) {
-    return query.Format(
-      '%t',
-      query.TimeSubtract(query.Now(), 5, 'minutes')
-    );
-  }
-
+module.exports.getTimeOffset = (inPast = false) => {
   return query.Format(
     '%t',
-    query.TimeAdd(query.Now(), 5, 'minutes')
+    inPast
+      ? query.TimeSubtract(query.Now(), 5, 'minutes')
+      : query.TimeAdd(query.Now(), 5, 'minutes')
   );
 };
 
