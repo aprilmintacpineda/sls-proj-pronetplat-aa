@@ -71,12 +71,12 @@ module.exports.httpGuard = ({
         return { statusCode: 403 };
       } else if (
         guards.includes(guardTypes.setupNotComplete) &&
-        (authUser.firstName ||
-          authUser.surname ||
-          authUser.gender ||
-          authUser.jobTitle ||
+        (!authUser.emailVerifiedAt ||
           authUser.profilePicture ||
-          !authUser.emailVerifiedAt)
+          !authUser.firstName ||
+          !authUser.surname ||
+          !authUser.gender ||
+          !authUser.jobTitle)
       ) {
         console.log('Guard: setupNotComplete failed');
         return { statusCode: 403 };
