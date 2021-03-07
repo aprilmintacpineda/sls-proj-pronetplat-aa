@@ -23,7 +23,7 @@ async function handler ({ authUser, formBody }) {
   }
 
   const faunadb = initClient();
-  let user = faunadb.query(getById('users', authUser.id));
+  let user = await faunadb.query(getById('users', authUser.id));
 
   if (
     !(await verifyHash(
