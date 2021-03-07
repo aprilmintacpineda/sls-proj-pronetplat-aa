@@ -61,7 +61,7 @@ module.exports.handler = httpGuard({
   guards: [
     guardTypes.auth,
     guardTypes.deviceToken,
-    guardTypes.emailVerified
+    guardTypes.emailNotVerified
   ],
   formValidator: ({ verificationCode }) => {
     return validate(verificationCode, ['required', 'maxLength:20']);

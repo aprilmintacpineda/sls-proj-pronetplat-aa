@@ -48,7 +48,7 @@ module.exports.httpGuard = ({
     const authorization = httpEvent.headers.Authorization;
 
     if (!authorization) {
-      console.log('Guard: no authorization in headers');
+      console.log('Guard: auth failed');
       return { statusCode: 401 };
     }
 
@@ -66,20 +66,20 @@ module.exports.httpGuard = ({
           !authUser.profilePicture ||
           !authUser.emailVerifiedAt
         ) {
-          console.log('Guard: Not yet setup');
+          console.log('Guard: setupComplete failed');
           return { statusCode: 403 };
         }
       } else if (
         guards.includes(guardTypes.emailVerified) &&
         !authUser.emailVerifiedAt
       ) {
-        console.log('Guard: email not verified');
+        console.log('Guard: emailVerified');
         return { statusCode: 403 };
       } else if (
         guards.includes(guardTypes.emailNotVerified) &&
         authUser.emailVerifiedAt
       ) {
-        console.log('Guard: email not verified');
+        console.log('Guard: emailNotVerified failed');
         return { statusCode: 403 };
       }
 
