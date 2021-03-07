@@ -1,8 +1,8 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  updateById,
-  getById
+  getById,
+  update
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -36,7 +36,7 @@ async function handler ({ authUser, formBody }) {
   }
 
   user = await faunadb.query(
-    updateById('users', user.data.id, {
+    update(user.ref, {
       emailVerifiedAt: query.Format('%t', query.Now()),
       emailConfirmCodeExpiresAt: null,
       emailCodeCanSendAt: null,
