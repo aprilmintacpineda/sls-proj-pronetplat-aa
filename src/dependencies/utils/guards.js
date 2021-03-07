@@ -5,7 +5,8 @@ const guardTypes = {
   auth: 'auth',
   emailVerified: 'emailVerified',
   emailNotVerified: 'emailNotVerified',
-  setupComplete: 'setupComplete'
+  setupComplete: 'setupComplete',
+  setupNotComplete: 'setupNotComplete'
 };
 
 module.exports.httpGuard = ({
@@ -57,18 +58,28 @@ module.exports.httpGuard = ({
         authorization.replace(/Bearer /gim, '').trim()
       );
 
-      if (guards.includes(guardTypes.setupComplete)) {
-        if (
-          !authUser.firstName ||
+      if (
+        guards.includes(guardTypes.setupComplete) &&
+        (!authUser.firstName ||
           !authUser.surname ||
           !authUser.gender ||
           !authUser.jobTitle ||
           !authUser.profilePicture ||
-          !authUser.emailVerifiedAt
-        ) {
-          console.log('Guard: setupComplete failed');
-          return { statusCode: 403 };
-        }
+          !authUser.emailVerifiedAt)
+      ) {
+        console.log('Guard: setupComplete failed');
+        return { statusCode: 403 };
+      } else if (
+        guards.includes(guardTypes.setupNotComplete) &&
+        (authUser.firstName ||
+          authUser.surname ||
+          authUser.gender ||
+          authUser.jobTitle ||
+          authUser.profilePicture ||
+          !authUser.emailVerifiedAt)
+      ) {
+        console.log('Guard: setupNotComplete failed');
+        return { statusCode: 403 };
       } else if (
         guards.includes(guardTypes.emailVerified) &&
         !authUser.emailVerifiedAt

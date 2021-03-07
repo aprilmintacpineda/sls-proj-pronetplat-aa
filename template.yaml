@@ -432,6 +432,26 @@ Resources:
             Path: /validate-auth
             RestApiId:
               Ref: mainBackendApi
+  setupComplete:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: setupComplete.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-setupComplete"
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /setup-complete
+            RestApiId:
+              Ref: mainBackendApi
   sendFollowUp:
     Type: AWS::Serverless::Function
     Metadata:

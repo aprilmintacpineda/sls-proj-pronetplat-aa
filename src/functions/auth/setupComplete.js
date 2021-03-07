@@ -55,6 +55,6 @@ module.exports.handler = httpGuard({
   guards: [
     guardTypes.auth,
     guardTypes.deviceToken,
-    guardTypes.setupComplete
+    guardTypes.setupNotComplete
   ]
 });
