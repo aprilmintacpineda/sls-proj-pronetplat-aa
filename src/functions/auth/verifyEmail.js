@@ -1,7 +1,8 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  updateById
+  updateById,
+  getById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -21,19 +22,21 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 410 };
   }
 
+  const faunadb = initClient();
+  let user = faunadb.query(getById('users', authUser.id));
+
   if (
     !(await verifyHash(
       formBody.verificationCode,
-      authUser.hashedEmailVerificationCode
+      user.data.hashedEmailVerificationCode
     ))
   ) {
     console.log('Incorrect verification code');
     return { statusCode: 403 };
   }
 
-  const faunadb = initClient();
-  const user = await faunadb.query(
-    updateById('users', authUser.id, {
+  user = await faunadb.query(
+    updateById('users', user.data.id, {
       emailVerifiedAt: query.Format('%t', query.Now()),
       emailConfirmCodeExpiresAt: null,
       emailCodeCanSendAt: null,
