@@ -32,7 +32,7 @@ async function handler ({ authUser }) {
   const faunadb = initClient();
 
   const user = await faunadb.query(
-    updateById(authUser.id, {
+    updateById('users', authUser.id, {
       hashedEmailVerificationCode,
       emailCodeCanSendAt: timeOffset,
       emailConfirmCodeExpiresAt: timeOffset
