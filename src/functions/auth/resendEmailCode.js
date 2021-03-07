@@ -12,9 +12,11 @@ const {
   randomCode,
   hash
 } = require('dependencies/utils/helpers');
+const jwt = require('dependencies/utils/jwt');
 const {
   sendEmailVerificationCode
 } = require('dependencies/utils/sendEmail');
+const { getUserData } = require('dependencies/utils/users');
 
 async function handler ({ authUser }) {
   if (!hasTimePassed(authUser.emailCodeCanSendAt)) {
@@ -39,15 +41,20 @@ async function handler ({ authUser }) {
     })
   );
 
-  await sendEmailVerificationCode({
-    recipient: user.data.email,
-    emailVerificationCode
-  });
+  const userData = getUserData(user);
+  const [authToken] = await Promise.all([
+    jwt.sign(userData),
+    sendEmailVerificationCode({
+      recipient: user.data.email,
+      emailVerificationCode
+    })
+  ]);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      emailCodeCanSendAt: user.data.emailCodeCanSendAt
+      authToken,
+      userData
     })
   };
 }
