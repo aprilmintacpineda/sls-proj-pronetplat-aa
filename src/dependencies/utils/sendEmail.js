@@ -74,11 +74,11 @@ module.exports.sendEmailWelcomeMessage = ({
     recipient,
     content: `
       <div style="width: 500px; text-align: center;margin: 0 auto;">
-        <h1 style="margin-bottom: 50px;">Welcome to Quaint!</h1>
+        <h1 style="margin-bottom: 50px;">Welcome to EntrepConnect!</h1>
         <p>
           Thank you for using
-          <i>Quaint; a networking platform for professionals,
-          business persons, and entrepreneurs to grow.</i>
+          <i>EntrepConnect; a networking platform for professionals,
+          business people, and entrepreneurs to grow.</i>
         </p>
         <p>
           Your email confirmation code is below.
@@ -122,7 +122,7 @@ module.exports.sendEmailWelcomeMessage = ({
         </p>
       </div>
     `,
-    subject: 'Email Verification: Welcome to Quaint',
+    subject: 'Email Verification: Welcome to EntrepConnect',
     emailType: 'welcome'
   });
 };
@@ -186,7 +186,7 @@ module.exports.sendEmailResetPasswordCode = ({
         </p>
       </div>
     `,
-    subject: 'Forgot password: Quaint',
+    subject: 'Forgot password: EntrepConnect',
     emailType: isResend
       ? 'resend-forgot-password-request'
       : 'forgot-password-request'
@@ -218,7 +218,7 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
         </p>
       </div>
     `,
-    subject: 'Forgot password: Quaint',
+    subject: 'Forgot password: EntrepConnect',
     emailType: 'forgot-password-success'
   });
 };

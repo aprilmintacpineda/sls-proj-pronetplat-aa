@@ -2,7 +2,7 @@
 
 Internally called `proj_pronetplat_aa`, the `proj` is short for **project** and the `net` is short for **networking** and the `plat` is short for **platform** while the `aa` indicates that this is the first implementation of the concept.
 
-Publicly called as **Quaint** a _professsional networking platform_, a platform for professionals, business persons, and entrepreneurs to grow.
+Publicly called as **EntrepConnect** a _professsional networking platform_, a platform for professionals, business persons, and entrepreneurs to grow.
 
 # Engineering conventions
 
