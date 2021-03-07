@@ -57,6 +57,6 @@ module.exports.handler = httpGuard({
   guards: [
     guardTypes.auth,
     guardTypes.deviceToken,
-    guardTypes.emailVerified
+    guardTypes.emailNotVerified
   ]
 });

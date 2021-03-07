@@ -4,6 +4,7 @@ const guardTypes = {
   deviceToken: 'deviceToken',
   auth: 'auth',
   emailVerified: 'emailVerified',
+  emailNotVerified: 'emailNotVerified',
   setupComplete: 'setupComplete'
 };
 
@@ -68,11 +69,18 @@ module.exports.httpGuard = ({
           console.log('Guard: Not yet setup');
           return { statusCode: 403 };
         }
-      } else if (guards.includes(guardTypes.emailVerified)) {
-        if (!authUser.emailVerifiedAt) {
-          console.log('Guard: email not verified');
-          return { statusCode: 403 };
-        }
+      } else if (
+        guards.includes(guardTypes.emailVerified) &&
+        !authUser.emailVerifiedAt
+      ) {
+        console.log('Guard: email not verified');
+        return { statusCode: 403 };
+      } else if (
+        guards.includes(guardTypes.emailNotVerified) &&
+        authUser.emailVerifiedAt
+      ) {
+        console.log('Guard: email not verified');
+        return { statusCode: 403 };
       }
 
       results.authUser = authUser;
