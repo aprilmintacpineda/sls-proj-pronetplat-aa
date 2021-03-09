@@ -903,7 +903,7 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      DomainConfiguration:
+      Domain:
         DomainName: api-v1.entrepic.com
         CertificateArn: !Ref customDomainCert
         BasePath:
