@@ -9,10 +9,10 @@ Mappings:
   stageVars:
     dev:
       appPackageName: com.aprmp.projpronetplataa.local
-      basePath: "/dev"
+      apiSuDomain: "apiv2dev"
     production:
       appPackageName: com.aprmp.projpronetplataa
-      basePath: "/"
+      apiSuDomain: "apiv2"
 
 Parameters:
   Stage:
@@ -903,16 +903,16 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      Domain:
-        DomainName: api-v1.entrepic.com
-        CertificateArn: !Ref customDomainCert
-        BasePath:
-          - !FindInMap
-            - stageVars
-            - !Ref Stage
-            - basePath
-        Route53:
-          HostedZoneId: Z0450109WGLMG82TZFOY
+      # Domain:
+      #   DomainName: !Sub
+      #       - ${apiSuDomain}.entrepic.com
+      #       - apiSuDomain: !FindInMap
+      #         - stageVars
+      #         - !Ref Stage
+      #         - apiSuDomain
+      #   CertificateArn: !Ref customDomainCert
+      #   Route53:
+      #     HostedZoneId: Z0450109WGLMG82TZFOY
   mainBackendWebAcl:
     Type: AWS::WAFv2::WebACL
     Properties:
