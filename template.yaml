@@ -9,10 +9,10 @@ Mappings:
   stageVars:
     dev:
       appPackageName: com.aprmp.projpronetplataa.local
-      apiSuDomain: "apiv2dev"
+      apiSuDomain: "apiv1dev"
     production:
       appPackageName: com.aprmp.projpronetplataa
-      apiSuDomain: "apiv2"
+      apiSuDomain: "apiv1"
 
 Parameters:
   Stage:
