@@ -895,7 +895,7 @@ Resources:
   customDomainCert:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: !Sub api-v1-${Stage}.entrepic.com
+      DomainName: !Sub api-v1.entrepic.com
       ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
@@ -904,8 +904,10 @@ Resources:
       EndpointConfiguration:
         Type: REGIONAL
       Domain:
-        DomainName: !Sub api-v1-${Stage}.entrepic.com
+        DomainName: !Sub api-v1.entrepic.com
         CertificateArn: !Ref customDomainCert
+        BasePath:
+          - !Ref Stage
         Route53:
           HostedZoneId: Z0450109WGLMG82TZFOY
   mainBackendWebAcl:
