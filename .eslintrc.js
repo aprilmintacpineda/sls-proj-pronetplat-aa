@@ -60,7 +60,6 @@ module.exports = {
       }
     ],
     'rest-spread-spacing': ['error', 'never'],
-    'no-inline-comments': 'error',
     'prefer-spread': ['error'],
     'prefer-const': 'error',
     'no-useless-call': ['error'],
