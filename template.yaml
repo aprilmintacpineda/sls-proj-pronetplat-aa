@@ -6,13 +6,13 @@ Description: >
   Sample SAM Template for proj-pronetplat-aa
   
 Mappings:
-  AppPackageNameMap:
+  stageVars:
     dev:
-      value: com.aprmp.projpronetplataa.local
-    staging:
-      value: com.aprmp.projpronetplataa.staging
+      appPackageName: com.aprmp.projpronetplataa.local
+      basePath: "/dev"
     production:
-      value: com.aprmp.projpronetplataa
+      appPackageName: com.aprmp.projpronetplataa
+      basePath: "/"
 
 Parameters:
   Stage:
@@ -41,9 +41,9 @@ Globals:
         stage: !Ref Stage
         faunadbSecret: !Ref FaunadbSecret
         appPackageName: !FindInMap
-          - AppPackageNameMap
+          - stageVars
           - !Ref Stage
-          - value
+          - appPackageName
         usersBucket: !Join
           - "-"
           - - "proj-pronetplat-aa-users"
@@ -907,7 +907,10 @@ Resources:
         DomainName: api-v1.entrepic.com
         CertificateArn: !Ref customDomainCert
         BasePath:
-          - !Ref Stage
+          - !FindInMap
+            - stageVars
+            - !Ref Stage
+            - basePath
         Route53:
           HostedZoneId: Z0450109WGLMG82TZFOY
   mainBackendWebAcl:
