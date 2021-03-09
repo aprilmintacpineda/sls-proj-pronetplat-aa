@@ -3,7 +3,7 @@ const {
   initClient,
   createOrUpdate,
   update,
-  getByIdIfExists
+  getByIndexIfNotExists
 } = require('dependencies/utils/faunadb');
 const {
   isValidDeviceToken
@@ -21,7 +21,7 @@ async function handler ({ formBody, deviceToken }) {
   const faunadb = initClient();
 
   const user = await faunadb.query(
-    getByIdIfExists('userByEmail', formBody.email)
+    getByIndexIfNotExists('userByEmail', formBody.email)
   );
 
   if (
