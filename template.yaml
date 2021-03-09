@@ -903,16 +903,16 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      # Domain:
-      #   DomainName: api-v1.entrepic.com
-      #   CertificateArn: !Ref customDomainCert
-      #   BasePath:
-      #     - !FindInMap
-      #       - stageVars
-      #       - !Ref Stage
-      #       - basePath
-      #   Route53:
-      #     HostedZoneId: Z0450109WGLMG82TZFOY
+      Domain:
+        DomainName: api-v1.entrepic.com
+        CertificateArn: !Ref customDomainCert
+        BasePath:
+          - !FindInMap
+            - stageVars
+            - !Ref Stage
+            - basePath
+        Route53:
+          HostedZoneId: Z0450109WGLMG82TZFOY
   mainBackendWebAcl:
     Type: AWS::WAFv2::WebACL
     Properties:
