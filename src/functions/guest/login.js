@@ -3,7 +3,7 @@ const {
   initClient,
   createOrUpdate,
   update,
-  getByIndex
+  getByIdIfExists
 } = require('dependencies/utils/faunadb');
 const {
   isValidDeviceToken
@@ -21,17 +21,18 @@ async function handler ({ formBody, deviceToken }) {
   const faunadb = initClient();
 
   const user = await faunadb.query(
-    getByIndex('userByEmail', formBody.email)
+    getByIdIfExists('userByEmail', formBody.email)
   );
 
   if (
+    !user ||
     !(await verifyHash(
       formBody.password,
       user.data.hashedPassword
     )) ||
     !(await isValidDeviceToken(deviceToken))
   )
-    return { statusCode: 403 };
+    return { statusCode: 401 };
 
   await faunadb.query(
     query.Do(

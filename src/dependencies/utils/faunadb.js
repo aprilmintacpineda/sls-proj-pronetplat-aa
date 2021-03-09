@@ -96,6 +96,11 @@ module.exports.getById = (collection, id) => {
   return query.Get(query.Ref(query.Collection(collection), id));
 };
 
+module.exports.getByIdIfExists = (collection, id) => {
+  const ref = query.Ref(query.Collection(collection), id);
+  return query.If(query.Exists(ref), query.Get(ref), null);
+};
+
 module.exports.hasCompletedSetupQuery = inValue => {
   return query.And(
     query.ContainsPath(['data', 'firstName'], inValue),
