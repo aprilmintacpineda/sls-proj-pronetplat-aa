@@ -84,6 +84,7 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-incrementNumTimesOpened"
+        test_var: "This is a test"
   Api:
     OpenApiVersion: 3.0.1
 
