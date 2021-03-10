@@ -43,14 +43,14 @@ async function createProduct () {
         method: 'post',
         headers,
         body: JSON.stringify({
-          name: 'EntrepConnect',
+          name: 'Entrepic',
           description:
-            'EntrepConnect - a professional networking platform for professionals, business people, and entrepreneurs to grow.',
+            'Entrepic - a professional networking platform for professionals, business people, and entrepreneurs to grow.',
           type: 'SERVICE',
           category: 'SOFTWARE',
           image_url:
-            'https://ui-avatars.com/api/?name=EntrepConnect&rounded=true&size=150',
-          home_url: 'https://entrepconnect.app/'
+            'https://ui-avatars.com/api/?name=Entrepic&rounded=true&size=150',
+          home_url: 'https://entrepic.com/'
         })
       }
     );
@@ -97,8 +97,8 @@ async function createPlan () {
         headers,
         body: JSON.stringify({
           product_id: product.id,
-          name: 'EntrepConnect monthly plan',
-          description: 'Monthly payment plan for EntrepConnect',
+          name: 'Entrepic monthly plan',
+          description: 'Monthly payment plan for Entrepic',
           billing_cycles: [
             {
               tenure_type: 'REGULAR',
@@ -149,7 +149,7 @@ async function createSubscription (planId) {
           email_address: 'april@moretonblue.com'
         },
         application_context: {
-          brand_name: 'EntrepConnect',
+          brand_name: 'Entrepic',
           locale: 'en-US',
           shipping_preference: 'NO_SHIPPING',
           user_action: 'SUBSCRIBE_NOW',
@@ -157,8 +157,8 @@ async function createSubscription (planId) {
             payer_selected: 'PAYPAL',
             payee_preferred: 'IMMEDIATE_PAYMENT_REQUIRED'
           },
-          return_url: 'https://entrepconnect.app/return-url',
-          cancel_url: 'https://entrepconnect.app/cancel-url'
+          return_url: 'https://entrepic.com/return-url',
+          cancel_url: 'https://entrepic.com/cancel-url'
         }
       })
     }

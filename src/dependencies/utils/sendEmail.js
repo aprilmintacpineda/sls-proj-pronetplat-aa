@@ -55,9 +55,9 @@ module.exports.sendEmailVerificationCode = ({
         </div>
         <p>
           For your safety, this code will expire in 5 minutes;
-          if you fail to enter this password 3 times,
-          this code will automatically expire even if 5 minutes
-          hasn't passed yet. Once expired, you can request a new code.
+          if you fail to enter this code 3 times,
+          this code will be invalidated. You can only request
+          a new code every 5 minutes.
         </p>
       </div>
     `,
@@ -74,16 +74,15 @@ module.exports.sendEmailWelcomeMessage = ({
     recipient,
     content: `
       <div style="width: 500px; text-align: center;margin: 0 auto;">
-        <h1 style="margin-bottom: 50px;">Welcome to EntrepConnect!</h1>
+        <h1 style="margin-bottom: 50px;">Welcome to Entrepic!</h1>
         <p>
           Thank you for using
-          <i>EntrepConnect; a networking platform for professionals,
+          <i>Entrepic; a networking platform for professionals,
           business people, and entrepreneurs to grow.</i>
         </p>
         <p>
-          Your email confirmation code is below.
-          You will be asked for this verification code on your
-          next login. You only have to enter it once.
+          You may now login with your account. You will be asked for your
+          email verification code, please enter the code below.
         </p>
         <div
           style="
@@ -112,9 +111,8 @@ module.exports.sendEmailWelcomeMessage = ({
         </div>
         <p>
           For your safety, this code will expire in 5 minutes; if you
-          fail to enter this password 3 times, this code will
-          automatically expire even if 5 minutes hasn't passed yet.
-          Once expired, you can request a new code.
+          fail to enter this code 3 times, this code will be invalidated.
+          You can only request a new code every 5 minutes.
         </p>
         <p>
           We sincerely hope to help you in your journey to your
@@ -122,7 +120,7 @@ module.exports.sendEmailWelcomeMessage = ({
         </p>
       </div>
     `,
-    subject: 'Email Verification: Welcome to EntrepConnect',
+    subject: 'Email Verification: Welcome to Entrepic',
     emailType: 'welcome'
   });
 };
@@ -176,9 +174,9 @@ module.exports.sendEmailResetPasswordCode = ({
         </div>
         <p>
           For your safety, this code will expire in 5 minutes;
-          if you fail to enter this password 3 times, this code
-          will automatically expire even if 5 minutes hasn't
-          passed yet. Once expired, you can request a new code.
+          if you fail to enter this code 3 times, this code
+          will be invalidated. You can only request a new code
+          every 5 minutes.
         </p>
         <p>
           If you did not make this request, you can safely ignore
@@ -186,7 +184,7 @@ module.exports.sendEmailResetPasswordCode = ({
         </p>
       </div>
     `,
-    subject: 'Forgot password: EntrepConnect',
+    subject: 'Forgot password: Entrepic',
     emailType: isResend
       ? 'resend-forgot-password-request'
       : 'forgot-password-request'
@@ -218,7 +216,7 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
         </p>
       </div>
     `,
-    subject: 'Forgot password: EntrepConnect',
+    subject: 'Forgot password: Entrepic',
     emailType: 'forgot-password-success'
   });
 };
