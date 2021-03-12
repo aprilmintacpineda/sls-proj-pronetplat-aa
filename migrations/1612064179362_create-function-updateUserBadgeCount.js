@@ -27,6 +27,15 @@ module.exports.up = q => {
           q.Var('amount')
         )
       )
+    },
+    contactsCount: {
+      contactsCount: q.Max(
+        0,
+        q.Add(
+          q.Select(['data', 'contactsCount'], q.Var('document'), 0),
+          q.Var('amount')
+        )
+      )
     }
   };
 
