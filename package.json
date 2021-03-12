@@ -29,7 +29,6 @@
     "babel-plugin-search-and-replace": "^1.1.0",
     "babel-preset-minify": "^0.5.1",
     "command-line-args": "^5.1.1",
-    "date-fns": "^2.17.0",
     "eslint": "^7.21.0",
     "eslint-import-resolver-babel-module": "^5.2.0",
     "eslint-plugin-import": "^2.22.1",
