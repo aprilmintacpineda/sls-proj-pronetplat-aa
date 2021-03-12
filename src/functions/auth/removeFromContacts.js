@@ -1,3 +1,4 @@
+const { query } = require('faunadb');
 const {
   initClient,
   hardDeleteByIndex
@@ -11,10 +12,18 @@ async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
 
   await faunadb.query(
-    hardDeleteByIndex(
-      'contactByOwnerContact',
-      authUser.id,
-      contactId
+    query.Do(
+      hardDeleteByIndex(
+        'contactByOwnerContact',
+        authUser.id,
+        contactId
+      ),
+      query.Call(
+        'updateUserBadgeCount',
+        authUser.id,
+        'contactsCount',
+        -1
+      )
     )
   );
 

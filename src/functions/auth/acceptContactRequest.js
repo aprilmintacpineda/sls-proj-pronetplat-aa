@@ -53,6 +53,12 @@ async function handler ({ authUser, params: { senderId } }) {
             numTimesOpened: 0
           }
         }),
+        query.Call(
+          'updateUserBadgeCount',
+          authUser.id,
+          'contactsCount',
+          1
+        ),
         query.Delete(contactRequest.ref)
       )
     ),
