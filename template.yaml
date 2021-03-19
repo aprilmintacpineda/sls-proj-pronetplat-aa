@@ -177,6 +177,26 @@ Resources:
             Path: /login
             RestApiId:
               Ref: mainBackendApi
+  reAuth:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: reAuth.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-reAuth"
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /re-auth
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Auth routes
   #
