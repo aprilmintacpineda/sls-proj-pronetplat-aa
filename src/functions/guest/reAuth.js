@@ -23,12 +23,12 @@ async function handler ({ formBody, deviceToken }) {
 
   if (
     !user ||
-    !user.firstName ||
-    !user.surname ||
-    !user.gender ||
-    !user.jobTitle ||
-    !user.profilePicture ||
-    !user.emailVerifiedAt ||
+    !user.data.firstName ||
+    !user.data.surname ||
+    !user.data.gender ||
+    !user.data.jobTitle ||
+    !user.data.profilePicture ||
+    !user.data.emailVerifiedAt ||
     !(await verifyHash(formBody.password, user.data.hashedPassword))
   )
     return { statusCode: 401 };
