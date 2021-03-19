@@ -70,9 +70,5 @@ async function handler ({ params: { nextToken }, authUser }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [
-    guardTypes.auth,
-    guardTypes.deviceToken,
-    guardTypes.setupComplete
-  ]
+  guards: [guardTypes.auth, guardTypes.setupComplete]
 });

@@ -6,9 +6,6 @@ const {
   getByIndexIfNotExists
 } = require('dependencies/utils/faunadb');
 const {
-  isValidDeviceToken
-} = require('dependencies/utils/firebase');
-const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
@@ -26,11 +23,7 @@ async function handler ({ formBody, deviceToken }) {
 
   if (
     !user ||
-    !(await verifyHash(
-      formBody.password,
-      user.data.hashedPassword
-    )) ||
-    !(await isValidDeviceToken(deviceToken))
+    !(await verifyHash(formBody.password, user.data.hashedPassword))
   )
     return { statusCode: 401 };
 

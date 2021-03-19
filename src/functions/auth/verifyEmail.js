@@ -61,11 +61,7 @@ async function handler ({ authUser, formBody }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [
-    guardTypes.auth,
-    guardTypes.deviceToken,
-    guardTypes.emailNotVerified
-  ],
+  guards: [guardTypes.auth, guardTypes.emailNotVerified],
   formValidator: ({ verificationCode }) => {
     return validate(verificationCode, ['required', 'maxLength:20']);
   }

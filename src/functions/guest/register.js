@@ -1,7 +1,4 @@
-const {
-  guardTypes,
-  httpGuard
-} = require('dependencies/utils/guards');
+const { httpGuard } = require('dependencies/utils/guards');
 const { invokeEvent } = require('dependencies/utils/lambda');
 const validate = require('dependencies/utils/validate');
 
@@ -16,7 +13,6 @@ async function handler ({ formBody }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [guardTypes.deviceToken],
   formValidator: ({ email, password }) => {
     return (
       validate(email, ['required', 'email']) ||

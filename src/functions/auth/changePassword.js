@@ -41,11 +41,7 @@ async function handler ({ authUser, formBody }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [
-    guardTypes.auth,
-    guardTypes.deviceToken,
-    guardTypes.setupComplete
-  ],
+  guards: [guardTypes.auth, guardTypes.setupComplete],
   formValidator: ({ currentPassword, newPassword }) => {
     return (
       validate(currentPassword, ['required', 'password']) ||

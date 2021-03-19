@@ -39,11 +39,7 @@ async function handler ({ authUser, formBody }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [
-    guardTypes.auth,
-    guardTypes.deviceToken,
-    guardTypes.emailVerified
-  ],
+  guards: [guardTypes.auth, guardTypes.emailVerified],
   formValidator: ({
     firstName,
     middleName,

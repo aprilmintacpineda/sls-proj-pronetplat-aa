@@ -28,11 +28,7 @@ async function handler ({ authUser, formBody }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [
-    guardTypes.auth,
-    guardTypes.deviceToken,
-    guardTypes.setupComplete
-  ],
+  guards: [guardTypes.auth, guardTypes.setupComplete],
   formValidator: ({ type, value, description }) => {
     let valueValidationRules = false;
 

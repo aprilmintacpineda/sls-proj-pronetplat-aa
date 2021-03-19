@@ -1,3 +1,4 @@
+const { isValidDeviceToken } = require('./firebase');
 const jwt = require('./jwt');
 
 const guardTypes = {
@@ -11,7 +12,7 @@ const guardTypes = {
 
 module.exports.httpGuard = ({
   handler,
-  guards,
+  guards = [],
   formValidator = null
 }) => async httpEvent => {
   const results = {
@@ -28,6 +29,11 @@ module.exports.httpGuard = ({
 
     if (!deviceToken) {
       console.log('Guard: no device-token in headers');
+      return { statusCode: 400 };
+    }
+
+    if (!(await isValidDeviceToken(deviceToken))) {
+      console.log('Guard: invalid device-token in headers');
       return { statusCode: 400 };
     }
 
