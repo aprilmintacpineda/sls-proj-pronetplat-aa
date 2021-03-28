@@ -61,14 +61,16 @@ jobs:
           NODE_ENV=production yarn build
           cd build
           mkdir -p dependencies/resources
-          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
+          echo '${{ secrets.FIREBASE_ADMIN_PROD }}' > dependencies/resources/firebase_admin.json
 
       - name: SAM build
-        run: /usr/local/bin/sam build --parallel
+        run: |
+          cd build
+          /usr/local/bin/sam build --parallel
 
       - name: SAM deploy
         run: |
-          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
-            --s3-prefix sls-proj-pronetplat-aa-dev \
-            --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET_DEV }} \
-            --tags what="sls-proj-pronetplat-aa" stage="dev"
+          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-prod \
+            --s3-prefix sls-proj-pronetplat-aa-prod \
+            --parameter-overrides Stage=prod FaunadbSecret=${{ secrets.FAUNADB_SECRET_PROD }} \
+            --tags what="sls-proj-pronetplat-aa" stage="prod"

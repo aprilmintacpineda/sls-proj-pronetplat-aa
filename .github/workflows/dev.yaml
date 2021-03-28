@@ -64,7 +64,9 @@ jobs:
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
 
       - name: SAM build
-        run: /usr/local/bin/sam build --parallel
+        run: |
+        cd build
+        /usr/local/bin/sam build --parallel
 
       - name: SAM deploy
         run: |
