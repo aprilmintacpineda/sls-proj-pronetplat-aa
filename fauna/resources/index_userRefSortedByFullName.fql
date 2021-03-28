@@ -1,0 +1,11 @@
+CreateIndex({
+  name: 'userRefSortedByFullName',
+  source: Collection('users'),
+  terms: [{ field: ['ref'] }],
+  values: [
+    { field: ['data', 'firstName'] },
+    { field: ['data', 'middleName'] },
+    { field: ['data', 'surname'] },
+    { field: ['ref'] }
+  ]
+})

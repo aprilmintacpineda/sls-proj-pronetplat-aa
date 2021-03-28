@@ -1,0 +1,5 @@
+CreateIndex({
+  name: 'contactDetailsByUserId',
+  source: Collection('contactDetails'),
+  terms: [{ field: ['data', 'userId'] }]
+})

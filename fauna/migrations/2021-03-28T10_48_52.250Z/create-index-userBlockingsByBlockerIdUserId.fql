@@ -1,0 +1,10 @@
+CreateIndex({
+  name: "userBlockingsByBlockerIdUserId",
+  source: Collection("userBlockings"),
+  unique: true,
+  terms: [{
+    field: ["data", "blockerId"]
+  }, {
+    field: ["data", "userId"]
+  }]
+})

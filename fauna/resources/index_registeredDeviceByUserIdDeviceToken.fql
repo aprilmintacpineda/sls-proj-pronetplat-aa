@@ -1,0 +1,9 @@
+CreateIndex({
+  name: 'registeredDeviceByUserIdDeviceToken',
+  source: Collection('registeredDevices'),
+  terms: [
+    { field: ['data', 'userId'] },
+    { field: ['data', 'deviceToken'] }
+  ],
+  unique: true
+})
