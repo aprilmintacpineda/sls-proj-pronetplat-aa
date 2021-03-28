@@ -2,7 +2,7 @@ const { query, Client } = require('faunadb');
 
 async function main () {
   const client = new Client({
-    secret: 'fnAD9q43t4ACDb-_cBDCkcUxWHj303eieg8caCWg'
+    secret: process.env.secret
   });
 
   await client.query(
