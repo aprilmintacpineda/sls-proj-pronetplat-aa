@@ -50,17 +50,24 @@ jobs:
           echo "Yarn: $(yarn --version)"
           echo "Node: $(node --version)"
       
+      - name: Install node modules
+        run: yarn
+
       - name: Run migration
         run: yarn fauna:migrate
 
-      - name: Build and deploy
+      - name: Build JS
         run: |
-          yarn
           NODE_ENV=production yarn build
           cd build
           mkdir -p dependencies/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
-          /usr/local/bin/sam build --parallel
+
+      - name: SAM build
+        run: /usr/local/bin/sam build --parallel
+
+      - name: SAM deploy
+        run: |
           /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
             --s3-prefix sls-proj-pronetplat-aa-dev \
             --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET_DEV }} \
