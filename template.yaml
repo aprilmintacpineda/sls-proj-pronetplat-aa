@@ -33,7 +33,7 @@ Globals:
       - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
     MemorySize: 1024
     ReservedConcurrentExecutions: 20
-    Timeout: 10
+    Timeout: 30
     Runtime: nodejs12.x
     Environment:
       Variables:
