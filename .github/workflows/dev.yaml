@@ -65,8 +65,8 @@ jobs:
 
       - name: SAM build
         run: |
-        cd build
-        /usr/local/bin/sam build --parallel
+          cd build
+          /usr/local/bin/sam build --parallel
 
       - name: SAM deploy
         run: |
