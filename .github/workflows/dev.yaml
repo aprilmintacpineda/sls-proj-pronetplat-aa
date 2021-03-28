@@ -16,7 +16,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

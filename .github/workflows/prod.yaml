@@ -16,7 +16,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -53,9 +53,9 @@ jobs:
           NODE_ENV=production yarn build
           cd build
           mkdir -p dependencies/resources
-          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
+          echo '${{ secrets.FIREBASE_ADMIN_PROD }}' > dependencies/resources/firebase_admin.json
           /usr/local/bin/sam build --parallel
-          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
-            --s3-prefix sls-proj-pronetplat-aa-dev \
-            --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET_DEV }} \
-            --tags what="sls-proj-pronetplat-aa" stage="dev"
+          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-prod \
+            --s3-prefix sls-proj-pronetplat-aa-prod \
+            --parameter-overrides Stage=prod FaunadbSecret=${{ secrets.FAUNADB_SECRET_PROD }} \
+            --tags what="sls-proj-pronetplat-aa" stage="prod"
