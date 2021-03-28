@@ -27,7 +27,7 @@ const recursiveReadDir = require('recursive-readdir-async');
   targets += '\tmkdir -p "$(ARTIFACTS_DIR)/nodejs"\n';
   targets += '\tcp -r . "$(ARTIFACTS_DIR)/nodejs/"\n';
   targets +=
-    '\tyarn --production --cwd "$(ARTIFACTS_DIR)/nodejs/"\n';
+    '\tyarn --production --prefer-offline --cwd "$(ARTIFACTS_DIR)/nodejs/"\n';
 
   fs.writeFile('Makefile', `.PHONY:${phonies}\n\n${targets}`);
 })();
