@@ -8,11 +8,13 @@ Description: >
 Mappings:
   stageVars:
     dev:
-      appPackageName: com.aprmp.projpronetplataa.local
+      appPackageName: com.aprmp.projpronetplataa.dev
       apiSuDomain: "apiv1dev"
+      reservedConcurrentExecutions: 0
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSuDomain: "apiv1"
+      reservedConcurrentExecutions: 20
 
 Parameters:
   Stage:
@@ -32,7 +34,10 @@ Globals:
       - !Ref dependencies
       - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
     MemorySize: 1024
-    ReservedConcurrentExecutions: 20
+    ReservedConcurrentExecutions: !FindInMap
+      - stageVars
+      - !Ref Stage
+      - reservedConcurrentExecutions
     Timeout: 30
     Runtime: nodejs12.x
     Environment:
