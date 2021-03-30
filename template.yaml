@@ -20,7 +20,7 @@ Parameters:
     Type: String
     AllowedValues:
       - dev
-      - production
+      - prod
   FaunadbSecret:
     Description: Faunadb secret
     Type: String
