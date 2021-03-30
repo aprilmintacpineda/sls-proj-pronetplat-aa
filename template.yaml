@@ -10,7 +10,7 @@ Mappings:
     dev:
       appPackageName: com.aprmp.projpronetplataa.local
       apiSuDomain: "apiv1dev"
-    production:
+    prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSuDomain: "apiv1"
 
