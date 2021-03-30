@@ -73,7 +73,4 @@ jobs:
       - name: SAM deploy
         run: |
           cd build
-          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
-            --s3-prefix sls-proj-pronetplat-aa-dev \
-            --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET_DEV }} \
-            --tags what="sls-proj-pronetplat-aa" stage="dev"
+          /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev --s3-prefix sls-proj-pronetplat-aa-dev --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET_DEV }} --tags what="sls-proj-pronetplat-aa" stage="dev"
