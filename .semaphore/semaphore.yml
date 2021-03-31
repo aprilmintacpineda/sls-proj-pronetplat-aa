@@ -25,8 +25,8 @@ blocks:
             - JWT_SECRET=$JWT_SECRET NODE_ENV=production yarn build
             - cd build
             - mkdir -p dependencies/resources
+            - cp ~/firebase_admin.json dependencies/resources/firebase_admin.json
             - sam build --parallel
-            - cp ~/firebase_admin.json dependencies/nodejs/resources/firebase_admin.json
             - > 
               sam deploy --stack-name sls-proj-pronetplat-aa-dev \
                 --s3-prefix sls-proj-pronetplat-aa-dev \
