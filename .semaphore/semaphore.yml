@@ -17,8 +17,10 @@ blocks:
       secrets:
         - name: Dev Variables
       env_vars:
-        FAUNA_ADMIN_KEY: $FAUNA_ADMIN_KEY
-        JWT_SECRET: $JWT_SECRET
+        - name: FAUNA_ADMIN_KEY
+          value: $FAUNA_ADMIN_KEY
+        - name: JWT_SECRET
+          value: $JWT_SECRET
       jobs:
         - name: Build and deploy
           commands:
