@@ -20,9 +20,7 @@ blocks:
         - name: Build and deploy
           commands:
             - checkout
-            - cache restore
             - yarn --prefer-offline
-            - cache store
             - FAUNA_ADMIN_KEY=$FAUNA_ADMIN_KEY FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
             - JWT_SECRET=$JWT_SECRET NODE_ENV=production yarn build
             - cd build
