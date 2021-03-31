@@ -6,12 +6,30 @@ agent:
     os_image: ubuntu1804
   containers:
     - name: main
-      image: 'aprilmintacpineda/aws-sam-cli-deploy-nodejs:latest'
+      image: aprilmintacpineda/aws-sam-cli-deploy-nodejs:latest
+global_job_config:
+  secrets:
+    - name: AWS Credentials
+    - name: Dev Variables
 blocks:
   - name: Development
     task:
       jobs:
-        - name: Checkout
+        env_vars:
+          FAUNA_ADMIN_KEY: $FAUNA_ADMIN_KEY
+          JWT_SECRET: $JWT_SECRET
+        - name: Build and deploy
           commands:
             - checkout
-            - echo "hello world"
+            - yarn --prefer-offline
+            - yarn fauna:migrate
+            - NODE_ENV=production yarn build
+            - cd build
+            - mkdir -p dependencies/resources
+            - /usr/local/bin/sam build --parallel
+            - cp ~/firebase_admin.json dependencies/nodejs/resources/firebase_admin.json
+            -> 
+              /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+                --s3-prefix sls-proj-pronetplat-aa-dev \
+                --parameter-overrides Stage=dev FaunadbSecret=$FAUNADB_SECRET \
+                --tags what="sls-proj-pronetplat-aa" stage="dev"
