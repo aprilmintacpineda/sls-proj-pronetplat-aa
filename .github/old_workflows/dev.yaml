@@ -1,0 +1,79 @@
+# name: dev-aws-sam-deployment
+
+# # Controls when the action will run. Triggers the workflow on push or pull request
+# # events but only for the dev branch
+# on:
+#   push:
+#     branches: [dev]
+#   pull_request:
+#     branches: [dev]
+
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: ubuntu-20.04
+#     continue-on-error: false
+#     env:
+#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#       JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+#       FAUNA_ADMIN_KEY: ${{ secrets.FAUNA_ADMIN_KEY_DEV }}
+#       FAUNA_LEGACY: true
+#       FAUNA_NOPRINT: true
+
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - uses: actions/checkout@master
+
+#       - name: Get yarn cache directory path
+#         id: yarn-cache-dir-path
+#         run: echo "::set-output name=dir::$(yarn cache dir)"
+
+#       - uses: actions/cache@v2
+#         with:
+#           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+#           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+#           restore-keys: |
+#             ${{ runner.os }}-yarn-
+      
+#       - name: Install sam
+#         run: |
+#           curl -sL https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip -o aws-sam-cli-linux-x86_64.zip
+#           unzip -o -q aws-sam-cli-linux-x86_64.zip -d sam-installation
+#           rm -rf aws-sam-cli-linux-x86_64.zip
+#           sudo ./sam-installation/install
+
+#       - name: Versions
+#         run: |
+#           echo "SAM: $(/usr/local/bin/sam --version)"
+#           echo "Yarn: $(yarn --version)"
+#           echo "Node: $(node --version)"
+      
+#       - name: Install node modules
+#         run: yarn --prefer-offline
+
+#       - name: Run migration
+#         run: yarn fauna:migrate
+
+#       - name: Build JS
+#         run: |
+#           NODE_ENV=production yarn build
+#           cd build
+#           mkdir -p dependencies/resources
+#           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
+
+#       - name: SAM build
+#         run: |
+#           cd build
+#           /usr/local/bin/sam build --parallel
+
+#       - name: SAM deploy
+#         run: |
+#           cd build
+#           /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+#             --s3-prefix sls-proj-pronetplat-aa-dev \
+#             --parameter-overrides Stage=dev FaunadbSecret=${{ secrets.FAUNADB_SECRET_DEV }} \
+#             --tags what="sls-proj-pronetplat-aa" stage="dev"
