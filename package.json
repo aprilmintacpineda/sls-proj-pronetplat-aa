@@ -47,13 +47,11 @@
     "prettier": "prettier \"**/*.js\" --write",
     "lint": "npm run prettier && npm run eslint",
     "fauna:migrate": "fauna-schema-migrate generate && fauna-schema-migrate apply",
-    "create-plans": "node scripts/createPlans.js",
-    "build-functions": "node scripts/buildFunctions.js",
-    "build-makefile": "node scripts/buildMakeFile.js",
+    "build-functions": "node buildScripts/buildFunctions.js",
+    "build-makefile": "node buildScripts/buildMakeFile.js",
     "build-layers": "babel src/dependencies -d build/dependencies --copy-files",
     "copy-files": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml && cp package.json build/package.json && cp package.json build/dependencies/package.json && cp yarn.lock build/yarn.lock && cp yarn.lock build/dependencies/yarn.lock && cp Makefile build/dependencies/Makefile && cp Makefile build/Makefile",
     "build": "rm -rf build Makefile && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn copy-files",
-    "fakeData": "node scripts/fakeData.js",
     "clearData": "node scripts/clearData.js"
   },
   "lint-staged": {

@@ -13,6 +13,8 @@ global_job_config:
     - name: Dev Variables
 blocks:
   - name: Development
+    run:
+      when: branch = 'dev' and change_in(['/src', '/buildScripts', '/fauna', '/template.yaml', '/.fauna-migrate.js', '/babel.config.js', '/package.json'])
     task:
       secrets:
         - name: Dev Variables
@@ -26,12 +28,12 @@ blocks:
             - yarn --version
             - sam --version
             - yarn --prefer-offline
-            - FAUNA_ADMIN_KEY=$FAUNA_ADMIN_KEY FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
+            - FAUNA_ADMIN_KEY=$FAUNA_ADMIN_KEY FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna-schema-migrate apply
             - JWT_SECRET=$JWT_SECRET NODE_ENV=production yarn build
             - cd build
             - mkdir -p dependencies/resources
             - cp ~/firebase_admin.json dependencies/resources/firebase_admin.json
-            - sam build --parallel --debug
+            - sam build --parallel
             - > 
               sam deploy --stack-name sls-proj-pronetplat-aa-dev \
                 --s3-prefix sls-proj-pronetplat-aa-dev \
