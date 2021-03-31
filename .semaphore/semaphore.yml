@@ -13,9 +13,9 @@ global_job_config:
     - name: Dev Variables
 blocks:
   - name: Development
-    secrets:
-      - name: Dev Variables
     task:
+      secrets:
+        - name: Dev Variables
       env_vars:
         FAUNA_ADMIN_KEY: $FAUNA_ADMIN_KEY
         JWT_SECRET: $JWT_SECRET
