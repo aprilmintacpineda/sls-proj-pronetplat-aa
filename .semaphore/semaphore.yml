@@ -20,7 +20,9 @@ blocks:
         - name: Build and deploy
           commands:
             - checkout
+            - cache restore
             - yarn --prefer-offline
+            - cache store
             - FAUNA_ADMIN_KEY=$FAUNA_ADMIN_KEY FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
             - JWT_SECRET=$JWT_SECRET NODE_ENV=production yarn build
             - cd build
@@ -32,4 +34,3 @@ blocks:
                 --s3-prefix sls-proj-pronetplat-aa-dev \
                 --parameter-overrides Stage=dev FaunadbSecret=$FAUNADB_SECRET \
                 --tags what="sls-proj-pronetplat-aa" stage="dev"
-            - cache store node_modules_$(cat yarn.lock | shasum) node_modules

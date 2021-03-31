@@ -19,7 +19,7 @@ const config = {
 if (process.env.NODE_ENV === 'production') {
   if (!process.env.JWT_SECRET) {
     console.log('JWT_SECRET must be provided!');
-    process.exi(1);
+    process.exit(1);
   }
 
   config.presets.push([

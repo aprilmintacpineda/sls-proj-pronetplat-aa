@@ -13,13 +13,13 @@ const recursiveReadDir = require('recursive-readdir-async');
   functions.forEach(({ name }) => {
     const blockName = `build-${name.split('.')[0]}`;
 
-    targets +=
-      `${blockName}:\n\tcp ${name} ` +
-      '"${ARTIFACTS_DIR}/' +
-      name +
-      '"\n\n';
-
     phonies += ` ${blockName}`;
+
+    targets += `${blockName}:\n`;
+    targets += `\tcp ${name} ` + '"${ARTIFACTS_DIR}/' + `${name}"\n`;
+
+    // separator
+    targets += '\n';
   });
 
   // for the dependencies layer
