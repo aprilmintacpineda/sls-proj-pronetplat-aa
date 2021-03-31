@@ -25,6 +25,7 @@ blocks:
             - node --version
             - yarn --version
             - sam --version
+            - rm -rf node_modules yarn.lock
             - yarn --prefer-offline
             - FAUNA_ADMIN_KEY=$FAUNA_ADMIN_KEY FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
             - JWT_SECRET=$JWT_SECRET NODE_ENV=production yarn build
