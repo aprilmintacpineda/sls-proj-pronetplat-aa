@@ -28,10 +28,10 @@ blocks:
             - NODE_ENV=production yarn build
             - cd build
             - mkdir -p dependencies/resources
-            - /usr/local/bin/sam build --parallel
+            - sam build --parallel
             - cp ~/firebase_admin.json dependencies/nodejs/resources/firebase_admin.json
-            -> 
-              /usr/local/bin/sam deploy --stack-name sls-proj-pronetplat-aa-dev \
+            - > 
+              sam deploy --stack-name sls-proj-pronetplat-aa-dev \
                 --s3-prefix sls-proj-pronetplat-aa-dev \
                 --parameter-overrides Stage=dev FaunadbSecret=$FAUNADB_SECRET \
                 --tags what="sls-proj-pronetplat-aa" stage="dev"
