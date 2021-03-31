@@ -20,7 +20,7 @@ blocks:
         - name: Build and deploy
           commands:
             - checkout
-            - python --version
+            - python3 --version
             - node --version
             - yarn --version
             - sam --version
