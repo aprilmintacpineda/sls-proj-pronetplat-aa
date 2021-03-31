@@ -16,18 +16,13 @@ blocks:
     task:
       secrets:
         - name: Dev Variables
-      env_vars:
-        - name: FAUNA_ADMIN_KEY
-          value: $FAUNA_ADMIN_KEY
-        - name: JWT_SECRET
-          value: $JWT_SECRET
       jobs:
         - name: Build and deploy
           commands:
             - checkout
             - yarn --prefer-offline
-            - FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
-            - NODE_ENV=production yarn build
+            - FAUNA_ADMIN_KEY=$FAUNA_ADMIN_KEY FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
+            - JWT_SECRET=$JWT_SECRET NODE_ENV=production yarn build
             - cd build
             - mkdir -p dependencies/resources
             - sam build --parallel
