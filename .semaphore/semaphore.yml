@@ -21,16 +21,12 @@ blocks:
           value: $FAUNA_ADMIN_KEY
         - name: JWT_SECRET
           value: $JWT_SECRET
-        - name: FAUNA_LEGACY
-          value: true
-        - name: FAUNA_NOPRINT
-          value: true
       jobs:
         - name: Build and deploy
           commands:
             - checkout
             - yarn --prefer-offline
-            - yarn fauna:migrate
+            - FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna:migrate
             - NODE_ENV=production yarn build
             - cd build
             - mkdir -p dependencies/resources
