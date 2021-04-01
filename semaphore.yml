@@ -3,7 +3,6 @@ name: Continuous Deployment
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu1804
   containers:
     - name: main
       image: aprilmintacpineda/aws-sam-cli-deploy-nodejs:latest
