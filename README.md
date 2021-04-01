@@ -1,5 +1,4 @@
 [![Dev Build Status](https://aprilmintacpineda.semaphoreci.com/badges/sls-proj-pronetplat-aa/branches/dev.svg?style=shields&key=0f205d37-246f-47a6-a059-9d175a48a0dd)](https://aprilmintacpineda.semaphoreci.com/projects/sls-proj-pronetplat-aa)
-
 [![Master Build Status](https://aprilmintacpineda.semaphoreci.com/badges/sls-proj-pronetplat-aa/branches/master.svg?style=shields&key=0f205d37-246f-47a6-a059-9d175a48a0dd)](https://aprilmintacpineda.semaphoreci.com/projects/sls-proj-pronetplat-aa)
 
 # Project Professional Network Platform
