@@ -11,6 +11,7 @@ global_job_config:
     - name: aws-credentials
 blocks:
   - name: Development
+    dependencies: []
     run:
       when: branch = 'dev'
     task:
@@ -33,6 +34,7 @@ blocks:
                 --parameter-overrides Stage=dev FaunadbSecret=$FAUNADB_SECRET \
                 --tags what="sls-proj-pronetplat-aa" stage="dev"
   - name: Production
+    dependencies: []
     run:
       when: branch = 'master'
     task:
