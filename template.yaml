@@ -14,7 +14,7 @@ Mappings:
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSuDomain: "apiv1"
-      reservedConcurrentExecutions: 40
+      reservedConcurrentExecutions: 20
 
 Parameters:
   Stage:
