@@ -15,6 +15,7 @@ module.exports.sendEmailVerificationCode = ({
 }) => {
   return sendEmail({
     recipient,
+    from: 'email-verification@entrepic.com',
     content: `
       <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">Verify your email</h1>
@@ -72,6 +73,7 @@ module.exports.sendEmailWelcomeMessage = ({
 }) => {
   return sendEmail({
     recipient,
+    from: 'email-verification@entrepic.com',
     content: `
       <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">Welcome to Entrepic!</h1>
@@ -132,6 +134,7 @@ module.exports.sendEmailResetPasswordCode = ({
 }) => {
   return sendEmail({
     recipient,
+    from: 'forgot-password@entrepic.com',
     content: `
       <div style="width: 500px; text-align: center;margin: 0 auto;">
         <h1 style="margin-bottom: 50px;">
@@ -194,6 +197,7 @@ module.exports.sendEmailResetPasswordCode = ({
 module.exports.sendEmailResetPasswordSuccess = recipient => {
   return sendEmail({
     recipient,
+    from: 'forgot-password@entrepic.com',
     content: `
       <div
         style="
@@ -224,6 +228,7 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
 module.exports.sendEmailChangePassword = recipient => {
   return sendEmail({
     recipient,
+    from: 'change-password@entrepic.com',
     content: `
       <div
         style="

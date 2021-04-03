@@ -8,7 +8,8 @@ module.exports.handler = async ({
   recipient,
   content,
   subject,
-  emailType
+  emailType,
+  from
 }) => {
   await new Promise((resolve, reject) => {
     sesv2.sendEmail(
@@ -17,7 +18,21 @@ module.exports.handler = async ({
           Simple: {
             Body: {
               Html: {
-                Data: content
+                Data:
+                  content +
+                  `
+                    <br>
+                    <p>
+                      <small>
+                        This is a system generated email. Do not reply to this email.
+                      </small>
+                    </p>
+                    <p>
+                      <small>
+                        If you need additional assistance, please send us an email to <a href="mailto:hello@entrepic.com">hello@entrepic.com</a>
+                      </small>
+                    </p>
+                `
               }
             },
             Subject: {
@@ -34,7 +49,8 @@ module.exports.handler = async ({
             Value: emailType
           }
         ],
-        FromEmailAddress: 'aprilmintacpineda@gmail.com'
+        FromEmailAddress: from,
+        ReplyToAddresses: ['hello@entrepic.com']
       },
       error => {
         if (error) reject(error);
