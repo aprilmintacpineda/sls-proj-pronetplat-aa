@@ -46,7 +46,6 @@
     "eslint": "eslint \"**/*.js\" --fix",
     "prettier": "prettier \"**/*.js\" --write",
     "lint": "npm run prettier && npm run eslint",
-    "fauna:migrate": "fauna-schema-migrate generate && fauna-schema-migrate apply",
     "build-functions": "node buildScripts/buildFunctions.js",
     "build-makefile": "node buildScripts/buildMakeFile.js",
     "build-layers": "babel src/dependencies -d build/dependencies --copy-files",

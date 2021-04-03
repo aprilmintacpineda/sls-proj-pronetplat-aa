@@ -56,7 +56,7 @@ jobs:
         run: yarn --prefer-offline
 
       - name: Run migration
-        run: yarn fauna:migrate
+        run: yarn fauna-schema-migrate apply
 
       - name: Build JS
         run: |
