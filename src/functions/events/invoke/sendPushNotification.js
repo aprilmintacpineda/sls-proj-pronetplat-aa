@@ -20,7 +20,6 @@ module.exports.handler = async ({
   const client = initClient();
   let after = null;
   const tokens = [];
-  const expiredTokenIds = [];
 
   do {
     const result = await client.query(
@@ -36,25 +35,14 @@ module.exports.handler = async ({
       )
     );
 
-    result.data.forEach(([expiresAt, deviceToken, _1, ref]) => {
-      if (hasTimePassed(expiresAt)) expiredTokenIds.push(ref.id);
-      else tokens.push(deviceToken);
+    result.data.forEach(([expiresAt, deviceToken]) => {
+      if (!hasTimePassed(expiresAt)) tokens.push(deviceToken);
     }, []);
 
     after = result.after;
   } while (after);
 
   await Promise.all([
-    client.query(
-      expiredTokenIds.map(registeredDeviceId => {
-        return query.Delete(
-          query.Ref(
-            query.Collection('registeredDevices'),
-            registeredDeviceId
-          )
-        );
-      })
-    ),
     sendPushNotification({
       tokens,
       notification: {
