@@ -38,9 +38,7 @@ module.exports.handler = async event => {
   const [, userId] = objectKey.split('_');
   const faunadb = initClient();
 
-  const { data: user } = await faunadb.query(
-    getById('users', userId)
-  );
+  const user = await faunadb.query(getById('users', userId));
 
   const [uploaded] = await Promise.all([
     uploadPromise({
@@ -52,10 +50,10 @@ module.exports.handler = async event => {
       ContentType: file.ContentType
     }),
     deleteObjectPromise(uploadedS3Object),
-    hasCompletedSetup(user)
+    hasCompletedSetup(user.data)
       ? deleteObjectPromise({
           Bucket: bucketName,
-          Key: user.profilePicture.split('/').reverse()[0]
+          Key: user.data.profilePicture.split('/').reverse()[0]
         })
       : null
   ]);
