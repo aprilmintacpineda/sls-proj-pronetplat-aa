@@ -1,5 +1,9 @@
 const { isValidDeviceToken } = require('./firebase');
 const jwt = require('./jwt');
+const {
+  hasCompletedSetup,
+  hasCompletePersonalInfo
+} = require('./users');
 
 const guardTypes = {
   deviceToken: 'deviceToken',
@@ -8,7 +12,8 @@ const guardTypes = {
   emailVerified: 'emailVerified',
   emailNotVerified: 'emailNotVerified',
   setupComplete: 'setupComplete',
-  setupNotComplete: 'setupNotComplete'
+  setupNotComplete: 'setupNotComplete',
+  personalInfoComplete: 'personalInfoComplete'
 };
 
 module.exports.httpGuard = ({
@@ -80,14 +85,15 @@ module.exports.httpGuard = ({
 
       if (
         guards.includes(guardTypes.setupComplete) &&
-        (!authUser.firstName ||
-          !authUser.surname ||
-          !authUser.gender ||
-          !authUser.jobTitle ||
-          !authUser.profilePicture ||
-          !authUser.emailVerifiedAt)
+        !hasCompletedSetup(authUser)
       ) {
         console.log('Guard: setupComplete failed');
+        return { statusCode: 403 };
+      } else if (
+        guards.includes(guardTypes.personalInfoComplete) &&
+        !hasCompletePersonalInfo(authUser)
+      ) {
+        console.log('Guard: personalInfoComplete failed');
         return { statusCode: 403 };
       } else if (
         guards.includes(guardTypes.setupNotComplete) &&

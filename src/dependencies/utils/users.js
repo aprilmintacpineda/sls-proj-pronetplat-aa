@@ -1,3 +1,24 @@
+export function hasCompletedSetup (user) {
+  return (
+    user.firstName &&
+    user.surname &&
+    user.gender &&
+    user.jobTitle &&
+    user.profilePicture &&
+    user.emailVerifiedAt
+  );
+}
+
+export function hasCompletePersonalInfo (user) {
+  return (
+    user.firstName &&
+    user.surname &&
+    user.gender &&
+    user.jobTitle &&
+    user.emailVerifiedAt
+  );
+}
+
 export function getPublicUserData (user) {
   return {
     id: user.ref.id,

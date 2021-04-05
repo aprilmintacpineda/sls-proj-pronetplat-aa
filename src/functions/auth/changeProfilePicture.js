@@ -30,7 +30,7 @@ async function handler ({ authUser, formBody }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [guardTypes.auth, guardTypes.emailVerified],
+  guards: [guardTypes.auth, guardTypes.personalInfoComplete],
   formValidator: ({ type }) => {
     return validate(type, [
       'required',
