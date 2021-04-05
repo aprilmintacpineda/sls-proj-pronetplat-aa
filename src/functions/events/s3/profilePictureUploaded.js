@@ -1,7 +1,8 @@
 const jimp = require('jimp');
 const {
   initClient,
-  updateById
+  getById,
+  update
 } = require('dependencies/utils/faunadb');
 const {
   getObjectPromise,
@@ -34,6 +35,9 @@ module.exports.handler = async event => {
   );
 
   const [, userId] = objectKey.split('_');
+  const faunadb = initClient();
+
+  const user = await faunadb.query(getById('users', userId));
 
   const [uploaded] = await Promise.all([
     uploadPromise({
@@ -44,13 +48,15 @@ module.exports.handler = async event => {
       ContentEncoding: file.ContentEncoding,
       ContentType: file.ContentType
     }),
-    deleteObjectPromise(uploadedS3Object)
+    deleteObjectPromise(uploadedS3Object),
+    deleteObjectPromise({
+      Bucket: bucketName,
+      Key: user.data.profilePicture.split('/').reverse()[0]
+    })
   ]);
 
-  const faunadb = initClient();
-
   await faunadb.query(
-    updateById('users', userId, {
+    update(user.ref, {
       profilePicture: uploaded.Location
     })
   );
