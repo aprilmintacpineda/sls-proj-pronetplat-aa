@@ -67,16 +67,16 @@ module.exports.httpGuard = ({
 
     try {
       let authUser = null;
-      let verifiedToken = null;
+      let verifiedJwt = null;
 
       if (guards.includes(guardTypes.auth)) {
-        verifiedToken = await jwt.verify(authorization);
+        verifiedJwt = await jwt.verify(authorization);
       } else {
         // must be softAuth
-        verifiedToken = await jwt.decode(authorization);
+        verifiedJwt = await jwt.decode(authorization);
       }
 
-      authUser = verifiedToken.data;
+      authUser = verifiedJwt.data;
 
       if (
         guards.includes(guardTypes.setupComplete) &&
@@ -115,7 +115,7 @@ module.exports.httpGuard = ({
       }
 
       results.authUser = authUser;
-      results.verifiedToken = verifiedToken;
+      results.verifiedJwt = verifiedJwt;
     } catch (error) {
       console.log('Guard: token error', error);
       return { statusCode: 401 };
