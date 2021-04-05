@@ -8,7 +8,8 @@ export function getPublicUserData (user) {
     gender: user.data.gender,
     bio: user.data.bio || '',
     company: user.data.company || '',
-    jobTitle: user.data.jobTitle
+    jobTitle: user.data.jobTitle,
+    isTestAccount: user.data.isTestAccount
   };
 }
 
@@ -31,7 +32,8 @@ export function getUserData (user) {
     emailConfirmCodeExpiresAt: user.data.emailConfirmCodeExpiresAt,
     emailVerifiedAt: user.data.emailVerifiedAt,
     lastLoginAt: user.data.lastLoginAt,
-    createdAt: user.data.createdAt
+    createdAt: user.data.createdAt,
+    isTestAccount: user.data.isTestAccount
   };
 }
 
