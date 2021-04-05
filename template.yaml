@@ -10,7 +10,7 @@ Mappings:
     dev:
       appPackageName: com.aprmp.projpronetplataa.dev
       apiSuDomain: "apiv1dev"
-      reservedConcurrentExecutions: 1
+      reservedConcurrentExecutions: ""
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSuDomain: "apiv1"
