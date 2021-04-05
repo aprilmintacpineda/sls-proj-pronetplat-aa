@@ -104,14 +104,14 @@ module.exports.getById = (collection, id) => {
   return query.Get(query.Ref(query.Collection(collection), id));
 };
 
-module.exports.hasCompletedSetupQuery = inValue => {
+module.exports.hasCompletedSetupQuery = userData => {
   return query.And(
-    query.ContainsPath(['data', 'firstName'], inValue),
-    query.ContainsPath(['data', 'surname'], inValue),
-    query.ContainsPath(['data', 'gender'], inValue),
-    query.ContainsPath(['data', 'jobTitle'], inValue),
-    query.ContainsPath(['data', 'profilePicture'], inValue),
-    query.ContainsPath(['data', 'emailVerifiedAt'], inValue)
+    query.ContainsPath(['firstName'], userData),
+    query.ContainsPath(['surname'], userData),
+    query.ContainsPath(['gender'], userData),
+    query.ContainsPath(['jobTitle'], userData),
+    query.ContainsPath(['profilePicture'], userData),
+    query.ContainsPath(['emailVerifiedAt'], userData)
   );
 };
 
@@ -199,6 +199,25 @@ module.exports.hardDeleteIfOwnedByUser = (userId, getExpression) => {
     getExpression,
     query.Delete(selectRef(query.Var('document')))
   );
+};
+
+module.exports.ifCompatibleTestAccountTypes = (
+  userData1,
+  userData2,
+  queryCommand
+) => {
+  return query.If(
+    query.Equals(
+      query.Select(['isTestAccount'], userData1),
+      query.Select(['isTestAccount'], userData2)
+    ),
+    queryCommand,
+    query.Abort('NotCompatibleTestAccountTypes')
+  );
+};
+
+module.exports.selectData = fromValue => {
+  return query.Select(['data'], fromValue);
 };
 
 module.exports.toResponseData = response => ({

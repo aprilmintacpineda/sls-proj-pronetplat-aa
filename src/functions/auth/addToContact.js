@@ -5,7 +5,9 @@ const {
   create,
   isOnBlockList,
   hasPendingContactRequest,
-  getById
+  getById,
+  selectData,
+  ifCompatibleTestAccountTypes
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -30,28 +32,37 @@ async function handler ({ authUser, params: { contactId } }) {
 
   try {
     await faunadb.query(
-      query.If(
-        hasPendingContactRequest(authUser, contactId),
-        query.Abort('hasPendingRequest'),
-        query.If(
-          hasCompletedSetupQuery(getById('users', contactId)),
-          query.Do(
-            create('contactRequests', {
-              senderId: authUser.id,
-              recipientId: contactId,
-              canFollowUpAt: query.Format(
-                '%t',
-                query.TimeAdd(query.Now(), 1, 'day')
-              )
-            }),
-            query.Call(
-              'updateUserBadgeCount',
-              contactId,
-              'receivedContactRequestsCount',
-              1
+      query.Let(
+        {
+          contact: selectData(getById('users', contactId))
+        },
+        ifCompatibleTestAccountTypes(
+          authUser,
+          query.Var('contact'),
+          query.If(
+            hasPendingContactRequest(authUser, contactId),
+            query.Abort('hasPendingRequest'),
+            query.If(
+              hasCompletedSetupQuery(query.Var('contact')),
+              query.Do(
+                create('contactRequests', {
+                  senderId: authUser.id,
+                  recipientId: contactId,
+                  canFollowUpAt: query.Format(
+                    '%t',
+                    query.TimeAdd(query.Now(), 1, 'day')
+                  )
+                }),
+                query.Call(
+                  'updateUserBadgeCount',
+                  contactId,
+                  'receivedContactRequestsCount',
+                  1
+                )
+              ),
+              query.Abort('NotYetSetup')
             )
-          ),
-          query.Abort('NotYetSetup')
+          )
         )
       )
     );

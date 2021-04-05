@@ -6,7 +6,9 @@ const {
   hasCompletedSetupQuery,
   create,
   hardDeleteIfExists,
-  getById
+  getById,
+  selectData,
+  ifCompatibleTestAccountTypes
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -18,26 +20,35 @@ async function handler ({ authUser, params: { contactId } }) {
 
   try {
     await faunadb.query(
-      query.If(
-        query.Or(
-          isOnBlockList(authUser, contactId),
-          hasPendingContactRequest(authUser, contactId)
-        ),
-        query.Abort('isOnBlockListhasPendingContactRequest'),
-        query.If(
-          hasCompletedSetupQuery(getById('users', contactId)),
-          query.Do(
-            create('userBlockings', {
-              blockerId: authUser.id,
-              userId: contactId
-            }),
-            hardDeleteIfExists(
-              'contactByOwnerContact',
-              authUser.id,
-              contactId
+      query.Let(
+        {
+          contact: selectData(getById('users', contactId))
+        },
+        ifCompatibleTestAccountTypes(
+          authUser,
+          query.Var('contact'),
+          query.If(
+            query.Or(
+              isOnBlockList(authUser, contactId),
+              hasPendingContactRequest(authUser, contactId)
+            ),
+            query.Abort('isOnBlockListhasPendingContactRequest'),
+            query.If(
+              hasCompletedSetupQuery(query.Var('contact')),
+              query.Do(
+                create('userBlockings', {
+                  blockerId: authUser.id,
+                  userId: contactId
+                }),
+                hardDeleteIfExists(
+                  'contactByOwnerContact',
+                  authUser.id,
+                  contactId
+                )
+              ),
+              query.Abort('NotYetSetup')
             )
-          ),
-          query.Abort('NotYetSetup')
+          )
         )
       )
     );

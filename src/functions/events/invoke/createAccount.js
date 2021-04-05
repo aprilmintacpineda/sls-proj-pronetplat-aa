@@ -32,7 +32,8 @@ module.exports.handler = async ({ email, password }) => {
         hashedEmailVerificationCode,
         hashedPassword,
         emailCodeCanSendAt: offsetTime,
-        emailConfirmCodeExpiresAt: offsetTime
+        emailConfirmCodeExpiresAt: offsetTime,
+        isTestAccount: false
       }
     })
   );
