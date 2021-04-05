@@ -25,12 +25,10 @@ module.exports.handler = async ({ email, isResend = false }) => {
           user: getByIndex('userByEmail', email)
         },
         query.If(
-          query.Or(
-            query.Not(
-              query.ContainsPath(
-                ['data', 'passwordCodeCanResendAt'],
-                query.Var('user')
-              )
+          query.And(
+            query.ContainsPath(
+              ['data', 'passwordCodeCanResendAt'],
+              query.Var('user')
             ),
             query.LT(
               query.Now(),
