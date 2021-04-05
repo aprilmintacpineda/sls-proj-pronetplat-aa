@@ -1,5 +1,5 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const { initClient, update } = require('dependencies/utils/faunadb');
 
 module.exports.handler = async ({
   authUser,
@@ -10,15 +10,13 @@ module.exports.handler = async ({
   await client.query(
     unseenNotificationIds
       .map(notificationId => {
-        return query.Update(
+        return update(
           query.Ref(
             query.Collection('notifications'),
             notificationId
           ),
           {
-            data: {
-              seenAt: query.Format('%t', query.Now())
-            }
+            seenAt: query.Format('%t', query.Now())
           }
         );
       })
