@@ -14,11 +14,11 @@ const jwt = require('dependencies/utils/jwt');
 const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
-async function handler ({ formBody, deviceToken }) {
+async function handler ({ formBody, deviceToken, authUser }) {
   const faunadb = initClient();
 
   const user = await faunadb.query(
-    getByIndexIfNotExists('userByEmail', formBody.email)
+    getByIndexIfNotExists('userByEmail', authUser.email)
   );
 
   if (
@@ -68,11 +68,12 @@ async function handler ({ formBody, deviceToken }) {
 
 module.exports.handler = httpGuard({
   handler,
-  guards: [guardTypes.deviceToken],
-  formValidator: ({ email, password }) => {
-    return (
-      validate(email, ['required', 'email']) ||
-      validate(password, ['required', 'maxLength:30'])
-    );
+  guards: [
+    guardTypes.softAuth,
+    guardTypes.deviceToken,
+    guardTypes.setupComplete
+  ],
+  formValidator: ({ password }) => {
+    return validate(password, ['required', 'maxLength:30']);
   }
 });

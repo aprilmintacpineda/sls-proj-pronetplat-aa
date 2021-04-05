@@ -4,6 +4,7 @@ const jwt = require('./jwt');
 const guardTypes = {
   deviceToken: 'deviceToken',
   auth: 'auth',
+  softAuth: 'softAuth',
   emailVerified: 'emailVerified',
   emailNotVerified: 'emailNotVerified',
   setupComplete: 'setupComplete',
@@ -51,8 +52,13 @@ module.exports.httpGuard = ({
     results.formBody = formBody;
   }
 
-  if (guards.includes(guardTypes.auth)) {
-    const authorization = httpEvent.headers.Authorization;
+  if (
+    guards.includes(guardTypes.auth) ||
+    guards.includes(guardTypes.softAuth)
+  ) {
+    const authorization = (httpEvent.headers.Authorization || '')
+      .replace(/Bearer /gim, '')
+      .trim();
 
     if (!authorization) {
       console.log('Guard: auth failed');
@@ -60,9 +66,17 @@ module.exports.httpGuard = ({
     }
 
     try {
-      const { data: authUser } = await jwt.verify(
-        authorization.replace(/Bearer /gim, '').trim()
-      );
+      let authUser = null;
+      let verifiedToken = null;
+
+      if (guards.includes(guardTypes.auth)) {
+        verifiedToken = await jwt.verify();
+      } else {
+        // must be softAuth
+        verifiedToken = await jwt.decode(authorization);
+      }
+
+      authUser = verifiedToken.data;
 
       if (
         guards.includes(guardTypes.setupComplete) &&
@@ -101,6 +115,7 @@ module.exports.httpGuard = ({
       }
 
       results.authUser = authUser;
+      results.verifiedToken = verifiedToken;
     } catch (error) {
       console.log('Guard: token error', error);
       return { statusCode: 401 };

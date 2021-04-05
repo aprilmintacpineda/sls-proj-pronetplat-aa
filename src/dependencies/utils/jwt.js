@@ -22,6 +22,10 @@ module.exports.verify = async token => {
   return verifyAsync(token, secret, verifyConfig);
 };
 
+module.exports.decode = async token => {
+  return verifyAsync(token, secret, { maxAge: '999999d' });
+};
+
 module.exports.TokenExpiredError = jwt.TokenExpiredError;
 module.exports.NotBeforeError = jwt.NotBeforeError;
 module.exports.JsonWebTokenError = jwt.JsonWebTokenError;
