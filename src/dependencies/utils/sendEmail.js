@@ -55,9 +55,7 @@ module.exports.sendEmailVerificationCode = ({
           </h2>
         </div>
         <p>
-          For your safety, this code will expire in 5 minutes;
-          if you fail to enter this code 3 times,
-          this code will be invalidated. You can only request
+          For your safety, this code will expire in 5 minutes. You can only request
           a new code every 5 minutes.
         </p>
       </div>
@@ -112,9 +110,7 @@ module.exports.sendEmailWelcomeMessage = ({
           </h2>
         </div>
         <p>
-          For your safety, this code will expire in 5 minutes; if you
-          fail to enter this code 3 times, this code will be invalidated.
-          You can only request a new code every 5 minutes.
+          For your safety, this code will expire in 5 minutes. You can only request a new code every 5 minutes.
         </p>
         <p>
           We sincerely hope to help you in your journey to your
@@ -176,9 +172,7 @@ module.exports.sendEmailResetPasswordCode = ({
           </h2>
         </div>
         <p>
-          For your safety, this code will expire in 5 minutes;
-          if you fail to enter this code 3 times, this code
-          will be invalidated. You can only request a new code
+          For your safety, this code will expire in 5 minutes. You can only request a new code
           every 5 minutes.
         </p>
         <p>
