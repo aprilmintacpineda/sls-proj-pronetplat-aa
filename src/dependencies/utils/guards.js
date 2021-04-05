@@ -70,7 +70,7 @@ module.exports.httpGuard = ({
       let verifiedToken = null;
 
       if (guards.includes(guardTypes.auth)) {
-        verifiedToken = await jwt.verify();
+        verifiedToken = await jwt.verify(authorization);
       } else {
         // must be softAuth
         verifiedToken = await jwt.decode(authorization);
