@@ -981,6 +981,9 @@ Resources:
               CountryCodes:
                 - AU
                 - PH
+                - US
+                - CA
+                - GB
           VisibilityConfig: 
             CloudWatchMetricsEnabled: true
             MetricName: !Join
