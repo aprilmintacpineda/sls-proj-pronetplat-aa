@@ -24,7 +24,7 @@ async function handler ({ authUser, formBody }) {
       user.data.hashedPassword
     ))
   ) {
-    console.log('Invalid password');
+    console.log('Incorrect password');
     return { statusCode: 403 };
   }
 

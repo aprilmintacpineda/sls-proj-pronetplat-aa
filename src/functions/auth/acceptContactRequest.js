@@ -1,8 +1,8 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  getByIndex,
-  createIfNotExists
+  createIfNotExists,
+  getByIndexIfNotExists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -15,18 +15,16 @@ const {
 async function handler ({ authUser, params: { senderId } }) {
   const faunadb = initClient();
 
-  let contactRequest;
+  const contactRequest = await faunadb.query(
+    getByIndexIfNotExists(
+      'contactRequestBySenderIdRecipientId',
+      senderId,
+      authUser.id
+    )
+  );
 
-  try {
-    contactRequest = await faunadb.query(
-      getByIndex(
-        'contactRequestBySenderIdRecipientId',
-        senderId,
-        authUser.id
-      )
-    );
-  } catch (error) {
-    console.log('error', error);
+  if (!contactRequest) {
+    console.log('Contact request does not exist');
     return { statusCode: 400 };
   }
 

@@ -21,17 +21,17 @@ async function handler ({ formBody, deviceToken, authUser }) {
     getByIndexIfNotExists('userByEmail', authUser.email)
   );
 
-  if (
-    !user ||
-    !user.data.firstName ||
-    !user.data.surname ||
-    !user.data.gender ||
-    !user.data.jobTitle ||
-    !user.data.profilePicture ||
-    !user.data.emailVerifiedAt ||
-    !(await verifyHash(formBody.password, user.data.hashedPassword))
-  )
+  if (!user) {
+    console.log('User does not exists');
     return { statusCode: 401 };
+  }
+
+  if (
+    !(await verifyHash(formBody.password, user.data.hashedPassword))
+  ) {
+    console.log('Incorrect password');
+    return { statusCode: 401 };
+  }
 
   await faunadb.query(
     query.Do(
