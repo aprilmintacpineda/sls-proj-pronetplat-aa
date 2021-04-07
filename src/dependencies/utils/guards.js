@@ -88,13 +88,13 @@ module.exports.httpGuard = ({
         !hasCompletedSetup(authUser)
       ) {
         console.log('Guard: setupComplete failed');
-        return { statusCode: 403 };
+        return { statusCode: 400 };
       } else if (
         guards.includes(guardTypes.personalInfoComplete) &&
         !hasCompletePersonalInfo(authUser)
       ) {
         console.log('Guard: personalInfoComplete failed');
-        return { statusCode: 403 };
+        return { statusCode: 400 };
       } else if (
         guards.includes(guardTypes.setupNotComplete) &&
         (!authUser.emailVerifiedAt ||
@@ -105,19 +105,19 @@ module.exports.httpGuard = ({
           !authUser.jobTitle)
       ) {
         console.log('Guard: setupNotComplete failed');
-        return { statusCode: 403 };
+        return { statusCode: 400 };
       } else if (
         guards.includes(guardTypes.emailVerified) &&
         !authUser.emailVerifiedAt
       ) {
         console.log('Guard: emailVerified');
-        return { statusCode: 403 };
+        return { statusCode: 400 };
       } else if (
         guards.includes(guardTypes.emailNotVerified) &&
         authUser.emailVerifiedAt
       ) {
         console.log('Guard: emailNotVerified failed');
-        return { statusCode: 403 };
+        return { statusCode: 400 };
       }
 
       results.authUser = authUser;

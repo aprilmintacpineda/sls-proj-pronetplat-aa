@@ -23,14 +23,14 @@ async function handler ({ formBody, deviceToken, authUser }) {
 
   if (!user) {
     console.log('User does not exists');
-    return { statusCode: 401 };
+    return { statusCode: 403 };
   }
 
   if (
     !(await verifyHash(formBody.password, user.data.hashedPassword))
   ) {
     console.log('Incorrect password');
-    return { statusCode: 401 };
+    return { statusCode: 403 };
   }
 
   await faunadb.query(
