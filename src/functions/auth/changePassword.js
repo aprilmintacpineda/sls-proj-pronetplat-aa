@@ -44,7 +44,7 @@ module.exports.handler = httpGuard({
   guards: [guardTypes.auth, guardTypes.setupComplete],
   formValidator: ({ currentPassword, newPassword }) => {
     return (
-      validate(currentPassword, ['required', 'password']) ||
+      validate(currentPassword, ['required']) ||
       validate(newPassword, ['required', 'password'])
     );
   }
