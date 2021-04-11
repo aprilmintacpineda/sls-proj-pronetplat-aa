@@ -42,6 +42,13 @@ module.exports.handler = async ({
     after = result.after;
   } while (after);
 
+  const authUserData = getPublicUserData({
+    ref: { id: authUser.id },
+    data: authUser
+  });
+
+  authUserData.isTestAccount = String(authUserData.isTestAccount);
+
   await Promise.all([
     sendPushNotification({
       tokens,
@@ -57,10 +64,7 @@ module.exports.handler = async ({
       },
       data: {
         ...data,
-        ...getPublicUserData({
-          ref: { id: authUser.id },
-          data: authUser
-        })
+        ...authUserData
       }
     })
   ]);
