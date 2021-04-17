@@ -612,6 +612,8 @@ Resources:
           - "proj-pronetplat-aa-myContact"
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
+        - LambdaInvokePolicy:
+            FunctionName: !Ref incrementNumTimesOpened
       Events:
         ApiEvent:
           Type: Api
