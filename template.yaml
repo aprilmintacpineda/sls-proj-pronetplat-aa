@@ -782,7 +782,7 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Method: patch
+            Method: post
             Path: /mark-as-close-friend/{contactsId}
             RestApiId:
               Ref: mainBackendApi
@@ -802,7 +802,7 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Method: patch
+            Method: post
             Path: /unmark-as-close-friend/{contactsId}
             RestApiId:
               Ref: mainBackendApi
