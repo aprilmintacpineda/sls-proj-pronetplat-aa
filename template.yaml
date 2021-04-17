@@ -414,28 +414,6 @@ Resources:
             Path: /decline-contact-request/{senderId}
             RestApiId:
               Ref: mainBackendApi
-  contactProfile:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: contactProfile.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-contactProfile"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref incrementNumTimesOpened
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /contacts/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
   validateAuth:
     Type: AWS::Serverless::Function
     Metadata:
