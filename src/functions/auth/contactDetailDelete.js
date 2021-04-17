@@ -23,7 +23,7 @@ async function handler ({ authUser, params: { contactDetailId } }) {
   } catch (error) {
     console.log('error', error);
 
-    if (error.decription === 'authUserDoesNotOwnDocument')
+    if (error.description === 'authUserDoesNotOwnDocument')
       return { statusCode: 404 };
 
     return { statusCode: 500 };

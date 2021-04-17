@@ -128,7 +128,6 @@ module.exports.httpGuard = ({
     }
   }
 
-  console.log('Guard success:');
   return handler(results, httpEvent);
 };
 
