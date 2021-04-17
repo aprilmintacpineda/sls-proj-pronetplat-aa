@@ -11,7 +11,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   const result = await client.query(
     query.Map(
       query.Paginate(
-        query.Match(query.Index('contactsByOwnerId'), authUser.id),
+        query.Match(query.Index('contactsByUserId'), authUser.id),
         {
           size: 20,
           after: nextToken

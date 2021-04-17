@@ -2,7 +2,7 @@ CreateIndex({
   name: 'contactByOwnerContact',
   source: Collection('contacts'),
   terms: [
-    { field: ['data', 'ownerId'] },
+    { field: ['data', 'userId'] },
     { field: ['data', 'contactId'] }
   ],
   unique: true

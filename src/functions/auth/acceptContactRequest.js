@@ -36,7 +36,7 @@ async function handler ({ authUser, params: { senderId } }) {
           index: 'contactByOwnerContact',
           args: [authUser.id, contactRequest.data.senderId],
           data: {
-            ownerId: authUser.id,
+            userId: authUser.id,
             contactId: contactRequest.data.senderId,
             numTimesOpened: 0
           }
@@ -46,7 +46,7 @@ async function handler ({ authUser, params: { senderId } }) {
           index: 'contactByOwnerContact',
           args: [contactRequest.data.senderId, authUser.id],
           data: {
-            ownerId: contactRequest.data.senderId,
+            userId: contactRequest.data.senderId,
             contactId: authUser.id,
             numTimesOpened: 0
           }
