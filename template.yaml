@@ -744,6 +744,46 @@ Resources:
             Path: /contact-details/{contactDetailId}
             RestApiId:
               Ref: mainBackendApi
+  markAsCloseFriend:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: markAsCloseFriend.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-markAsCloseFriend"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: patch
+            Path: /mark-as-close-friend/{contactsId}
+            RestApiId:
+              Ref: mainBackendApi
+  unmarkAsCloseFriend:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: unmarkAsCloseFriend.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-unmarkAsCloseFriend"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: patch
+            Path: /unmark-as-close-friend/{contactsId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #

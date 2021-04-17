@@ -1,21 +1,22 @@
 const {
   initClient,
-  getById,
-  hardDeleteIfOwnedByUser
+  updateIfOwnedByUser,
+  getById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
 
-async function handler ({ authUser, params: { contactDetailId } }) {
+async function handler ({ authUser, params: { contactsId } }) {
   try {
-    const faunadb = initClient();
+    const fauna = initClient();
 
-    await faunadb.query(
-      hardDeleteIfOwnedByUser(
+    await fauna.query(
+      updateIfOwnedByUser(
         authUser.id,
-        getById('contactDetails', contactDetailId)
+        getById('contacts', contactsId),
+        { isCloseFriend: true }
       )
     );
 

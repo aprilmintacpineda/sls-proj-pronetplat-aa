@@ -14,27 +14,36 @@ async function handler ({
   params: { contactDetailId },
   formBody
 }) {
-  const faunadb = initClient();
+  try {
+    const faunadb = initClient();
 
-  const contactDetail = await faunadb.query(
-    updateIfOwnedByUser(
-      authUser.id,
-      getById('contactDetails', contactDetailId),
-      {
-        type: formBody.type,
-        value: formBody.value,
-        description: formBody.description
-      }
-    )
-  );
+    const contactDetail = await faunadb.query(
+      updateIfOwnedByUser(
+        authUser.id,
+        getById('contactDetails', contactDetailId),
+        {
+          type: formBody.type,
+          value: formBody.value,
+          description: formBody.description
+        }
+      )
+    );
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      ...contactDetail.data,
-      id: contactDetail.ref.id
-    })
-  };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        ...contactDetail.data,
+        id: contactDetail.ref.id
+      })
+    };
+  } catch (error) {
+    console.log('error', error);
+
+    if (error.decription === 'authUserDoesNotOwnDocument')
+      return { statusCode: 404 };
+
+    return { statusCode: 500 };
+  }
 }
 
 module.exports.handler = httpGuard({
