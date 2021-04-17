@@ -1,7 +1,4 @@
 const validationRules = {
-  bool (value) {
-    return value !== true && value !== false;
-  },
   email (value) {
     return (
       value.length > 320 ||
@@ -55,6 +52,9 @@ const validationRules = {
   },
   matches (value, [payload]) {
     return value !== payload;
+  },
+  bool (value) {
+    return value !== true && value !== false;
   }
 };
 
