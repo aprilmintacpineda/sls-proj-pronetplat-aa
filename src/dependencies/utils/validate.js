@@ -60,7 +60,7 @@ const validationRules = {
 
 function validate (value, rules) {
   const isOptional = !rules.includes('required');
-  if (!value && isOptional) return false;
+  if (validationRules.required(value) && isOptional) return false;
 
   return Boolean(
     rules.find(definition => {
