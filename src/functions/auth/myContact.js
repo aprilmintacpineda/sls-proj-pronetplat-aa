@@ -23,11 +23,25 @@ async function handler ({
         getById('contacts', contactId),
         query.Map(
           query.Paginate(
-            query.Match(
-              query.Index('contactDetailsByUserId'),
-              query.Select(
-                ['data', 'contactId'],
-                query.Var('document')
+            query.Union(
+              query.Match(
+                query.Index('contactDetailsByCloseFriendsOnly'),
+                query.Select(
+                  ['data', 'contactId'],
+                  query.Var('document')
+                ),
+                false
+              ),
+              query.Match(
+                query.Index('contactDetailsByCloseFriendsOnly'),
+                query.Select(
+                  ['data', 'contactId'],
+                  query.Var('document')
+                ),
+                query.Select(
+                  ['data', 'isCloseFriend'],
+                  query.Var('document')
+                )
               )
             ),
             {
