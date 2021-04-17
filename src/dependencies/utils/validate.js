@@ -1,4 +1,7 @@
 const validationRules = {
+  bool (value) {
+    return value !== true && value !== false;
+  },
   email (value) {
     return (
       value.length > 320 ||

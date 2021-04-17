@@ -24,7 +24,8 @@ async function handler ({
         {
           type: formBody.type,
           value: formBody.value,
-          description: formBody.description
+          description: formBody.description,
+          isCloseFriendsOnly: formBody.isCloseFriendsOnly
         }
       )
     );
@@ -49,7 +50,12 @@ async function handler ({
 module.exports.handler = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete],
-  formValidator: ({ type, value, description }) => {
+  formValidator: ({
+    type,
+    value,
+    description,
+    isCloseFriendsOnly
+  }) => {
     let valueValidationRules = false;
 
     switch (type) {
@@ -69,12 +75,13 @@ module.exports.handler = httpGuard({
     }
 
     return (
+      validate(isCloseFriendsOnly, ['required', 'bool']),
       validate(type, [
         'required',
         'options:mobile,telephone,website,email'
       ]) ||
-      validate(value, valueValidationRules) ||
-      validate(description, ['required', 'maxLength:100'])
+        validate(value, valueValidationRules) ||
+        validate(description, ['required', 'maxLength:100'])
     );
   }
 });
