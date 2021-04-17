@@ -2,7 +2,7 @@ const { query } = require('faunadb');
 const {
   initClient,
   createIfNotExists,
-  getByIndexIfNotExists
+  getByIndexIfExists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -16,7 +16,7 @@ async function handler ({ authUser, params: { senderId } }) {
   const faunadb = initClient();
 
   const contactRequest = await faunadb.query(
-    getByIndexIfNotExists(
+    getByIndexIfExists(
       'contactRequestBySenderIdRecipientId',
       senderId,
       authUser.id

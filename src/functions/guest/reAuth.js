@@ -3,7 +3,7 @@ const {
   initClient,
   createOrUpdate,
   update,
-  getByIndexIfNotExists
+  getByIndexIfExists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -18,7 +18,7 @@ async function handler ({ formBody, deviceToken, authUser }) {
   const faunadb = initClient();
 
   const user = await faunadb.query(
-    getByIndexIfNotExists('userByEmail', authUser.email)
+    getByIndexIfExists('userByEmail', authUser.email)
   );
 
   if (!user) {

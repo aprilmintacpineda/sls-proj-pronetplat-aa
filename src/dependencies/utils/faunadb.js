@@ -88,7 +88,7 @@ module.exports.createIfNotExists = ({
   );
 };
 
-function getIfNotExists (pointer) {
+function getIfExists (pointer) {
   return query.If(query.Exists(pointer), query.Get(pointer), null);
 }
 
@@ -96,8 +96,8 @@ module.exports.getByIndex = (index, ...args) => {
   return query.Get(query.Match(query.Index(index), ...args));
 };
 
-module.exports.getByIndexIfNotExists = (index, ...args) => {
-  return getIfNotExists(query.Match(query.Index(index), ...args));
+module.exports.getByIndexIfExists = (index, ...args) => {
+  return getIfExists(query.Match(query.Index(index), ...args));
 };
 
 module.exports.getById = (collection, id) => {

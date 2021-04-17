@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   ifOwnedByUser,
-  getById
+  getById,
+  getByIndexIfExists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -40,7 +41,15 @@ async function handler ({
                 ),
                 query.Select(
                   ['data', 'isCloseFriend'],
-                  query.Var('document')
+                  getByIndexIfExists(
+                    'contactByOwnerContact',
+                    query.Select(
+                      ['data', 'contactId'],
+                      query.Var('document')
+                    ),
+                    authUser.id
+                  ),
+                  false
                 )
               )
             ),
