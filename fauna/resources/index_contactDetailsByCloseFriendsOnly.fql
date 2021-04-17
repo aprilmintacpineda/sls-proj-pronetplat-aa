@@ -1,5 +1,8 @@
 CreateIndex({
   name: 'contactDetailsByCloseFriendsOnly',
   source: Collection('contactDetails'),
-  terms: [{ field: ['data', 'isCloseFriendOnly'] }]
+  terms: [
+    { field: ['data', 'userId'] },
+    { field: ['data', 'isCloseFriendsOnly'] }
+  ]
 })
