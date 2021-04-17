@@ -1,5 +1,8 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  getById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -19,24 +22,23 @@ async function handler ({ params: { nextToken }, authUser }) {
             : []
         }
       ),
-      query.Lambda(
-        ['numTimesOpened', 'contactId', 'ref'],
-        query.Get(
-          query.Ref(
-            query.Collection('users'),
-            query.Var('contactId')
-          )
-        )
-      )
+      query.Lambda(['numTimesOpened', 'contactId', 'ref'], {
+        document: query.Get(query.Var('ref')),
+        user: getById('users', query.Var('contactId'))
+      })
     )
   );
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(document => ({
+      data: result.data.map(({ document, user }) => ({
         ...document.data,
-        id: document.ref.id
+        id: document.ref.id,
+        user: {
+          ...user.data,
+          id: user.ref.id
+        }
       })),
       nextToken: result.after?.[0].id || null
     })

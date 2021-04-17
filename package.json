@@ -52,7 +52,8 @@
     "copy-files": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml && cp package.json build/package.json && cp package.json build/dependencies/package.json && cp yarn.lock build/yarn.lock && cp yarn.lock build/dependencies/yarn.lock && cp Makefile build/dependencies/Makefile && cp Makefile build/Makefile",
     "build": "rm -rf build Makefile && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn copy-files",
     "clearData": "node scripts/clearData.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migration:generate": "FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna-schema-migrate generate"
   },
   "lint-staged": {
     "*.js": [
