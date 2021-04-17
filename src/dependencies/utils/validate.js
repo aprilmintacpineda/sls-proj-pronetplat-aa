@@ -22,7 +22,7 @@ const validationRules = {
     return !this.email(value) || !this.url(value);
   },
   required (value) {
-    return !value || !value.length;
+    return value === '' || value === undefined || value === null;
   },
   maxLength (value, [max]) {
     return value.length > max;
