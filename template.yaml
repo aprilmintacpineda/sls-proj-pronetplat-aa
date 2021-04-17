@@ -600,6 +600,26 @@ Resources:
             Path: /my-contacts
             RestApiId:
               Ref: mainBackendApi
+  myContact:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: myContact.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-myContact"
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /my-contact/{contactId}
+            RestApiId:
+              Ref: mainBackendApi
   blockList:
     Type: AWS::Serverless::Function
     Metadata:
