@@ -1,7 +1,6 @@
 const {
   initClient,
-  updateIfOwnedByUser,
-  getByIndex
+  updateByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -13,13 +12,11 @@ async function handler ({ authUser, params: { contactId } }) {
     const fauna = initClient();
 
     await fauna.query(
-      updateIfOwnedByUser(
-        authUser.id,
-        getByIndex('contactByOwnerContact', authUser.id, contactId),
-        {
-          isCloseFriend: true
-        }
-      )
+      updateByIndex({
+        index: 'contactByOwnerContact',
+        args: [authUser.id, contactId],
+        data: { isCloseFriend: true }
+      })
     );
 
     return { statusCode: 200 };

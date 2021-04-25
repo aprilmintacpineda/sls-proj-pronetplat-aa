@@ -60,6 +60,12 @@ module.exports.updateById = (collection, id, data) => {
   return update(query.Ref(query.Collection(collection), id), data);
 };
 
+module.exports.updateByIndex = ({ index, args, data }) => {
+  return update(
+    query.Select(['ref'], getByIndex(index, ...args), data)
+  );
+};
+
 module.exports.createOrUpdate = ({
   index,
   args,
@@ -92,9 +98,11 @@ function getIfExists (pointer) {
   return query.If(query.Exists(pointer), query.Get(pointer), null);
 }
 
-module.exports.getByIndex = (index, ...args) => {
+function getByIndex (index, ...args) {
   return query.Get(query.Match(query.Index(index), ...args));
-};
+}
+
+module.exports.getByIndex = getByIndex;
 
 module.exports.getByIndexIfExists = (index, ...args) => {
   return getIfExists(query.Match(query.Index(index), ...args));
