@@ -42,79 +42,77 @@ async function handler ({
           query.If(
             query.Exists(
               query.Match(
-                query.Index('contactRequestBySenderIdRecipientId'),
+                query.Index('contactByOwnerContact'),
                 authUser.id,
                 contactId
               )
             ),
-            {
-              sentContactRequest: getByIndex(
-                'contactRequestBySenderIdRecipientId',
-                authUser.id,
-                contactId
-              )
-            },
+            query.Map(
+              query.Paginate(
+                query.Union(
+                  query.Match(
+                    query.Index('contactDetailsByCloseFriendsOnly'),
+                    contactId,
+                    false
+                  ),
+                  query.Match(
+                    query.Index('contactDetailsByCloseFriendsOnly'),
+                    contactId,
+                    query.Select(
+                      ['data', 'isCloseFriend'],
+                      getByIndexIfExists(
+                        'contactByOwnerContact',
+                        contactId,
+                        authUser.id
+                      ),
+                      false
+                    )
+                  )
+                ),
+                {
+                  size: 20,
+                  after: nextToken
+                    ? query.Ref(
+                        query.Collection('contactDetails'),
+                        nextToken
+                      )
+                    : []
+                }
+              ),
+              query.Lambda(['ref'], query.Get(query.Var('ref')))
+            ),
             query.If(
               query.Exists(
                 query.Match(
                   query.Index('contactRequestBySenderIdRecipientId'),
-                  contactId,
-                  authUser.id
+                  authUser.id,
+                  contactId
                 )
               ),
               {
-                receivedContactRequest: getByIndex(
+                sentContactRequest: getByIndex(
                   'contactRequestBySenderIdRecipientId',
-                  contactId,
-                  authUser.id
+                  authUser.id,
+                  contactId
                 )
               },
               query.If(
                 query.Exists(
                   query.Match(
-                    query.Index('contactByOwnerContact'),
-                    authUser.id,
-                    contactId
+                    query.Index(
+                      'contactRequestBySenderIdRecipientId'
+                    ),
+                    contactId,
+                    authUser.id
                   )
                 ),
-                query.Map(
-                  query.Paginate(
-                    query.Union(
-                      query.Match(
-                        query.Index(
-                          'contactDetailsByCloseFriendsOnly'
-                        ),
-                        contactId,
-                        false
-                      ),
-                      query.Match(
-                        query.Index(
-                          'contactDetailsByCloseFriendsOnly'
-                        ),
-                        contactId,
-                        query.Select(
-                          ['data', 'isCloseFriend'],
-                          getByIndexIfExists(
-                            'contactByOwnerContact',
-                            contactId,
-                            authUser.id
-                          ),
-                          false
-                        )
-                      )
-                    ),
-                    {
-                      size: 20,
-                      after: nextToken
-                        ? query.Ref(
-                            query.Collection('contactDetails'),
-                            nextToken
-                          )
-                        : []
-                    }
-                  ),
-                  query.Lambda(['ref'], query.Get(query.Var('ref')))
-                ),
+                {
+                  receivedContactRequest: getByIndex(
+                    'contactRequestBySenderIdRecipientId',
+                    contactId,
+                    authUser.id
+                  )
+                },
                 query.Abort('contactDoesNotExist')
               )
             )
