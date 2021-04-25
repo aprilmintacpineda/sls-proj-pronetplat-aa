@@ -25,6 +25,11 @@ async function handler ({ authUser, params: { contactId } }) {
      * before blocking the user
      */
 
+    /**
+     * @todo
+     * delete authUser from contactId's contact list
+     */
+
     await faunadb.query(
       query.Let(
         {
