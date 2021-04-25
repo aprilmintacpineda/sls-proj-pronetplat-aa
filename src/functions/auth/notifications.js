@@ -26,7 +26,7 @@ async function handler ({ params: { nextToken }, authUser }) {
       ),
       query.Lambda(['createdAt', 'actorId', 'ref'], {
         notification: query.Get(query.Var('ref')),
-        actor: query.Get(
+        user: query.Get(
           query.Ref(query.Collection('users'), query.Var('actorId'))
         )
       })
@@ -36,7 +36,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   const unseenNotificationIds = [];
   const data = [];
 
-  result.data.forEach(({ notification, actor }) => {
+  result.data.forEach(({ notification, user }) => {
     const notificationId = notification.ref.id;
 
     if (!notification.seenAt)
@@ -45,7 +45,7 @@ async function handler ({ params: { nextToken }, authUser }) {
     data.push({
       ...notification.data,
       id: notificationId,
-      actor: getPublicUserData(actor)
+      user: getPublicUserData(user)
     });
   });
 
