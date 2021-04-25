@@ -62,7 +62,8 @@ module.exports.updateById = (collection, id, data) => {
 
 module.exports.updateByIndex = ({ index, args, data }) => {
   return update(
-    query.Select(['ref'], getByIndex(index, ...args), data)
+    query.Select(['ref'], getByIndex(index, ...args)),
+    data
   );
 };
 
