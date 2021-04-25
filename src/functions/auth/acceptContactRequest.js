@@ -38,7 +38,8 @@ async function handler ({ authUser, params: { senderId } }) {
           data: {
             userId: authUser.id,
             contactId: contactRequest.data.senderId,
-            numTimesOpened: 0
+            numTimesOpened: 0,
+            isCloseFriend: false
           }
         }),
         createIfNotExists({
@@ -48,7 +49,8 @@ async function handler ({ authUser, params: { senderId } }) {
           data: {
             userId: contactRequest.data.senderId,
             contactId: authUser.id,
-            numTimesOpened: 0
+            numTimesOpened: 0,
+            isCloseFriend: false
           }
         }),
         query.Call(

@@ -16,7 +16,7 @@ async function handler ({ authUser, params: { contactsId } }) {
       updateIfOwnedByUser(
         authUser.id,
         getById('contacts', contactsId),
-        { isCloseFriend: null }
+        { isCloseFriend: false }
       )
     );
 

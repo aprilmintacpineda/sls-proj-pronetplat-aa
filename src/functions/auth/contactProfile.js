@@ -64,8 +64,7 @@ async function handler ({
                         'contactByOwnerContact',
                         contactId,
                         authUser.id
-                      ),
-                      false
+                      )
                     )
                   )
                 ),
