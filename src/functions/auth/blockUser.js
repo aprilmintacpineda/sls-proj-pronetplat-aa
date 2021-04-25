@@ -2,7 +2,6 @@ const { query } = require('faunadb');
 const {
   initClient,
   isOnBlockList,
-  hasPendingContactRequest,
   hasCompletedSetupQuery,
   create,
   hardDeleteIfExists,
@@ -19,34 +18,30 @@ async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
 
   try {
-    /**
-     * @todo
-     * Cancel sent contact request or received contact request
-     * before blocking the user
-     */
-
-    /**
-     * @todo
-     * delete authUser from contactId's contact list
-     */
-
     await faunadb.query(
-      query.Let(
-        {
-          contact: selectData(getById('users', contactId))
-        },
-        ifCompatibleTestAccountTypes(
-          authUser,
-          query.Var('contact'),
+      query.If(
+        isOnBlockList(authUser, contactId),
+        query.Abort('alreadyBlocked'),
+        query.Let(
+          {
+            contact: selectData(getById('users', contactId))
+          },
           query.If(
-            query.Or(
-              isOnBlockList(authUser, contactId),
-              hasPendingContactRequest(authUser, contactId)
-            ),
-            query.Abort('isOnBlockListhasPendingContactRequest'),
-            query.If(
-              hasCompletedSetupQuery(query.Var('contact')),
+            hasCompletedSetupQuery(query.Var('contact')),
+            ifCompatibleTestAccountTypes(
+              authUser,
+              query.Var('contact'),
               query.Do(
+                hardDeleteIfExists(
+                  'contactRequestBySenderIdRecipientId',
+                  authUser.id,
+                  contactId
+                ),
+                hardDeleteIfExists(
+                  'contactRequestBySenderIdRecipientId',
+                  contactId,
+                  authUser.id
+                ),
                 create('userBlockings', {
                   blockerId: authUser.id,
                   userId: contactId
@@ -55,10 +50,15 @@ async function handler ({ authUser, params: { contactId } }) {
                   'contactByOwnerContact',
                   authUser.id,
                   contactId
+                ),
+                hardDeleteIfExists(
+                  'contactByOwnerContact',
+                  contactId,
+                  authUser.id
                 )
-              ),
-              query.Abort('NotYetSetup')
-            )
+              )
+            ),
+            query.Abort('NotYetSetup')
           )
         )
       )
@@ -67,9 +67,9 @@ async function handler ({ authUser, params: { contactId } }) {
     console.log('error', error);
 
     if (
-      error.description ===
-        'isOnBlockListhasPendingContactRequest' ||
-      error.description === 'NotYetSetup'
+      error.description === 'NotCompatibleTestAccountTypes' ||
+      error.description === 'NotYetSetup' ||
+      error.description === 'alreadyBlocked'
     )
       return { statusCode: 400 };
 
