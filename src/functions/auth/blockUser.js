@@ -19,9 +19,11 @@ async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
 
   try {
-    // cancel sent contact request
-    // decline contact request
-    // block user
+    /**
+     * @todo
+     * Cancel sent contact request or received contact request
+     * before blocking the user
+     */
 
     await faunadb.query(
       query.Let(
