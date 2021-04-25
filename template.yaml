@@ -761,7 +761,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /mark-as-close-friend/{contactsId}
+            Path: /mark-as-close-friend/{contactId}
             RestApiId:
               Ref: mainBackendApi
   unmarkAsCloseFriend:
@@ -781,7 +781,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /unmark-as-close-friend/{contactsId}
+            Path: /unmark-as-close-friend/{contactId}
             RestApiId:
               Ref: mainBackendApi
   ######
