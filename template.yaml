@@ -578,16 +578,16 @@ Resources:
             Path: /my-contacts
             RestApiId:
               Ref: mainBackendApi
-  myContact:
+  contactProfile:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: myContact.handler
+      Handler: contactProfile.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-myContact"
+          - "proj-pronetplat-aa-contactProfile"
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
@@ -597,7 +597,7 @@ Resources:
           Type: Api
           Properties:
             Method: get
-            Path: /my-contact/{contactId}
+            Path: /contacts/{contactId}
             RestApiId:
               Ref: mainBackendApi
   blockList:
