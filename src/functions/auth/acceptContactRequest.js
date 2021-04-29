@@ -71,7 +71,7 @@ async function handler ({ authUser, params: { senderId } }) {
             authUser.id
           )
         ),
-        userData: selectData(getById('users', authUser.id))
+        userData: getById('users', authUser.id)
       }
     )
   );
