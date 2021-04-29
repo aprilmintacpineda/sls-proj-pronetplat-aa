@@ -24,6 +24,12 @@ function create (collection, data) {
 
 module.exports.create = create;
 
+function exists (index, ...args) {
+  return query.Exists(query.Match(query.Index(index), ...args));
+}
+
+module.exports.exists = exists;
+
 function selectRef (from) {
   return query.Select(['ref'], from);
 }
@@ -89,7 +95,7 @@ module.exports.createIfNotExists = ({
   collection
 }) => {
   return query.If(
-    query.Exists(query.Match(query.Index(index), ...args)),
+    exists(index, ...args),
     null,
     create(collection, data)
   );
@@ -126,38 +132,22 @@ module.exports.hasCompletedSetupQuery = userData => {
 
 module.exports.isOnBlockList = (authUser, contactId) => {
   return query.Or(
-    query.Exists(
-      query.Match(
-        query.Index('userBlockingsByBlockerIdUserId'),
-        authUser.id,
-        contactId
-      )
-    ),
-    query.Exists(
-      query.Match(
-        query.Index('userBlockingsByBlockerIdUserId'),
-        contactId,
-        authUser.id
-      )
-    )
+    exists('userBlockingsByBlockerIdUserId', authUser.id, contactId),
+    exists('userBlockingsByBlockerIdUserId', contactId, authUser.id)
   );
 };
 
 module.exports.hasPendingContactRequest = (authUser, contactId) => {
   return query.Or(
-    query.Exists(
-      query.Match(
-        query.Index('contactRequestBySenderIdRecipientId'),
-        contactId,
-        authUser.id
-      )
+    exists(
+      'contactRequestBySenderIdRecipientId',
+      contactId,
+      authUser.id
     ),
-    query.Exists(
-      query.Match(
-        query.Index('contactRequestBySenderIdRecipientId'),
-        authUser.id,
-        contactId
-      )
+    exists(
+      'contactRequestBySenderIdRecipientId',
+      authUser.id,
+      contactId
     )
   );
 };

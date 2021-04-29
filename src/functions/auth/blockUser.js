@@ -4,10 +4,12 @@ const {
   isOnBlockList,
   hasCompletedSetupQuery,
   create,
-  hardDeleteIfExists,
   getById,
   selectData,
-  ifCompatibleTestAccountTypes
+  ifCompatibleTestAccountTypes,
+  exists,
+  selectRef,
+  getByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -32,29 +34,109 @@ async function handler ({ authUser, params: { contactId } }) {
               authUser,
               query.Var('contact'),
               query.Do(
-                hardDeleteIfExists(
-                  'contactRequestBySenderIdRecipientId',
-                  authUser.id,
-                  contactId
+                query.If(
+                  exists(
+                    'contactRequestBySenderIdRecipientId',
+                    authUser.id,
+                    contactId
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
+                          'contactRequestBySenderIdRecipientId',
+                          authUser.id,
+                          contactId
+                        )
+                      )
+                    ),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      contactId,
+                      'receivedContactRequestsCount',
+                      -1
+                    )
+                  ),
+                  null
                 ),
-                hardDeleteIfExists(
-                  'contactRequestBySenderIdRecipientId',
-                  contactId,
-                  authUser.id
+                query.If(
+                  exists(
+                    'contactRequestBySenderIdRecipientId',
+                    contactId,
+                    authUser.id
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
+                          'contactRequestBySenderIdRecipientId',
+                          contactId,
+                          authUser.id
+                        )
+                      )
+                    ),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      authUser.id,
+                      'receivedContactRequestsCount',
+                      -1
+                    )
+                  ),
+                  null
                 ),
                 create('userBlockings', {
                   blockerId: authUser.id,
                   userId: contactId
                 }),
-                hardDeleteIfExists(
-                  'contactByOwnerContact',
-                  authUser.id,
-                  contactId
+                query.If(
+                  exists(
+                    'contactByOwnerContact',
+                    authUser.id,
+                    contactId
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
+                          'contactByOwnerContact',
+                          authUser.id,
+                          contactId
+                        )
+                      )
+                    ),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      authUser.id,
+                      'contactsCount',
+                      -1
+                    )
+                  ),
+                  null
                 ),
-                hardDeleteIfExists(
-                  'contactByOwnerContact',
-                  contactId,
-                  authUser.id
+                query.If(
+                  exists(
+                    'contactByOwnerContact',
+                    contactId,
+                    authUser.id
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
+                          'contactByOwnerContact',
+                          contactId,
+                          authUser.id
+                        )
+                      )
+                    ),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      contactId,
+                      'contactsCount',
+                      -1
+                    )
+                  ),
+                  null
                 )
               )
             ),
