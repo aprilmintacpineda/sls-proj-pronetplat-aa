@@ -39,7 +39,12 @@ module.exports.sendPushNotification = ({
   if (tokens && tokens.length) {
     return firebaseAdmin.messaging().sendToDevice(
       tokens,
-      { notification, data },
+      {
+        notification,
+        data: {
+          stringified: JSON.stringify(data)
+        }
+      },
       {
         priority: 'high'
         // ,restrictedPackageName: process.env.appPackageName
