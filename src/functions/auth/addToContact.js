@@ -7,7 +7,8 @@ const {
   hasPendingContactRequest,
   getById,
   selectData,
-  ifCompatibleTestAccountTypes
+  ifCompatibleTestAccountTypes,
+  exists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -44,20 +45,28 @@ async function handler ({ authUser, params: { contactId } }) {
             query.Abort('hasPendingRequest'),
             query.If(
               hasCompletedSetupQuery(query.Var('contact')),
-              query.Do(
-                create('contactRequests', {
-                  senderId: authUser.id,
-                  recipientId: contactId,
-                  canFollowUpAt: query.Format(
-                    '%t',
-                    query.TimeAdd(query.Now(), 1, 'day')
+              query.If(
+                exists(
+                  'contactByOwnerContact',
+                  authUser.id,
+                  contactId
+                ),
+                query.Abort('ContactExists'),
+                query.Do(
+                  create('contactRequests', {
+                    senderId: authUser.id,
+                    recipientId: contactId,
+                    canFollowUpAt: query.Format(
+                      '%t',
+                      query.TimeAdd(query.Now(), 1, 'day')
+                    )
+                  }),
+                  query.Call(
+                    'updateUserBadgeCount',
+                    contactId,
+                    'receivedContactRequestsCount',
+                    1
                   )
-                }),
-                query.Call(
-                  'updateUserBadgeCount',
-                  contactId,
-                  'receivedContactRequestsCount',
-                  1
                 )
               ),
               query.Abort('NotYetSetup')
