@@ -32,7 +32,7 @@ async function handler ({ authUser, params: { senderId } }) {
     return { statusCode: 400 };
   }
 
-  const { contactData, userData } = faunadb.query(
+  const { contactData, userData } = await faunadb.query(
     query.Do(
       createIfNotExists({
         collection: 'contacts',
