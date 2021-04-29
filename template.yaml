@@ -498,16 +498,16 @@ Resources:
             Path: /cancel-contact-request/{contactId}
             RestApiId:
               Ref: mainBackendApi
-  removeFromContacts:
+  disconnect:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: removeFromContacts.handler
+      Handler: disconnect.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-removeFromContacts"
+          - "proj-pronetplat-aa-disconnect"
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
@@ -515,7 +515,7 @@ Resources:
           Type: Api
           Properties:
             Method: post
-            Path: /remove-from-contacts/{contactId}
+            Path: /disconnect/{contactId}
             RestApiId:
               Ref: mainBackendApi
   blockUser:

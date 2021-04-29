@@ -18,9 +18,20 @@ async function handler ({ authUser, params: { contactId } }) {
         authUser.id,
         contactId
       ),
+      hardDeleteByIndex(
+        'contactByOwnerContact',
+        contactId,
+        authUser.id
+      ),
       query.Call(
         'updateUserBadgeCount',
         authUser.id,
+        'contactsCount',
+        -1
+      ),
+      query.Call(
+        'updateUserBadgeCount',
+        contactId,
         'contactsCount',
         -1
       )
