@@ -41,9 +41,11 @@ module.exports.sendPushNotification = ({
       tokens,
       {
         notification,
-        data: {
-          stringified: JSON.stringify(data)
-        }
+        data: data
+          ? {
+              stringified: JSON.stringify(data)
+            }
+          : undefined
       },
       {
         priority: 'high'
