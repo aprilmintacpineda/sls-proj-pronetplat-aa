@@ -37,7 +37,7 @@ async function handler ({ params: { nextToken }, authUser }) {
         ...document.data,
         id: document.ref.id,
         user: {
-          ...getPublicUserData(user.data),
+          ...getPublicUserData(user),
           id: user.ref.id
         }
       })),
