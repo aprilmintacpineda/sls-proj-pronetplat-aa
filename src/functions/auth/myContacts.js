@@ -7,6 +7,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
+const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ params: { nextToken }, authUser }) {
   const client = initClient();
@@ -36,7 +37,7 @@ async function handler ({ params: { nextToken }, authUser }) {
         ...document.data,
         id: document.ref.id,
         user: {
-          ...user.data,
+          ...getPublicUserData(user.data),
           id: user.ref.id
         }
       })),
