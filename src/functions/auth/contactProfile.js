@@ -14,8 +14,6 @@ async function handler ({
   params: { contactId, nextToken },
   authUser
 }) {
-  console.log(contactId);
-
   const faunadb = initClient();
 
   let result;
