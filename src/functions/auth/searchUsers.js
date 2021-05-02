@@ -1,39 +1,51 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  isOnBlockList
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/guards');
 const { getPublicUserData } = require('dependencies/utils/users');
 
-async function handler ({ params: { search, nextToken } }) {
+async function handler ({ authUser, params: { search, nextToken } }) {
   if (!search) return { statusCode: 400 };
 
   const fauna = initClient();
 
   const result = await fauna.query(
-    query.Map(
-      query.Paginate(
-        query.Intersection(
-          query.Map(
-            query.NGram(search.toLowerCase(), 2, 3),
-            query.Lambda(
-              ['needle'],
-              query.Match(
-                query.Index('searchUsersByName'),
-                query.Var('needle')
+    query.Filter(
+      query.Map(
+        query.Paginate(
+          query.Intersection(
+            query.Map(
+              query.NGram(search.toLowerCase(), 2, 3),
+              query.Lambda(
+                ['needle'],
+                query.Match(
+                  query.Index('searchUsersByName'),
+                  query.Var('needle')
+                )
               )
             )
-          )
+          ),
+          {
+            size: 20,
+            after: nextToken
+              ? query.Ref(query.Collection('contacts'), nextToken)
+              : []
+          }
         ),
-        {
-          size: 20,
-          after: nextToken
-            ? query.Ref(query.Collection('contacts'), nextToken)
-            : []
-        }
+        query.Lambda(['ref'], query.Get(query.Var('ref')))
       ),
-      query.Lambda(['ref'], query.Get(query.Var('ref')))
+      query.Lambda(
+        ['user'],
+        isOnBlockList(
+          authUser.id,
+          query.Select(['ref', 'id'], query.Var('user'))
+        )
+      )
     )
   );
 
