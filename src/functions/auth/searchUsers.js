@@ -16,8 +16,8 @@ async function handler ({ authUser, params: { search, nextToken } }) {
 
   const result = await fauna.query(
     query.Map(
-      query.Filter(
-        query.Paginate(
+      query.Paginate(
+        query.Filter(
           query.Intersection(
             query.Map(
               query.NGram(search.toLowerCase(), 2, 3),
@@ -30,22 +30,22 @@ async function handler ({ authUser, params: { search, nextToken } }) {
               )
             )
           ),
-          {
-            size: 20,
-            after: nextToken
-              ? query.Ref(query.Collection('contacts'), nextToken)
-              : []
-          }
-        ),
-        query.Lambda(
-          ['ref'],
-          query.Not(
-            isOnBlockList(
-              authUser.id,
-              query.Select(['id'], query.Var('ref'))
+          query.Lambda(
+            ['ref'],
+            query.Not(
+              isOnBlockList(
+                authUser.id,
+                query.Select(['id'], query.Var('ref'))
+              )
             )
           )
-        )
+        ),
+        {
+          size: 20,
+          after: nextToken
+            ? query.Ref(query.Collection('contacts'), nextToken)
+            : []
+        }
       ),
       query.Lambda(['ref'], query.Get(query.Var('ref')))
     )
