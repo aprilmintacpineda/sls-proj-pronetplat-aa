@@ -47,7 +47,7 @@ async function handler ({
               )
             ),
             {
-              contactDetails: query.Map(
+              contactDetailsResult: query.Map(
                 query.Paginate(
                   query.Union(
                     query.Match(
@@ -189,19 +189,19 @@ async function handler ({
     payload: { id: contactId }
   });
 
-  console.log(result);
-
   return {
     statusCode: 200,
     body: JSON.stringify({
       data: {
         isCloseFriend: result.contactInfo.data.isCloseFriend,
-        contactDetails: result.contactDetails.map(contactDetail => ({
-          ...contactDetail.data,
-          id: contactDetail.ref.id
-        }))
+        contactDetails: result.contactDetailsResult.data.map(
+          contactDetail => ({
+            ...contactDetail.data,
+            id: contactDetail.ref.id
+          })
+        )
       },
-      nextToken: result.after?.[0].id || null
+      nextToken: result.contactDetailsResult.after?.[0].id || null
     })
   };
 }
