@@ -784,6 +784,26 @@ Resources:
             Path: /unmark-as-close-friend/{contactId}
             RestApiId:
               Ref: mainBackendApi
+  searchUsers:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: searchUsers.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-searchUsers"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /search-users
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
