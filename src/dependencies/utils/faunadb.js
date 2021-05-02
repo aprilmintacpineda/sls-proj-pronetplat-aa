@@ -130,10 +130,10 @@ module.exports.hasCompletedSetupQuery = userData => {
   );
 };
 
-module.exports.isOnBlockList = (authUser, contactId) => {
+module.exports.isOnBlockList = (userId, contactId) => {
   return query.Or(
-    exists('userBlockingsByBlockerIdUserId', authUser.id, contactId),
-    exists('userBlockingsByBlockerIdUserId', contactId, authUser.id)
+    exists('userBlockingsByBlockerIdUserId', userId, contactId),
+    exists('userBlockingsByBlockerIdUserId', contactId, userId)
   );
 };
 

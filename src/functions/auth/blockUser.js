@@ -22,7 +22,7 @@ async function handler ({ authUser, params: { contactId } }) {
   try {
     await faunadb.query(
       query.If(
-        isOnBlockList(authUser, contactId),
+        isOnBlockList(authUser.id, contactId),
         query.Abort('alreadyBlocked'),
         query.Let(
           {

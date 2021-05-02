@@ -26,7 +26,7 @@ async function handler ({ authUser, params: { contactId } }) {
 
   const faunadb = initClient();
 
-  if (await faunadb.query(isOnBlockList(authUser, contactId))) {
+  if (await faunadb.query(isOnBlockList(authUser.id, contactId))) {
     console.log('On block list');
     return { statusCode: 400 };
   }
