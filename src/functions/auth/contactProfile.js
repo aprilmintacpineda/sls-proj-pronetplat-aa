@@ -189,6 +189,8 @@ async function handler ({
     payload: { id: contactId }
   });
 
+  console.log(result);
+
   return {
     statusCode: 200,
     body: JSON.stringify({
