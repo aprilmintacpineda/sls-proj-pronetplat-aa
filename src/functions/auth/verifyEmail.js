@@ -43,7 +43,10 @@ async function handler ({ authUser, formBody }) {
       hashedEmailVerificationCode: null,
       notificationsCount: 0,
       receivedContactRequestsCount: 0,
-      contactsCount: 0
+      contactsCount: 0,
+      isTestAccount: false,
+      allowSearchByName: false,
+      allowSearchByUsername: false
     })
   );
 
