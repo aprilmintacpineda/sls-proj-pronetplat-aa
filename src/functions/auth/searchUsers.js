@@ -42,7 +42,7 @@ async function handler ({ authUser, params: { search, nextToken } }) {
           query.Not(
             isOnBlockList(
               authUser.id,
-              query.Select(['ref', 'id'], query.Var('ref'))
+              query.Select(['id'], query.Var('ref'))
             )
           )
         )
