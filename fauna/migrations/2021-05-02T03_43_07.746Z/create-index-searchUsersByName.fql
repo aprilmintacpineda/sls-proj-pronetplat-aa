@@ -1,0 +1,12 @@
+CreateIndex({
+  name: "searchUsersByName",
+  terms: [{
+    binding: "search"
+  }],
+  source: {
+    collection: Collection("users"),
+    fields: {
+      search: Query(Lambda(["row"], Union(Ngram(LowerCase(Select(["data", "firstName"], Var("row"))), 2, 3), Ngram(LowerCase(Select(["data", "middleName"], Var("row"))), 2, 3), Ngram(LowerCase(Select(["data", "surname"], Var("row"))), 2, 3))))
+    }
+  }
+})
