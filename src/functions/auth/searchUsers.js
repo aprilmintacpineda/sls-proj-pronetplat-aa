@@ -58,8 +58,6 @@ async function handler ({ authUser, params: { search, nextToken } }) {
     )
   );
 
-  console.log(JSON.stringify(result, null, 2));
-
   return {
     statusCode: 200,
     body: JSON.stringify({
