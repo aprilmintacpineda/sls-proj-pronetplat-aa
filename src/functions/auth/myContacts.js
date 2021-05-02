@@ -23,24 +23,17 @@ async function handler ({ params: { nextToken }, authUser }) {
             : []
         }
       ),
-      query.Lambda(['numTimesOpened', 'contactId', 'ref'], {
-        document: query.Get(query.Var('ref')),
-        user: getById('users', query.Var('contactId'))
-      })
+      query.Lambda(
+        ['numTimesOpened', 'contactId', 'ref'],
+        getById('users', query.Var('contactId'))
+      )
     )
   );
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ document, user }) => ({
-        ...document.data,
-        id: document.ref.id,
-        user: {
-          ...getPublicUserData(user),
-          id: user.ref.id
-        }
-      })),
+      data: result.data.map(user => getPublicUserData(user)),
       nextToken: result.after?.[0].id || null
     })
   };

@@ -42,43 +42,54 @@ async function handler ({
             query.Exists(
               query.Match(
                 query.Index('contactByOwnerContact'),
-                authUser.id,
-                contactId
+                contactId,
+                authUser.id
               )
             ),
-            query.Map(
-              query.Paginate(
-                query.Union(
-                  query.Match(
-                    query.Index('contactDetailsByCloseFriendsOnly'),
-                    contactId,
-                    false
-                  ),
-                  query.Match(
-                    query.Index('contactDetailsByCloseFriendsOnly'),
-                    contactId,
-                    query.Select(
-                      ['data', 'isCloseFriend'],
-                      getByIndex(
-                        'contactByOwnerContact',
-                        contactId,
-                        authUser.id
+            {
+              contactDetails: query.Map(
+                query.Paginate(
+                  query.Union(
+                    query.Match(
+                      query.Index(
+                        'contactDetailsByCloseFriendsOnly'
+                      ),
+                      contactId,
+                      false
+                    ),
+                    query.Match(
+                      query.Index(
+                        'contactDetailsByCloseFriendsOnly'
+                      ),
+                      contactId,
+                      query.Select(
+                        ['data', 'isCloseFriend'],
+                        getByIndex(
+                          'contactByOwnerContact',
+                          contactId,
+                          authUser.id
+                        )
                       )
                     )
-                  )
+                  ),
+                  {
+                    size: 20,
+                    after: nextToken
+                      ? query.Ref(
+                          query.Collection('contactDetails'),
+                          nextToken
+                        )
+                      : []
+                  }
                 ),
-                {
-                  size: 20,
-                  after: nextToken
-                    ? query.Ref(
-                        query.Collection('contactDetails'),
-                        nextToken
-                      )
-                    : []
-                }
+                query.Lambda(['ref'], query.Get(query.Var('ref')))
               ),
-              query.Lambda(['ref'], query.Get(query.Var('ref')))
-            ),
+              contactInfo: getByIndex(
+                'contactByOwnerContact',
+                contactId,
+                authUser.id
+              )
+            },
             query.If(
               query.Exists(
                 query.Match(
@@ -181,10 +192,13 @@ async function handler ({
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(contactDetail => ({
-        ...contactDetail.data,
-        id: contactDetail.ref.id
-      })),
+      data: {
+        isCloseFriend: result.contactInfo.data.isCloseFriend,
+        contactDetails: result.contactDetails.map(contactDetail => ({
+          ...contactDetail.data,
+          id: contactDetail.ref.id
+        }))
+      },
       nextToken: result.after?.[0].id || null
     })
   };

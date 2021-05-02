@@ -3,8 +3,6 @@ const {
   initClient,
   createIfNotExists,
   getByIndexIfExists,
-  getByIndex,
-  selectData,
   getById
 } = require('dependencies/utils/faunadb');
 const {
@@ -32,7 +30,7 @@ async function handler ({ authUser, params: { senderId } }) {
     return { statusCode: 400 };
   }
 
-  const { contactData, userData } = await faunadb.query(
+  const userData = await faunadb.query(
     query.Do(
       createIfNotExists({
         collection: 'contacts',
@@ -63,16 +61,7 @@ async function handler ({ authUser, params: { senderId } }) {
         1
       ),
       query.Delete(contactRequest.ref),
-      {
-        contactData: selectData(
-          getByIndex(
-            'contactByOwnerContact',
-            contactRequest.data.senderId,
-            authUser.id
-          )
-        ),
-        userData: getById('users', authUser.id)
-      }
+      getById('users', authUser.id)
     )
   );
 
@@ -83,10 +72,7 @@ async function handler ({ authUser, params: { senderId } }) {
     body: '{fullname} has accepted your contact request.',
     title: 'Contact request accepted',
     category: 'notification',
-    data: {
-      ...contactData,
-      user: getPublicUserData(userData)
-    }
+    data: getPublicUserData(userData)
   });
 
   return { statusCode: 200 };
