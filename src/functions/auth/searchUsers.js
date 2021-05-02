@@ -37,7 +37,7 @@ async function handler ({ authUser, params: { search, nextToken } }) {
               : []
           }
         ),
-        query.Lambda(['var'], query.Get(query.Var('ref')))
+        query.Lambda(['ref'], query.Get(query.Var('ref')))
       ),
       query.Lambda(
         ['user'],
