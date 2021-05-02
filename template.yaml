@@ -804,6 +804,26 @@ Resources:
             Path: /search-users
             RestApiId:
               Ref: mainBackendApi
+  changeAllowSearchByName:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: changeAllowSearchByName.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-changeAllowSearchByName"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /change-allow-search-by-name
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
