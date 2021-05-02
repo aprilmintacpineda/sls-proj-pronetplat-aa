@@ -16,7 +16,7 @@ async function handler ({ params: { search, nextToken } }) {
       query.Paginate(
         query.Intersection(
           query.Map(
-            query.NGram(search, 2, 3),
+            query.NGram(search.toLowerCase(), 2, 3),
             query.Lambda(
               ['needle'],
               query.Match(
