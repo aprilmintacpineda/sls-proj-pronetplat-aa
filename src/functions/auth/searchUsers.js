@@ -65,14 +65,12 @@ async function handler ({
       )
     );
   } else {
-    result = await fauna.query(
+    const user = await fauna.query(
       getByIndexIfExists('userByUsername', search)
     );
 
-    console.log(JSON.stringify(result, null, 2));
-
-    if (result && result.allowSearchByUsername)
-      result = { data: [result] };
+    if (user && user.data.allowSearchByUsername)
+      result = { data: [user] };
     else result = { data: [] };
   }
 
