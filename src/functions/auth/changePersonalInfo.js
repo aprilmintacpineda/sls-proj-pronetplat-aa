@@ -50,13 +50,13 @@ module.exports.handler = httpGuard({
     bio
   }) => {
     return (
-      validate(firstName, ['required', 'maxLength:255']) ||
-      validate(middleName, ['maxLength:255']) ||
-      validate(surname, ['required', 'maxLength:255']) ||
+      validate(firstName, ['required', 'maxLength:35']) ||
+      validate(middleName, ['maxLength:35']) ||
+      validate(surname, ['required', 'maxLength:35']) ||
       validate(gender, ['required', 'options:male,female']) ||
-      validate(jobTitle, ['required', 'maxLength:255']) ||
-      validate(company, ['maxLength:255']) ||
-      validate(bio, ['maxLength:255'])
+      validate(jobTitle, ['required', 'maxLength:35']) ||
+      validate(company, ['maxLength:35']) ||
+      validate(bio, ['maxLength:35'])
     );
   }
 });
