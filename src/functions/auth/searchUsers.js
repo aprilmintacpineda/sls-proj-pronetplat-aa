@@ -15,45 +15,56 @@ async function handler ({ authUser, params: { search, nextToken } }) {
   const fauna = initClient();
 
   const result = await fauna.query(
-    query.Map(
-      query.Paginate(
-        query.Filter(
-          query.Intersection(
-            query.Map(
-              query.NGram(search.toLowerCase(), 2, 3),
-              query.Lambda(
-                ['needle'],
-                query.Match(
-                  query.Index('searchUsersByName'),
-                  query.Var('needle')
-                )
-              )
-            )
-          ),
-          query.Lambda(
-            ['ref'],
-            query.And(
-              query.Not(
-                isOnBlockList(
-                  authUser.id,
-                  query.Select(['id'], query.Var('ref'))
+    query.Paginate(
+      query.Reduce(
+        query.Lambda(
+          ['accumulator', 'ref'],
+          query.Let(
+            {
+              user: query.Get(query.Var('ref'))
+            },
+            query.If(
+              query.And(
+                query.Not(
+                  isOnBlockList(
+                    authUser.id,
+                    query.Select(['id'], query.Var('ref'))
+                  )
+                ),
+                query.Select(
+                  ['data', 'allowSearchByName'],
+                  query.Var('user'),
+                  false
                 )
               ),
-              query.Select(
-                ['data', 'allowSearchByName'],
-                query.Get(query.Var('ref'), false)
-              )
+              query.Append(
+                query.Var('user'),
+                query.Var('accumulator')
+              ),
+              query.Var('accumulator')
             )
           )
         ),
-        {
-          size: 20,
-          after: nextToken
-            ? query.Ref(query.Collection('contacts'), nextToken)
-            : []
-        }
+        [],
+        query.Intersection(
+          query.Map(
+            query.NGram(search.toLowerCase(), 2, 3),
+            query.Lambda(
+              ['needle'],
+              query.Match(
+                query.Index('searchUsersByName'),
+                query.Var('needle')
+              )
+            )
+          )
+        )
       ),
-      query.Lambda(['ref'], query.Get(query.Var('ref')))
+      {
+        size: 20,
+        after: nextToken
+          ? query.Ref(query.Collection('contacts'), nextToken)
+          : []
+      }
     )
   );
 
