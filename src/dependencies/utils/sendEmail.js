@@ -60,7 +60,7 @@ module.exports.sendEmailVerificationCode = ({
         </p>
       </div>
     `,
-    subject: 'Email Verification',
+    subject: 'Verify your email',
     emailType: 'resend-email-verification'
   });
 };
@@ -118,7 +118,7 @@ module.exports.sendEmailWelcomeMessage = ({
         </p>
       </div>
     `,
-    subject: 'Email Verification: Welcome to Entrepic',
+    subject: 'Welcome to Entrepic',
     emailType: 'welcome'
   });
 };
@@ -181,7 +181,7 @@ module.exports.sendEmailResetPasswordCode = ({
         </p>
       </div>
     `,
-    subject: 'Forgot password: Entrepic',
+    subject: 'Forgot password',
     emailType: isResend
       ? 'resend-forgot-password-request'
       : 'forgot-password-request'
@@ -214,7 +214,7 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
         </p>
       </div>
     `,
-    subject: 'Forgot password: Entrepic',
+    subject: 'Password was reset successfully',
     emailType: 'forgot-password-success'
   });
 };
@@ -245,7 +245,7 @@ module.exports.sendEmailChangePassword = recipient => {
         </p>
       </div>
     `,
-    subject: 'Password Changed Successfully',
+    subject: 'Password was changed successfully',
     emailType: 'change-password-success'
   });
 };
