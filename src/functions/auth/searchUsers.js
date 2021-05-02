@@ -19,29 +19,28 @@ async function handler ({ authUser, params: { search, nextToken } }) {
       query.Reduce(
         query.Lambda(
           ['accumulator', 'ref'],
-          query.Let(
-            {
-              user: query.Get(query.Var('ref'))
-            },
-            query.If(
-              query.And(
-                query.Not(
-                  isOnBlockList(
-                    authUser.id,
-                    query.Select(['id'], query.Var('ref'))
-                  )
-                ),
+          query.If(
+            isOnBlockList(
+              authUser.id,
+              query.Select(['id'], query.Var('ref'))
+            ),
+            query.Var('accumulator'),
+            query.Let(
+              {
+                user: query.Get(query.Var('ref'))
+              },
+              query.If(
                 query.Select(
                   ['data', 'allowSearchByName'],
                   query.Var('user'),
                   false
-                )
-              ),
-              query.Append(
-                query.Var('user'),
+                ),
+                query.Append(
+                  query.Var('user'),
+                  query.Var('accumulator')
+                ),
                 query.Var('accumulator')
-              ),
-              query.Var('accumulator')
+              )
             )
           )
         ),
