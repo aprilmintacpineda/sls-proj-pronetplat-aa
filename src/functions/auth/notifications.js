@@ -11,25 +11,28 @@ async function handler ({ params: { nextToken }, authUser }) {
   const client = initClient();
 
   const result = await client.query(
-    query.Map(
-      query.Paginate(
+    query.Paginate(
+      query.Map(
         query.Match(
           query.Index('notificationsByUserId'),
           authUser.id
         ),
-        {
-          size: 20,
-          after: nextToken
-            ? query.Ref(query.Collection('notifications'), nextToken)
-            : []
-        }
+        query.Lambda(['createdAt', 'actorId', 'ref'], {
+          notification: query.Get(query.Var('ref')),
+          user: query.Get(
+            query.Ref(
+              query.Collection('users'),
+              query.Var('actorId')
+            )
+          )
+        })
       ),
-      query.Lambda(['createdAt', 'actorId', 'ref'], {
-        notification: query.Get(query.Var('ref')),
-        user: query.Get(
-          query.Ref(query.Collection('users'), query.Var('actorId'))
-        )
-      })
+      {
+        size: 20,
+        after: nextToken
+          ? query.Ref(query.Collection('notifications'), nextToken)
+          : []
+      }
     )
   );
 

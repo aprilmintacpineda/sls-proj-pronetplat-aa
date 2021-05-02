@@ -9,23 +9,20 @@ async function handler ({ authUser, params: { nextToken } }) {
   const faunadb = initClient();
 
   const result = await faunadb.query(
-    query.Map(
-      query.Paginate(
+    query.Paginate(
+      query.Map(
         query.Match(
           query.Index('contactDetailsByUserId'),
           authUser.id
         ),
-        {
-          size: 20,
-          after: nextToken
-            ? query.Ref(
-                query.Collection('contactDetails'),
-                nextToken
-              )
-            : []
-        }
+        query.Lambda(['ref'], query.Get(query.Var('ref')))
       ),
-      query.Lambda(['ref'], query.Get(query.Var('ref')))
+      {
+        size: 20,
+        after: nextToken
+          ? query.Ref(query.Collection('contactDetails'), nextToken)
+          : []
+      }
     )
   );
 

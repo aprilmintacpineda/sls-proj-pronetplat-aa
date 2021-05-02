@@ -10,28 +10,28 @@ async function handler ({ params: { nextToken }, authUser }) {
   const client = initClient();
 
   const result = await client.query(
-    query.Map(
-      query.Paginate(
+    query.Paginate(
+      query.Map(
         query.Match(
           query.Index('contactRequestsByRecipientId'),
           authUser.id
         ),
-        {
-          size: 20,
-          after: nextToken
-            ? query.Ref(
-                query.Collection('contactRequests'),
-                nextToken
-              )
-            : []
-        }
+        query.Lambda(['senderId', 'ref'], {
+          contactRequest: query.Get(query.Var('ref')),
+          sender: query.Get(
+            query.Ref(
+              query.Collection('users'),
+              query.Var('senderId')
+            )
+          )
+        })
       ),
-      query.Lambda(['senderId', 'ref'], {
-        contactRequest: query.Get(query.Var('ref')),
-        sender: query.Get(
-          query.Ref(query.Collection('users'), query.Var('senderId'))
-        )
-      })
+      {
+        size: 20,
+        after: nextToken
+          ? query.Ref(query.Collection('contactRequests'), nextToken)
+          : []
+      }
     )
   );
 

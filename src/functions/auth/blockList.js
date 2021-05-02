@@ -9,8 +9,8 @@ async function handler ({ authUser, params: { nextToken } }) {
   const client = initClient();
 
   const result = await client.query(
-    query.Map(
-      query.Paginate(
+    query.Paginate(
+      query.Map(
         query.Join(
           query.Match(
             query.Index('userBlockingsByBlockerId'),
@@ -27,17 +27,17 @@ async function handler ({ authUser, params: { nextToken } }) {
             )
           )
         ),
-        {
-          size: 20,
-          after: nextToken
-            ? query.Ref(query.Collection('userBlockings'), nextToken)
-            : []
-        }
+        query.Lambda(
+          ['firstName', 'middleName', 'surname', 'ref'],
+          query.Get(query.Var('ref'))
+        )
       ),
-      query.Lambda(
-        ['firstName', 'middleName', 'surname', 'ref'],
-        query.Get(query.Var('ref'))
-      )
+      {
+        size: 20,
+        after: nextToken
+          ? query.Ref(query.Collection('userBlockings'), nextToken)
+          : []
+      }
     )
   );
 
