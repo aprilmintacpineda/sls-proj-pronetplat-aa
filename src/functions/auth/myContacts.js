@@ -13,20 +13,20 @@ async function handler ({ params: { nextToken }, authUser }) {
   const client = initClient();
 
   const result = await client.query(
-    query.Paginate(
-      query.Map(
+    query.Map(
+      query.Paginate(
         query.Match(query.Index('contactsByUserId'), authUser.id),
-        query.Lambda(
-          ['numTimesOpened', 'contactId', 'ref'],
-          getById('users', query.Var('contactId'))
-        )
+        {
+          size: 20,
+          after: nextToken
+            ? query.Ref(query.Collection('contacts'), nextToken)
+            : []
+        }
       ),
-      {
-        size: 20,
-        after: nextToken
-          ? query.Ref(query.Collection('contacts'), nextToken)
-          : []
-      }
+      query.Lambda(
+        ['numTimesOpened', 'contactId', 'ref'],
+        getById('users', query.Var('contactId'))
+      )
     )
   );
 

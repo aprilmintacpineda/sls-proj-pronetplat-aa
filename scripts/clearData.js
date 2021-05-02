@@ -6,26 +6,21 @@ async function main () {
   });
 
   await client.query(
-    query.Paginate(
-      query.Map(
-        query.Collections(),
-        query.Lambda(
-          ['ref'],
-          query.If(
-            query.Equals(
-              query.Select(['id'], query.Var('ref')),
-              'Migration'
-            ),
-            null,
-            query.Paginate(
-              query.Map(
-                query.Documents(query.Var('ref')),
-                query.Lambda(['ref'], query.Delete(query.Var('ref')))
-              ),
-              {
-                size: 9999
-              }
-            )
+    query.Map(
+      query.Paginate(query.Collections()),
+      query.Lambda(
+        ['ref'],
+        query.If(
+          query.Equals(
+            query.Select(['id'], query.Var('ref')),
+            'Migration'
+          ),
+          null,
+          query.Map(
+            query.Paginate(query.Documents(query.Var('ref')), {
+              size: 9999
+            }),
+            query.Lambda(['ref'], query.Delete(query.Var('ref')))
           )
         )
       )

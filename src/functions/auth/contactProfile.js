@@ -47,8 +47,8 @@ async function handler ({
               )
             ),
             {
-              contactDetailsResult: query.Paginate(
-                query.Map(
+              contactDetailsResult: query.Map(
+                query.Paginate(
                   query.Union(
                     query.Match(
                       query.Index(
@@ -72,17 +72,17 @@ async function handler ({
                       )
                     )
                   ),
-                  query.Lambda(['ref'], query.Get(query.Var('ref')))
+                  {
+                    size: 20,
+                    after: nextToken
+                      ? query.Ref(
+                          query.Collection('contactDetails'),
+                          nextToken
+                        )
+                      : []
+                  }
                 ),
-                {
-                  size: 20,
-                  after: nextToken
-                    ? query.Ref(
-                        query.Collection('contactDetails'),
-                        nextToken
-                      )
-                    : []
-                }
+                query.Lambda(['ref'], query.Get(query.Var('ref')))
               ),
               contactInfo: getByIndex(
                 'contactByOwnerContact',

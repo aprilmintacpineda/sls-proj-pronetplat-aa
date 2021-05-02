@@ -15,36 +15,36 @@ async function handler ({ authUser, params: { search, nextToken } }) {
   const fauna = initClient();
 
   const result = await fauna.query(
-    query.Paginate(
-      query.Reduce(
-        query.Lambda(
-          ['accumulator', 'ref'],
-          query.If(
-            isOnBlockList(
-              authUser.id,
-              query.Select(['id'], query.Var('ref'))
-            ),
-            query.Var('accumulator'),
-            query.Let(
-              {
-                user: query.Get(query.Var('ref'))
-              },
-              query.If(
-                query.Select(
-                  ['data', 'allowSearchByName'],
-                  query.Var('user'),
-                  false
-                ),
-                query.Append(
-                  query.Var('user'),
-                  query.Var('accumulator')
-                ),
+    query.Reduce(
+      query.Lambda(
+        ['accumulator', 'ref'],
+        query.If(
+          isOnBlockList(
+            authUser.id,
+            query.Select(['id'], query.Var('ref'))
+          ),
+          query.Var('accumulator'),
+          query.Let(
+            {
+              user: query.Get(query.Var('ref'))
+            },
+            query.If(
+              query.Select(
+                ['data', 'allowSearchByName'],
+                query.Var('user'),
+                false
+              ),
+              query.Append(
+                query.Var('user'),
                 query.Var('accumulator')
-              )
+              ),
+              query.Var('accumulator')
             )
           )
-        ),
-        [],
+        )
+      ),
+      [],
+      query.Paginate(
         query.Intersection(
           query.Map(
             query.NGram(search.toLowerCase(), 2, 3),
@@ -56,14 +56,14 @@ async function handler ({ authUser, params: { search, nextToken } }) {
               )
             )
           )
-        )
-      ),
-      {
-        size: 20,
-        after: nextToken
-          ? query.Ref(query.Collection('contacts'), nextToken)
-          : []
-      }
+        ),
+        {
+          size: 20,
+          after: nextToken
+            ? query.Ref(query.Collection('contacts'), nextToken)
+            : []
+        }
+      )
     )
   );
 
