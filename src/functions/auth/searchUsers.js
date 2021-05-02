@@ -39,9 +39,11 @@ async function handler ({ authUser, params: { search, nextToken } }) {
         ),
         query.Lambda(
           ['ref'],
-          isOnBlockList(
-            authUser.id,
-            query.Select(['ref', 'id'], query.Var('ref'))
+          query.Not(
+            isOnBlockList(
+              authUser.id,
+              query.Select(['ref', 'id'], query.Var('ref'))
+            )
           )
         )
       ),
