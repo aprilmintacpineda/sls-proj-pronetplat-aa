@@ -72,7 +72,7 @@ async function handler ({
     console.log(JSON.stringify(result, null, 2));
 
     if (result && result.allowSearchByUsername)
-      result = { data: result };
+      result = { data: [result] };
     else result = { data: [] };
   }
 
