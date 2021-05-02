@@ -54,7 +54,8 @@ export function getUserData (user) {
     emailVerifiedAt: user.data.emailVerifiedAt,
     lastLoginAt: user.data.lastLoginAt,
     createdAt: user.data.createdAt,
-    isTestAccount: user.data.isTestAccount
+    isTestAccount: user.data.isTestAccount,
+    allowSearchByName: user.data.allowSearchByName
   };
 }
 
