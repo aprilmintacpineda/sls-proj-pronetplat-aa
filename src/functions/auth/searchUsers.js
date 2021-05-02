@@ -69,9 +69,11 @@ async function handler ({
       getByIndexIfExists('userByUsername', search)
     );
 
-    if (result.data.allowSearchByUsername)
-      result = result.data = [result];
-    else result = result.data = [];
+    console.log(JSON.stringify(result, null, 2));
+
+    if (result && result.allowSearchByUsername)
+      result = { data: result };
+    else result = { data: [] };
   }
 
   return {
