@@ -28,7 +28,7 @@ async function handler ({ params: { nextToken }, authUser }) {
       ),
       query.Lambda(['recipientId', 'ref'], {
         contactRequest: query.Get(query.Var('ref')),
-        sender: query.Get(
+        recipient: query.Get(
           query.Ref(
             query.Collection('users'),
             query.Var('recipientId')
@@ -41,10 +41,10 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ contactRequest, sender }) => ({
+      data: result.data.map(({ contactRequest, recipient }) => ({
         ...contactRequest.data,
         id: contactRequest.ref.id,
-        sender: getPublicUserData(sender)
+        recipient: getPublicUserData(recipient)
       })),
       nextToken: result.after?.[0].id || null
     })
