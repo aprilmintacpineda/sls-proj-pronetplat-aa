@@ -1,0 +1,12 @@
+CreateIndex({
+  name: "contactRequestsBySenderId",
+  source: Collection("contactRequests"),
+  terms: [{
+    field: ["data", "senderId"]
+  }],
+  values: [{
+    field: ["data", "recipientId"]
+  }, {
+    field: ["ref"]
+  }]
+})

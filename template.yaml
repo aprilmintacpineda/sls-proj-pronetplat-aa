@@ -348,6 +348,26 @@ Resources:
             Path: /received-contact-requests
             RestApiId:
               Ref: mainBackendApi
+  sentContactRequests:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: sentContactRequests.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-sentContactRequests"
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /sent-contact-requests
+            RestApiId:
+              Ref: mainBackendApi
   notifications:
     Type: AWS::Serverless::Function
     Metadata:
