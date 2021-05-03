@@ -15,9 +15,10 @@ const {
 
 async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
+  let response = null;
 
   try {
-    await faunadb.query(
+    response = await faunadb.query(
       query.Let(
         {
           contactRequest: getByIndex(
@@ -64,7 +65,10 @@ async function handler ({ authUser, params: { contactId } }) {
     category: 'notification'
   });
 
-  return { statusCode: 200 };
+  return {
+    statusCode: 200,
+    body: JSON.stringify(response.data)
+  };
 }
 
 module.exports.handler = httpGuard({
