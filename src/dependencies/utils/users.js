@@ -56,7 +56,8 @@ export function getUserData (user) {
     createdAt: user.data.createdAt,
     isTestAccount: user.data.isTestAccount,
     allowSearchByName: user.data.allowSearchByName,
-    allowSearchByUsername: user.data.allowSearchByUsername
+    allowSearchByUsername: user.data.allowSearchByUsername,
+    username: user.data.username
   };
 }
 
