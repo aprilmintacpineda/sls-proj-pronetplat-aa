@@ -56,7 +56,7 @@ module.exports.handler = httpGuard({
       validate(gender, ['required', 'options:male,female']) ||
       validate(jobTitle, ['required', 'maxLength:35']) ||
       validate(company, ['maxLength:35']) ||
-      validate(bio, ['maxLength:35'])
+      validate(bio, ['maxLength:255'])
     );
   }
 });
