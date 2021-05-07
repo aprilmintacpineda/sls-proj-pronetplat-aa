@@ -864,6 +864,26 @@ Resources:
             Path: /change-allow-search-by-username
             RestApiId:
               Ref: mainBackendApi
+  changeUsername:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: changeUsername.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-changeUsername"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /change-username
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Invokable functions
   #
