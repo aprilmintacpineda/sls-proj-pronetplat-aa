@@ -1,4 +1,7 @@
 const validationRules = {
+  alphanumeric (value) {
+    return /[^a-zA-Z0-9_]/.test(value);
+  },
   email (value) {
     return (
       value.length > 320 ||
