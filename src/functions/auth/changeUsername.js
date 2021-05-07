@@ -25,7 +25,7 @@ async function handler ({ authUser, formBody }) {
   return { statusCode: 200 };
 }
 
-module.exports = httpGuard({
+module.exports.handler = httpGuard({
   handler,
   formValidator: ({ username }) => {
     return validate(username, ['alphanumeric', 'maxLength:18']);
