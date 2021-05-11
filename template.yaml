@@ -997,7 +997,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
-      RouteKey: $sendmessage
+      RouteKey: sendmessage
       AuthorizationType: NONE
       OperationName: sendWebsocketMessageRoute
       Target: !Join
