@@ -52,20 +52,22 @@ async function handler (webSocketEvent) {
     endpoint: `${domainName}/${stage}`
   });
 
+  const body = JSON.stringify({
+    payload: {
+      id: chatMessage.ref.id,
+      ...chatMessage.data
+    },
+    messageId
+  });
+
   await apiGateway
     .postToConnection({
       ConnectionId: connectionId,
-      Data: {
-        payload: {
-          id: chatMessage.ref.id,
-          ...chatMessage.data
-        },
-        messageId
-      }
+      Data: body
     })
     .promise();
 
-  return { statusCode: 200 };
+  return { statusCode: 200, body };
 }
 
 module.exports.handler = handler;
