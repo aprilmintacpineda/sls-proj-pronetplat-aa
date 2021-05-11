@@ -8,7 +8,7 @@ const {
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const {
   createNotification
 } = require('dependencies/utils/notifications');

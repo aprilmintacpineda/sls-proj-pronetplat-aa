@@ -3,11 +3,11 @@ const {
   update,
   getById
 } = require('dependencies/utils/faunadb');
+const { hash, verifyHash } = require('dependencies/utils/helpers');
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
-const { hash, verifyHash } = require('dependencies/utils/helpers');
+} = require('dependencies/utils/httpGuard');
 const {
   sendEmailChangePassword
 } = require('dependencies/utils/sendEmail');

@@ -6,7 +6,7 @@ const {
 const {
   guardTypes,
   httpGuard
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({

@@ -14,7 +14,7 @@ const {
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 
 async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();

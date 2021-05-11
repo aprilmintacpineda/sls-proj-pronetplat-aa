@@ -3,7 +3,7 @@ const { initClient } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 
 async function handler ({ authUser, params: { nextToken } }) {
   const faunadb = initClient();

@@ -5,11 +5,11 @@ const {
   update,
   getByIndexIfExists
 } = require('dependencies/utils/faunadb');
+const { verifyHash } = require('dependencies/utils/helpers');
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
-const { verifyHash } = require('dependencies/utils/helpers');
+} = require('dependencies/utils/httpGuard');
 const jwt = require('dependencies/utils/jwt');
 const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');

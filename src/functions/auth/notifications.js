@@ -3,7 +3,7 @@ const { initClient } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const { invokeEvent } = require('dependencies/utils/lambda');
 const { getPublicUserData } = require('dependencies/utils/users');
 

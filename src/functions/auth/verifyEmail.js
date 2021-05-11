@@ -5,13 +5,13 @@ const {
   update
 } = require('dependencies/utils/faunadb');
 const {
-  httpGuard,
-  guardTypes
-} = require('dependencies/utils/guards');
-const {
   verifyHash,
   hasTimePassed
 } = require('dependencies/utils/helpers');
+const {
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/httpGuard');
 const jwt = require('dependencies/utils/jwt');
 const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');

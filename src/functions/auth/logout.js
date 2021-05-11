@@ -1,7 +1,7 @@
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const { invokeEvent } = require('dependencies/utils/lambda');
 
 async function handler ({ deviceToken, authUser }) {

@@ -1,9 +1,9 @@
 const mimetypes = require('mime-types');
+const { randomNum } = require('dependencies/utils/helpers');
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
-const { randomNum } = require('dependencies/utils/helpers');
+} = require('dependencies/utils/httpGuard');
 const { s3 } = require('dependencies/utils/s3');
 const validate = require('dependencies/utils/validate');
 

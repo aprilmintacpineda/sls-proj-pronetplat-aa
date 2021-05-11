@@ -7,7 +7,7 @@ const {
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({

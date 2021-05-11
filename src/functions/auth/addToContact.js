@@ -13,7 +13,7 @@ const {
 const {
   httpGuard,
   guardTypes
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const {
   sendPushNotification
 } = require('dependencies/utils/notifications');

@@ -4,14 +4,14 @@ const {
   updateById
 } = require('dependencies/utils/faunadb');
 const {
-  httpGuard,
-  guardTypes
-} = require('dependencies/utils/guards');
-const {
   hasTimePassed,
   randomCode,
   hash
 } = require('dependencies/utils/helpers');
+const {
+  httpGuard,
+  guardTypes
+} = require('dependencies/utils/httpGuard');
 const jwt = require('dependencies/utils/jwt');
 const {
   sendEmailVerificationCode

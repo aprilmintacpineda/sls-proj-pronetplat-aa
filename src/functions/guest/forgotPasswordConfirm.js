@@ -1,4 +1,4 @@
-const { httpGuard } = require('dependencies/utils/guards');
+const { httpGuard } = require('dependencies/utils/httpGuard');
 const { invokeEvent } = require('dependencies/utils/lambda');
 const validate = require('dependencies/utils/validate');
 

@@ -2,7 +2,7 @@ const { initClient, create } = require('dependencies/utils/faunadb');
 const {
   guardTypes,
   httpGuard
-} = require('dependencies/utils/guards');
+} = require('dependencies/utils/httpGuard');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
