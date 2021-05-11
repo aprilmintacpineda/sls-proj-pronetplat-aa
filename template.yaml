@@ -896,6 +896,20 @@ Resources:
           - "proj-pronetplat-aa-webSocket"
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
+  webSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - connectRoute
+      - sendWebsocketMessageRoute
+      - disconnectRoute
+    Properties:
+      ApiId: !Ref webSocket
+  webSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Ref Stage
+      DeploymentId: !Ref Deployment
+      ApiId: !Ref webSocket
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
@@ -914,7 +928,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref onUserConnected
       Principal: apigateway.amazonaws.com
-  ConnectInteg:
+  connectInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
@@ -923,7 +937,7 @@ Resources:
       IntegrationUri: 
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
-  ConnectRoute:
+  connectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
@@ -952,7 +966,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref onUserDisconnected
       Principal: apigateway.amazonaws.com
-  DisconnectInteg:
+  disconnectInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
@@ -961,7 +975,7 @@ Resources:
       IntegrationUri: 
         Fn::Sub:
             arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
-  DisconnectRoute:
+  disconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket

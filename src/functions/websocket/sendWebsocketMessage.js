@@ -1,6 +1,7 @@
-async function handler (events) {
-  console.log(JSON.stringify(events, null, 2));
+async function handler (event) {
+  console.log(JSON.stringify(event, null, 2));
   console.log('sendWebsocketMessage');
+  return { statusCode: 200 };
 }
 
 module.exports.handler = handler;
