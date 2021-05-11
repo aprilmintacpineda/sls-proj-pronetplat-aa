@@ -1,6 +1,18 @@
-async function handler (event) {
-  console.log('onUserDisconnected');
-  console.log(JSON.stringify(event, null, 2));
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
+
+async function handler (webSocketEvent) {
+  const faunadb = initClient();
+
+  await faunadb.query(
+    hardDeleteByIndex(
+      'userWebSocketConnectionByConnectionId',
+      webSocketEvent.requestContext.connectionId
+    )
+  );
+
   return { statusCode: 200 };
 }
 
