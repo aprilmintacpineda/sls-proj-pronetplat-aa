@@ -4345,9 +4345,9 @@ fauna-schema-migrate@^2.1.2:
     shelljs "^0.8.4"
     uuid "^8.3.2"
 
-"faunadb@git://github.com/fauna/faunadb-js.git#OSS-699":
+"faunadb@git://github.com/aprilmintacpineda/faunadb-js.git#master":
   version "4.2.0"
-  resolved "git://github.com/fauna/faunadb-js.git#6829bbdbc0fac8b74266620585d9a6caedf4720e"
+  resolved "git://github.com/aprilmintacpineda/faunadb-js.git#19645cce3f59e83294a3da5a23f6d61d23adc1bf"
   dependencies:
     abort-controller "^3.0.0"
     base64-js "^1.2.0"

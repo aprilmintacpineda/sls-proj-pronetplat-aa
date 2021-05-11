@@ -9,7 +9,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "date-fns": "^2.21.1",
-    "faunadb": "git://github.com/fauna/faunadb-js.git#OSS-699",
+    "faunadb": "git://github.com/aprilmintacpineda/faunadb-js.git#master",
     "firebase-admin": "^9.7.0",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^8.5.1",
