@@ -2,6 +2,8 @@ const AWS = require('aws-sdk');
 const { initClient, create } = require('dependencies/utils/faunadb');
 
 async function handler (webSocketEvent) {
+  console.log(webSocketEvent);
+
   const { action, data } = JSON.parse(webSocketEvent.body);
 
   if (action !== 'sendmessage' && data.action !== 'sendChatMessage')
@@ -18,7 +20,7 @@ async function handler (webSocketEvent) {
       webSocketEvent.requestContext.stage
   });
 
-  const payload = await faunadb.query(
+  const chatMessage = await faunadb.query(
     create('chatMessages', {
       recipientId,
       messageBody
@@ -28,7 +30,10 @@ async function handler (webSocketEvent) {
   await socket.postToConnection({
     ConectionId: webSocketEvent.requestContext.connectionId,
     data: {
-      payload,
+      payload: {
+        id: chatMessage.ref.id,
+        ...chatMessage.data
+      },
       messageId
     }
   });
