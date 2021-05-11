@@ -1,5 +1,11 @@
 const AWS = require('aws-sdk');
-const { initClient, create } = require('dependencies/utils/faunadb');
+const { query } = require('faunadb');
+const {
+  initClient,
+  create,
+  getById,
+  getByIndex
+} = require('dependencies/utils/faunadb');
 
 async function handler (webSocketEvent) {
   console.log(webSocketEvent);
@@ -10,33 +16,54 @@ async function handler (webSocketEvent) {
     return { statusCode: 403 };
 
   const { recipientId, messageBody, messageId } = data;
-
+  const {
+    connectionId,
+    domainName,
+    stage
+  } = webSocketEvent.requestContext;
   const faunadb = initClient();
-  const socket = new AWS.ApiGatewayManagementApi({
-    apiVersion: '2018-11-29',
-    endpoint:
-      webSocketEvent.requestContext.domainName +
-      '/' +
-      webSocketEvent.requestContext.stage
-  });
 
   const chatMessage = await faunadb.query(
-    create('chatMessages', {
-      recipientId,
-      messageBody
-    })
+    query.Let(
+      {
+        sender: getById(
+          'users',
+          query.Select(
+            ['data', 'userId'],
+            getByIndex(
+              'userWebSocketConnectionByConnectionId',
+              connectionId
+            )
+          )
+        )
+      },
+      create('chatMessages', {
+        senderId: query.Select(['ref', 'id'], query.Var('sender')),
+        recipientId,
+        messageBody
+      })
+    )
   );
 
-  await socket.postToConnection({
-    ConnectionId: webSocketEvent.requestContext.connectionId,
-    Data: {
-      payload: {
-        id: chatMessage.ref.id,
-        ...chatMessage.data
-      },
-      messageId
-    }
+  // send push notification to user if needed
+
+  const apiGateway = new AWS.ApiGatewayManagementApi({
+    apiVersion: '2018-11-29',
+    endpoint: `${domainName}/${stage}`
   });
+
+  await apiGateway
+    .postToConnection({
+      ConnectionId: connectionId,
+      Data: {
+        payload: {
+          id: chatMessage.ref.id,
+          ...chatMessage.data
+        },
+        messageId
+      }
+    })
+    .promise();
 
   return { statusCode: 200 };
 }
