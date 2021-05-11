@@ -908,7 +908,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
       StageName: !Ref Stage
-      DeploymentId: !Ref Deployment
+      DeploymentId: !Ref webSocketDeployment
       ApiId: !Ref webSocket
   onUserConnected:
     Type: AWS::Serverless::Function
