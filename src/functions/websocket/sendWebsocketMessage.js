@@ -26,26 +26,30 @@ async function handler (webSocketEvent) {
   const chatMessage = await faunadb.query(
     query.Let(
       {
-        sender: getById(
-          'users',
-          query.Select(
-            ['data', 'userId'],
-            getByIndex(
-              'userWebSocketConnectionByConnectionId',
-              connectionId
+        senderId: query.Select(
+          ['ref', 'id'],
+          getById(
+            'users',
+            query.Select(
+              ['data', 'userId'],
+              getByIndex(
+                'userWebSocketConnectionByConnectionId',
+                connectionId
+              )
             )
           )
         )
       },
+      // @TODO should not be able to send chat message to self
       create('chatMessages', {
-        senderId: query.Select(['ref', 'id'], query.Var('sender')),
+        senderId: query.Var('senderId'),
         recipientId,
         messageBody
       })
     )
   );
 
-  // send push notification to user if needed
+  // @TODO send push notification to user if no active sockets
 
   const apiGateway = new AWS.ApiGatewayManagementApi({
     apiVersion: '2018-11-29',
