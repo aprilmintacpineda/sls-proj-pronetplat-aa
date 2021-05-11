@@ -914,7 +914,7 @@ Resources:
   ConnectInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref webSocket
       Description: Connect Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: 
