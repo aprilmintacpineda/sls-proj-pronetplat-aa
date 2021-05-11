@@ -985,7 +985,7 @@ Resources:
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref DisconnectInteg
+          - !Ref disconnectInteg
   sendWebsocketMessage:
     Type: AWS::Serverless::Function
     Properties:
