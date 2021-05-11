@@ -947,7 +947,7 @@ Resources:
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref ConnectInteg
+          - !Ref connectInteg
   onUserDisconnected:
     Type: AWS::Serverless::Function
     Properties:
