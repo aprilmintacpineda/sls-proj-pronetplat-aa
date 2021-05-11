@@ -28,8 +28,8 @@ async function handler (webSocketEvent) {
   );
 
   await socket.postToConnection({
-    ConectionId: webSocketEvent.requestContext.connectionId,
-    data: {
+    ConnectionId: webSocketEvent.requestContext.connectionId,
+    Data: {
       payload: {
         id: chatMessage.ref.id,
         ...chatMessage.data
