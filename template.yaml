@@ -890,7 +890,10 @@ Resources:
   webSocket:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: webSocket
+      Name: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-webSocket"
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
   onUserConnected:
