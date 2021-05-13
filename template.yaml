@@ -913,27 +913,27 @@ Resources:
       StageName: !Ref Stage
       DeploymentId: !Ref webSocketDeployment
       ApiId: !Ref webSocket
-  # webSocketCustomDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     ValidationMethod: DNS
-  # webSocketCustomDomain:
-  #   Type: AWS::ApiGatewayV2::DomainName
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     CertificateArn: !Ref webSocketCustomDomainCert
-  #     CertificateName: webSocketCustomDomainCert
+  webSocketCustomDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      ValidationMethod: DNS
+  webSocketCustomDomain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      CertificateArn: !Ref webSocketCustomDomainCert
+      CertificateName: webSocketCustomDomainCert
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
@@ -1226,32 +1226,32 @@ Resources:
   ######
   # API
   #
-  # customDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${apiSubDomain}.entrepic.com
-  #       - apiSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - apiSubDomain
-  #     ValidationMethod: DNS
+  customDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - apiSubDomain
+      ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      # Domain:
-      #   DomainName: !Sub
-      #       - ${apiSubDomain}.entrepic.com
-      #       - apiSubDomain: !FindInMap
-      #         - stageVars
-      #         - !Ref Stage
-      #         - apiSubDomain
-      #   CertificateArn: !Ref customDomainCert
-      #   Route53:
-      #     HostedZoneId: Z0450109WGLMG82TZFOY
+      Domain:
+        DomainName: !Sub
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - apiSubDomain
+        CertificateArn: !Ref customDomainCert
+        Route53:
+          HostedZoneId: Z0450109WGLMG82TZFOY
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
   #   Properties:
