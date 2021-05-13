@@ -15,7 +15,7 @@ Mappings:
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSubDomain: "apiv1"
-      webSocketSubDomain: "websocket"
+      webSocketSubDomain: "websocketdev"
       reservedConcurrentExecutions: 10
 
 Parameters:
@@ -902,7 +902,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Deployment
     DependsOn:
       - connectRoute
-      - sendChatMessageRoute
+      - sendWebsocketMessageRoute
       - disconnectRoute
     Properties:
       ApiId: !Ref webSocket
@@ -1020,10 +1020,10 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref disconnectInteg
-  sendChatMessage:
+  sendWebsocketMessage:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: sendChatMessage.handler
+      Handler: sendWebsocketMessage.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
         - Statement:
@@ -1035,27 +1035,27 @@ Resources:
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-sendChatMessage"
-  sendChatMessagePermission:
+          - "proj-pronetplat-aa-sendWebsocketMessage"
+  sendWebsocketMessagePermission:
     Type: AWS::Lambda::Permission
     DependsOn:
       - webSocket
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref sendChatMessage
+      FunctionName: !Ref sendWebsocketMessage
       Principal: apigateway.amazonaws.com
-  sendChatMessageRoute:
+  sendWebsocketMessageRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
-      RouteKey: sendChatMessage
+      RouteKey: sendmessage
       AuthorizationType: NONE
-      OperationName: sendChatMessageRoute
+      OperationName: sendWebsocketMessageRoute
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref sendChatMessageInteg
-  sendChatMessageInteg:
+          - !Ref sendWebsocketMessageInteg
+  sendWebsocketMessageInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
@@ -1063,7 +1063,7 @@ Resources:
       IntegrationType: AWS_PROXY
       IntegrationUri: 
         Fn::Sub:
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendChatMessage.Arn}/invocations
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendWebsocketMessage.Arn}/invocations
   ######
   # Invokable functions
   #
@@ -1262,62 +1262,62 @@ Resources:
         CertificateArn: !Ref customDomainCert
         Route53:
           HostedZoneId: Z0450109WGLMG82TZFOY
-  mainBackendWebAcl:
-    Type: AWS::WAFv2::WebACL
-    Properties:
-      DefaultAction:
-        Block: {}
-      Scope: REGIONAL
-      VisibilityConfig: 
-        CloudWatchMetricsEnabled: true
-        MetricName: !Join
-          - "-"
-          - - "proj-pronetplat-aa-users"
-            - !Ref Stage
-            - webacl
-        SampledRequestsEnabled: true
-      Rules:
-        - Action:
-            Block: {}
-          Name: RateLimit
-          Statement:
-            RateBasedStatement:
-              AggregateKeyType: IP
-              Limit: 1500
-          VisibilityConfig: 
-            CloudWatchMetricsEnabled: true
-            MetricName: !Join
-              - "-"
-              - - "proj-pronetplat-aa-users"
-                - !Ref Stage
-                - webacl-rate-limit
-            SampledRequestsEnabled: true
-          Priority: 0
-        - Action:
-            Allow: {}
-          Name: AllowedCounties
-          Statement:
-            GeoMatchStatement:
-              CountryCodes:
-                - AU
-                - PH
-                - US
-                - CA
-                - GB
-          VisibilityConfig: 
-            CloudWatchMetricsEnabled: true
-            MetricName: !Join
-              - "-"
-              - - "proj-pronetplat-aa-users"
-                - !Ref Stage
-                - webacl-allowed-countries
-            SampledRequestsEnabled: true
-          Priority: 1
-  mainBackendWebAclAssociations:
-    Type: AWS::WAFv2::WebACLAssociation
-    Properties: 
-      ResourceArn: !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/${mainBackendApi}/stages/${Stage}"
-      WebACLArn: !GetAtt mainBackendWebAcl.Arn
+  # mainBackendWebAcl:
+  #   Type: AWS::WAFv2::WebACL
+  #   Properties:
+  #     DefaultAction:
+  #       Block: {}
+  #     Scope: REGIONAL
+  #     VisibilityConfig: 
+  #       CloudWatchMetricsEnabled: true
+  #       MetricName: !Join
+  #         - "-"
+  #         - - "proj-pronetplat-aa-users"
+  #           - !Ref Stage
+  #           - webacl
+  #       SampledRequestsEnabled: true
+  #     Rules:
+  #       - Action:
+  #           Block: {}
+  #         Name: RateLimit
+  #         Statement:
+  #           RateBasedStatement:
+  #             AggregateKeyType: IP
+  #             Limit: 1500
+  #         VisibilityConfig: 
+  #           CloudWatchMetricsEnabled: true
+  #           MetricName: !Join
+  #             - "-"
+  #             - - "proj-pronetplat-aa-users"
+  #               - !Ref Stage
+  #               - webacl-rate-limit
+  #           SampledRequestsEnabled: true
+  #         Priority: 0
+  #       - Action:
+  #           Allow: {}
+  #         Name: AllowedCounties
+  #         Statement:
+  #           GeoMatchStatement:
+  #             CountryCodes:
+  #               - AU
+  #               - PH
+  #               - US
+  #               - CA
+  #               - GB
+  #         VisibilityConfig: 
+  #           CloudWatchMetricsEnabled: true
+  #           MetricName: !Join
+  #             - "-"
+  #             - - "proj-pronetplat-aa-users"
+  #               - !Ref Stage
+  #               - webacl-allowed-countries
+  #           SampledRequestsEnabled: true
+  #         Priority: 1
+  # mainBackendWebAclAssociations:
+  #   Type: AWS::WAFv2::WebACLAssociation
+  #   Properties: 
+  #     ResourceArn: !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/${mainBackendApi}/stages/${Stage}"
+  #     WebACLArn: !GetAtt mainBackendWebAcl.Arn
   ######
   # S3 buckets
   #
