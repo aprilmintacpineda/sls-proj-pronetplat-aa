@@ -933,8 +933,8 @@ Resources:
           - !Ref Stage
           - webSocketSubDomain
       DomainNameConfigurations:
-        CertificateArn: !Ref webSocketCustomDomainCert
-        CertificateName: webSocketCustomDomainCert
+        - CertificateArn: !Ref webSocketCustomDomainCert
+          CertificateName: webSocketCustomDomainCert
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
