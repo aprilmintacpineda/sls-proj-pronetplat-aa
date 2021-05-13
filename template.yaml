@@ -1236,16 +1236,16 @@ Resources:
   ######
   # API
   #
-  # customDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${apiSubDomain}.entrepic.com
-  #       - apiSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - apiSubDomain
-  #     ValidationMethod: DNS
+  customDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - apiSubDomain
+      ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
