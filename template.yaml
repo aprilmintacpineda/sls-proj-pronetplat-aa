@@ -912,38 +912,38 @@ Resources:
       StageName: !Ref Stage
       DeploymentId: !Ref webSocketDeployment
       ApiId: !Ref webSocket
-  # webSocketCustomDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     ValidationMethod: DNS
-  # webSocketCustomDomain:
-  #   Type: AWS::ApiGatewayV2::DomainName
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     DomainNameConfigurations:
-  #       - CertificateArn: !Ref webSocketCustomDomainCert
-  # webSocketCustomDomainMapping:
-  #   Type: AWS::ApiGatewayV2::ApiMapping
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     Stage: !Ref Stage
+  webSocketCustomDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      ValidationMethod: DNS
+  webSocketCustomDomain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      DomainNameConfigurations:
+        - CertificateArn: !Ref webSocketCustomDomainCert
+  webSocketCustomDomainMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId: !Ref webSocket
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      Stage: !Ref Stage
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
@@ -1252,72 +1252,72 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      # Domain:
-      #   DomainName: !Sub
-      #       - ${apiSubDomain}.entrepic.com
-      #       - apiSubDomain: !FindInMap
-      #         - stageVars
-      #         - !Ref Stage
-      #         - apiSubDomain
-      #   CertificateArn: !Ref customDomainCert
-      #   Route53:
-      #     HostedZoneId: Z0450109WGLMG82TZFOY
-  # mainBackendWebAcl:
-  #   Type: AWS::WAFv2::WebACL
-  #   Properties:
-  #     DefaultAction:
-  #       Block: {}
-  #     Scope: REGIONAL
-  #     VisibilityConfig: 
-  #       CloudWatchMetricsEnabled: true
-  #       MetricName: !Join
-  #         - "-"
-  #         - - "proj-pronetplat-aa-users"
-  #           - !Ref Stage
-  #           - webacl
-  #       SampledRequestsEnabled: true
-  #     Rules:
-  #       - Action:
-  #           Block: {}
-  #         Name: RateLimit
-  #         Statement:
-  #           RateBasedStatement:
-  #             AggregateKeyType: IP
-  #             Limit: 1500
-  #         VisibilityConfig: 
-  #           CloudWatchMetricsEnabled: true
-  #           MetricName: !Join
-  #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
-  #               - webacl-rate-limit
-  #           SampledRequestsEnabled: true
-  #         Priority: 0
-  #       - Action:
-  #           Allow: {}
-  #         Name: AllowedCounties
-  #         Statement:
-  #           GeoMatchStatement:
-  #             CountryCodes:
-  #               - AU
-  #               - PH
-  #               - US
-  #               - CA
-  #               - GB
-  #         VisibilityConfig: 
-  #           CloudWatchMetricsEnabled: true
-  #           MetricName: !Join
-  #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
-  #               - webacl-allowed-countries
-  #           SampledRequestsEnabled: true
-  #         Priority: 1
-  # mainBackendWebAclAssociations:
-  #   Type: AWS::WAFv2::WebACLAssociation
-  #   Properties: 
-  #     ResourceArn: !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/${mainBackendApi}/stages/${Stage}"
-  #     WebACLArn: !GetAtt mainBackendWebAcl.Arn
+      Domain:
+        DomainName: !Sub
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - apiSubDomain
+        CertificateArn: !Ref customDomainCert
+        Route53:
+          HostedZoneId: Z0450109WGLMG82TZFOY
+  mainBackendWebAcl:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      DefaultAction:
+        Block: {}
+      Scope: REGIONAL
+      VisibilityConfig: 
+        CloudWatchMetricsEnabled: true
+        MetricName: !Join
+          - "-"
+          - - "proj-pronetplat-aa-users"
+            - !Ref Stage
+            - webacl
+        SampledRequestsEnabled: true
+      Rules:
+        - Action:
+            Block: {}
+          Name: RateLimit
+          Statement:
+            RateBasedStatement:
+              AggregateKeyType: IP
+              Limit: 1500
+          VisibilityConfig: 
+            CloudWatchMetricsEnabled: true
+            MetricName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+                - webacl-rate-limit
+            SampledRequestsEnabled: true
+          Priority: 0
+        - Action:
+            Allow: {}
+          Name: AllowedCounties
+          Statement:
+            GeoMatchStatement:
+              CountryCodes:
+                - AU
+                - PH
+                - US
+                - CA
+                - GB
+          VisibilityConfig: 
+            CloudWatchMetricsEnabled: true
+            MetricName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+                - webacl-allowed-countries
+            SampledRequestsEnabled: true
+          Priority: 1
+  mainBackendWebAclAssociations:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties: 
+      ResourceArn: !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/${mainBackendApi}/stages/${Stage}"
+      WebACLArn: !GetAtt mainBackendWebAcl.Arn
   ######
   # S3 buckets
   #
