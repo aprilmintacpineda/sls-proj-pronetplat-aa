@@ -8,8 +8,6 @@ const {
 } = require('dependencies/utils/faunadb');
 
 async function handler (webSocketEvent) {
-  console.log(webSocketEvent);
-
   const { action, data } = JSON.parse(webSocketEvent.body);
 
   if (action !== 'sendmessage' && data.action !== 'sendChatMessage')
@@ -23,31 +21,46 @@ async function handler (webSocketEvent) {
   } = webSocketEvent.requestContext;
   const faunadb = initClient();
 
-  const chatMessage = await faunadb.query(
-    query.Let(
-      {
-        senderId: query.Select(
-          ['ref', 'id'],
-          getById(
-            'users',
-            query.Select(
-              ['data', 'userId'],
-              getByIndex(
-                'userWebSocketConnectionByConnectionId',
-                connectionId
+  let chatMessage;
+
+  try {
+    chatMessage = await faunadb.query(
+      query.Let(
+        {
+          senderId: query.Select(
+            ['ref', 'id'],
+            getById(
+              'users',
+              query.Select(
+                ['data', 'userId'],
+                getByIndex(
+                  'userWebSocketConnectionByConnectionId',
+                  connectionId
+                )
               )
             )
           )
+        },
+        query.If(
+          // @todo should not be able to send message if not in contact
+          query.Equals(query.Var('senderId'), recipientId),
+          query.Abort('cannotSendToSelf'),
+          create('chatMessages', {
+            senderId: query.Var('senderId'),
+            recipientId,
+            messageBody
+          })
         )
-      },
-      // @TODO should not be able to send chat message to self
-      create('chatMessages', {
-        senderId: query.Var('senderId'),
-        recipientId,
-        messageBody
-      })
-    )
-  );
+      )
+    );
+  } catch (error) {
+    console.log(error);
+
+    if (error.description === 'cannotSendToSelf')
+      return { statusCode: 400 };
+
+    return { statusCode: 500 };
+  }
 
   // @TODO send push notification to user if no active sockets
 
