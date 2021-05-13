@@ -15,7 +15,7 @@ Mappings:
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSubDomain: "apiv1"
-      webSocketSubDomain: "websocketdev"
+      webSocketSubDomain: "websocket"
       reservedConcurrentExecutions: 10
 
 Parameters:
