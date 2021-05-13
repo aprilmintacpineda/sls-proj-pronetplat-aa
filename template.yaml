@@ -898,7 +898,6 @@ Resources:
           - "proj-pronetplat-aa-webSocket"
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
-      DisableExecuteApiEndpoint: true
   webSocketDeployment:
     Type: AWS::ApiGatewayV2::Deployment
     DependsOn:
