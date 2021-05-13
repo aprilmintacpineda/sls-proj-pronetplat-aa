@@ -933,7 +933,6 @@ Resources:
           - webSocketSubDomain
       DomainNameConfigurations:
         - CertificateArn: !Ref webSocketCustomDomainCert
-          SecurityPolicy: TLS_1_0
   webSocketCustomDomainMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
     Properties:
