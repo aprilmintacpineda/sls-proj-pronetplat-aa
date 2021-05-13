@@ -37,7 +37,7 @@ module.exports.handler = async ({
 
     result.data.forEach(([expiresAt, deviceToken]) => {
       if (!hasTimePassed(expiresAt)) tokens.push(deviceToken);
-    }, []);
+    });
 
     after = result.after;
   } while (after);
