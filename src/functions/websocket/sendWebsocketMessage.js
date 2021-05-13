@@ -8,11 +8,12 @@ const {
 } = require('dependencies/utils/faunadb');
 
 async function handler (webSocketEvent) {
-  const body = JSON.parse(webSocketEvent.body);
+  const { action, data } = JSON.parse(webSocketEvent.body);
 
-  console.log(body);
+  if (action !== 'sendmessage' && data.action !== 'sendChatMessage')
+    return { statusCode: 403 };
 
-  const { recipientId, messageBody, messageId } = body;
+  const { recipientId, messageBody, messageId } = data;
   const {
     connectionId,
     domainName,
@@ -68,7 +69,7 @@ async function handler (webSocketEvent) {
     endpoint: `${domainName}/${stage}`
   });
 
-  chatMessage = JSON.stringify({
+  const body = JSON.stringify({
     payload: {
       id: chatMessage.ref.id,
       ...chatMessage.data
@@ -79,11 +80,11 @@ async function handler (webSocketEvent) {
   await apiGateway
     .postToConnection({
       ConnectionId: connectionId,
-      Data: chatMessage
+      Data: body
     })
     .promise();
 
-  return { statusCode: 200, body: chatMessage };
+  return { statusCode: 200, body };
 }
 
 module.exports.handler = handler;
