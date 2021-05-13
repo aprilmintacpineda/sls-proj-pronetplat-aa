@@ -9,11 +9,13 @@ Mappings:
   stageVars:
     dev:
       appPackageName: com.aprmp.projpronetplataa.dev
-      apiSuDomain: "apiv1dev"
+      apiSubDomain: "apiv1dev"
+      webSocketSubDomain: "websocketdev"
       reservedConcurrentExecutions: ""
     prod:
       appPackageName: com.aprmp.projpronetplataa
-      apiSuDomain: "apiv1"
+      apiSubDomain: "apiv1"
+      webSocketSubDomain: "websocketdev"
       reservedConcurrentExecutions: 10
 
 Parameters:
@@ -910,6 +912,15 @@ Resources:
       StageName: !Ref Stage
       DeploymentId: !Ref webSocketDeployment
       ApiId: !Ref webSocket
+  webSocketCustomDomain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
@@ -1206,11 +1217,11 @@ Resources:
     Type: AWS::CertificateManager::Certificate
     Properties:
       DomainName: !Sub
-        - ${apiSuDomain}.entrepic.com
-        - apiSuDomain: !FindInMap
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
           - stageVars
           - !Ref Stage
-          - apiSuDomain
+          - apiSubDomain
       ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
@@ -1220,11 +1231,11 @@ Resources:
         Type: REGIONAL
       Domain:
         DomainName: !Sub
-            - ${apiSuDomain}.entrepic.com
-            - apiSuDomain: !FindInMap
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
               - stageVars
               - !Ref Stage
-              - apiSuDomain
+              - apiSubDomain
         CertificateArn: !Ref customDomainCert
         Route53:
           HostedZoneId: Z0450109WGLMG82TZFOY
