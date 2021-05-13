@@ -935,6 +935,17 @@ Resources:
       DomainNameConfigurations:
         - CertificateArn: !Ref webSocketCustomDomainCert
           CertificateName: webSocketCustomDomainCert
+  webSocketCustomDomainMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId: !Ref webSocket
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      Stage: !Ref Stage
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
