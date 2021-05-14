@@ -47,8 +47,6 @@ module.exports.handler = async ({
     data: authUser
   });
 
-  authUserData.isTestAccount = String(authUserData.isTestAccount);
-
   await Promise.all([
     sendPushNotification({
       tokens,
