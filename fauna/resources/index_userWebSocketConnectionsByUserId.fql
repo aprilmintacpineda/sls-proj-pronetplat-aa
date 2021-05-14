@@ -3,5 +3,10 @@ CreateIndex({
   source: Collection('userWebSocketConnections'),
   terms: [
     { field: ['data',  'userId'] }
+  ],
+  values: [
+    { field: ['data', 'connectionId'] },
+    { field: ['data', 'userId'] },
+    { field: ['data', 'ref'] }
   ]
 })
