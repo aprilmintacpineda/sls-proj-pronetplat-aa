@@ -968,9 +968,7 @@ Resources:
       ApiId: !Ref webSocket
       Description: Connect Integration
       IntegrationType: AWS_PROXY
-      IntegrationUri: 
-        Fn::Sub:
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
   connectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -1006,9 +1004,7 @@ Resources:
       ApiId: !Ref webSocket
       Description: Disconnect Integration
       IntegrationType: AWS_PROXY
-      IntegrationUri: 
-        Fn::Sub:
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
   disconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -1061,9 +1057,7 @@ Resources:
       ApiId: !Ref webSocket
       Description: Send Integration
       IntegrationType: AWS_PROXY
-      IntegrationUri: 
-        Fn::Sub:
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendChatMessage.Arn}/invocations
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendChatMessage.Arn}/invocations
   ######
   # Invokable functions
   #
