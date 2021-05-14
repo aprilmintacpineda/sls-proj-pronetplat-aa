@@ -902,7 +902,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Deployment
     DependsOn:
       - connectRoute
-      - sendWebsocketMessageRoute
+      - sendChatMessageRoute
       - disconnectRoute
     Properties:
       ApiId: !Ref webSocket
@@ -1020,10 +1020,10 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref disconnectInteg
-  sendWebsocketMessage:
+  sendChatMessage:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: sendWebsocketMessage.handler
+      Handler: sendChatMessage.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
         - Statement:
@@ -1035,27 +1035,27 @@ Resources:
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-sendWebsocketMessage"
-  sendWebsocketMessagePermission:
+          - "proj-pronetplat-aa-sendChatMessage"
+  sendChatMessagePermission:
     Type: AWS::Lambda::Permission
     DependsOn:
       - webSocket
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref sendWebsocketMessage
+      FunctionName: !Ref sendChatMessage
       Principal: apigateway.amazonaws.com
-  sendWebsocketMessageRoute:
+  sendChatMessageRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
-      RouteKey: sendmessage
+      RouteKey: sendChatMessage
       AuthorizationType: NONE
-      OperationName: sendWebsocketMessageRoute
+      OperationName: sendChatMessageRoute
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref sendWebsocketMessageInteg
-  sendWebsocketMessageInteg:
+          - !Ref sendChatMessageInteg
+  sendChatMessageInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
@@ -1063,7 +1063,7 @@ Resources:
       IntegrationType: AWS_PROXY
       IntegrationUri: 
         Fn::Sub:
-            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendWebsocketMessage.Arn}/invocations
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendChatMessage.Arn}/invocations
   ######
   # Invokable functions
   #

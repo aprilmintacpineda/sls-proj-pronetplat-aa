@@ -8,12 +8,10 @@ const {
 } = require('dependencies/utils/faunadb');
 
 async function handler (webSocketEvent) {
-  const { action, data } = JSON.parse(webSocketEvent.body);
+  const { recipientId, messageBody, messageId } = JSON.parse(
+    webSocketEvent.body
+  );
 
-  if (action !== 'sendmessage' && data.action !== 'sendChatMessage')
-    return { statusCode: 403 };
-
-  const { recipientId, messageBody, messageId } = data;
   const {
     connectionId,
     domainName,
