@@ -886,6 +886,26 @@ Resources:
             Path: /change-username
             RestApiId:
               Ref: mainBackendApi
+  conversations:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: conversations.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-conversations"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /chat-conversations
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Websocket
   #
@@ -902,7 +922,6 @@ Resources:
     Type: AWS::ApiGatewayV2::Deployment
     DependsOn:
       - connectRoute
-      - sendChatMessageRoute
       - disconnectRoute
     Properties:
       ApiId: !Ref webSocket
@@ -1016,48 +1035,6 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref disconnectInteg
-  sendChatMessage:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: sendChatMessage.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - Statement:
-          - Effect: Allow
-            Action:
-            - 'execute-api:ManageConnections'
-            Resource:
-            - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${webSocket}/*'
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-sendChatMessage"
-  sendChatMessagePermission:
-    Type: AWS::Lambda::Permission
-    DependsOn:
-      - webSocket
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref sendChatMessage
-      Principal: apigateway.amazonaws.com
-  sendChatMessageRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: sendChatMessage
-      AuthorizationType: NONE
-      OperationName: sendChatMessageRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref sendChatMessageInteg
-  sendChatMessageInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: Send Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${sendChatMessage.Arn}/invocations
   ######
   # Invokable functions
   #
