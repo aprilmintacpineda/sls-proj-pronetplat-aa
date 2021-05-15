@@ -886,26 +886,6 @@ Resources:
             Path: /change-username
             RestApiId:
               Ref: mainBackendApi
-  conversations:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: conversations.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-conversations"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /chat-conversations
-            RestApiId:
-              Ref: mainBackendApi
   ######
   # Websocket
   #
