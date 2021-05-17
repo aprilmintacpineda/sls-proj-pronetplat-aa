@@ -48,7 +48,10 @@ async function handler ({
     })
   ]);
 
-  return chatMessage;
+  return {
+    statusCode: 200,
+    body: JSON.stringify(chatMessage)
+  };
 }
 
 module.exports.handler = httpGuard({
