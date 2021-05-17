@@ -47,14 +47,16 @@ module.exports.handler = async ({
     data: authUser
   });
 
+  const fullname = getFullName(authUser);
+
   await Promise.all([
     sendFirebaseNotification({
       tokens,
       notification: {
-        title,
+        title: title.replace(/{fullname}/gim, fullname),
         imageUrl: authUser.profilePicture,
         body: body
-          .replace(/{fullname}/gim, getFullName(authUser))
+          .replace(/{fullname}/gim, fullname)
           .replace(
             /{genderPossessiveLowercase}/gim,
             getPersonalPronoun(authUser).possessive.lowercase
