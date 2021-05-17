@@ -90,6 +90,10 @@ Globals:
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-incrementNumTimesOpened"
+        fn_sendWebSocketEvent: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-sendWebSocketEvent"
   Api:
     OpenApiVersion: 3.0.1
 
