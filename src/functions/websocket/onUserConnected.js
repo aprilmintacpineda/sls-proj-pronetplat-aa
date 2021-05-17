@@ -1,4 +1,8 @@
-const { initClient, create } = require('dependencies/utils/faunadb');
+const { query } = require('faunadb');
+const {
+  initClient,
+  createOrUpdate
+} = require('dependencies/utils/faunadb');
 const jwt = require('dependencies/utils/jwt');
 
 async function handler (webSocketEvent) {
@@ -17,9 +21,21 @@ async function handler (webSocketEvent) {
   const faunadb = initClient();
 
   await faunadb.query(
-    create('userWebSocketConnections', {
-      userId: authUser.id,
-      connectionId: webSocketEvent.requestContext.connectionId
+    createOrUpdate({
+      index: 'userWebSocketConnectionsByUserIdConnectionId',
+      args: [
+        authUser.id,
+        webSocketEvent.requestContext.connectionId
+      ],
+      collection: 'userWebSocketConnections',
+      data: {
+        userId: authUser.id,
+        connectionId: webSocketEvent.requestContext.connectionId,
+        expiresAt: query.Format(
+          '%t',
+          query.TimeAdd(query.Now(), 7, 'days')
+        )
+      }
     })
   );
 
