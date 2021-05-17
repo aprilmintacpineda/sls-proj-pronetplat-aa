@@ -33,7 +33,7 @@ async function handler ({
     sendPushNotification({
       userId: contactId,
       title: 'New message from {fullname}',
-      body: '{fullname} send you a new chat message',
+      body: '{fullname} sent you a new chat message',
       authUser,
       data: {
         type: 'chatMessage',
