@@ -44,7 +44,7 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
     }
 
     if (formValidator) {
-      const formBody = JSON.parse(httpEvent.body);
+      const formBody = JSON.parse(httpEvent.body) || {};
 
       if (formValidator(formBody)) {
         console.log('invalid form body');
