@@ -10,9 +10,9 @@ const {
 const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ params: { nextToken }, authUser }) {
-  const client = initClient();
+  const faunadb = initClient();
 
-  const result = await client.query(
+  const result = await faunadb.query(
     query.Map(
       query.Paginate(
         query.Match(query.Index('contactsByUserId'), authUser.id),

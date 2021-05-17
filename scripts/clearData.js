@@ -1,11 +1,11 @@
 const { query, Client } = require('faunadb');
 
 async function main () {
-  const client = new Client({
+  const faunadb = new Client({
     secret: process.env.secret
   });
 
-  await client.query(
+  await faunadb.query(
     query.Map(
       query.Paginate(query.Collections()),
       query.Lambda(

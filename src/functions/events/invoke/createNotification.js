@@ -51,8 +51,8 @@ module.exports.handler = async ({
     );
   }
 
-  const client = initClient();
-  await client.query(query.Do(...queries));
+  const faunadb = initClient();
+  await faunadb.query(query.Do(...queries));
 
   await sendPushNotification({
     userId,

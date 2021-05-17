@@ -886,6 +886,28 @@ Resources:
             Path: /change-username
             RestApiId:
               Ref: mainBackendApi
+  sendChatMessage:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: sendChatMessage.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendWebSocketEvent
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-sendChatMessage"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /send-chat-message/{contactId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Websocket
   #
@@ -1137,6 +1159,18 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-incrementNumTimesOpened"
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+  sendWebSocketEvent:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: sendWebSocketEvent.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-sendWebSocketEvent"
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
   ######

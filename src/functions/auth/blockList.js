@@ -6,9 +6,9 @@ const {
 } = require('dependencies/utils/httpGuard');
 
 async function handler ({ authUser, params: { nextToken } }) {
-  const client = initClient();
+  const faunadb = initClient();
 
-  const result = await client.query(
+  const result = await faunadb.query(
     query.Map(
       query.Paginate(
         query.Join(

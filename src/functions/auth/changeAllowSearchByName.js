@@ -14,9 +14,9 @@ async function handler ({
   authUser,
   formBody: { allowSearchByName }
 }) {
-  const client = initClient();
+  const faunadb = initClient();
 
-  const user = await client.query(
+  const user = await faunadb.query(
     updateById('users', authUser.id, { allowSearchByName })
   );
 

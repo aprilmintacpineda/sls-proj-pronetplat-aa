@@ -5,9 +5,9 @@ module.exports.handler = async ({
   authUser,
   unseenNotificationIds
 }) => {
-  const client = initClient();
+  const faunadb = initClient();
 
-  await client.query(
+  await faunadb.query(
     unseenNotificationIds
       .map(notificationId => {
         return update(

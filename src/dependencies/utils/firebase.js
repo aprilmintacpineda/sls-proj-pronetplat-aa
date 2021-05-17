@@ -31,7 +31,7 @@ async function isValidDeviceToken (deviceToken) {
 
 module.exports.isValidDeviceToken = isValidDeviceToken;
 
-module.exports.sendPushNotification = ({
+module.exports.sendFirebaseNotification = ({
   tokens,
   notification,
   data

@@ -89,8 +89,6 @@ async function handler ({ authUser, params: { contactId } }) {
     title: 'Contact request',
     body:
       '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
-    type: 'contactRequest',
-    category: 'contactRequest',
     authUser,
     data: {
       type: 'contactRequest',

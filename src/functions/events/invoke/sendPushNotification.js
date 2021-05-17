@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 const { initClient } = require('dependencies/utils/faunadb');
 const {
-  sendPushNotification
+  sendFirebaseNotification
 } = require('dependencies/utils/firebase');
 const { hasTimePassed } = require('dependencies/utils/helpers');
 const {
@@ -17,12 +17,12 @@ module.exports.handler = async ({
   body,
   title
 }) => {
-  const client = initClient();
+  const faunadb = initClient();
   let after = null;
   const tokens = [];
 
   do {
-    const result = await client.query(
+    const result = await faunadb.query(
       query.Paginate(
         query.Match(
           query.Index('registeredDevicesByUserId'),
@@ -48,7 +48,7 @@ module.exports.handler = async ({
   });
 
   await Promise.all([
-    sendPushNotification({
+    sendFirebaseNotification({
       tokens,
       notification: {
         title,

@@ -19,45 +19,44 @@ export function hasCompletePersonalInfo (user) {
   );
 }
 
-export function getPublicUserData (user) {
+export function getPublicUserData ({ ref, data }) {
   return {
-    id: user.ref.id,
-    firstName: user.data.firstName,
-    middleName: user.data.middleName || '',
-    surname: user.data.surname,
-    profilePicture: user.data.profilePicture,
-    gender: user.data.gender,
-    bio: user.data.bio || '',
-    company: user.data.company || '',
-    jobTitle: user.data.jobTitle,
-    isTestAccount: user.data.isTestAccount
+    id: ref.id,
+    firstName: data.firstName,
+    middleName: data.middleName || '',
+    surname: data.surname,
+    profilePicture: data.profilePicture,
+    gender: data.gender,
+    bio: data.bio || '',
+    company: data.company || '',
+    jobTitle: data.jobTitle,
+    isTestAccount: data.isTestAccount
   };
 }
 
-export function getUserData (user) {
+export function getUserData ({ ref, data }) {
   return {
-    id: user.ref.id,
-    email: user.data.email,
-    firstName: user.data.firstName,
-    middleName: user.data.middleName,
-    surname: user.data.surname,
-    gender: user.data.gender,
-    bio: user.data.bio,
-    jobTitle: user.data.jobTitle,
-    profilePicture: user.data.profilePicture,
-    company: user.data.company,
-    notificationsCount: user.data.notificationsCount,
-    receivedContactRequestsCount:
-      user.data.receivedContactRequestsCount,
-    emailCodeCanSendAt: user.data.emailCodeCanSendAt,
-    emailConfirmCodeExpiresAt: user.data.emailConfirmCodeExpiresAt,
-    emailVerifiedAt: user.data.emailVerifiedAt,
-    lastLoginAt: user.data.lastLoginAt,
-    createdAt: user.data.createdAt,
-    isTestAccount: user.data.isTestAccount,
-    allowSearchByName: user.data.allowSearchByName,
-    allowSearchByUsername: user.data.allowSearchByUsername,
-    username: user.data.username
+    id: ref.id,
+    email: data.email,
+    firstName: data.firstName,
+    middleName: data.middleName,
+    surname: data.surname,
+    gender: data.gender,
+    bio: data.bio,
+    jobTitle: data.jobTitle,
+    profilePicture: data.profilePicture,
+    company: data.company,
+    notificationsCount: data.notificationsCount,
+    receivedContactRequestsCount: data.receivedContactRequestsCount,
+    emailCodeCanSendAt: data.emailCodeCanSendAt,
+    emailConfirmCodeExpiresAt: data.emailConfirmCodeExpiresAt,
+    emailVerifiedAt: data.emailVerifiedAt,
+    lastLoginAt: data.lastLoginAt,
+    createdAt: data.createdAt,
+    isTestAccount: data.isTestAccount,
+    allowSearchByName: data.allowSearchByName,
+    allowSearchByUsername: data.allowSearchByUsername,
+    username: data.username
   };
 }
 
