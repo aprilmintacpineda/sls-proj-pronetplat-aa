@@ -1,4 +1,4 @@
-const AWS = require('aws');
+const AWS = require('aws-sdk');
 const { query } = require('faunadb');
 const { initClient } = require('dependencies/utils/faunadb');
 const { getPublicUserData } = require('dependencies/utils/users');
