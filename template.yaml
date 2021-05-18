@@ -113,7 +113,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-register"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref createAccount
       Events:
@@ -135,7 +134,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-forgotPasswordSend"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendForgotPasswordCode
       Events:
@@ -157,7 +155,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-forgotPasswordConfirm"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref confirmForgotPassword
       Events:
@@ -178,8 +175,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-login"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -198,8 +193,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-reAuth"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -222,7 +215,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-verifyEmail"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
       Events:
@@ -244,7 +236,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-resendEmailCode"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
       Events:
@@ -265,8 +256,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-changePersonalInfo"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -286,7 +275,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-changeProfilePicture"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - Statement:
           - Action:
               - s3:PutObject
@@ -320,7 +308,6 @@ Resources:
     Properties:
       Handler: addToContact.handler
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendPushNotification
       FunctionName: !Join
@@ -345,8 +332,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-receivedContactRequests"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -365,8 +350,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sentContactRequests"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -386,7 +369,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-notifications"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref markNotificationsAsSeen
       Events:
@@ -408,7 +390,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-acceptContactRequest"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
       Events:
@@ -430,7 +411,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-declineContactRequest"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
       Events:
@@ -451,8 +431,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-validateAuth"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -471,8 +449,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-setupComplete"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -491,8 +467,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendFollowUp"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
       Events:
@@ -514,7 +488,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-cancelContactRequest"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref createNotification
       Events:
@@ -535,8 +508,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-disconnect"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -555,8 +526,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-blockUser"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -575,8 +544,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-unblockUser"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -595,8 +562,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-myContacts"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -616,7 +581,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-contactProfile"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref incrementNumTimesOpened
       Events:
@@ -637,8 +601,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-blockList"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       Events:
         ApiEvent:
           Type: Api
@@ -658,7 +620,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-changePassword"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
       Events:
@@ -676,7 +637,6 @@ Resources:
     Properties:
       Handler: logout.handler
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref forceExpireDeviceToken
       FunctionName: !Join
@@ -697,8 +657,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: contactDetailAdd.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -717,8 +675,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: contactDetailsList.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -737,8 +693,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: contactDetailDelete.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -757,8 +711,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: contactDetailUpdate.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -777,8 +729,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: markAsCloseFriend.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -797,8 +747,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: unmarkAsCloseFriend.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -817,8 +765,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: searchUsers.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -837,8 +783,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: changeAllowSearchByName.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -857,8 +801,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: changeAllowSearchByUsername.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -877,8 +819,6 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: changeUsername.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -898,7 +838,6 @@ Resources:
     Properties:
       Handler: sendChatMessage.handler
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendWebSocketEvent
         - LambdaInvokePolicy:
@@ -976,8 +915,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: onUserConnected.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -1012,8 +949,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: onUserDisconnected.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -1054,7 +989,6 @@ Resources:
     Properties:
       Handler: createNotification.handler
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendPushNotification
       FunctionName: !Join
@@ -1071,8 +1005,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendPushNotification"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
   forceExpireDeviceToken:
     Type: AWS::Serverless::Function
     Metadata:
@@ -1083,8 +1015,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-forceExpireDeviceToken"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
   sendEmail:
     Type: AWS::Serverless::Function
     Metadata:
@@ -1096,7 +1026,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-sendEmail"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - Statement:
           - Action:
               - ses:SendEmail
@@ -1113,7 +1042,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-sendForgotPasswordCode"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
   confirmForgotPassword:
@@ -1127,7 +1055,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-confirmForgotPassword"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
   createAccount:
@@ -1141,7 +1068,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-createAccount"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
             FunctionName: !Ref sendEmail
   markNotificationsAsSeen:
@@ -1154,8 +1080,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-markNotificationsAsSeen"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
   incrementNumTimesOpened:
     Type: AWS::Serverless::Function
     Metadata:
@@ -1166,8 +1090,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-incrementNumTimesOpened"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
   sendWebSocketEvent:
     Type: AWS::Serverless::Function
     Metadata:
@@ -1178,8 +1100,6 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-sendWebSocketEvent"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
   ######
   # S3 Events
   #
@@ -1195,7 +1115,6 @@ Resources:
         - - !Ref Stage
           - "proj-pronetplat-aa-profilePictureUploaded"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - S3CrudPolicy:
             BucketName: !Join
               - "-"
