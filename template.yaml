@@ -1179,6 +1179,11 @@ Resources:
           - "proj-pronetplat-aa-sendWebSocketEvent"
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
+        - Statement:
+          - Action:
+              - execute-api:ManageConnections
+            Effect: Allow
+            Resource: "*"
   ######
   # S3 Events
   #
