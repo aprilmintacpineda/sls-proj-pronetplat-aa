@@ -44,6 +44,7 @@ Globals:
     Runtime: nodejs12.x
     Environment:
       Variables:
+        testEnv: "test only"
         stage: !Ref Stage
         faunadbSecret: !Ref FaunadbSecret
         appPackageName: !FindInMap
