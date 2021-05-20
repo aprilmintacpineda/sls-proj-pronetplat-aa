@@ -914,6 +914,30 @@ Resources:
             Path: /send-chat-message/{contactId}
             RestApiId:
               Ref: mainBackendApi
+  chatMessages:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: chatMessages.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendWebSocketEvent
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendPushNotification
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-chatMessages"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /chat-messages/{contactId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Websocket
   #
