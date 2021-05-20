@@ -4,5 +4,9 @@ CreateIndex({
   terms: [
     { field: ['data', 'senderId'] },
     { field: ['data', 'recipientId'] }
+  ],
+  values: [
+    { field: ['data', 'createdAt'], reverse: true },
+    { field: ['ref'] }
   ]
 })

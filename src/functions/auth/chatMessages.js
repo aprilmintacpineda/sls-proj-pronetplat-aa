@@ -36,7 +36,7 @@ async function handler ({
             : []
         }
       ),
-      query.Lambda(['ref'], query.Get(query.Var('ref')))
+      query.Lambda(['createdAt', 'ref'], query.Get(query.Var('ref')))
     )
   );
 
