@@ -934,7 +934,7 @@ Resources:
         ApiEvent:
           Type: Api
           Properties:
-            Method: post
+            Method: get
             Path: /chat-messages/{contactId}
             RestApiId:
               Ref: mainBackendApi
