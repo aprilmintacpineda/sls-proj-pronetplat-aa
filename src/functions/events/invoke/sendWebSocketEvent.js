@@ -38,20 +38,24 @@ module.exports.handler = async ({
   });
 
   await Promise.all(
-    connectionIds.map(([connectionId]) =>
-      apiGateway
-        .postToConnection({
-          ConnectionId: connectionId,
-          Data: JSON.stringify({
-            user: getPublicUserData({
-              ref: { id: authUser.id },
-              data: authUser
-            }),
-            event,
-            payload
+    connectionIds.map(async ([connectionId]) => {
+      try {
+        await apiGateway
+          .postToConnection({
+            ConnectionId: connectionId,
+            Data: JSON.stringify({
+              user: getPublicUserData({
+                ref: { id: authUser.id },
+                data: authUser
+              }),
+              event,
+              payload
+            })
           })
-        })
-        .promise()
-    )
+          .promise();
+      } catch (error) {
+        console.log(connectionId, error);
+      }
+    })
   );
 };
