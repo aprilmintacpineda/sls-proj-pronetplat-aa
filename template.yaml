@@ -43,7 +43,7 @@ Globals:
     Timeout: 30
     Runtime: nodejs12.x
     EventInvokeConfig:
-      MaximumRetryAttempts: 1
+      MaximumRetryAttempts: 0
     Environment:
       Variables:
         stage: !Ref Stage
