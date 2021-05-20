@@ -54,7 +54,8 @@
     "build": "rm -rf build Makefile && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn build-package-json && yarn copy-files",
     "clearData": "node scripts/clearData.js",
     "prepare": "husky install",
-    "migration:generate": "FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna-schema-migrate generate"
+    "migration:generate": "FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna-schema-migrate generate",
+    "migration:rollback": "FAUNA_LEGACY=true FAUNA_NOPRINT=true FAUNA_ADMIN_KEY=fnAEJqAojMACCvB2Yu_hVixDpF1df5WYLYxXThkh yarn fauna-schema-migrate rollback"
   },
   "lint-staged": {
     "*.js": [
