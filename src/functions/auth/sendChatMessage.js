@@ -41,7 +41,7 @@ async function handler ({
       }
     }),
     sendWebSocketEvent({
-      event: 'chatMessage',
+      event: 'chatMessageReceived',
       authUser,
       userId: contactId,
       payload: chatMessage
