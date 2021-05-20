@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk');
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
 const { getPublicUserData } = require('dependencies/utils/users');
 
 module.exports.handler = async ({
@@ -54,7 +57,16 @@ module.exports.handler = async ({
           })
           .promise();
       } catch (error) {
-        console.log(connectionId, error);
+        console.log(error);
+
+        if (error.statusCode === 410) {
+          await faunadb.query(
+            hardDeleteByIndex(
+              'userWebSocketConnectionByConnectionId',
+              connectionId
+            )
+          );
+        }
       }
     })
   );
