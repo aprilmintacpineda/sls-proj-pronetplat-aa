@@ -20,7 +20,7 @@ async function handler ({
 
   const faunadb = initClient();
 
-  const chatMessage = await faunadb.query(
+  let chatMessage = await faunadb.query(
     // @todo should not be able to send message if not previously contacted
     create('chatMessages', {
       senderId: authUser.id,
@@ -28,6 +28,11 @@ async function handler ({
       messageBody: formBody.messageBody
     })
   );
+
+  chatMessage = {
+    id: chatMessage.ref.id,
+    ...chatMessage.data
+  };
 
   await Promise.all([
     sendPushNotification({
