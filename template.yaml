@@ -42,6 +42,8 @@ Globals:
       - reservedConcurrentExecutions
     Timeout: 30
     Runtime: nodejs12.x
+    EventInvokeConfig:
+      MaximumRetryAttempts: 1
     Environment:
       Variables:
         stage: !Ref Stage
