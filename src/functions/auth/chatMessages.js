@@ -52,7 +52,7 @@ async function handler ({
   };
 }
 
-module.exports = httpGuard({
+module.exports.handler = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete]
 });
