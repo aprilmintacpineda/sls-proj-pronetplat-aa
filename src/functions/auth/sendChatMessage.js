@@ -1,4 +1,9 @@
-const { initClient, create } = require('dependencies/utils/faunadb');
+const { query } = require('faunadb');
+const {
+  initClient,
+  create,
+  exists
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -20,39 +25,51 @@ async function handler ({
 
   const faunadb = initClient();
 
-  let chatMessage = await faunadb.query(
-    // @todo should not be able to send message if not in contact
-    create('chatMessages', {
-      senderId: authUser.id,
-      recipientId: contactId,
-      messageBody: formBody.messageBody
-    })
-  );
+  try {
+    let chatMessage = await faunadb.query(
+      query.If(
+        exists('contactByOwnerContact', contactId, authUser.id),
+        create('chatMessages', {
+          senderId: authUser.id,
+          recipientId: contactId,
+          messageBody: formBody.messageBody
+        }),
+        query.Abort('NotInContact')
+      )
+    );
 
-  chatMessage = {
-    id: chatMessage.ref.id,
-    ...chatMessage.data
-  };
+    chatMessage = {
+      id: chatMessage.ref.id,
+      ...chatMessage.data
+    };
 
-  await Promise.all([
-    sendPushNotification({
-      userId: contactId,
-      title: 'New message from {fullname}',
-      body: '{fullname} sent you a message',
-      authUser
-    }),
-    sendWebSocketEvent({
-      type: 'chatMessageReceived',
-      authUser,
-      userId: contactId,
-      payload: chatMessage
-    })
-  ]);
+    await Promise.all([
+      sendPushNotification({
+        userId: contactId,
+        title: 'New message from {fullname}',
+        body: '{fullname} sent you a message',
+        authUser
+      }),
+      sendWebSocketEvent({
+        type: 'chatMessageReceived',
+        authUser,
+        userId: contactId,
+        payload: chatMessage
+      })
+    ]);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(chatMessage)
-  };
+    return {
+      statusCode: 200,
+      body: JSON.stringify(chatMessage)
+    };
+  } catch (error) {
+    console.log('error', error);
+
+    if (error.description === 'NotInContact')
+      return { statusCode: 404 };
+
+    return { statusCode: 400 };
+  }
 }
 
 module.exports.handler = httpGuard({
