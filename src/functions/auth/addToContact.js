@@ -17,6 +17,9 @@ const {
 const {
   sendPushNotification
 } = require('dependencies/utils/notifications');
+const {
+  sendWebSocketEvent
+} = require('dependencies/utils/webSocket');
 
 async function handler ({ authUser, params: { contactId } }) {
   if (contactId === authUser.id) {
@@ -84,17 +87,19 @@ async function handler ({ authUser, params: { contactId } }) {
     return { statusCode: 400 };
   }
 
-  await sendPushNotification({
-    userId: contactId,
-    title: 'Contact request',
-    body:
-      '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
-    authUser,
-    data: {
+  await Promise.all([
+    sendPushNotification({
+      userId: contactId,
+      title: 'Contact request',
+      body: '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
+      authUser
+    }),
+    sendWebSocketEvent({
       type: 'contactRequest',
-      category: 'contactRequest'
-    }
-  });
+      authUser,
+      userId: contactId
+    })
+  ]);
 
   return { statusCode: 200 };
 }

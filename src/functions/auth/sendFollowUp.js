@@ -61,8 +61,7 @@ async function handler ({ authUser, params: { contactId } }) {
     userId: contactId,
     type: 'contactRequestFollowUp',
     body: '{fullname} followed up with his contact request',
-    title: 'Contact request',
-    category: 'notification'
+    title: 'Contact request'
   });
 
   return {

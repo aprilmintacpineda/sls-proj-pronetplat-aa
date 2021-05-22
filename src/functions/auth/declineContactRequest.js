@@ -31,8 +31,7 @@ async function handler ({ authUser, params: { senderId } }) {
     userId: senderId,
     type: 'contactRequestDeclined',
     body: '{fullname} has declined your contact request.',
-    title: 'Contact request declined',
-    category: 'notification'
+    title: 'Contact request declined'
   });
 
   return { statusCode: 200 };

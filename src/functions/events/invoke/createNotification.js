@@ -3,15 +3,20 @@ const { initClient, create } = require('dependencies/utils/faunadb');
 const {
   sendPushNotification
 } = require('dependencies/utils/notifications');
+const {
+  getFullName,
+  getPersonalPronoun
+} = require('dependencies/utils/users');
+const {
+  sendWebSocketEvent
+} = require('dependencies/utils/webSocket');
 
 module.exports.handler = async ({
   authUser,
   userId,
   body,
   type,
-  title,
-  category,
-  data
+  title
 }) => {
   const queries = [
     create('notifications', {
@@ -54,15 +59,30 @@ module.exports.handler = async ({
   const faunadb = initClient();
   await faunadb.query(query.Do(...queries));
 
-  await sendPushNotification({
-    userId,
-    authUser,
-    title,
-    body,
-    data: {
-      ...data,
-      type,
-      category
-    }
-  });
+  const fullname = getFullName(authUser);
+
+  await Promise.all([
+    sendPushNotification({
+      userId,
+      authUser,
+      title,
+      body
+    }),
+    sendWebSocketEvent({
+      type: 'notification',
+      trigger: type,
+      incrementNotificationsCount: true,
+      authUser,
+      userId,
+      payload: {
+        title: title.replace(/{fullname}/gim, fullname),
+        body: body
+          .replace(/{fullname}/gim, fullname)
+          .replace(
+            /{genderPossessiveLowercase}/gim,
+            getPersonalPronoun(authUser).possessive.lowercase
+          )
+      }
+    })
+  ]);
 };

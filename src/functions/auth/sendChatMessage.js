@@ -21,7 +21,7 @@ async function handler ({
   const faunadb = initClient();
 
   let chatMessage = await faunadb.query(
-    // @todo should not be able to send message if not previously contacted
+    // @todo should not be able to send message if not in contact
     create('chatMessages', {
       senderId: authUser.id,
       recipientId: contactId,
@@ -39,14 +39,10 @@ async function handler ({
       userId: contactId,
       title: 'New message from {fullname}',
       body: '{fullname} sent you a message',
-      authUser,
-      data: {
-        type: 'chatMessage',
-        category: 'chatMessage'
-      }
+      authUser
     }),
     sendWebSocketEvent({
-      event: 'chatMessageReceived',
+      type: 'chatMessageReceived',
       authUser,
       userId: contactId,
       payload: chatMessage

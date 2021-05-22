@@ -24,10 +24,8 @@ async function handler ({ authUser, params: { contactId } }) {
   await createNotification({
     authUser,
     userId: contactId,
-    body:
-      '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
+    body: '{fullname} has cancelled {genderPossessiveLowercase} contact request.',
     title: 'Contact request cancelled',
-    category: 'notification',
     type: 'contactRequestCancelled'
   });
 

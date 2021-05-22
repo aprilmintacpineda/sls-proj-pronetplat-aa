@@ -1,11 +1,13 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  hardDeleteByIndex
+} = require('dependencies/utils/faunadb');
 const {
   sendFirebaseNotification
 } = require('dependencies/utils/firebase');
 const { hasTimePassed } = require('dependencies/utils/helpers');
 const {
-  getPublicUserData,
   getFullName,
   getPersonalPronoun
 } = require('dependencies/utils/users');
@@ -13,13 +15,13 @@ const {
 module.exports.handler = async ({
   authUser,
   userId,
-  data,
   body,
   title
 }) => {
   const faunadb = initClient();
   let after = null;
-  const tokens = [];
+  const activeTokens = [];
+  const expiredTokens = [];
 
   do {
     const result = await faunadb.query(
@@ -36,22 +38,18 @@ module.exports.handler = async ({
     );
 
     result.data.forEach(([expiresAt, deviceToken]) => {
-      if (!hasTimePassed(expiresAt)) tokens.push(deviceToken);
+      if (!hasTimePassed(expiresAt)) activeTokens.push(deviceToken);
+      else expiredTokens.push(deviceToken);
     });
 
     after = result.after;
   } while (after);
 
-  const authUserData = getPublicUserData({
-    ref: { id: authUser.id },
-    data: authUser
-  });
-
   const fullname = getFullName(authUser);
 
   await Promise.all([
     sendFirebaseNotification({
-      tokens,
+      tokens: activeTokens,
       notification: {
         title: title.replace(/{fullname}/gim, fullname),
         imageUrl: authUser.profilePicture,
@@ -61,11 +59,18 @@ module.exports.handler = async ({
             /{genderPossessiveLowercase}/gim,
             getPersonalPronoun(authUser).possessive.lowercase
           )
-      },
-      data: {
-        ...data,
-        ...authUserData
       }
-    })
+    }),
+    expiredTokens.length
+      ? faunadb.query(
+          expiredTokens.map(token =>
+            hardDeleteByIndex(
+              'registeredDeviceByUserIdDeviceToken',
+              userId,
+              token
+            )
+          )
+        )
+      : null
   ]);
 };
