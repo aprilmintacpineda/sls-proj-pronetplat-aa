@@ -10,7 +10,7 @@ async function handler ({
   params: { contactId, nextToken }
 }) {
   const faunadb = initClient();
-  const [nextToken1, nextToken2] = nextToken.split('_');
+  const nextTokenParts = nextToken?.split('_') || null;
 
   const result = await faunadb.query(
     query.Map(
@@ -29,15 +29,15 @@ async function handler ({
         ),
         {
           size: 20,
-          after: nextToken
+          after: nextTokenParts
             ? [
                 query.Ref(
                   query.Collection('contactChatMessages'),
-                  nextToken1
+                  nextTokenParts[0]
                 ),
                 query.Ref(
                   query.Collection('contactChatMessages'),
-                  nextToken2
+                  nextTokenParts[1]
                 )
               ]
             : []
