@@ -40,6 +40,8 @@ async function handler ({
     )
   );
 
+  console.log(result);
+
   return {
     statusCode: 200,
     body: JSON.stringify({
