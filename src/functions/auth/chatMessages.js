@@ -10,7 +10,9 @@ async function handler ({
   params: { contactId, nextToken }
 }) {
   const faunadb = initClient();
-  const nextTokenParts = nextToken?.split('_') || null;
+  const nextTokenParts = nextToken
+    ? decodeURIComponent(nextToken).split('_')
+    : null;
 
   const result = await faunadb.query(
     query.Map(
@@ -31,7 +33,7 @@ async function handler ({
           size: 20,
           after: nextTokenParts
             ? [
-                new Date(nextTokenParts[0]).toISOString(),
+                nextTokenParts[0],
                 query.Ref(
                   query.Collection('chatMessages'),
                   nextTokenParts[1]
@@ -56,9 +58,7 @@ async function handler ({
         id: document.ref.id
       })),
       nextToken: result.after
-        ? `${new Date(result.after[0]).getTime()}_${
-            result.after[1].id
-          }_${result.after[2].id}`
+        ? `${result.after[0]}_${result.after[1].id}_${result.after[2].id}`
         : null
     })
   };
