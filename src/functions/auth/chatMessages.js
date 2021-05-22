@@ -57,7 +57,7 @@ async function handler ({
         id: document.ref.id
       })),
       nextToken: result.after
-        ? `${result.after[1].id})_${result.after[2].id}`
+        ? `${result.after[1].id}_${result.after[2].id}`
         : null
     })
   };
