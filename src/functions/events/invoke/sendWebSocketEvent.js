@@ -6,6 +6,11 @@ const {
 } = require('dependencies/utils/faunadb');
 const { getPublicUserData } = require('dependencies/utils/users');
 
+const apiGateway = new AWS.ApiGatewayManagementApi({
+  apiVersion: '2018-11-29',
+  endpoint: '9ij2l2b278.execute-api.ap-southeast-1.amazonaws.com/dev'
+});
+
 module.exports.handler = async ({
   authUser,
   userId,
@@ -34,11 +39,7 @@ module.exports.handler = async ({
     after = result.after;
   } while (after);
 
-  const apiGateway = new AWS.ApiGatewayManagementApi({
-    apiVersion: '2018-11-29',
-    endpoint:
-      '9ij2l2b278.execute-api.ap-southeast-1.amazonaws.com/dev'
-  });
+  const staleConnectionIds = [];
 
   await Promise.all(
     connectionIds.map(async ([connectionId]) => {
@@ -59,15 +60,21 @@ module.exports.handler = async ({
       } catch (error) {
         console.log(error);
 
-        if (error.statusCode === 410) {
-          await faunadb.query(
-            hardDeleteByIndex(
-              'userWebSocketConnectionByConnectionId',
-              connectionId
-            )
-          );
-        }
+        if (error.statusCode === 410)
+          staleConnectionIds.push(connectionId);
       }
     })
   );
+
+  // delete all stale connections in one go
+  if (staleConnectionIds.length) {
+    await faunadb.query(
+      staleConnectionIds.map(connectionId =>
+        hardDeleteByIndex(
+          'userWebSocketConnectionByConnectionId',
+          connectionId
+        )
+      )
+    );
+  }
 };
