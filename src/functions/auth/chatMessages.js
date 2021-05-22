@@ -32,11 +32,11 @@ async function handler ({
           after: nextTokenParts
             ? [
                 query.Ref(
-                  query.Collection('contactChatMessages'),
+                  query.Collection('chatMessages'),
                   nextTokenParts[0]
                 ),
                 query.Ref(
-                  query.Collection('contactChatMessages'),
+                  query.Collection('chatMessages'),
                   nextTokenParts[1]
                 )
               ]
@@ -46,8 +46,6 @@ async function handler ({
       query.Lambda(['createdAt', 'ref'], query.Get(query.Var('ref')))
     )
   );
-
-  console.log(result);
 
   return {
     statusCode: 200,
