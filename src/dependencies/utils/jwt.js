@@ -18,12 +18,11 @@ module.exports.sign = async data => {
   return signAsync({ data }, secret, signConfig);
 };
 
-module.exports.verify = async token => {
-  return verifyAsync(token, secret, verifyConfig);
-};
-
-module.exports.decode = async token => {
-  return verifyAsync(token, secret, { maxAge: '999999d' });
+module.exports.verify = async (token, ignoreExpiration = false) => {
+  return verifyAsync(token, secret, {
+    ...verifyConfig,
+    ignoreExpiration
+  });
 };
 
 module.exports.TokenExpiredError = jwt.TokenExpiredError;
