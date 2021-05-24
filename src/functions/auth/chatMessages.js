@@ -71,6 +71,7 @@ async function handler ({
       functionName: process.env.fn_markChatMessagesAsSeen,
       payload: {
         authUser,
+        contactId,
         unseenChatMessageIds
       }
     });
