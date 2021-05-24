@@ -30,4 +30,5 @@ module.exports.handler = async ({
   );
 
   await faunadb.query(query.Do(...queries));
+  // @todo send websocket event to userId about the chat messages that were marked as seen
 };
