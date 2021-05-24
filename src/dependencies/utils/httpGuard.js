@@ -68,17 +68,12 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
       }
 
       try {
-        let authUser = null;
-        let verifiedJwt = null;
+        const verifiedJwt = await jwt.verify(
+          authorization,
+          guards.includes(guardTypes.softAuth)
+        );
 
-        if (guards.includes(guardTypes.auth)) {
-          verifiedJwt = await jwt.verify(authorization);
-        } else {
-          // must be softAuth
-          verifiedJwt = await jwt.decode(authorization);
-        }
-
-        authUser = verifiedJwt.data;
+        const authUser = verifiedJwt.data;
 
         if (
           guards.includes(guardTypes.setupComplete) &&
