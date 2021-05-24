@@ -8,8 +8,6 @@ const signConfig = {
   algorithm: 'HS512'
 };
 
-const verifyConfig = { maxAge: validityPeriod };
-
 const signAsync = promisify(jwt.sign);
 const verifyAsync = promisify(jwt.verify);
 const secret = '__JWTSecret__';
@@ -18,12 +16,11 @@ module.exports.sign = async data => {
   return signAsync({ data }, secret, signConfig);
 };
 
-module.exports.verify = async token => {
-  return verifyAsync(token, secret, verifyConfig);
-};
-
-module.exports.decode = async token => {
-  return verifyAsync(token, secret, { maxAge: '999999d' });
+module.exports.verify = async (token, ignoreExpiration = false) => {
+  return verifyAsync(token, secret, {
+    maxAge: !ignoreExpiration ? validityPeriod : null,
+    ignoreExpiration
+  });
 };
 
 module.exports.TokenExpiredError = jwt.TokenExpiredError;
