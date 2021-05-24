@@ -71,7 +71,7 @@ module.exports.httpGuard =
       try {
         const verifiedJwt = await jwt.verify(
           authorization,
-          !guards.includes(guardTypes.softAuth)
+          guards.includes(guardTypes.softAuth)
         );
 
         const authUser = verifiedJwt.data;
