@@ -60,7 +60,10 @@ async function handler ({
       id: document.ref.id
     };
 
-    if (!chatMessage.seenAt)
+    if (
+      chatMessage.recipientId === authUser.id &&
+      !chatMessage.seenAt
+    )
       unseenChatMessageIds.push(chatMessage.id);
 
     data.push(chatMessage);
