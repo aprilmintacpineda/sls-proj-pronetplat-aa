@@ -33,20 +33,22 @@ async function handler ({ params: { nextToken }, authUser }) {
     )
   );
 
+  console.log(result);
+
   const unseenNotificationIds = [];
   const data = [];
 
-  result.data.forEach(({ notification, user }) => {
-    const notificationId = notification.ref.id;
+  result.data.forEach(document => {
+    const notification = {
+      ...document.notification.data,
+      id: document.notification.ref.id,
+      user: getPublicUserData(document.user)
+    };
 
     if (!notification.seenAt)
-      unseenNotificationIds.push(notificationId);
+      unseenNotificationIds.push(notification.id);
 
-    data.push({
-      ...notification.data,
-      id: notificationId,
-      user: getPublicUserData(user)
-    });
+    data.push(notification);
   });
 
   if (unseenNotificationIds.length) {
