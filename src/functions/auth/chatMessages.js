@@ -52,10 +52,18 @@ async function handler ({
   );
 
   const unseenChatMessageIds = [];
+  const data = [];
 
-  result.data.forEach(chatMessage => {
+  result.data.forEach(document => {
+    const chatMessage = {
+      ...document.data,
+      id: document.ref.id
+    };
+
     if (!chatMessage.seenAt)
       unseenChatMessageIds.push(chatMessage.id);
+
+    data.push(chatMessage);
   });
 
   if (unseenChatMessageIds.length) {
@@ -71,10 +79,7 @@ async function handler ({
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(document => ({
-        ...document.data,
-        id: document.ref.id
-      })),
+      data,
       nextToken: result.after
         ? `${result.after[0]}_${result.after[1].id}_${result.after[2].id}`
         : null
