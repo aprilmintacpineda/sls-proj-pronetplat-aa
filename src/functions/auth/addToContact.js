@@ -8,7 +8,7 @@ const {
   getById,
   selectData,
   ifCompatibleTestAccountTypes,
-  exists
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -49,7 +49,7 @@ async function handler ({ authUser, params: { contactId } }) {
             query.If(
               hasCompletedSetupQuery(query.Var('contact')),
               query.If(
-                exists(
+                existsByIndex(
                   'contactByOwnerContact',
                   authUser.id,
                   contactId

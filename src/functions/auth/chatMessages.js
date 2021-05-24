@@ -4,6 +4,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const { invokeEvent } = require('dependencies/utils/lambda');
 
 async function handler ({
   authUser,
@@ -49,6 +50,23 @@ async function handler ({
       query.Lambda(['createdAt', 'ref'], query.Get(query.Var('ref')))
     )
   );
+
+  const unseenChatMessageIds = [];
+
+  result.data.forEach(chatMessage => {
+    if (!chatMessage.seenAt)
+      unseenChatMessageIds.push(chatMessage.id);
+  });
+
+  if (unseenChatMessageIds.length) {
+    await invokeEvent({
+      functionName: process.env.fn_markChatMessagesAsSeen,
+      payload: {
+        authUser,
+        unseenChatMessageIds
+      }
+    });
+  }
 
   return {
     statusCode: 200,

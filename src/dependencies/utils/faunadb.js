@@ -1,6 +1,21 @@
 const { query, Client } = require('faunadb');
 const { sanitizeFormBody } = require('./helpers');
 
+function existsByIndex (index, ...args) {
+  return query.Exists(query.Match(query.Index(index), ...args));
+}
+
+module.exports.existsByIndex = existsByIndex;
+
+function updateByIndex ({ index, args, data }) {
+  return update(
+    query.Select(['ref'], getByIndex(index, ...args)),
+    data
+  );
+}
+
+module.exports.updateByIndex = updateByIndex;
+
 function update (ref, data) {
   return query.Update(ref, {
     data: {
@@ -23,12 +38,6 @@ function create (collection, data) {
 }
 
 module.exports.create = create;
-
-function exists (index, ...args) {
-  return query.Exists(query.Match(query.Index(index), ...args));
-}
-
-module.exports.exists = exists;
 
 function selectRef (from) {
   return query.Select(['ref'], from);
@@ -66,13 +75,6 @@ module.exports.updateById = (collection, id, data) => {
   return update(query.Ref(query.Collection(collection), id), data);
 };
 
-module.exports.updateByIndex = ({ index, args, data }) => {
-  return update(
-    query.Select(['ref'], getByIndex(index, ...args)),
-    data
-  );
-};
-
 module.exports.createOrUpdate = ({
   index,
   args,
@@ -95,7 +97,7 @@ module.exports.createIfNotExists = ({
   collection
 }) => {
   return query.If(
-    exists(index, ...args),
+    existsByIndex(index, ...args),
     null,
     create(collection, data)
   );
@@ -132,19 +134,27 @@ module.exports.hasCompletedSetupQuery = userData => {
 
 module.exports.isOnBlockList = (userId, contactId) => {
   return query.Or(
-    exists('userBlockingsByBlockerIdUserId', userId, contactId),
-    exists('userBlockingsByBlockerIdUserId', contactId, userId)
+    existsByIndex(
+      'userBlockingsByBlockerIdUserId',
+      userId,
+      contactId
+    ),
+    existsByIndex(
+      'userBlockingsByBlockerIdUserId',
+      contactId,
+      userId
+    )
   );
 };
 
 module.exports.hasPendingContactRequest = (authUser, contactId) => {
   return query.Or(
-    exists(
+    existsByIndex(
       'contactRequestBySenderIdRecipientId',
       contactId,
       authUser.id
     ),
-    exists(
+    existsByIndex(
       'contactRequestBySenderIdRecipientId',
       authUser.id,
       contactId

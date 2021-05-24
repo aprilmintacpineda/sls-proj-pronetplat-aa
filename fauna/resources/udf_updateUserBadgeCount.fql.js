@@ -1,38 +1,42 @@
-const { query: q } = require('faunadb');
+const { query } = require('faunadb');
 
 const badgesOperations = {
   notificationsCount: {
-    notificationsCount: q.Max(
+    notificationsCount: query.Max(
       0,
-      q.Add(
-        q.Select(
+      query.Add(
+        query.Select(
           ['data', 'notificationsCount'],
-          q.Var('document'),
+          query.Var('document'),
           0
         ),
-        q.Var('amount')
+        query.Var('amount')
       )
     )
   },
   receivedContactRequestsCount: {
-    receivedContactRequestsCount: q.Max(
+    receivedContactRequestsCount: query.Max(
       0,
-      q.Add(
-        q.Select(
+      query.Add(
+        query.Select(
           ['data', 'receivedContactRequestsCount'],
-          q.Var('document'),
+          query.Var('document'),
           0
         ),
-        q.Var('amount')
+        query.Var('amount')
       )
     )
   },
   contactsCount: {
-    contactsCount: q.Max(
+    contactsCount: query.Max(
       0,
-      q.Add(
-        q.Select(['data', 'contactsCount'], q.Var('document'), 0),
-        q.Var('amount')
+      query.Add(
+        query.Select(
+          ['data', 'contactsCount'],
+          query.Var('document'),
+          0
+        ),
+        query.Var('amount')
       )
     )
   }
@@ -40,38 +44,52 @@ const badgesOperations = {
 
 const allowedBadges = Object.keys(badgesOperations);
 
-const invalidTargetBadgeErrorNMsg = q.Concat(
+const invalidTargetBadgeErrorNMsg = query.Concat(
   [
     'Invalid argument `targetBadge`:',
-    q.Concat(['`', q.Var('targetBadge'), '`'], ''),
+    query.Concat(['`', query.Var('targetBadge'), '`'], ''),
     'provided,',
-    q.Concat(
-      ['expecting `', q.Concat(allowedBadges, '` | `'), '`'],
+    query.Concat(
+      ['expecting `', query.Concat(allowedBadges, '` | `'), '`'],
       ''
     )
   ],
   ' '
 );
 
-export default q.CreateFunction({
+export default query.CreateFunction({
   name: 'updateUserBadgeCount',
-  body: q.Query(
-    q.Lambda(
+  body: query.Query(
+    query.Lambda(
       ['userId', 'targetBadge', 'amount'],
-      q.If(
-        q.Not(q.ContainsValue(q.Var('targetBadge'), allowedBadges)),
-        q.Abort(invalidTargetBadgeErrorNMsg),
-        q.Let(
+      query.If(
+        query.Not(
+          query.ContainsValue(
+            query.Var('targetBadge'),
+            allowedBadges
+          )
+        ),
+        query.Abort(invalidTargetBadgeErrorNMsg),
+        query.Let(
           {
-            ref: q.Ref(q.Collection('users'), q.Var('userId')),
-            document: q.Get(q.Var('ref'))
-          },
-          q.If(
-            q.Not(
-              q.ContainsPath(['data', 'closedAt'], q.Var('document'))
+            ref: query.Ref(
+              query.Collection('users'),
+              query.Var('userId')
             ),
-            q.Update(q.Var('ref'), {
-              data: q.Select(q.Var('targetBadge'), badgesOperations)
+            document: query.Get(query.Var('ref'))
+          },
+          query.If(
+            query.Not(
+              query.ContainsPath(
+                ['data', 'closedAt'],
+                query.Var('document')
+              )
+            ),
+            query.Update(query.Var('ref'), {
+              data: query.Select(
+                query.Var('targetBadge'),
+                badgesOperations
+              )
             }),
             null
           )

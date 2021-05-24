@@ -7,7 +7,7 @@ const {
   getById,
   selectData,
   ifCompatibleTestAccountTypes,
-  exists,
+  existsByIndex,
   selectRef,
   getByIndex
 } = require('dependencies/utils/faunadb');
@@ -35,7 +35,7 @@ async function handler ({ authUser, params: { contactId } }) {
               query.Var('contact'),
               query.Do(
                 query.If(
-                  exists(
+                  existsByIndex(
                     'contactRequestBySenderIdRecipientId',
                     authUser.id,
                     contactId
@@ -60,7 +60,7 @@ async function handler ({ authUser, params: { contactId } }) {
                   null
                 ),
                 query.If(
-                  exists(
+                  existsByIndex(
                     'contactRequestBySenderIdRecipientId',
                     contactId,
                     authUser.id
@@ -89,7 +89,7 @@ async function handler ({ authUser, params: { contactId } }) {
                   userId: contactId
                 }),
                 query.If(
-                  exists(
+                  existsByIndex(
                     'contactByOwnerContact',
                     authUser.id,
                     contactId
@@ -114,7 +114,7 @@ async function handler ({ authUser, params: { contactId } }) {
                   null
                 ),
                 query.If(
-                  exists(
+                  existsByIndex(
                     'contactByOwnerContact',
                     contactId,
                     authUser.id

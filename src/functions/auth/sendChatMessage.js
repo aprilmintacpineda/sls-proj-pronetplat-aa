@@ -2,7 +2,7 @@ const { query } = require('faunadb');
 const {
   initClient,
   create,
-  exists
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -28,12 +28,25 @@ async function handler ({
   try {
     let chatMessage = await faunadb.query(
       query.If(
-        exists('contactByOwnerContact', contactId, authUser.id),
-        create('chatMessages', {
-          senderId: authUser.id,
-          recipientId: contactId,
-          messageBody: formBody.messageBody
-        }),
+        existsByIndex(
+          'contactByOwnerContact',
+          contactId,
+          authUser.id
+        ),
+        query.Do(
+          create('chatMessages', {
+            senderId: authUser.id,
+            recipientId: contactId,
+            messageBody: formBody.messageBody
+          }),
+          query.Call(
+            'updateContactBadgeCount',
+            authUser.id,
+            contactId,
+            'unreadChatMessagesFromContact',
+            1
+          )
+        ),
         query.Abort('NotInContact')
       )
     );
