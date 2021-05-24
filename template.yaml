@@ -932,6 +932,8 @@ Resources:
             FunctionName: !Ref sendWebSocketEvent
         - LambdaInvokePolicy:
             FunctionName: !Ref sendPushNotification
+        - LambdaInvokePolicy:
+            FunctionName: !Ref markChatMessagesAsSeen
       FunctionName: !Join
         - '-'
         - - !Ref Stage
