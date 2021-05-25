@@ -6,7 +6,7 @@ const {
 
 module.exports.handler = async ({
   authUser,
-  userId,
+  contactId,
   unseenChatMessageIds
 }) => {
   const faunadb = initClient();
@@ -26,7 +26,7 @@ module.exports.handler = async ({
     query.Call(
       'updateContactBadgeCount',
       authUser.id,
-      userId,
+      contactId,
       'unreadChatMessagesFromContact',
       -unseenChatMessageIds.length
     )
@@ -41,10 +41,12 @@ module.exports.handler = async ({
     )
   );
 
+  console.log(JSON.stringify({ unseenChatMessageIds, seenAt }));
+
   await sendWebSocketEvent({
     type: 'chatMessageSeen',
     authUser,
-    userId,
+    userId: contactId,
     payload: {
       unseenChatMessageIds,
       seenAt

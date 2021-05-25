@@ -17,6 +17,13 @@ module.exports.handler = async ({
   type,
   payload
 }) => {
+  console.log(
+    JSON.stringify({
+      type,
+      payload
+    })
+  );
+
   const faunadb = initClient();
   let after = null;
   let connectionIds = [];
