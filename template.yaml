@@ -968,6 +968,28 @@ Resources:
             Path: /chat-message-seen/{chatMessageId}
             RestApiId:
               Ref: mainBackendApi
+  chatTypingStatus:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: chatTypingStatus.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendWebSocketEvent
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-chatTypingStatus"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: post
+            Path: /chat-typing-status/{contactId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Websocket
   #
