@@ -946,6 +946,28 @@ Resources:
             Path: /chat-messages/{contactId}
             RestApiId:
               Ref: mainBackendApi
+  markChatMessageAsSeen:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: markChatMessageAsSeen.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+        - LambdaInvokePolicy:
+            FunctionName: !Ref sendWebSocketEvent
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-markChatMessageAsSeen"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: get
+            Path: /chat-message-seen/{chatMessageId}
+            RestApiId:
+              Ref: mainBackendApi
   ######
   # Websocket
   #
