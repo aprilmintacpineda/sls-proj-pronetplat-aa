@@ -1,5 +1,8 @@
 const { query } = require('faunadb');
 const { initClient, update } = require('dependencies/utils/faunadb');
+// const {
+//   sendWebSocketEvent
+// } = require('dependencies/utils/webSocket');
 
 module.exports.handler = async ({
   authUser,
@@ -29,6 +32,14 @@ module.exports.handler = async ({
     )
   );
 
-  await faunadb.query(query.Do(...queries));
-  // @todo send websocket event to userId about the chat messages that were marked as seen
+  const seenChatMessages = await faunadb.query(query.Do(...queries));
+
+  console.log(seenChatMessages);
+
+  // await sendWebSocketEvent({
+  //   type: 'chatMessageSeen',
+  //   authUser,
+  //   userId,
+  //   payload: { unseenChatMessageIds }
+  // });
 };
