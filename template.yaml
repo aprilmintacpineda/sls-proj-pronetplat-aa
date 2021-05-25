@@ -946,12 +946,12 @@ Resources:
             Path: /chat-messages/{contactId}
             RestApiId:
               Ref: mainBackendApi
-  markChatMessageAsSeen:
+  chatMessageSeen:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: markChatMessageAsSeen.handler
+      Handler: chatMessageSeen.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
@@ -959,7 +959,7 @@ Resources:
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-markChatMessageAsSeen"
+          - "proj-pronetplat-aa-chatMessageSeen"
       Events:
         ApiEvent:
           Type: Api

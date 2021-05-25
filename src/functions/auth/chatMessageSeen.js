@@ -48,22 +48,17 @@ async function handler ({ authUser, params: { chatMessageId } }) {
     return { statusCode: 500 };
   }
 
-  chatMessage = {
-    ...chatMessage.data,
-    id: chatMessage.ref.id
-  };
-
   await sendWebSocketEvent({
     type: 'chatMessageSeen',
     authUser,
-    userId: chatMessage.senderId,
+    userId: chatMessage.data.senderId,
     payload: {
-      unseenChatMessageIds: [chatMessage.id],
-      seenAt: chatMessage.seenAt
+      unseenChatMessageIds: [chatMessage.ref.id],
+      seenAt: chatMessage.data.seenAt
     }
   });
 
-  return chatMessage;
+  return { statusCode: 200 };
 }
 
 module.exports.handler = httpGuard({
