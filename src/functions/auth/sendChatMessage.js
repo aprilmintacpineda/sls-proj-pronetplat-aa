@@ -33,18 +33,23 @@ async function handler ({
           contactId,
           authUser.id
         ),
-        query.Do(
-          create('chatMessages', {
-            senderId: authUser.id,
-            recipientId: contactId,
-            messageBody: formBody.messageBody
-          }),
-          query.Call(
-            'updateContactBadgeCount',
-            authUser.id,
-            contactId,
-            'unreadChatMessagesFromContact',
-            1
+        query.Let(
+          {
+            chatMessage: create('chatMessages', {
+              senderId: authUser.id,
+              recipientId: contactId,
+              messageBody: formBody.messageBody
+            })
+          },
+          query.Do(
+            query.Call(
+              'updateContactBadgeCount',
+              authUser.id,
+              contactId,
+              'unreadChatMessagesFromContact',
+              1
+            ),
+            query.Var('chatMessage')
           )
         ),
         query.Abort('NotInContact')
