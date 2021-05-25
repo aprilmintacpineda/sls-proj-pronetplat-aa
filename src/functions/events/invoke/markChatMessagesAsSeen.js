@@ -1,8 +1,8 @@
 const { query } = require('faunadb');
 const { initClient, update } = require('dependencies/utils/faunadb');
-// const {
-//   sendWebSocketEvent
-// } = require('dependencies/utils/webSocket');
+const {
+  sendWebSocketEvent
+} = require('dependencies/utils/webSocket');
 
 module.exports.handler = async ({
   authUser,
@@ -16,7 +16,7 @@ module.exports.handler = async ({
     return update(
       query.Ref(query.Collection('chatMessages'), chatMessageId),
       {
-        seenAt: query.Format('%t', query.Now())
+        seenAt: query.Var('seenAt')
       }
     );
   });
@@ -32,14 +32,22 @@ module.exports.handler = async ({
     )
   );
 
-  const seenChatMessages = await faunadb.query(query.Do(...queries));
+  const seenAt = await faunadb.query(
+    query.Let(
+      {
+        seenAt: query.Format('%t', query.Now())
+      },
+      query.Do(query.Do(...queries), query.Var('seenAt'))
+    )
+  );
 
-  console.log(seenChatMessages);
-
-  // await sendWebSocketEvent({
-  //   type: 'chatMessageSeen',
-  //   authUser,
-  //   userId,
-  //   payload: { unseenChatMessageIds }
-  // });
+  await sendWebSocketEvent({
+    type: 'chatMessageSeen',
+    authUser,
+    userId,
+    payload: {
+      unseenChatMessageIds,
+      seenAt
+    }
+  });
 };

@@ -58,7 +58,8 @@ async function handler ({ authUser, params: { chatMessageId } }) {
     authUser,
     userId: chatMessage.senderId,
     payload: {
-      unseenChatMessageIds: [chatMessage]
+      unseenChatMessageIds: [chatMessage.id],
+      seenAt: chatMessage.seenAt
     }
   });
 
