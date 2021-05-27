@@ -9,8 +9,8 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "date-fns": "^2.21.3",
-    "faunadb": "git://github.com/aprilmintacpineda/faunadb-js.git#master",
-    "firebase-admin": "^9.8.0",
+    "faunadb": "^4.3.0",
+    "firebase-admin": "^9.9.0",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^8.5.1",
     "mime-types": "^2.1.30"
@@ -22,7 +22,7 @@
     "@babel/preset-env": "^7.14.2",
     "@babel/runtime": "^7.14.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^26.6.3",
+    "babel-jest": "^27.0.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-search-and-replace": "^1.1.0",
     "babel-preset-minify": "^0.5.1",
@@ -35,11 +35,11 @@
     "faker": "^5.5.3",
     "fauna-schema-migrate": "^2.1.2",
     "husky": "6.0.0",
-    "jest": "^26.6.1",
+    "jest": "^27.0.1",
     "lint-staged": "^11.0.0",
     "prettier": "^2.3.0",
     "recursive-readdir-async": "^1.1.8",
-    "ts-node": "^9.1.1"
+    "ts-node": "^10.0.0"
   },
   "scripts": {
     "test": "jest",
