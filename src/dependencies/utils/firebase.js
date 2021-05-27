@@ -33,20 +33,12 @@ module.exports.isValidDeviceToken = isValidDeviceToken;
 
 module.exports.sendFirebaseNotification = ({
   tokens,
-  notification,
-  data
+  notification
 }) => {
   if (tokens && tokens.length) {
     return firebaseAdmin.messaging().sendToDevice(
       tokens,
-      {
-        notification,
-        data: data
-          ? {
-              stringified: JSON.stringify(data)
-            }
-          : undefined
-      },
+      { notification },
       {
         priority: 'high'
         // ,restrictedPackageName: process.env.appPackageName
