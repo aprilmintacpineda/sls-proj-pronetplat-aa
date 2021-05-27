@@ -11,12 +11,10 @@ Mappings:
       appPackageName: com.aprmp.projpronetplataa.dev
       apiSubDomain: "apiv1dev"
       webSocketSubDomain: "websocketdev"
-      reservedConcurrentExecutions: 1
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSubDomain: "apiv1"
       webSocketSubDomain: "websocketdev"
-      reservedConcurrentExecutions: 10
 
 Parameters:
   Stage:
@@ -36,10 +34,6 @@ Globals:
       - !Ref dependencies
       - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
     MemorySize: 1024
-    ReservedConcurrentExecutions: !FindInMap
-      - stageVars
-      - !Ref Stage
-      - reservedConcurrentExecutions
     Timeout: 30
     Runtime: nodejs12.x
     EventInvokeConfig:
