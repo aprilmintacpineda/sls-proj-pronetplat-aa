@@ -1144,7 +1144,7 @@ Resources:
       ApiId: !Ref webSocket
       RouteKey: sendmessage
       AuthorizationType: NONE
-      OperationName: sendMessageRoute
+      OperationName: SendMessageRoute
       Target: !Join
         - '/'
         - - 'integrations'
