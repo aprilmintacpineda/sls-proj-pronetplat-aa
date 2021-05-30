@@ -1113,6 +1113,42 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref disconnectInteg
+  onPing:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: onPing.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-onPing"
+  onPingPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - webSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref onPing
+      Principal: apigateway.amazonaws.com
+  pingInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onPing.Arn}/invocations
+  pingRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: ping
+      AuthorizationType: NONE
+      OperationName: pingRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref pingInteg
   ######
   # Invokable functions
   #
