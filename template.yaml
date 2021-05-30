@@ -1001,7 +1001,7 @@ Resources:
     DependsOn:
       - connectRoute
       - disconnectRoute
-      - sendMessageRoute
+      # - sendMessageRoute
     Properties:
       ApiId: !Ref webSocket
   webSocketStage:
@@ -1132,24 +1132,24 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref onSendMessage
       Principal: apigateway.amazonaws.com
-  sendMessageInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: send message Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
-  sendMessageRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: sendmessage
-      AuthorizationType: NONE
-      OperationName: SendMessageRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref sendMessageInteg
+  # sendMessageInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: send message Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
+  # sendMessageRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: sendmessage
+  #     AuthorizationType: NONE
+  #     OperationName: SendMessageRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref sendMessageInteg
   ######
   # Invokable functions
   #
