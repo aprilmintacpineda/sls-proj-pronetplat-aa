@@ -15,24 +15,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   const result = await faunadb.query(
     query.Map(
       query.Paginate(
-        query.Join(
-          query.Match(query.Index('contactsByUserId'), authUser.id),
-          query.Lambda(
-            [
-              'unreadChatMessagesFromContact',
-              'numTimesOpened',
-              'contactId',
-              'ref'
-            ],
-            query.Match(
-              query.Index('userRefSortedByFullName'),
-              query.Ref(
-                query.Collection('users'),
-                query.Var('contactId')
-              )
-            )
-          )
-        ),
+        query.Match(query.Index('contactsByUserId'), authUser.id),
         {
           size: 20,
           after: nextToken
