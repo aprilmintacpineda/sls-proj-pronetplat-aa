@@ -49,7 +49,7 @@ async function handler ({ params: { nextToken }, authUser }) {
     )
   );
 
-  console.log(result);
+  console.log(JSON.stringify(result, null, 2));
 
   return {
     statusCode: 200,
