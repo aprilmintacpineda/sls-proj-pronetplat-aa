@@ -987,61 +987,61 @@ Resources:
   ######
   # Websocket
   #
-  # webSocket:
-  #   Type: AWS::ApiGatewayV2::Api
-  #   Properties:
-  #     Name: !Join
-  #       - '-'
-  #       - - !Ref Stage
-  #         - "proj-pronetplat-aa-webSocket"
-  #     ProtocolType: WEBSOCKET
-  #     RouteSelectionExpression: "$request.body.action"
-  # webSocketDeployment:
-  #   Type: AWS::ApiGatewayV2::Deployment
-  #   DependsOn:
-  #     - connectRoute
-  #     - disconnectRoute
-  #     - sendMessageRoute
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  # webSocketStage:
-  #   Type: AWS::ApiGatewayV2::Stage
-  #   Properties:
-  #     StageName: !Ref Stage
-  #     DeploymentId: !Ref webSocketDeployment
-  #     ApiId: !Ref webSocket
-  # webSocketCustomDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     ValidationMethod: DNS
-  # webSocketCustomDomain:
-  #   Type: AWS::ApiGatewayV2::DomainName
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     DomainNameConfigurations:
-  #       - CertificateArn: !Ref webSocketCustomDomainCert
-  # webSocketCustomDomainMapping:
-  #   Type: AWS::ApiGatewayV2::ApiMapping
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     Stage: !Ref Stage
+  webSocket:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-webSocket"
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+  webSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - connectRoute
+      - disconnectRoute
+      - sendMessageRoute
+    Properties:
+      ApiId: !Ref webSocket
+  webSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Ref Stage
+      DeploymentId: !Ref webSocketDeployment
+      ApiId: !Ref webSocket
+  webSocketCustomDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      ValidationMethod: DNS
+  webSocketCustomDomain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      DomainNameConfigurations:
+        - CertificateArn: !Ref webSocketCustomDomainCert
+  webSocketCustomDomainMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId: !Ref webSocket
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      Stage: !Ref Stage
   onUserConnected:
     Type: AWS::Serverless::Function
     Properties:
@@ -1052,32 +1052,32 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-onUserConnected"
-  # onUserConnectedPermission:
-  #   Type: AWS::Lambda::Permission
-  #   DependsOn:
-  #     - webSocket
-  #   Properties:
-  #     Action: lambda:InvokeFunction
-  #     FunctionName: !Ref onUserConnected
-  #     Principal: apigateway.amazonaws.com
-  # connectInteg:
-  #   Type: AWS::ApiGatewayV2::Integration
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     Description: Connect Integration
-  #     IntegrationType: AWS_PROXY
-  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
-  # connectRoute:
-  #   Type: AWS::ApiGatewayV2::Route
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     RouteKey: $connect
-  #     AuthorizationType: NONE
-  #     OperationName: ConnectRoute
-  #     Target: !Join
-  #       - '/'
-  #       - - 'integrations'
-  #         - !Ref connectInteg
+  onUserConnectedPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - webSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref onUserConnected
+      Principal: apigateway.amazonaws.com
+  connectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
+  connectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: ConnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref connectInteg
   onUserDisconnected:
     Type: AWS::Serverless::Function
     Properties:
@@ -1088,32 +1088,32 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-onUserDisconnected"
-  # onUserDisconnectedPermission:
-  #   Type: AWS::Lambda::Permission
-  #   DependsOn:
-  #     - webSocket
-  #   Properties:
-  #     Action: lambda:InvokeFunction
-  #     FunctionName: !Ref onUserDisconnected
-  #     Principal: apigateway.amazonaws.com
-  # disconnectInteg:
-  #   Type: AWS::ApiGatewayV2::Integration
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     Description: Disconnect Integration
-  #     IntegrationType: AWS_PROXY
-  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
-  # disconnectRoute:
-  #   Type: AWS::ApiGatewayV2::Route
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     RouteKey: $disconnect
-  #     AuthorizationType: NONE
-  #     OperationName: DisconnectRoute
-  #     Target: !Join
-  #       - '/'
-  #       - - 'integrations'
-  #         - !Ref disconnectInteg
+  onUserDisconnectedPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - webSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref onUserDisconnected
+      Principal: apigateway.amazonaws.com
+  disconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
+  disconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: DisconnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref disconnectInteg
   onSendMessage:
     Type: AWS::Serverless::Function
     Properties:
@@ -1124,32 +1124,32 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-onSendMessage"
-  # onSendMessagePermission:
-  #   Type: AWS::Lambda::Permission
-  #   DependsOn:
-  #     - webSocket
-  #   Properties:
-  #     Action: lambda:InvokeFunction
-  #     FunctionName: !Ref onSendMessage
-  #     Principal: apigateway.amazonaws.com
-  # sendMessageInteg:
-  #   Type: AWS::ApiGatewayV2::Integration
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     Description: send message Integration
-  #     IntegrationType: AWS_PROXY
-  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
-  # sendMessageRoute:
-  #   Type: AWS::ApiGatewayV2::Route
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     RouteKey: sendmessage
-  #     AuthorizationType: NONE
-  #     OperationName: SendMessageRoute
-  #     Target: !Join
-  #       - '/'
-  #       - - 'integrations'
-  #         - !Ref sendMessageInteg
+  onSendMessagePermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - webSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref onSendMessage
+      Principal: apigateway.amazonaws.com
+  sendMessageInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: send message Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
+  sendMessageRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: sendmessage
+      AuthorizationType: NONE
+      OperationName: SendMessageRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref sendMessageInteg
   ######
   # Invokable functions
   #
