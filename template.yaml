@@ -1113,42 +1113,42 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref disconnectInteg
-  onMessage:
+  onSendMessage:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: onMessage.handler
+      Handler: onSendMessage.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-onMessage"
-  onMessagePermission:
+          - "proj-pronetplat-aa-onSendMessage"
+  onSendMessagePermission:
     Type: AWS::Lambda::Permission
     DependsOn:
       - webSocket
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref onMessage
+      FunctionName: !Ref onSendMessage
       Principal: apigateway.amazonaws.com
-  messageInteg:
+  sendMessageInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
       Description: Connect Integration
       IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onMessage.Arn}/invocations
-  messageRoute:
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
+  sendMessageRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
-      RouteKey: message
+      RouteKey: sendmessage
       AuthorizationType: NONE
-      OperationName: messageRoute
+      OperationName: sendMessageRoute
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref messageInteg
+          - !Ref sendMessageInteg
   ######
   # Invokable functions
   #
