@@ -1,6 +1,5 @@
-async function handler (websocketEvent) {
-  console.log(websocketEvent);
-
+async function handler (webSocketEvent) {
+  console.log(webSocketEvent);
   return { statusCode: 200 };
 }
 
