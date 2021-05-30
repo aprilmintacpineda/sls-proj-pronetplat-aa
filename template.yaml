@@ -999,9 +999,7 @@ Resources:
   webSocketDeployment:
     Type: AWS::ApiGatewayV2::Deployment
     DependsOn:
-      - connectRoute
-      - disconnectRoute
-      - sendMessageRoute
+      - defaultWebSocketRoute
     Properties:
       ApiId: !Ref webSocket
   webSocketStage:
@@ -1042,44 +1040,44 @@ Resources:
   #         - !Ref Stage
   #         - webSocketSubDomain
   #     Stage: !Ref Stage
-  defaultWebsocketRoute:
+  defaultWebSocketHandler:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: defaultWebsocketRoute.handler
+      Handler: defaultWebSocketHandler.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-defaultWebsocketRoute"
-  defaultWebsocketRoutePermission:
+          - "proj-pronetplat-aa-defaultWebSocketHandler"
+  defaultWebSocketHandlerPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
       - webSocket
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref defaultWebsocketRoute
+      FunctionName: !Ref defaultWebSocketHandler
       Principal: apigateway.amazonaws.com
-  defaultWebsocketRouteInteg:
+  defaultWebSocketHandlerInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
       Description: Connect Integration
       IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebsocketRoute.Arn}/invocations
-  defaultRoute:
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebSocketHandler.Arn}/invocations
+  defaultWebSocketRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
       RouteKey: $default
       AuthorizationType: NONE
-      OperationName: defaultRoute
+      OperationName: defaultWebSocketRoute
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref defaultWebsocketRouteInteg
+          - !Ref defaultWebSocketHandlerInteg
   ######
   # Invokable functions
   #
