@@ -1136,7 +1136,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
-      Description: Connect Integration
+      Description: send message Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
   sendMessageRoute:
