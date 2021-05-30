@@ -38,7 +38,9 @@ async function handler ({ params: { nextToken }, authUser }) {
             data: query.Merge(
               query.Select(['data'], query.Var('user')),
               {
-                unreadChatMessages: 1
+                unreadChatMessages: query.Var(
+                  'unreadChatMessagesFromContact'
+                )
               }
             )
           })
@@ -52,7 +54,10 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(user => getPublicUserData(user)),
+      data: result.data.map(user => ({
+        ...getPublicUserData(user),
+        unreadChatMessages: user.unreadChatMessages
+      })),
       nextToken: result.after?.[0].id || null
     })
   };
