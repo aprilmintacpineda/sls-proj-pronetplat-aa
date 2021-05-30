@@ -30,11 +30,17 @@ async function handler ({ params: { nextToken }, authUser }) {
           'contactId',
           'ref'
         ],
-        query.Merge(getById('users', query.Var('contactId')), {
-          unreadChatMessages: query.Var(
-            'unreadChatMessagesFromContact'
-          )
-        })
+        query.Merge(
+          query.Select(
+            ['data'],
+            getById('users', query.Var('contactId'))
+          ),
+          {
+            unreadChatMessages: query.Var(
+              'unreadChatMessagesFromContact'
+            )
+          }
+        )
       )
     )
   );
@@ -42,7 +48,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(user => getPublicUserData(user)),
+      data: result.map(user => getPublicUserData(user)),
       nextToken: result.after?.[0].id || null
     })
   };
