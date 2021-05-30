@@ -15,7 +15,24 @@ async function handler ({ params: { nextToken }, authUser }) {
   const result = await faunadb.query(
     query.Map(
       query.Paginate(
-        query.Match(query.Index('contactsByUserId'), authUser.id),
+        query.Join(
+          query.Match(query.Index('contactsByUserId'), authUser.id),
+          query.Lambda(
+            [
+              'unreadChatMessagesFromContact',
+              'numTimesOpened',
+              'contactId',
+              'ref'
+            ],
+            query.Match(
+              query.Index('userRefSortedByFullName'),
+              query.Ref(
+                query.Collection('users'),
+                query.Var('contactId')
+              )
+            )
+          )
+        ),
         {
           size: 20,
           after: nextToken
@@ -24,8 +41,17 @@ async function handler ({ params: { nextToken }, authUser }) {
         }
       ),
       query.Lambda(
-        ['numTimesOpened', 'contactId', 'ref'],
-        getById('users', query.Var('contactId'))
+        [
+          'unreadChatMessagesFromContact',
+          'numTimesOpened',
+          'contactId',
+          'ref'
+        ],
+        query.Merge(getById('users', query.Var('contactId')), {
+          unreadChatMessages: query.Var(
+            'unreadChatMessagesFromContact'
+          )
+        })
       )
     )
   );
