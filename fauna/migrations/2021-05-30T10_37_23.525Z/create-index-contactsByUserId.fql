@@ -1,0 +1,18 @@
+CreateIndex({
+  "name": "contactsByUserId",
+  "source": Collection("contacts"),
+  "terms": [{
+    "field": ["data", "userId"]
+  }],
+  "values": [{
+    "field": ["data", "unreadChatMessagesFromContact"],
+    "reverse": true
+  }, {
+    "field": ["data", "numTimesOpened"],
+    "reverse": true
+  }, {
+    "field": ["data", "contactId"]
+  }, {
+    "field": ["ref"]
+  }]
+})
