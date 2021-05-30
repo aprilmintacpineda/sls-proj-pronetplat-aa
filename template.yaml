@@ -987,27 +987,28 @@ Resources:
   ######
   # Websocket
   #
-  # webSocket:
-  #   Type: AWS::ApiGatewayV2::Api
-  #   Properties:
-  #     Name: !Join
-  #       - '-'
-  #       - - !Ref Stage
-  #         - "proj-pronetplat-aa-webSocket"
-  #     ProtocolType: WEBSOCKET
-  #     RouteSelectionExpression: "$request.body.action"
-  # webSocketDeployment:
-  #   Type: AWS::ApiGatewayV2::Deployment
-  #   DependsOn:
-  #     - defaultWebSocketRoute
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  # webSocketStage:
-  #   Type: AWS::ApiGatewayV2::Stage
-  #   Properties:
-  #     StageName: !Ref Stage
-  #     DeploymentId: !Ref webSocketDeployment
-  #     ApiId: !Ref webSocket
+  webSocket:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-webSocket"
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+  webSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - defaultWebSocketRoute
+    Properties:
+      ApiId: !Ref webSocket
+  webSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Ref Stage
+      DeploymentId: !Ref webSocketDeployment
+      ApiId: !Ref webSocket
+  # removed custom domain configuration for now because of https://github.com/aws/serverless-application-model/issues/2016
   # webSocketCustomDomainCert:
   #   Type: AWS::CertificateManager::Certificate
   #   Properties:
@@ -1040,44 +1041,44 @@ Resources:
   #         - !Ref Stage
   #         - webSocketSubDomain
   #     Stage: !Ref Stage
-  # defaultWebSocketHandler:
-  #   Type: AWS::Serverless::Function
-  #   Metadata:
-  #     BuildMethod: makefile
-  #   Properties:
-  #     Handler: defaultWebSocketHandler.handler
-  #     Policies:
-  #       - CloudWatchLambdaInsightsExecutionRolePolicy
-  #     FunctionName: !Join
-  #       - '-'
-  #       - - !Ref Stage
-  #         - "proj-pronetplat-aa-defaultWebSocketHandler"
-  # defaultWebSocketHandlerPermission:
-  #   Type: AWS::Lambda::Permission
-  #   DependsOn:
-  #     - webSocket
-  #   Properties:
-  #     Action: lambda:InvokeFunction
-  #     FunctionName: !Ref defaultWebSocketHandler
-  #     Principal: apigateway.amazonaws.com
-  # defaultWebSocketHandlerInteg:
-  #   Type: AWS::ApiGatewayV2::Integration
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     Description: Connect Integration
-  #     IntegrationType: AWS_PROXY
-  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebSocketHandler.Arn}/invocations
-  # defaultWebSocketRoute:
-  #   Type: AWS::ApiGatewayV2::Route
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     RouteKey: $default
-  #     AuthorizationType: NONE
-  #     OperationName: defaultWebSocketRoute
-  #     Target: !Join
-  #       - '/'
-  #       - - 'integrations'
-  #         - !Ref defaultWebSocketHandlerInteg
+  defaultWebSocketHandler:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: defaultWebSocketHandler.handler
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-defaultWebSocketHandler"
+  defaultWebSocketHandlerPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - webSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref defaultWebSocketHandler
+      Principal: apigateway.amazonaws.com
+  defaultWebSocketHandlerInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebSocketHandler.Arn}/invocations
+  defaultWebSocketRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: $default
+      AuthorizationType: NONE
+      OperationName: defaultWebSocketRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref defaultWebSocketHandlerInteg
   ######
   # Invokable functions
   #
