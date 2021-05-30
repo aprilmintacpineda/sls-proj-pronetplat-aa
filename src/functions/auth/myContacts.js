@@ -38,9 +38,7 @@ async function handler ({ params: { nextToken }, authUser }) {
             data: query.Merge(
               query.Select(['data'], query.Var('user')),
               {
-                unreadChatMessages: query.Var(
-                  'unreadChatMessagesFromContact'
-                )
+                unreadChatMessages: 1
               }
             )
           })
