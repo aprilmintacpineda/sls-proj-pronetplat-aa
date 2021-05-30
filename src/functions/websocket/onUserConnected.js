@@ -1,4 +1,3 @@
-const { query } = require('faunadb');
 const {
   initClient,
   createOrUpdate
@@ -30,11 +29,7 @@ async function handler (webSocketEvent) {
       collection: 'userWebSocketConnections',
       data: {
         userId: authUser.id,
-        connectionId: webSocketEvent.requestContext.connectionId,
-        expiresAt: query.Format(
-          '%t',
-          query.TimeAdd(query.Now(), 7, 'days')
-        )
+        connectionId: webSocketEvent.requestContext.connectionId
       }
     })
   );
