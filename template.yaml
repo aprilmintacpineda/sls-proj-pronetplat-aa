@@ -1042,120 +1042,44 @@ Resources:
   #         - !Ref Stage
   #         - webSocketSubDomain
   #     Stage: !Ref Stage
-  onUserConnected:
+  defaultWebsocketRoute:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: onUserConnected.handler
+      Handler: defaultWebsocketRoute.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-onUserConnected"
-  onUserConnectedPermission:
+          - "proj-pronetplat-aa-defaultWebsocketRoute"
+  defaultWebsocketRoutePermission:
     Type: AWS::Lambda::Permission
     DependsOn:
       - webSocket
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref onUserConnected
+      FunctionName: !Ref defaultWebsocketRoute
       Principal: apigateway.amazonaws.com
-  connectInteg:
+  defaultWebsocketRouteInteg:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref webSocket
       Description: Connect Integration
       IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
-  connectRoute:
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebsocketRoute.Arn}/invocations
+  defaultRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref webSocket
-      RouteKey: $connect
+      RouteKey: $default
       AuthorizationType: NONE
-      OperationName: ConnectRoute
+      OperationName: defaultRoute
       Target: !Join
         - '/'
         - - 'integrations'
-          - !Ref connectInteg
-  onUserDisconnected:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: onUserDisconnected.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-onUserDisconnected"
-  onUserDisconnectedPermission:
-    Type: AWS::Lambda::Permission
-    DependsOn:
-      - webSocket
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref onUserDisconnected
-      Principal: apigateway.amazonaws.com
-  disconnectInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: Disconnect Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
-  disconnectRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: $disconnect
-      AuthorizationType: NONE
-      OperationName: DisconnectRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref disconnectInteg
-  onSendMessage:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: onSendMessage.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-onSendMessage"
-  onSendMessagePermission:
-    Type: AWS::Lambda::Permission
-    DependsOn:
-      - webSocket
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref onSendMessage
-      Principal: apigateway.amazonaws.com
-  sendMessageInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: send message Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onSendMessage.Arn}/invocations
-  sendMessageRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: sendmessage
-      AuthorizationType: NONE
-      OperationName: SendMessageRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref sendMessageInteg
+          - !Ref defaultWebsocketRouteInteg
   ######
   # Invokable functions
   #
