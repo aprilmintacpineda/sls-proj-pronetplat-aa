@@ -39,7 +39,7 @@ async function handler ({ authUser, params: { senderId } }) {
           contactId: contactRequest.data.senderId,
           numTimesOpened: 0,
           isCloseFriend: false,
-          numNewChatMessages: 0
+          unreadChatMessagesFromContact: 0
         }
       }),
       createIfNotExists({
