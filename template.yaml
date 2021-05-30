@@ -987,98 +987,175 @@ Resources:
   ######
   # Websocket
   #
-  webSocket:
-    Type: AWS::ApiGatewayV2::Api
-    Properties:
-      Name: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-webSocket"
-      ProtocolType: WEBSOCKET
-      RouteSelectionExpression: "$request.body.action"
-  webSocketDeployment:
-    Type: AWS::ApiGatewayV2::Deployment
-    DependsOn:
-      - defaultWebSocketRoute
-    Properties:
-      ApiId: !Ref webSocket
-  webSocketStage:
-    Type: AWS::ApiGatewayV2::Stage
-    Properties:
-      StageName: !Ref Stage
-      DeploymentId: !Ref webSocketDeployment
-      ApiId: !Ref webSocket
-  # removed custom domain configuration for now because of https://github.com/aws/serverless-application-model/issues/2016
-  # webSocketCustomDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
+  # webSocket:
+  #   Type: AWS::ApiGatewayV2::Api
   #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     ValidationMethod: DNS
-  # webSocketCustomDomain:
-  #   Type: AWS::ApiGatewayV2::DomainName
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     DomainNameConfigurations:
-  #       - CertificateArn: !Ref webSocketCustomDomainCert
-  # webSocketCustomDomainMapping:
-  #   Type: AWS::ApiGatewayV2::ApiMapping
+  #     Name: !Join
+  #       - '-'
+  #       - - !Ref Stage
+  #         - "proj-pronetplat-aa-webSocket"
+  #     ProtocolType: WEBSOCKET
+  #     RouteSelectionExpression: "$request.body.action"
+  # webSocketDeployment:
+  #   Type: AWS::ApiGatewayV2::Deployment
+  #   DependsOn:
+  #     - connectRoute
+  #     - disconnectRoute
+  #     - defaultWebSocketHandlerRoute
   #   Properties:
   #     ApiId: !Ref webSocket
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     Stage: !Ref Stage
-  defaultWebSocketHandler:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: defaultWebSocketHandler.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-defaultWebSocketHandler"
-  defaultWebSocketHandlerPermission:
-    Type: AWS::Lambda::Permission
-    DependsOn:
-      - webSocket
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref defaultWebSocketHandler
-      Principal: apigateway.amazonaws.com
-  defaultWebSocketHandlerInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: Connect Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebSocketHandler.Arn}/invocations
-  defaultWebSocketRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: $default
-      AuthorizationType: NONE
-      OperationName: defaultWebSocketRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref defaultWebSocketHandlerInteg
+  # webSocketStage:
+  #   Type: AWS::ApiGatewayV2::Stage
+  #   Properties:
+  #     StageName: !Ref Stage
+  #     DeploymentId: !Ref webSocketDeployment
+  #     ApiId: !Ref webSocket
+  # # webSocketCustomDomainCert:
+  # #   Type: AWS::CertificateManager::Certificate
+  # #   Properties:
+  # #     DomainName: !Sub
+  # #       - ${webSocketSubDomain}.entrepic.com
+  # #       - webSocketSubDomain: !FindInMap
+  # #         - stageVars
+  # #         - !Ref Stage
+  # #         - webSocketSubDomain
+  # #     ValidationMethod: DNS
+  # # webSocketCustomDomain:
+  # #   Type: AWS::ApiGatewayV2::DomainName
+  # #   Properties:
+  # #     DomainName: !Sub
+  # #       - ${webSocketSubDomain}.entrepic.com
+  # #       - webSocketSubDomain: !FindInMap
+  # #         - stageVars
+  # #         - !Ref Stage
+  # #         - webSocketSubDomain
+  # #     DomainNameConfigurations:
+  # #       - CertificateArn: !Ref webSocketCustomDomainCert
+  # # webSocketCustomDomainMapping:
+  # #   Type: AWS::ApiGatewayV2::ApiMapping
+  # #   Properties:
+  # #     ApiId: !Ref webSocket
+  # #     DomainName: !Sub
+  # #       - ${webSocketSubDomain}.entrepic.com
+  # #       - webSocketSubDomain: !FindInMap
+  # #         - stageVars
+  # #         - !Ref Stage
+  # #         - webSocketSubDomain
+  # #     Stage: !Ref Stage
+  # onUserConnected:
+  #   Type: AWS::Serverless::Function
+  #   Metadata:
+  #     BuildMethod: makefile
+  #   Properties:
+  #     Handler: onUserConnected.handler
+  #     Policies:
+  #       - CloudWatchLambdaInsightsExecutionRolePolicy
+  #     FunctionName: !Join
+  #       - '-'
+  #       - - !Ref Stage
+  #         - "proj-pronetplat-aa-onUserConnected"
+  # onUserConnectedPermission:
+  #   Type: AWS::Lambda::Permission
+  #   DependsOn:
+  #     - webSocket
+  #   Properties:
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !Ref onUserConnected
+  #     Principal: apigateway.amazonaws.com
+  # connectInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: Connect Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserConnected.Arn}/invocations
+  # connectRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: $connect
+  #     AuthorizationType: NONE
+  #     OperationName: ConnectRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref connectInteg
+  # onUserDisconnected:
+  #   Type: AWS::Serverless::Function
+  #   Metadata:
+  #     BuildMethod: makefile
+  #   Properties:
+  #     Handler: onUserDisconnected.handler
+  #     Policies:
+  #       - CloudWatchLambdaInsightsExecutionRolePolicy
+  #     FunctionName: !Join
+  #       - '-'
+  #       - - !Ref Stage
+  #         - "proj-pronetplat-aa-onUserDisconnected"
+  # onUserDisconnectedPermission:
+  #   Type: AWS::Lambda::Permission
+  #   DependsOn:
+  #     - webSocket
+  #   Properties:
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !Ref onUserDisconnected
+  #     Principal: apigateway.amazonaws.com
+  # disconnectInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: Disconnect Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${onUserDisconnected.Arn}/invocations
+  # disconnectRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: $disconnect
+  #     AuthorizationType: NONE
+  #     OperationName: DisconnectRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref disconnectInteg
+  # defaultWebSocketHandler:
+  #   Type: AWS::Serverless::Function
+  #   Metadata:
+  #     BuildMethod: makefile
+  #   Properties:
+  #     Handler: defaultWebSocketHandler.handler
+  #     Policies:
+  #       - CloudWatchLambdaInsightsExecutionRolePolicy
+  #     FunctionName: !Join
+  #       - '-'
+  #       - - !Ref Stage
+  #         - "proj-pronetplat-aa-defaultWebSocketHandler"
+  # defaultWebSocketHandlerPermission:
+  #   Type: AWS::Lambda::Permission
+  #   DependsOn:
+  #     - webSocket
+  #   Properties:
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !Ref defaultWebSocketHandler
+  #     Principal: apigateway.amazonaws.com
+  # defaultWebSocketHandlerInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: send message Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${defaultWebSocketHandler.Arn}/invocations
+  # defaultWebSocketHandlerRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: $default
+  #     AuthorizationType: NONE
+  #     OperationName: defaultWebSocketHandlerRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref defaultWebSocketHandlerInteg
   ######
   # Invokable functions
   #
