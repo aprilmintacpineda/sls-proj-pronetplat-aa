@@ -22,11 +22,7 @@ async function handler ({ authUser, deviceToken }) {
         args: [authUser.id, deviceToken],
         data: {
           userId: authUser.id,
-          deviceToken,
-          expiresAt: query.Format(
-            '%t',
-            query.TimeAdd(query.Now(), 7, 'days')
-          )
+          deviceToken
         }
       }),
       updateById('users', authUser.id, {

@@ -1,12 +1,9 @@
 const { query } = require('faunadb');
+const { initClient } = require('dependencies/utils/faunadb');
 const {
-  initClient,
-  hardDeleteByIndex
-} = require('dependencies/utils/faunadb');
-const {
-  sendFirebaseNotification
+  sendFirebaseNotification,
+  isValidDeviceToken
 } = require('dependencies/utils/firebase');
-const { hasTimePassed } = require('dependencies/utils/helpers');
 const {
   getFullName,
   getPersonalPronoun
@@ -20,8 +17,9 @@ module.exports.handler = async ({
 }) => {
   const faunadb = initClient();
   let after = null;
+  const allTokens = [];
   const activeTokens = [];
-  const expiredTokens = [];
+  const expiredTokenRefs = [];
 
   do {
     const result = await faunadb.query(
@@ -37,15 +35,19 @@ module.exports.handler = async ({
       )
     );
 
-    result.data.forEach(([expiresAt, deviceToken]) => {
-      if (!hasTimePassed(expiresAt)) activeTokens.push(deviceToken);
-      else expiredTokens.push(deviceToken);
-    });
-
+    allTokens.concat(result.data);
     after = result.after;
   } while (after);
 
   const fullname = getFullName(authUser);
+
+  await Promise.all(
+    allTokens.map(async ([deviceToken, _1, ref]) => {
+      if (await isValidDeviceToken(deviceToken))
+        activeTokens.push(deviceToken);
+      else expiredTokenRefs.push(ref);
+    })
+  );
 
   await Promise.all([
     sendFirebaseNotification({
@@ -61,16 +63,8 @@ module.exports.handler = async ({
           )
       }
     }),
-    expiredTokens.length
-      ? faunadb.query(
-          expiredTokens.map(token =>
-            hardDeleteByIndex(
-              'registeredDeviceByUserIdDeviceToken',
-              userId,
-              token
-            )
-          )
-        )
+    expiredTokenRefs.length
+      ? faunadb.query(expiredTokenRefs.map(ref => query.Delete(ref)))
       : null
   ]);
 };

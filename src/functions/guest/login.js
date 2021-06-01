@@ -41,11 +41,7 @@ async function handler ({ formBody, deviceToken }) {
         collection: 'registeredDevices',
         data: {
           userId: user.ref.id,
-          deviceToken: deviceToken,
-          expiresAt: query.Format(
-            '%t',
-            query.TimeAdd(query.Now(), 7, 'days')
-          )
+          deviceToken: deviceToken
         }
       }),
       update(user.ref, {
