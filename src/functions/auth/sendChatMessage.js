@@ -44,8 +44,8 @@ async function handler ({
           query.Do(
             query.Call(
               'updateContactBadgeCount',
-              authUser.id,
               contactId,
+              authUser.id,
               'unreadChatMessagesFromContact',
               1
             ),
