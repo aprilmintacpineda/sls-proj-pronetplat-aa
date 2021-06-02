@@ -17,13 +17,6 @@ module.exports.handler = async ({
   type,
   payload
 }) => {
-  console.log(
-    JSON.stringify({
-      type,
-      payload
-    })
-  );
-
   const faunadb = initClient();
   let after = null;
   let connectionIds = [];
@@ -46,8 +39,6 @@ module.exports.handler = async ({
     after = result.after;
   } while (after);
 
-  const staleConnectionIds = [];
-
   await Promise.all(
     connectionIds.map(async ([connectionId]) => {
       try {
@@ -67,21 +58,15 @@ module.exports.handler = async ({
       } catch (error) {
         console.log(error);
 
-        if (error.statusCode === 410)
-          staleConnectionIds.push(connectionId);
+        if (error.statusCode === 410) {
+          await faunadb.query(
+            hardDeleteByIndex(
+              'userWebSocketConnectionByConnectionId',
+              connectionId
+            )
+          );
+        }
       }
     })
   );
-
-  // delete all stale connections in one go
-  if (staleConnectionIds.length) {
-    await faunadb.query(
-      staleConnectionIds.map(connectionId =>
-        hardDeleteByIndex(
-          'userWebSocketConnectionByConnectionId',
-          connectionId
-        )
-      )
-    );
-  }
 };
