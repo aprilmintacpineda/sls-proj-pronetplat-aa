@@ -32,9 +32,29 @@ async function handler ({ authUser, params: { chatMessageId } }) {
             ),
             authUser.id
           ),
-          update(selectRef(query.Var('chatMessage')), {
-            seenAt: query.Format('%t', query.Now())
-          }),
+          query.Let(
+            {
+              updatedChatMessage: update(
+                selectRef(query.Var('chatMessage')),
+                {
+                  seenAt: query.Format('%t', query.Now())
+                }
+              )
+            },
+            query.Do(
+              query.Call(
+                'updateContactBadgeCount',
+                authUser.id,
+                query.Select(
+                  ['data', 'senderId'],
+                  query.Var('chatMessage')
+                ),
+                'unreadChatMessagesFromContact',
+                -1
+              ),
+              query.Var('updatedChatMessage')
+            )
+          ),
           query.Abort('AuthUserNotRecipient')
         )
       )
