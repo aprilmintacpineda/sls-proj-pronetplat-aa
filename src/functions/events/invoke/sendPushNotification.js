@@ -17,7 +17,7 @@ module.exports.handler = async ({
 }) => {
   const faunadb = initClient();
   let after = null;
-  const allTokens = [];
+  let allTokens = [];
   const activeTokens = [];
   const expiredTokenRefs = [];
 
@@ -35,7 +35,7 @@ module.exports.handler = async ({
       )
     );
 
-    allTokens.concat(result.data);
+    allTokens = allTokens.concat(result.data);
     after = result.after;
   } while (after);
 
