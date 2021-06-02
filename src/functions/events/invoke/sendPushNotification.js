@@ -49,8 +49,6 @@ module.exports.handler = async ({
     })
   );
 
-  console.log(allTokens, activeTokens, expiredTokenRefs);
-
   await Promise.all([
     sendFirebaseNotification({
       tokens: activeTokens,
