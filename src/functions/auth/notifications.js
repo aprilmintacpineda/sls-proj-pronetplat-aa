@@ -33,8 +33,6 @@ async function handler ({ params: { nextToken }, authUser }) {
     )
   );
 
-  console.log(JSON.stringify(result));
-
   const unseenNotificationIds = [];
   const data = [];
 
