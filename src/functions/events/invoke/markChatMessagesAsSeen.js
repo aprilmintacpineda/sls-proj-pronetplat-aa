@@ -25,8 +25,8 @@ module.exports.handler = async ({
   queries.push(
     query.Call(
       'updateContactBadgeCount',
-      contactId,
       authUser.id,
+      contactId,
       'unreadChatMessagesFromContact',
       -unseenChatMessageIds.length
     )
