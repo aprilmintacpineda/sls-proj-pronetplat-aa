@@ -41,8 +41,6 @@ module.exports.handler = async ({
     )
   );
 
-  console.log(JSON.stringify({ unseenChatMessageIds, seenAt }));
-
   await sendWebSocketEvent({
     type: 'chatMessageSeen',
     authUser,
