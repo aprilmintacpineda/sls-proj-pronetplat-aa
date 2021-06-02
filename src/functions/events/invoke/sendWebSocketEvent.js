@@ -8,7 +8,7 @@ const { getPublicUserData } = require('dependencies/utils/users');
 
 const apiGateway = new AWS.ApiGatewayManagementApi({
   apiVersion: '2018-11-29',
-  endpoint: '9ij2l2b278.execute-api.ap-southeast-1.amazonaws.com/dev'
+  endpoint: '86iml7zhuc.execute-api.ap-southeast-1.amazonaws.com/dev'
 });
 
 module.exports.handler = async ({
