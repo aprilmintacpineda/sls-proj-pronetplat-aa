@@ -78,8 +78,6 @@ async function handler ({
   const unseenChatMessageIds = [];
   const data = [];
 
-  console.log(JSON.stringify(result, null, 2));
-
   result.data.forEach(({ chatMessage: _chatMessage, replyTo }) => {
     const chatMessage = {
       ..._chatMessage.data,
