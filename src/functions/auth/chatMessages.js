@@ -1,5 +1,8 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  getById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -47,7 +50,28 @@ async function handler ({
             : []
         }
       ),
-      query.Lambda(['createdAt', 'ref'], query.Get(query.Var('ref')))
+      query.Lambda(
+        ['createdAt', 'ref'],
+        query.Let(
+          {
+            chatMessage: query.Get(query.Var('ref')),
+            replyToMessageId: query.Select(
+              ['data', 'replyToMessageId'],
+              query.Var('chatMessage'),
+              ''
+            ),
+            replyTo: query.If(
+              query.Equals(query.Var('replyToMessageId'), ''),
+              null,
+              getById('chatMessages', query.Var('replyToMessageId'))
+            )
+          },
+          {
+            chatMessage: query.Var('chatMessage'),
+            replyTo: query.Var('replyTo')
+          }
+        )
+      )
     )
   );
 

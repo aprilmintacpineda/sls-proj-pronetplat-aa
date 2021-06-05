@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   create,
-  existsByIndex
+  existsByIndex,
+  getById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -24,21 +25,73 @@ async function handler ({
   if (authUser.id === contactId) return { statusCode: 400 };
 
   const faunadb = initClient();
+  let chatMessage = null;
 
   try {
-    let chatMessage = await faunadb.query(
+    chatMessage = await faunadb.query(
       query.If(
-        existsByIndex(
-          'contactByOwnerContact',
-          contactId,
-          authUser.id
-        ),
+        !formBody.replyToMessageId
+          ? existsByIndex(
+              'contactByOwnerContact',
+              contactId,
+              authUser.id
+            )
+          : query.And(
+              existsByIndex(
+                'contactByOwnerContact',
+                contactId,
+                authUser.id
+              ),
+              query.Let(
+                {
+                  replyTo: getById(
+                    'chatMessages',
+                    formBody.replyToMessageId
+                  )
+                },
+                query.Or(
+                  query.And(
+                    query.Equals(
+                      query.Select(
+                        ['data', 'recipientId'],
+                        query.Var('replyTo')
+                      ),
+                      authUser.id
+                    ),
+                    query.Equals(
+                      query.Select(
+                        ['data', 'senderId'],
+                        query.Var('replyTo')
+                      ),
+                      contactId
+                    )
+                  ),
+                  query.And(
+                    query.Equals(
+                      query.Select(
+                        ['data', 'recipientId'],
+                        query.Var('replyTo')
+                      ),
+                      contactId
+                    ),
+                    query.Equals(
+                      query.Select(
+                        ['data', 'senderId'],
+                        query.Var('replyTo')
+                      ),
+                      authUser.id
+                    )
+                  )
+                )
+              )
+            ),
         query.Let(
           {
             chatMessage: create('chatMessages', {
               senderId: authUser.id,
               recipientId: contactId,
-              messageBody: formBody.messageBody
+              messageBody: formBody.messageBody,
+              replyToMessageId: formBody.replyToMessageId || null
             })
           },
           query.Do(
@@ -52,42 +105,42 @@ async function handler ({
             query.Var('chatMessage')
           )
         ),
-        query.Abort('NotInContact')
+        query.Abort('ValidationError')
       )
     );
-
-    chatMessage = {
-      id: chatMessage.ref.id,
-      ...chatMessage.data
-    };
-
-    await Promise.all([
-      sendPushNotification({
-        userId: contactId,
-        title: 'New message from {fullname}',
-        body: '{fullname} sent you a message',
-        authUser
-      }),
-      sendWebSocketEvent({
-        type: 'chatMessageReceived',
-        authUser,
-        userId: contactId,
-        payload: chatMessage
-      })
-    ]);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(chatMessage)
-    };
   } catch (error) {
     console.log('error', error);
 
-    if (error.description === 'NotInContact')
+    if (error.description === 'ValidationError')
       return { statusCode: 404 };
 
     return { statusCode: 400 };
   }
+
+  chatMessage = {
+    id: chatMessage.ref.id,
+    ...chatMessage.data
+  };
+
+  await Promise.all([
+    sendPushNotification({
+      userId: contactId,
+      title: 'New message from {fullname}',
+      body: '{fullname} sent you a message',
+      authUser
+    }),
+    sendWebSocketEvent({
+      type: 'chatMessageReceived',
+      authUser,
+      userId: contactId,
+      payload: chatMessage
+    })
+  ]);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(chatMessage)
+  };
 }
 
 module.exports.handler = httpGuard({
