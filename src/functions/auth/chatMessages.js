@@ -78,10 +78,16 @@ async function handler ({
   const unseenChatMessageIds = [];
   const data = [];
 
-  result.data.forEach(document => {
+  console.log(JSON.stringify(result, null, 2));
+
+  result.data.forEach(({ chatMessage: _chatMessage, replyTo }) => {
     const chatMessage = {
-      ...document.data,
-      id: document.ref.id
+      ..._chatMessage.data,
+      id: _chatMessage.ref.id,
+      replyTo: {
+        ...replyTo.data,
+        id: replyTo.ref.id
+      }
     };
 
     if (
