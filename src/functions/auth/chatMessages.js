@@ -84,10 +84,12 @@ async function handler ({
     const chatMessage = {
       ..._chatMessage.data,
       id: _chatMessage.ref.id,
-      replyTo: {
-        ...replyTo.data,
-        id: replyTo.ref.id
-      }
+      replyTo: replyTo
+        ? {
+            ...replyTo.data,
+            id: replyTo.ref.id
+          }
+        : null
     };
 
     if (
