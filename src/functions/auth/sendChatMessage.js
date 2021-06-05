@@ -92,7 +92,10 @@ async function handler ({
               recipientId: contactId,
               messageBody: formBody.messageBody,
               replyToMessageId: formBody.replyToMessageId || null
-            })
+            }),
+            replyTo: formBody.replyToMessageId
+              ? getById('chatMessages', formBody.replyToMessageId)
+              : null
           },
           query.Do(
             query.Call(
@@ -102,7 +105,10 @@ async function handler ({
               'unreadChatMessagesFromContact',
               1
             ),
-            query.Var('chatMessage')
+            {
+              chatMessage: query.Var('chatMessage'),
+              replyTo: query.Var('replyTo')
+            }
           )
         ),
         query.Abort('ValidationError')
@@ -118,8 +124,14 @@ async function handler ({
   }
 
   chatMessage = {
-    id: chatMessage.ref.id,
-    ...chatMessage.data
+    id: chatMessage.chatMessage.ref.id,
+    ...chatMessage.chatMessage.data,
+    replyTo: chatMessage.replyTo
+      ? {
+          ...chatMessage.replyTo.data,
+          id: chatMessage.replyTo.ref.id
+        }
+      : null
   };
 
   await Promise.all([
