@@ -41,10 +41,6 @@ async function handler ({
                 query.Ref(
                   query.Collection('chatMessages'),
                   nextTokenParts[1]
-                ),
-                query.Ref(
-                  query.Collection('chatMessages'),
-                  nextTokenParts[2]
                 )
               ]
             : []
@@ -115,7 +111,7 @@ async function handler ({
     body: JSON.stringify({
       data,
       nextToken: result.after
-        ? `${result.after[0]}_${result.after[1].id}_${result.after[2].id}`
+        ? `${result.after[0]}_${result.after[1].id}`
         : null
     })
   };

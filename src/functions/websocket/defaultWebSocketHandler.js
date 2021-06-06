@@ -10,7 +10,7 @@ async function handler (webSocketEvent) {
   const handler = eventHandlers[action];
   if (!handler) return { statusCode: 404 };
 
-  return handler(data);
+  return handler(webSocketEvent, data);
 }
 
 module.exports.handler = handler;
