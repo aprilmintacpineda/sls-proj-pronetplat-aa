@@ -8,7 +8,10 @@ async function handler (webSocketEvent) {
   const { action, data } = JSON.parse(webSocketEvent.body);
 
   const handler = eventHandlers[action];
-  if (!handler) return { statusCode: 404 };
+  if (!handler) {
+    console.log('handler for action', action, 'not found');
+    return { statusCode: 404 };
+  }
 
   return handler(webSocketEvent, data);
 }
