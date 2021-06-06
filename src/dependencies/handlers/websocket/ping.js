@@ -5,6 +5,8 @@ const apiGateway = new AWS.ApiGatewayManagementApi({
 });
 
 module.exports = async webSocketEvent => {
+  console.log(JSON.stringify(webSocketEvent, null, 2));
+
   await apiGateway
     .postToConnection({
       ConnectionId: webSocketEvent.requestContext.connectionId,
