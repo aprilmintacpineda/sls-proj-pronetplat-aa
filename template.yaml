@@ -1127,6 +1127,11 @@ Resources:
       Handler: defaultWebSocketHandler.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
+        - Statement:
+          - Action:
+              - execute-api:ManageConnections
+            Effect: Allow
+            Resource: "*"
       FunctionName: !Join
         - '-'
         - - !Ref Stage
