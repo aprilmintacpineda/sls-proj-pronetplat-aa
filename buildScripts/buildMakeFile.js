@@ -1,22 +1,22 @@
 const fs = require('fs').promises;
 const path = require('path');
-const recursiveReadDir = require('recursive-readdir-async');
 
 (async () => {
-  const functions = await recursiveReadDir.list(
+  const lambdaFunctions = await fs.readdir(
     path.join(__dirname, '../src/functions')
   );
 
   let phonies = '';
   let targets = '';
 
-  functions.forEach(({ name }) => {
+  lambdaFunctions.forEach(name => {
     const blockName = `build-${name.split('.')[0]}`;
 
     phonies += ` ${blockName}`;
 
     targets += `${blockName}:\n`;
-    targets += `\tcp ${name} ` + '"${ARTIFACTS_DIR}/' + `${name}"\n`;
+    targets +=
+      `\tcp -r ${name} ` + '"${ARTIFACTS_DIR}/' + `${name}"\n`;
 
     // separator
     targets += '\n';

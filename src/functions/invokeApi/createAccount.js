@@ -11,13 +11,8 @@ const {
 module.exports.handler = async ({ email, password }) => {
   const emailVerificationCode = randomCode();
 
-  const [
-    hashedEmailVerificationCode,
-    hashedPassword
-  ] = await Promise.all([
-    hash(emailVerificationCode),
-    hash(password)
-  ]);
+  const [hashedEmailVerificationCode, hashedPassword] =
+    await Promise.all([hash(emailVerificationCode), hash(password)]);
 
   const offsetTime = getTimeOffset();
   const faunadb = initClient();

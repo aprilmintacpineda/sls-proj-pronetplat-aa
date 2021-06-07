@@ -1,7 +1,11 @@
-const ping = require('dependencies/handlers/websocket/ping');
+const connect = require('./connect');
+const disconnect = require('./disconnect');
+const ping = require('./ping');
 
 const eventHandlers = {
-  ping
+  ping,
+  $connect: connect,
+  $disconnect: disconnect
 };
 
 async function handler (webSocketEvent) {
