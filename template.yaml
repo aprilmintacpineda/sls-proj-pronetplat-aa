@@ -113,7 +113,7 @@ Resources:
           Type: Api
           Properties:
             Method: any
-            Path: /
+            Path: /{proxy+}
             RestApiId:
               Ref: mainBackendApi
   invokeApi:
