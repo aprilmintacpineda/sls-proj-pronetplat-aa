@@ -33,7 +33,7 @@ Globals:
     Layers:
       - !Ref dependencies
       - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
-    MemorySize: 1024
+    MemorySize: 4096
     Timeout: 30
     Runtime: nodejs12.x
     EventInvokeConfig:
@@ -1071,85 +1071,85 @@ Resources:
   #         - !Ref Stage
   #         - webSocketSubDomain
   #     Stage: !Ref Stage
-  webSocketApi:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: websocketApi/index.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - Statement:
-          - Action:
-              - execute-api:ManageConnections
-            Effect: Allow
-            Resource: "*"
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-webSocketApi"
-  webSocketApiPermission:
-    Type: AWS::Lambda::Permission
-    DependsOn:
-      - webSocket
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Ref webSocketApi
-      Principal: apigateway.amazonaws.com
-  connectInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: Connect Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
-  connectRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: $connect
-      AuthorizationType: NONE
-      OperationName: ConnectRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref connectInteg
-  disconnectInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: Disconnect Integration
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
-  disconnectRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: $disconnect
-      AuthorizationType: NONE
-      OperationName: DisconnectRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref disconnectInteg
-  defaultWebSocketRouteInteg:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      ApiId: !Ref webSocket
-      Description: any websocket routes
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
-  defaultWebSocketRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref webSocket
-      RouteKey: $default
-      AuthorizationType: NONE
-      OperationName: defaultWebSocketRoute
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref defaultWebSocketRouteInteg
+  # webSocketApi:
+  #   Type: AWS::Serverless::Function
+  #   Metadata:
+  #     BuildMethod: makefile
+  #   Properties:
+  #     Handler: websocketApi/index.handler
+  #     Policies:
+  #       - CloudWatchLambdaInsightsExecutionRolePolicy
+  #       - Statement:
+  #         - Action:
+  #             - execute-api:ManageConnections
+  #           Effect: Allow
+  #           Resource: "*"
+  #     FunctionName: !Join
+  #       - '-'
+  #       - - !Ref Stage
+  #         - "proj-pronetplat-aa-webSocketApi"
+  # webSocketApiPermission:
+  #   Type: AWS::Lambda::Permission
+  #   DependsOn:
+  #     - webSocket
+  #   Properties:
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !Ref webSocketApi
+  #     Principal: apigateway.amazonaws.com
+  # connectInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: Connect Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
+  # connectRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: $connect
+  #     AuthorizationType: NONE
+  #     OperationName: ConnectRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref connectInteg
+  # disconnectInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: Disconnect Integration
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
+  # disconnectRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: $disconnect
+  #     AuthorizationType: NONE
+  #     OperationName: DisconnectRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref disconnectInteg
+  # defaultWebSocketRouteInteg:
+  #   Type: AWS::ApiGatewayV2::Integration
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     Description: any websocket routes
+  #     IntegrationType: AWS_PROXY
+  #     IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
+  # defaultWebSocketRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     RouteKey: $default
+  #     AuthorizationType: NONE
+  #     OperationName: defaultWebSocketRoute
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref defaultWebSocketRouteInteg
   ######
   # Invokable functions
   #
@@ -1313,7 +1313,6 @@ Resources:
     Metadata:
       BuildMethod: makefile
     Properties:
-      MemorySize: 4096
       Handler: profilePictureUploaded.handler
       FunctionName: !Join
         - '-'
