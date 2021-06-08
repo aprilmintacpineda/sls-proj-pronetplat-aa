@@ -1,7 +1,8 @@
 const events = require('./events');
 
-async function handler ({ event, payload }) {
-  console.log('---', event);
+async function handler (ev) {
+  console.log('---', ev);
+  const { event, payload } = ev;
   const eventHandler = events[event];
   await eventHandler(payload);
 }
