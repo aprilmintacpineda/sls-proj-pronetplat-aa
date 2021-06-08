@@ -9,6 +9,8 @@ const eventHandlers = {
 };
 
 async function handler (webSocketEvent) {
+  console.log(JSON.stringify(webSocketEvent));
+
   const { action, data } = JSON.parse(webSocketEvent.body);
 
   const handler = eventHandlers[action];
