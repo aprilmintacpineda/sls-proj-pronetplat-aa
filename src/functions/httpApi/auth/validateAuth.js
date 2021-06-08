@@ -46,7 +46,7 @@ async function handler ({ authUser, deviceToken }) {
   };
 }
 
-module.export = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [
     guardTypes.auth,
