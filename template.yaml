@@ -96,7 +96,10 @@ Resources:
           - "proj-pronetplat-aa-invokeApi"
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref invokeApi
+            FunctionName: !Join
+              - '-'
+              - - !Ref Stage
+                - "proj-pronetplat-aa-invokeApi"
         - Statement:
           - Action:
               - ses:SendEmail
