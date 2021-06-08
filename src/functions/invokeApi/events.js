@@ -9,5 +9,6 @@ module.exports = {
   markNotificationsAsSeen: require('./markNotificationsAsSeen'),
   confirmForgotPassword: require('./confirmForgotPassword'),
   sendForgotPasswordCode: require('./sendForgotPasswordCode'),
-  createAccount: require('./createAccount')
+  createAccount: require('./createAccount'),
+  'ObjectCreated:Put': require('./profilePictureUploaded')
 };
