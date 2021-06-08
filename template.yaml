@@ -1303,34 +1303,34 @@ Resources:
   ######
   # Service events
   #
-  # profilePictureUploaded:
-  #   Type: AWS::Serverless::Function
-  #   Metadata:
-  #     BuildMethod: makefile
-  #   Properties:
-  #     Handler: profilePictureUploaded.handler
-  #     FunctionName: !Join
-  #       - '-'
-  #       - - !Ref Stage
-  #         - "proj-pronetplat-aa-profilePictureUploaded"
-  #     Policies:
-  #       - CloudWatchLambdaInsightsExecutionRolePolicy
-  #       - S3CrudPolicy:
-  #           BucketName: !Join
-  #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
-  #     Events:
-  #       Upload:
-  #         Type: S3
-  #         Properties:
-  #           Bucket: !Ref usersS3Bucket
-  #           Events: s3:ObjectCreated:Put
-  #           Filter:
-  #             S3Key:
-  #               Rules:
-  #                 - Name: prefix
-  #                   Value: newProfilePicture_
+  profilePictureUploaded:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: profilePictureUploaded.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-profilePictureUploaded"
+      Policies:
+        - CloudWatchLambdaInsightsExecutionRolePolicy
+        - S3CrudPolicy:
+            BucketName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+      Events:
+        Upload:
+          Type: S3
+          Properties:
+            Bucket: !Ref usersS3Bucket
+            Events: s3:ObjectCreated:Put
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: newProfilePicture_
   ######
   # Lambda layers
   #
