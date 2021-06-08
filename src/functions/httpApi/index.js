@@ -7,6 +7,8 @@ async function handler (httpEvent) {
 
   console.log('---', httpMethod, path);
 
+  console.log(routeHandler);
+
   return routeHandler.callback({
     ...httpEvent,
     pathParameters: routeHandler.pathParameters
