@@ -28,7 +28,7 @@ async function handler ({ authUser, formBody }) {
   };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.personalInfoComplete],
   formValidator: ({ type }) => {

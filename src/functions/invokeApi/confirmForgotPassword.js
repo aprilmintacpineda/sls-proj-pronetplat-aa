@@ -12,7 +12,7 @@ const {
   sendEmailResetPasswordSuccess
 } = require('dependencies/utils/sendEmail');
 
-module.exports.handler = async ({
+module.exports = async ({
   confirmationCode,
   email,
   newPassword

@@ -48,7 +48,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete]
 });

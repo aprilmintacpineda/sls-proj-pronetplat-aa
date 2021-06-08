@@ -8,7 +8,7 @@ const {
   sendEmailWelcomeMessage
 } = require('dependencies/utils/sendEmail');
 
-module.exports.handler = async ({ email, password }) => {
+module.exports = async ({ email, password }) => {
   const emailVerificationCode = randomCode();
 
   const [hashedEmailVerificationCode, hashedPassword] =

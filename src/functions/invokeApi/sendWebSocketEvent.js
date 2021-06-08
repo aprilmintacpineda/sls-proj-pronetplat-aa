@@ -11,12 +11,7 @@ const apiGateway = new AWS.ApiGatewayManagementApi({
   endpoint: '86iml7zhuc.execute-api.ap-southeast-1.amazonaws.com/dev'
 });
 
-module.exports.handler = async ({
-  authUser,
-  userId,
-  type,
-  payload
-}) => {
+module.exports = async ({ authUser, userId, type, payload }) => {
   const faunadb = initClient();
   let after = null;
   let connectionIds = [];

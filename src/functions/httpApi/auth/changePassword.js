@@ -39,7 +39,7 @@ async function handler ({ authUser, formBody }) {
   return { statusCode: 200 };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete],
   formValidator: ({ currentPassword, newPassword }) => {

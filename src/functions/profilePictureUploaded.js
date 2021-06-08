@@ -11,7 +11,7 @@ const {
 } = require('dependencies/utils/s3');
 const { hasCompletedSetup } = require('dependencies/utils/users');
 
-module.exports.handler = async event => {
+module.exports = async event => {
   const {
     bucket: { name: bucketName },
     object: { key: objectKey }

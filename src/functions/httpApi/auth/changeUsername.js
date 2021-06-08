@@ -36,7 +36,7 @@ async function handler ({ authUser, formBody }) {
   }
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   formValidator: ({ username }) => {
     return validate(username, ['alphanumeric', 'maxLength:18']);

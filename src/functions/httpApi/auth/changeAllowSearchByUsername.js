@@ -32,7 +32,7 @@ async function handler ({
   };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   formValidator: ({ allowSearchByUsername }) =>
     validate(allowSearchByUsername, ['required', 'bool']),

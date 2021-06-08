@@ -81,7 +81,7 @@ async function handler ({ authUser, params: { chatMessageId } }) {
   return { statusCode: 200 };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete]
 });

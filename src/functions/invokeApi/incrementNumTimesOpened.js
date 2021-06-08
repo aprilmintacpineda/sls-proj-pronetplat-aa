@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 const { initClient, update } = require('dependencies/utils/faunadb');
 
-module.exports.handler = async ({ id }) => {
+module.exports = async ({ id }) => {
   const faunadb = initClient();
   const ref = query.Ref(query.Collection('contacts'), id);
 

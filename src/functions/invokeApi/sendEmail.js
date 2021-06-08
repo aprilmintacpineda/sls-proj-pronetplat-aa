@@ -4,7 +4,7 @@ const sesv2 = new AWS.SESV2({
   apiVersion: '2019-09-27'
 });
 
-module.exports.handler = async ({
+module.exports = async ({
   recipient,
   content,
   subject,

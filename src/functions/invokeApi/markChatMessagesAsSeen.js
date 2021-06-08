@@ -4,7 +4,7 @@ const {
   sendWebSocketEvent
 } = require('dependencies/utils/webSocket');
 
-module.exports.handler = async ({
+module.exports = async ({
   authUser,
   contactId,
   unseenChatMessageIds

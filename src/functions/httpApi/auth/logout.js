@@ -16,7 +16,7 @@ async function handler ({ deviceToken, authUser }) {
   return { statusCode: 200 };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [
     guardTypes.auth,

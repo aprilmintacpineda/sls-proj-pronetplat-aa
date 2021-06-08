@@ -11,13 +11,7 @@ const {
   sendWebSocketEvent
 } = require('dependencies/utils/webSocket');
 
-module.exports.handler = async ({
-  authUser,
-  userId,
-  body,
-  type,
-  title
-}) => {
+module.exports = async ({ authUser, userId, body, type, title }) => {
   const queries = [
     create('notifications', {
       userId,

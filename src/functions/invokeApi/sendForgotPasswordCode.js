@@ -11,7 +11,7 @@ const {
   sendEmailResetPasswordCode
 } = require('dependencies/utils/sendEmail');
 
-module.exports.handler = async ({ email, isResend = false }) => {
+module.exports = async ({ email, isResend = false }) => {
   const faunadb = initClient();
   const resetPasswordCode = randomCode();
 

@@ -9,12 +9,7 @@ const {
   getPersonalPronoun
 } = require('dependencies/utils/users');
 
-module.exports.handler = async ({
-  authUser,
-  userId,
-  body,
-  title
-}) => {
+module.exports = async ({ authUser, userId, body, title }) => {
   const faunadb = initClient();
   let after = null;
   let allTokens = [];

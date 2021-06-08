@@ -59,7 +59,7 @@ async function handler ({ authUser }) {
   };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.emailNotVerified]
 });

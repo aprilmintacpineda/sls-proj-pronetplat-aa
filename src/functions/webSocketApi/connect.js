@@ -37,4 +37,4 @@ async function handler (webSocketEvent) {
   return { statusCode: 200 };
 }
 
-module.exports.handler = handler;
+module.exports = handler;

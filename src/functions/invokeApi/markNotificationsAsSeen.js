@@ -1,10 +1,7 @@
 const { query } = require('faunadb');
 const { initClient, update } = require('dependencies/utils/faunadb');
 
-module.exports.handler = async ({
-  authUser,
-  unseenNotificationIds
-}) => {
+module.exports = async ({ authUser, unseenNotificationIds }) => {
   const faunadb = initClient();
 
   await faunadb.query(

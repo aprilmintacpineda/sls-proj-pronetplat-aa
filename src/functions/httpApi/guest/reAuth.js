@@ -62,7 +62,7 @@ async function handler ({ formBody, deviceToken, authUser }) {
   };
 }
 
-module.exports.handler = httpGuard({
+module.exports = httpGuard({
   handler,
   guards: [
     guardTypes.softAuth,
