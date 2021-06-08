@@ -185,7 +185,7 @@ Resources:
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: websocketApi/index.handler
+      Handler: webSocketApi/index.handler
       Policies:
         - CloudWatchLambdaInsightsExecutionRolePolicy
         - Statement:
