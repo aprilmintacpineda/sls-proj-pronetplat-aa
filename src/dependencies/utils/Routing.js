@@ -50,7 +50,7 @@ module.exports = class Routing {
       }
     }
 
-    console.log('path', path, ' was not found');
+    console.log('path', httpMethod, path, ' was not found');
     return null;
   }
 };
