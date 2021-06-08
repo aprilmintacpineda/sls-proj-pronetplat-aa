@@ -51,7 +51,7 @@ async function handler ({ params: { nextToken }, authUser }) {
 
   if (unseenNotificationIds.length) {
     await invokeEvent({
-      functionName: process.env.fn_markNotificationsAsSeen,
+      event: 'markNotificationsAsSeen',
       payload: {
         authUser,
         unseenNotificationIds

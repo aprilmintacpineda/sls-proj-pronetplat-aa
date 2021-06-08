@@ -50,50 +50,10 @@ Globals:
           - "-"
           - - "proj-pronetplat-aa-users"
             - !Ref Stage
-        fn_sendPushNotification: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendPushNotification"
-        fn_sendEmail: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendEmail"
-        fn_forceExpireDeviceToken: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-forceExpireDeviceToken"
-        fn_sendForgotPasswordCode: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendForgotPasswordCode"
-        fn_confirmForgotPassword: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-confirmForgotPassword"
-        fn_createAccount: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-createAccount"
-        fn_markNotificationsAsSeen: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-markNotificationsAsSeen"
-        fn_createNotification: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-createNotification"
-        fn_incrementNumTimesOpened: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-incrementNumTimesOpened"
-        fn_sendWebSocketEvent: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendWebSocketEvent"
-        fn_markChatMessagesAsSeen: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-markChatMessagesAsSeen"
+        fn_invokeApi: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-invokeApi"
   Api:
     OpenApiVersion: 3.0.1
 
@@ -108,6 +68,14 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-httpApi"
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref invokeApi
+        - S3CrudPolicy:
+            BucketName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
       Events:
         ApiEvent:
           Type: Api
@@ -126,6 +94,22 @@ Resources:
         - '-'
         - - !Ref Stage
           - "proj-pronetplat-aa-invokeApi"
+      Policies:
+        - Statement:
+          - Action:
+              - ses:SendEmail
+            Effect: Allow
+            Resource: "*"
+        - S3CrudPolicy:
+            BucketName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+        - Statement:
+          - Action:
+              - execute-api:ManageConnections
+            Effect: Allow
+            Resource: "*"
   ######
   # Guest routes
   #

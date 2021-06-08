@@ -185,7 +185,7 @@ async function handler ({
   }
 
   await invokeEvent({
-    functionName: process.env.fn_incrementNumTimesOpened,
+    event: 'incrementNumTimesOpened',
     payload: { id: contactId }
   });
 

@@ -6,7 +6,7 @@ const { invokeEvent } = require('dependencies/utils/lambda');
 
 async function handler ({ deviceToken, authUser }) {
   await invokeEvent({
-    functionName: process.env.fn_forceExpireDeviceToken,
+    event: 'forceExpireDeviceToken',
     payload: {
       deviceToken,
       userId: authUser.id

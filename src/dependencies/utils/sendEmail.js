@@ -2,7 +2,7 @@ const { invokeEvent } = require('./lambda');
 
 function sendEmail (payload) {
   return invokeEvent({
-    functionName: process.env.fn_sendEmail,
+    event: 'sendEmail',
     payload
   });
 }

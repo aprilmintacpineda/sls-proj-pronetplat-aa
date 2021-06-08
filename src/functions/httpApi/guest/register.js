@@ -4,7 +4,7 @@ const validate = require('dependencies/utils/validate');
 
 async function handler ({ formBody }) {
   await invokeEvent({
-    functionName: process.env.fn_createAccount,
+    event: 'createAccount',
     payload: formBody
   });
 
