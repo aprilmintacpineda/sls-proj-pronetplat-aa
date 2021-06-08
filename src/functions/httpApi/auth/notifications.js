@@ -51,7 +51,7 @@ async function handler ({ params: { nextToken }, authUser }) {
 
   if (unseenNotificationIds.length) {
     await invokeEvent({
-      event: 'markNotificationsAsSeen',
+      eventName: 'markNotificationsAsSeen',
       payload: {
         authUser,
         unseenNotificationIds

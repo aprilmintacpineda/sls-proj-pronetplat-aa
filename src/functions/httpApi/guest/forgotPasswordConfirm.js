@@ -4,7 +4,7 @@ const validate = require('dependencies/utils/validate');
 
 async function handler ({ formBody }) {
   await invokeEvent({
-    event: 'confirmForgotPassword',
+    eventName: 'confirmForgotPassword',
     payload: formBody
   });
 

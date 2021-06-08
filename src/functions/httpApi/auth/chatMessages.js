@@ -97,7 +97,7 @@ async function handler ({
 
   if (unseenChatMessageIds.length) {
     await invokeEvent({
-      event: 'markChatMessagesAsSeen',
+      eventName: 'markChatMessagesAsSeen',
       payload: {
         authUser,
         contactId,

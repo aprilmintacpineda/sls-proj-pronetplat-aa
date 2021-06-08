@@ -2,14 +2,14 @@ const { invokeEvent } = require('./lambda');
 
 module.exports.createNotification = payload => {
   return invokeEvent({
-    event: 'createNotification',
+    eventName: 'createNotification',
     payload
   });
 };
 
 module.exports.sendPushNotification = payload => {
   return invokeEvent({
-    event: 'sendPushNotification',
+    eventName: 'sendPushNotification',
     payload
   });
 };
