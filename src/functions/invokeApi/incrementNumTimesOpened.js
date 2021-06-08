@@ -1,16 +1,31 @@
 const { query } = require('faunadb');
-const { initClient, update } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  getByIndex,
+  update
+} = require('dependencies/utils/faunadb');
 
-module.exports = async ({ id }) => {
+module.exports = async ({ contactId, authUser }) => {
   const faunadb = initClient();
-  const ref = query.Ref(query.Collection('contacts'), id);
 
   await faunadb.query(
-    update(ref, {
-      numTimesOpened: query.Add(
-        query.Select(['data', 'numTimesOpened'], query.Get(ref)),
-        1
-      )
-    })
+    query.Let(
+      {
+        contact: getByIndex(
+          'contactByOwnerContact',
+          authUser.id,
+          contactId
+        )
+      },
+      update(query.Select(['ref'], query.Var('contact')), {
+        numTimesOpened: query.Add(
+          query.Select(
+            ['data', 'numTimesOpened'],
+            query.Var('contact')
+          ),
+          1
+        )
+      })
+    )
   );
 };

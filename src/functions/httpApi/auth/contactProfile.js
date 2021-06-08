@@ -186,7 +186,10 @@ async function handler ({
 
   await invokeEvent({
     eventName: 'incrementNumTimesOpened',
-    payload: { id: contactId }
+    payload: {
+      contactId,
+      authUser
+    }
   });
 
   return {
