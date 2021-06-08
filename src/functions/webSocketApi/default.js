@@ -11,5 +11,5 @@ module.exports = webSocketEvent => {
     return { statusCode: 404 };
   }
 
-  return eventHandler(data, webSocketEvent);
+  return eventHandler(webSocketEvent, data);
 };
