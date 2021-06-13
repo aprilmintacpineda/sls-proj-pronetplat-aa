@@ -41,7 +41,7 @@ async function handler ({ authUser, params: { contactId } }) {
           update(selectRef(query.Var('contactRequest')), {
             canFollowUpAt: query.Format(
               '%t',
-              query.TimeAdd(query.Now(), 1, 'day')
+              query.TimeAdd(query.Now(), 4, 'hours')
             )
           })
         )
