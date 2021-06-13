@@ -95,7 +95,8 @@ async function handler ({ authUser, params: { contactId } }) {
       authUser
     }),
     sendWebSocketEvent({
-      type: 'contactRequest',
+      type: 'notification',
+      trigger: 'contactRequest',
       authUser,
       userId: contactId
     })
