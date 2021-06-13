@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 
 const apiGateway = new AWS.ApiGatewayManagementApi({
   apiVersion: '2018-11-29',
-  endpoint: 'ag8f8kbtz8.execute-api.ap-southeast-1.amazonaws.com/dev'
+  endpoint: 'i1rrsnnag7.execute-api.ap-southeast-1.amazonaws.com/dev'
 });
 
 module.exports = async webSocketEvent => {
