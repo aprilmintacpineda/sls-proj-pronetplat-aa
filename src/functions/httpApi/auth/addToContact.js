@@ -17,6 +17,7 @@ const {
 const {
   sendPushNotification
 } = require('dependencies/utils/notifications');
+const { getFullName } = require('dependencies/utils/users');
 const {
   sendWebSocketEvent
 } = require('dependencies/utils/webSocket');
@@ -90,7 +91,7 @@ async function handler ({ authUser, params: { contactId } }) {
   await Promise.all([
     sendPushNotification({
       userId: contactId,
-      title: 'Contact request',
+      title: 'Contact request received',
       body: '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
       authUser
     }),
@@ -98,7 +99,13 @@ async function handler ({ authUser, params: { contactId } }) {
       type: 'notification',
       trigger: 'contactRequest',
       authUser,
-      userId: contactId
+      userId: contactId,
+      payload: {
+        body: `${getFullName(
+          authUser
+        )} has accepted your contact request.`,
+        title: 'Contact request received'
+      }
     })
   ]);
 
