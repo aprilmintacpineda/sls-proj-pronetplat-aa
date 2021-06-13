@@ -7,6 +7,9 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const {
+  sendWebSocketEvent
+} = require('dependencies/utils/webSocket');
 
 async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
@@ -37,6 +40,12 @@ async function handler ({ authUser, params: { contactId } }) {
       )
     )
   );
+
+  await sendWebSocketEvent({
+    type: 'userDisconected',
+    authUser,
+    userId: contactId
+  });
 
   return { statusCode: 200 };
 }
