@@ -22,19 +22,14 @@ module.exports = async ({
 
   const user = await faunadb.query(getByIndex('userByEmail', email));
 
-  if (hasTimePassed(user.data.passwordResetCodeExpiresAt)) {
-    console.log('password reset code expired');
-    await sendEmailResetPasswordFailed(user.data.email);
-    return;
-  }
-
   if (
+    hasTimePassed(user.data.passwordResetCodeExpiresAt) ||
     !(await verifyHash(
       confirmationCode,
       user.data.hashedResetPasswordCode
     ))
   ) {
-    console.log('incorrect code');
+    console.log('Reset password failed.');
     await sendEmailResetPasswordFailed(user.data.email);
     return;
   }
