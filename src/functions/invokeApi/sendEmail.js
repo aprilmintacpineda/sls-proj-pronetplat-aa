@@ -24,11 +24,7 @@ module.exports = async ({
                     <br>
                     <p style="text-align: center;">
                       <small>
-                        This is a system generated email. Do not reply to this email.
-                      </small>
-                    </p>
-                    <p style="text-align: center;">
-                      <small>
+                        This is a system generated email. Do not reply to this email.<br>
                         If you need additional assistance, please send us an email to <a href="mailto:hello@entrepic.com">hello@entrepic.com</a>
                       </small>
                     </p>
