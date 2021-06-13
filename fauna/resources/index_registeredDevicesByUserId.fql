@@ -5,7 +5,6 @@ CreateIndex({
     { field: ['data', 'userId'] }
   ],
   values: [
-    { field: ['data', 'expiresAt'] },
     { field: ['data', 'deviceToken'] },
     { field: ['data', 'userId'] },
     { field: ['ref'] }

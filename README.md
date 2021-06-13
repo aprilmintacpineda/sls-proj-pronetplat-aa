@@ -46,6 +46,3 @@ logout:
 Started development on December of 2020, I conceptualized about this in mid 2017 when I was still actively attending tech conferences, I saw people exchanging calling cards, some of them ran out of calling cards, some of them spent more than 500 pesos just of around 300 copies of calling cards.
 
 First concept had a connecting mechanism inspired by **shareit** a mobile app for sharing files using wifi hotspots. Then while thinking about developing it, I conceptualized different approaches that I also plan to implement in the future.
-
-
-DUMMY CHANGE BECAUSE GITHUB ACTIONS SUCKS.

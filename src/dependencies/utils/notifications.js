@@ -2,14 +2,14 @@ const { invokeEvent } = require('./lambda');
 
 module.exports.createNotification = payload => {
   return invokeEvent({
-    functionName: process.env.fn_createNotification,
+    eventName: 'createNotification',
     payload
   });
 };
 
 module.exports.sendPushNotification = payload => {
   return invokeEvent({
-    functionName: process.env.fn_sendPushNotification,
+    eventName: 'sendPushNotification',
     payload
   });
 };

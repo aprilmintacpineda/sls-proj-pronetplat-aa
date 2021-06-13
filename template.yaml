@@ -9,12 +9,12 @@ Mappings:
   stageVars:
     dev:
       appPackageName: com.aprmp.projpronetplataa.dev
-      apiSuDomain: "apiv1dev"
-      reservedConcurrentExecutions: ""
+      apiSubDomain: "apiv1dev"
+      webSocketSubDomain: "websocketdev"
     prod:
       appPackageName: com.aprmp.projpronetplataa
-      apiSuDomain: "apiv1"
-      reservedConcurrentExecutions: 10
+      apiSubDomain: "apiv1"
+      webSocketSubDomain: "websocketdev"
 
 Parameters:
   Stage:
@@ -33,13 +33,11 @@ Globals:
     Layers:
       - !Ref dependencies
       - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
-    MemorySize: 1024
-    ReservedConcurrentExecutions: !FindInMap
-      - stageVars
-      - !Ref Stage
-      - reservedConcurrentExecutions
+    MemorySize: 4096
     Timeout: 30
     Runtime: nodejs12.x
+    EventInvokeConfig:
+      MaximumRetryAttempts: 0
     Environment:
       Variables:
         stage: !Ref Stage
@@ -52,983 +50,71 @@ Globals:
           - "-"
           - - "proj-pronetplat-aa-users"
             - !Ref Stage
-        fn_sendPushNotification: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendPushNotification"
-        fn_sendEmail: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendEmail"
-        fn_forceExpireDeviceToken: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-forceExpireDeviceToken"
-        fn_sendForgotPasswordCode: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-sendForgotPasswordCode"
-        fn_confirmForgotPassword: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-confirmForgotPassword"
-        fn_createAccount: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-createAccount"
-        fn_markNotificationsAsSeen: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-markNotificationsAsSeen"
-        fn_createNotification: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-createNotification"
-        fn_incrementNumTimesOpened: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-incrementNumTimesOpened"
+        fn_invokeApi: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-invokeApi"
   Api:
     OpenApiVersion: 3.0.1
 
 Resources:
-  ######
-  # Guest routes
-  #
-  register:
+  httpApi:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: register.handler
+      Handler: httpApi/index.handler
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-register"
+          - "proj-pronetplat-aa-httpApi"
       Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
         - LambdaInvokePolicy:
-            FunctionName: !Ref createAccount
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /register
-            RestApiId:
-              Ref: mainBackendApi
-  forgotPasswordSend:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: forgotPasswordSend.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-forgotPasswordSend"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendForgotPasswordCode
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /forgot-password-send
-            RestApiId:
-              Ref: mainBackendApi
-  forgotPasswordConfirm:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: forgotPasswordConfirm.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-forgotPasswordConfirm"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref confirmForgotPassword
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /forgot-password-confirm
-            RestApiId:
-              Ref: mainBackendApi
-  login:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: login.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-login"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /login
-            RestApiId:
-              Ref: mainBackendApi
-  reAuth:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: reAuth.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-reAuth"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /re-auth
-            RestApiId:
-              Ref: mainBackendApi
-  ######
-  # Auth routes
-  #
-  verifyEmail:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: verifyEmail.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-verifyEmail"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendEmail
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /verify-email
-            RestApiId:
-              Ref: mainBackendApi
-  resendEmailCode:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: resendEmailCode.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-resendEmailCode"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendEmail
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /resend-email-code
-            RestApiId:
-              Ref: mainBackendApi
-  changePersonalInfo:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: changePersonalInfo.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-changePersonalInfo"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /change-personal-info
-            RestApiId:
-              Ref: mainBackendApi
-  changeProfilePicture:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: changeProfilePicture.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-changeProfilePicture"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - Statement:
-          - Action:
-              - s3:PutObject
-              - s3:PutObjectAcl
-            Effect: Allow
-            Resource:
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.jpeg"
-              - !Join
-                - ""
-                - - !GetAtt usersS3Bucket.Arn
-                  - "/*.png"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /change-profile-picture
-            RestApiId:
-              Ref: mainBackendApi
-  addToContact:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: addToContact.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotification
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-addToContact"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /add-to-contacts/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  receivedContactRequests:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: receivedContactRequests.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-receivedContactRequests"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /received-contact-requests
-            RestApiId:
-              Ref: mainBackendApi
-  sentContactRequests:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: sentContactRequests.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-sentContactRequests"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /sent-contact-requests
-            RestApiId:
-              Ref: mainBackendApi
-  notifications:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: notifications.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-notifications"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref markNotificationsAsSeen
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /notifications
-            RestApiId:
-              Ref: mainBackendApi
-  acceptContactRequest:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: acceptContactRequest.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-acceptContactRequest"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref createNotification
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /accept-contact-request/{senderId}
-            RestApiId:
-              Ref: mainBackendApi
-  declineContactRequest:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: declineContactRequest.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-declineContactRequest"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref createNotification
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /decline-contact-request/{senderId}
-            RestApiId:
-              Ref: mainBackendApi
-  validateAuth:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: validateAuth.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-validateAuth"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /validate-auth
-            RestApiId:
-              Ref: mainBackendApi
-  setupComplete:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: setupComplete.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-setupComplete"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /setup-complete
-            RestApiId:
-              Ref: mainBackendApi
-  sendFollowUp:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: sendFollowUp.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-sendFollowUp"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref createNotification
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /send-follow-up/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  cancelContactRequest:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: cancelContactRequest.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-cancelContactRequest"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref createNotification
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /cancel-contact-request/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  disconnect:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: disconnect.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-disconnect"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /disconnect/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  blockUser:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: blockUser.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-blockUser"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /block-user/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  unblockUser:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: unblockUser.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-unblockUser"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /unblock-user/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  myContacts:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: myContacts.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-myContacts"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /my-contacts
-            RestApiId:
-              Ref: mainBackendApi
-  contactProfile:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: contactProfile.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-contactProfile"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref incrementNumTimesOpened
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /contacts/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  blockList:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: blockList.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-blockList"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /block-list
-            RestApiId:
-              Ref: mainBackendApi
-  changePassword:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: changePassword.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-changePassword"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendEmail
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /change-password
-            RestApiId:
-              Ref: mainBackendApi
-  logout:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: logout.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref forceExpireDeviceToken
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-logout"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /logout
-            RestApiId:
-              Ref: mainBackendApi
-  contactDetailAdd:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: contactDetailAdd.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-contactDetailAdd"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /contact-details
-            RestApiId:
-              Ref: mainBackendApi
-  contactDetailsList:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: contactDetailsList.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-contactDetailsList"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /contact-details
-            RestApiId:
-              Ref: mainBackendApi
-  contactDetailDelete:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: contactDetailDelete.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-contactDetailDelete"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: delete
-            Path: /contact-details/{contactDetailId}
-            RestApiId:
-              Ref: mainBackendApi
-  contactDetailUpdate:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: contactDetailUpdate.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-contactDetailUpdate"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: patch
-            Path: /contact-details/{contactDetailId}
-            RestApiId:
-              Ref: mainBackendApi
-  markAsCloseFriend:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: markAsCloseFriend.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-markAsCloseFriend"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /mark-as-close-friend/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  unmarkAsCloseFriend:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: unmarkAsCloseFriend.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-unmarkAsCloseFriend"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /unmark-as-close-friend/{contactId}
-            RestApiId:
-              Ref: mainBackendApi
-  searchUsers:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: searchUsers.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-searchUsers"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: get
-            Path: /search-users
-            RestApiId:
-              Ref: mainBackendApi
-  changeAllowSearchByName:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: changeAllowSearchByName.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-changeAllowSearchByName"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /change-allow-search-by-name
-            RestApiId:
-              Ref: mainBackendApi
-  changeAllowSearchByUsername:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: changeAllowSearchByUsername.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-changeAllowSearchByUsername"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /change-allow-search-by-username
-            RestApiId:
-              Ref: mainBackendApi
-  changeUsername:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: changeUsername.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-changeUsername"
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: post
-            Path: /change-username
-            RestApiId:
-              Ref: mainBackendApi
-  ######
-  # Invokable functions
-  #
-  createNotification:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: createNotification.handler
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendPushNotification
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-createNotification"
-  sendPushNotification:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: sendPushNotification.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-sendPushNotification"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-  forceExpireDeviceToken:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: forceExpireDeviceToken.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-forceExpireDeviceToken"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-  sendEmail:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: sendEmail.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-sendEmail"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - Statement:
-          - Action:
-              - ses:SendEmail
-            Effect: Allow
-            Resource: "*"
-  sendForgotPasswordCode:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: sendForgotPasswordCode.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-sendForgotPasswordCode"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendEmail
-  confirmForgotPassword:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: confirmForgotPassword.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-confirmForgotPassword"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendEmail
-  createAccount:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: createAccount.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-createAccount"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-        - LambdaInvokePolicy:
-            FunctionName: !Ref sendEmail
-  markNotificationsAsSeen:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: markNotificationsAsSeen.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-markNotificationsAsSeen"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-  incrementNumTimesOpened:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      Handler: incrementNumTimesOpened.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-incrementNumTimesOpened"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
-  ######
-  # S3 Events
-  #
-  profilePictureUploaded:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      MemorySize: 4096
-      Handler: profilePictureUploaded.handler
-      FunctionName: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-profilePictureUploaded"
-      Policies:
-        - CloudWatchLambdaInsightsExecutionRolePolicy
+            FunctionName: !Ref invokeApi
         - S3CrudPolicy:
             BucketName: !Join
               - "-"
               - - "proj-pronetplat-aa-users"
                 - !Ref Stage
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: any
+            Path: /{proxy+}
+            RestApiId:
+              Ref: mainBackendApi
+  invokeApi:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: invokeApi/index.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-invokeApi"
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Join
+              - '-'
+              - - !Ref Stage
+                - "proj-pronetplat-aa-invokeApi"
+        - Statement:
+          - Action:
+              - ses:SendEmail
+            Effect: Allow
+            Resource: "*"
+        - S3CrudPolicy:
+            BucketName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+        - Statement:
+          - Action:
+              - execute-api:ManageConnections
+            Effect: Allow
+            Resource: "*"
       Events:
         Upload:
           Type: S3
@@ -1040,6 +126,143 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: newProfilePicture_
+  ######
+  # Websocket
+  #
+  webSocket:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-webSocket"
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+  webSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - connectRoute
+      - disconnectRoute
+      - defaultWebSocketRoute
+    Properties:
+      ApiId: !Ref webSocket
+  webSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Ref Stage
+      DeploymentId: !Ref webSocketDeployment
+      ApiId: !Ref webSocket
+  # removed custom domain configuration for now because of https://github.com/aws/serverless-application-model/issues/2016
+  # webSocketCustomDomainCert:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !Sub
+  #       - ${webSocketSubDomain}.entrepic.com
+  #       - webSocketSubDomain: !FindInMap
+  #         - stageVars
+  #         - !Ref Stage
+  #         - webSocketSubDomain
+  #     ValidationMethod: DNS
+  # webSocketCustomDomain:
+  #   Type: AWS::ApiGatewayV2::DomainName
+  #   Properties:
+  #     DomainName: !Sub
+  #       - ${webSocketSubDomain}.entrepic.com
+  #       - webSocketSubDomain: !FindInMap
+  #         - stageVars
+  #         - !Ref Stage
+  #         - webSocketSubDomain
+  #     DomainNameConfigurations:
+  #       - CertificateArn: !Ref webSocketCustomDomainCert
+  # webSocketCustomDomainMapping:
+  #   Type: AWS::ApiGatewayV2::ApiMapping
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     DomainName: !Sub
+  #       - ${webSocketSubDomain}.entrepic.com
+  #       - webSocketSubDomain: !FindInMap
+  #         - stageVars
+  #         - !Ref Stage
+  #         - webSocketSubDomain
+  #     Stage: !Ref Stage
+  webSocketApi:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: webSocketApi/index.handler
+      Policies:
+        - Statement:
+          - Action:
+              - execute-api:ManageConnections
+            Effect: Allow
+            Resource: "*"
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-webSocketApi"
+  webSocketApiPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - webSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref webSocketApi
+      Principal: apigateway.amazonaws.com
+  connectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
+  connectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: ConnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref connectInteg
+  disconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
+  disconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: DisconnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref disconnectInteg
+  defaultWebSocketRouteInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref webSocket
+      Description: any websocket routes
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${webSocketApi.Arn}/invocations
+  defaultWebSocketRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref webSocket
+      RouteKey: $default
+      AuthorizationType: NONE
+      OperationName: defaultWebSocketRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref defaultWebSocketRouteInteg
   ######
   # Lambda layers
   #
@@ -1060,11 +283,11 @@ Resources:
     Type: AWS::CertificateManager::Certificate
     Properties:
       DomainName: !Sub
-        - ${apiSuDomain}.entrepic.com
-        - apiSuDomain: !FindInMap
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
           - stageVars
           - !Ref Stage
-          - apiSuDomain
+          - apiSubDomain
       ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
@@ -1074,14 +297,15 @@ Resources:
         Type: REGIONAL
       Domain:
         DomainName: !Sub
-            - ${apiSuDomain}.entrepic.com
-            - apiSuDomain: !FindInMap
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
               - stageVars
               - !Ref Stage
-              - apiSuDomain
+              - apiSubDomain
         CertificateArn: !Ref customDomainCert
         Route53:
           HostedZoneId: Z0450109WGLMG82TZFOY
+  # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
   #   Properties:

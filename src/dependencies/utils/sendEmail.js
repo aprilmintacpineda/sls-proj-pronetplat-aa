@@ -2,7 +2,7 @@ const { invokeEvent } = require('./lambda');
 
 function sendEmail (payload) {
   return invokeEvent({
-    functionName: process.env.fn_sendEmail,
+    eventName: 'sendEmail',
     payload
   });
 }
@@ -214,7 +214,40 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
         </p>
       </div>
     `,
-    subject: 'Password was reset successfully',
+    subject: 'Password reset successful',
+    emailType: 'forgot-password-success'
+  });
+};
+
+module.exports.sendEmailResetPasswordFailed = recipient => {
+  return sendEmail({
+    recipient,
+    from: 'forgot-password@entrepic.com',
+    content: `
+      <div
+        style="
+          width: 500px;
+          text-align: center;
+          margin: 0 auto;
+        "
+      >
+        <h1 style="margin-bottom: 50px;">
+          Reset password failed.
+        </h1>
+        <p>
+          We are sending you this email to inform you that your
+          recent attempt to reset your password. This is either because
+          your confirmation code has expired or you entered an incorrect
+          code.
+        </p>
+        <p>
+          If you did not make this password reset and you suspect
+          that your account may have been compromised,
+          please can contact support to ask for assistance.
+        </p>
+      </div>
+    `,
+    subject: 'Password reset failed.',
     emailType: 'forgot-password-success'
   });
 };
@@ -245,7 +278,7 @@ module.exports.sendEmailChangePassword = recipient => {
         </p>
       </div>
     `,
-    subject: 'Password was changed successfully',
+    subject: 'Password change successful',
     emailType: 'change-password-success'
   });
 };

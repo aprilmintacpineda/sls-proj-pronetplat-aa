@@ -25,7 +25,11 @@ const validationRules = {
     return !this.email(value) || !this.url(value);
   },
   required (value) {
-    return value === '' || value === undefined || value === null;
+    return (
+      value === undefined ||
+      value === null ||
+      String(value).trim() === ''
+    );
   },
   maxLength (value, [max]) {
     return value.length > max;
