@@ -279,32 +279,32 @@ Resources:
   ######
   # API
   #
-  # customDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${apiSubDomain}.entrepic.com
-  #       - apiSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - apiSubDomain
-  #     ValidationMethod: DNS
+  customDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - apiSubDomain
+      ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      # Domain:
-      #   DomainName: !Sub
-      #       - ${apiSubDomain}.entrepic.com
-      #       - apiSubDomain: !FindInMap
-      #         - stageVars
-      #         - !Ref Stage
-      #         - apiSubDomain
-      #   CertificateArn: !Ref customDomainCert
-      #   Route53:
-      #     HostedZoneId: Z0450109WGLMG82TZFOY
+      Domain:
+        DomainName: !Sub
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - apiSubDomain
+        CertificateArn: !Ref customDomainCert
+        Route53:
+          HostedZoneId: Z0450109WGLMG82TZFOY
   # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
