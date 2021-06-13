@@ -219,6 +219,38 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
   });
 };
 
+module.exports.sendEmailResetPasswordFailed = recipient => {
+  return sendEmail({
+    recipient,
+    from: 'forgot-password@entrepic.com',
+    content: `
+      <div
+        style="
+          width: 500px;
+          text-align: center;
+          margin: 0 auto;
+        "
+      >
+        <h1 style="margin-bottom: 50px;">
+          Reset password failed.
+        </h1>
+        <p>
+          We are sending you this email to inform you that your
+          recent attempt to reset your password failed because you
+          entered the incorrect code.
+        </p>
+        <p>
+          If you did not make this password reset and you suspect
+          that your account may have been compromised,
+          please can contact support to ask for assistance.
+        </p>
+      </div>
+    `,
+    subject: 'Password was reset successfully',
+    emailType: 'forgot-password-success'
+  });
+};
+
 module.exports.sendEmailChangePassword = recipient => {
   return sendEmail({
     recipient,

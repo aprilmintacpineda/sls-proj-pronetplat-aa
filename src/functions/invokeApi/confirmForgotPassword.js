@@ -9,7 +9,8 @@ const {
   hasTimePassed
 } = require('dependencies/utils/helpers');
 const {
-  sendEmailResetPasswordSuccess
+  sendEmailResetPasswordSuccess,
+  sendEmailResetPasswordFailed
 } = require('dependencies/utils/sendEmail');
 
 module.exports = async ({
@@ -33,6 +34,7 @@ module.exports = async ({
     ))
   ) {
     console.log('incorrect code');
+    await sendEmailResetPasswordFailed(user.data.email);
     return;
   }
 
