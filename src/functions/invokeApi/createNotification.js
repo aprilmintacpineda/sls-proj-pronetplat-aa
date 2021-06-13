@@ -65,7 +65,6 @@ module.exports = async ({ authUser, userId, body, type, title }) => {
     sendWebSocketEvent({
       type: 'notification',
       trigger: type,
-      incrementNotificationsCount: true,
       authUser,
       userId,
       payload: {
