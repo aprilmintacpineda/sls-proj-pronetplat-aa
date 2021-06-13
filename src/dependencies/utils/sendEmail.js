@@ -236,8 +236,9 @@ module.exports.sendEmailResetPasswordFailed = recipient => {
         </h1>
         <p>
           We are sending you this email to inform you that your
-          recent attempt to reset your password failed because you
-          entered the incorrect code.
+          recent attempt to reset your password. This is either because
+          your confirmation code has expired or you entered an incorrect
+          code.
         </p>
         <p>
           If you did not make this password reset and you suspect

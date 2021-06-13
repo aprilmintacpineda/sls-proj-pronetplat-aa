@@ -24,6 +24,7 @@ module.exports = async ({
 
   if (hasTimePassed(user.data.passwordResetCodeExpiresAt)) {
     console.log('password reset code expired');
+    await sendEmailResetPasswordFailed(user.data.email);
     return;
   }
 
