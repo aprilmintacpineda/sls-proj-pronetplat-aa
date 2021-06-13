@@ -214,7 +214,7 @@ module.exports.sendEmailResetPasswordSuccess = recipient => {
         </p>
       </div>
     `,
-    subject: 'Password was reset successfully',
+    subject: 'Password reset successful',
     emailType: 'forgot-password-success'
   });
 };
@@ -247,7 +247,7 @@ module.exports.sendEmailResetPasswordFailed = recipient => {
         </p>
       </div>
     `,
-    subject: 'Password was reset successfully',
+    subject: 'Password reset failed.',
     emailType: 'forgot-password-success'
   });
 };
@@ -278,7 +278,7 @@ module.exports.sendEmailChangePassword = recipient => {
         </p>
       </div>
     `,
-    subject: 'Password was changed successfully',
+    subject: 'Password change successful',
     emailType: 'change-password-success'
   });
 };
