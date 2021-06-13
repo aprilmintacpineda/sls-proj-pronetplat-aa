@@ -15,6 +15,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const { sendWebSocketEvent } = require('functions/invokeApi/events');
 
 async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();
@@ -157,6 +158,12 @@ async function handler ({ authUser, params: { contactId } }) {
 
     return { statusCode: 500 };
   }
+
+  await sendWebSocketEvent({
+    type: 'blockedByUser',
+    authUser,
+    userId: contactId
+  });
 
   return { statusCode: 200 };
 }
