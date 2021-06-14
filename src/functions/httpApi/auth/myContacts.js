@@ -54,7 +54,8 @@ async function handler ({ params: { nextToken }, authUser }) {
     body: JSON.stringify({
       data: result.data.map(user => ({
         ...getPublicUserData(user),
-        unreadChatMessages: user.data.unreadChatMessages
+        unreadChatMessages: user.data.unreadChatMessages,
+        isConnected: true
       })),
       nextToken: result.after?.[0].id || null
     })
