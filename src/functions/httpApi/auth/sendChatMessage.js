@@ -99,6 +99,14 @@ async function handler ({
           },
           query.Do(
             query.Call(
+              'updateUserInbox',
+              authUser.id,
+              formBody.messageBody.length > 100
+                ? formBody.messageBody.substr(0, 97) + '...'
+                : formBody.messageBody,
+              1
+            ),
+            query.Call(
               'updateContactBadgeCount',
               contactId,
               authUser.id,

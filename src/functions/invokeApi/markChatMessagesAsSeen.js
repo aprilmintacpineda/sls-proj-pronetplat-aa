@@ -22,14 +22,16 @@ module.exports = async ({
   });
 
   // update unread messages badge if contact still exists
+  const amount = -unseenChatMessageIds.length;
   queries.push(
     query.Call(
       'updateContactBadgeCount',
       authUser.id,
       contactId,
       'unreadChatMessagesFromContact',
-      -unseenChatMessageIds.length
-    )
+      amount
+    ),
+    query.Call('updateUserInbox', authUser.id, '', amount)
   );
 
   const seenAt = await faunadb.query(

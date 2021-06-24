@@ -1,0 +1,17 @@
+CreateFunction({
+  "name": "updateUserInbox",
+  "body": Query(Lambda(["userId", "truncatedMessage", "amount"], Let([{
+    "inbox": Get(Match(Index("inboxesByUserId"), Var("userId")))
+  }, {
+    "numUnreadChatMessages": Max(0, Add(Select(["data", "numUnreadChatMessages"], Var("inbox")), Var("amount")))
+  }], If(LT(Var("amount"), 0), Update(Select(["ref"], Var("inbox")), {
+    "data": {
+      "numUnreadChatMessages": Var("numUnreadChatMessages")
+    }
+  }), Update(Select(["ref"], Var("inbox")), {
+    "data": {
+      "numUnreadChatMessages": Var("numUnreadChatMessages"),
+      "truncatedMessage": Var("truncatedMessage")
+    }
+  })))))
+})
