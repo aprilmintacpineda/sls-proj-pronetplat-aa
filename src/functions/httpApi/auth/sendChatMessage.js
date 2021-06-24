@@ -99,8 +99,9 @@ async function handler ({
           },
           query.Do(
             query.Call(
-              'updateUserInbox',
+              'updateOrCreateUserInbox',
               authUser.id,
+              contactId,
               formBody.messageBody.length > 100
                 ? formBody.messageBody.substr(0, 97) + '...'
                 : formBody.messageBody,

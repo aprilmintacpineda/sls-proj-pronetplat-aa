@@ -1,0 +1,24 @@
+CreateFunction({
+  "name": "updateOrCreateUserInbox",
+  "body": Query(Lambda(["userId1", "userId2", "lastMessageId", "amount"], If(Exists(Union(Match(Index("inboxesByUserId"), [Var("userId1"), Var("userId2")]), Match(Index("inboxesByUserId"), [Var("userId2"), Var("userId1")]))), Let([{
+    "inbox": Get(Union(Match(Index("inboxesByUserId"), [Var("userId1"), Var("userId2")]), Match(Index("inboxesByUserId"), [Var("userId2"), Var("userId1")])))
+  }, {
+    "numUnreadChatMessages": Max(0, Add(Select(["data", "numUnreadChatMessages"], Var("inbox")), Var("amount")))
+  }], If(LT(Var("amount"), 0), Update(Select(["ref"], Var("inbox")), {
+    "data": {
+      "numUnreadChatMessages": Var("numUnreadChatMessages")
+    }
+  }), Update(Select(["ref"], Var("inbox")), {
+    "data": {
+      "numUnreadChatMessages": Var("numUnreadChatMessages"),
+      "lastMessageId": Var("lastMessageId")
+    }
+  }))), Create("chatInboxes", {
+    "data": {
+      "userId1": Var("userId1"),
+      "userId2": Var("userId2"),
+      "numUnreadChatMessages": Var("numUnreadChatMessages"),
+      "lastMessageId": Var("lastMessageId")
+    }
+  }))))
+})

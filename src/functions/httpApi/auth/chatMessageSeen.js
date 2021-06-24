@@ -52,7 +52,16 @@ async function handler ({ authUser, params: { chatMessageId } }) {
                 'unreadChatMessagesFromContact',
                 -1
               ),
-              query.Call('updateUserInbox', authUser.id, '', -1),
+              query.Call(
+                'updateOrCreateUserInbox',
+                authUser.id,
+                query.Select(
+                  ['data', 'senderId'],
+                  query.Var('updatedChatMessage')
+                ),
+                '',
+                -1
+              ),
               query.Var('updatedChatMessage')
             )
           ),

@@ -31,7 +31,12 @@ module.exports = async ({
       'unreadChatMessagesFromContact',
       amount
     ),
-    query.Call('updateUserInbox', authUser.id, '', amount)
+    query.Call(
+      'updateOrCreateUserInbox',
+      authUser.id,
+      contactId,
+      amount
+    )
   );
 
   const seenAt = await faunadb.query(
