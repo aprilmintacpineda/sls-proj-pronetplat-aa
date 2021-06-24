@@ -1,0 +1,15 @@
+CreateIndex({
+  "name": "inboxesByUserId",
+  "source": Collection("chatInboxes"),
+  "terms": [{
+    "field": ["data", "userId1"]
+  }, {
+    "field": ["data", "userId2"]
+  }],
+  "values": [{
+    "field": ["data", "updatedAt"],
+    "reverse": true
+  }, {
+    "field": ["ref"]
+  }]
+})
