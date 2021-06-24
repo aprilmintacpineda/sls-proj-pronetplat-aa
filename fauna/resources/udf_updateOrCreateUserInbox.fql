@@ -70,7 +70,7 @@ CreateFunction({
           data: {
             userId1: Var('userId1'),
             userId2: Var('userId2'),
-            numUnreadChatMessages: Var('numUnreadChatMessages'),
+            numUnreadChatMessages: Var('amount'),
             lastMessageId: Var('lastMessageId')
           }
         })
