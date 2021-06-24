@@ -1,0 +1,11 @@
+CreateIndex({
+  name: 'chatMessagesByRecipientId',
+  source: Collection('chatMessages'),
+  terms: [
+    { field: ['data', 'recipientId'] }
+  ],
+  values: [
+    { field: ['data', 'createdAt'], reverse: true },
+    { field: ['ref'] }
+  ]
+})
