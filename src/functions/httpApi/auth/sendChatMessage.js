@@ -102,9 +102,7 @@ async function handler ({
               'updateOrCreateUserInbox',
               authUser.id,
               contactId,
-              formBody.messageBody.length > 100
-                ? formBody.messageBody.substr(0, 97) + '...'
-                : formBody.messageBody,
+              query.Select(['ref', 'id'], query.Var('chatMessage')),
               1
             ),
             query.Call(

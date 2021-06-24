@@ -35,6 +35,7 @@ module.exports = async ({
       'updateOrCreateUserInbox',
       authUser.id,
       contactId,
+      '',
       amount
     )
   );
