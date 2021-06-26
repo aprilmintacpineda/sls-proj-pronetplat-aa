@@ -8,7 +8,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
-const { invokeEvent } = require('dependencies/utils/lambda');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 
 async function handler ({
   params: { contactId, nextToken },

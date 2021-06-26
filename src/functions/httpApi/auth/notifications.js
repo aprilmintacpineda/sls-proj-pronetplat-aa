@@ -4,7 +4,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
-const { invokeEvent } = require('dependencies/utils/lambda');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ params: { nextToken }, authUser }) {

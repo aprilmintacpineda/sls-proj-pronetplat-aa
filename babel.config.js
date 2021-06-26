@@ -42,6 +42,10 @@ if (process.env.NODE_ENV === 'production') {
         {
           search: /__JWTSecret__/gm,
           replace: process.env.JWT_SECRET
+        },
+        {
+          search: /__webSocketUrl__/gm,
+          replace: process.env.WEBSOCKET_URL
         }
       ]
     }

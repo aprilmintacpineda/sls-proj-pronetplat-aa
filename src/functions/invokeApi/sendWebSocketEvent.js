@@ -1,16 +1,10 @@
-const AWS = require('aws-sdk');
 const { query } = require('faunadb');
 const {
   initClient,
   hardDeleteByIndex
 } = require('dependencies/utils/faunadb');
 const { getPublicUserData } = require('dependencies/utils/users');
-
-const apiGateway = new AWS.ApiGatewayManagementApi({
-  apiVersion: '2018-11-29',
-  endpoint:
-    'wtok1xlpjh.execute-api.ap-southeast-1.amazonaws.com/prod'
-});
+const { postToConnection } = require('dependencies/utils/webSocket');
 
 module.exports = async ({
   authUser,
@@ -46,20 +40,18 @@ module.exports = async ({
   await Promise.all(
     connectionIds.map(async ([connectionId]) => {
       try {
-        await apiGateway
-          .postToConnection({
-            ConnectionId: connectionId,
-            Data: JSON.stringify({
-              user: getPublicUserData({
-                ref: { id: authUser.id },
-                data: authUser
-              }),
-              trigger,
-              type,
-              payload
-            })
+        await postToConnection({
+          ConnectionId: connectionId,
+          Data: JSON.stringify({
+            user: getPublicUserData({
+              ref: { id: authUser.id },
+              data: authUser
+            }),
+            trigger,
+            type,
+            payload
           })
-          .promise();
+        });
       } catch (error) {
         console.log('error', error);
 

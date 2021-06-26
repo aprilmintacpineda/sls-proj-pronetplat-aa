@@ -7,10 +7,10 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
-const validate = require('dependencies/utils/validate');
 const {
   sendWebSocketEvent
-} = require('dependencies/utils/webSocket');
+} = require('dependencies/utils/invokeLambda');
+const validate = require('dependencies/utils/validate');
 
 async function handler ({
   authUser,

@@ -15,12 +15,10 @@ const {
   guardTypes
 } = require('dependencies/utils/httpGuard');
 const {
-  sendPushNotification
-} = require('dependencies/utils/notifications');
-const { getFullName } = require('dependencies/utils/users');
-const {
+  sendPushNotification,
   sendWebSocketEvent
-} = require('dependencies/utils/webSocket');
+} = require('dependencies/utils/invokeLambda');
+const { getFullName } = require('dependencies/utils/users');
 
 async function handler ({ authUser, params: { contactId } }) {
   if (contactId === authUser.id) {

@@ -1,5 +1,5 @@
 const { httpGuard } = require('dependencies/utils/httpGuard');
-const { invokeEvent } = require('dependencies/utils/lambda');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ formBody }) {

@@ -11,7 +11,7 @@ const {
 } = require('dependencies/utils/httpGuard');
 const {
   createNotification
-} = require('dependencies/utils/notifications');
+} = require('dependencies/utils/invokeLambda');
 
 async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();

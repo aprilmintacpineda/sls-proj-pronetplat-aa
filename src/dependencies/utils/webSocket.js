@@ -1,8 +1,10 @@
-const { invokeEvent } = require('./lambda');
+const AWS = require('aws-sdk');
 
-module.exports.sendWebSocketEvent = payload => {
-  return invokeEvent({
-    eventName: 'sendWebSocketEvent',
-    payload
-  });
+const apiGateway = new AWS.ApiGatewayManagementApi({
+  apiVersion: '2018-11-29',
+  endpoint: '__webSocketUrl__'
+});
+
+module.exports.postToConnection = (...args) => {
+  return apiGateway.postToConnection(...args).promise();
 };

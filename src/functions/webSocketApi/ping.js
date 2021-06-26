@@ -1,18 +1,10 @@
-const AWS = require('aws-sdk');
-
-const apiGateway = new AWS.ApiGatewayManagementApi({
-  apiVersion: '2018-11-29',
-  endpoint:
-    'wtok1xlpjh.execute-api.ap-southeast-1.amazonaws.com/prod'
-});
+const { postToConnection } = require('dependencies/utils/webSocket');
 
 module.exports = async webSocketEvent => {
-  await apiGateway
-    .postToConnection({
-      ConnectionId: webSocketEvent.requestContext.connectionId,
-      Data: 'pong'
-    })
-    .promise();
+  await postToConnection({
+    ConnectionId: webSocketEvent.requestContext.connectionId,
+    Data: 'pong'
+  });
 
   return { statusCode: 200 };
 };

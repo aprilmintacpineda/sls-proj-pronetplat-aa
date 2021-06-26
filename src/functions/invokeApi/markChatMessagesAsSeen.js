@@ -2,7 +2,7 @@ const { query } = require('faunadb');
 const { initClient, update } = require('dependencies/utils/faunadb');
 const {
   sendWebSocketEvent
-} = require('dependencies/utils/webSocket');
+} = require('dependencies/utils/invokeLambda');
 
 module.exports = async ({
   authUser,

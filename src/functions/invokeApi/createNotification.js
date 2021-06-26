@@ -1,15 +1,13 @@
 const { query } = require('faunadb');
 const { initClient, create } = require('dependencies/utils/faunadb');
 const {
+  sendWebSocketEvent,
   sendPushNotification
-} = require('dependencies/utils/notifications');
+} = require('dependencies/utils/invokeLambda');
 const {
   getFullName,
   getPersonalPronoun
 } = require('dependencies/utils/users');
-const {
-  sendWebSocketEvent
-} = require('dependencies/utils/webSocket');
 
 module.exports = async ({ authUser, userId, body, type, title }) => {
   const queries = [

@@ -8,7 +8,7 @@ const {
 } = require('dependencies/utils/httpGuard');
 const {
   sendWebSocketEvent
-} = require('dependencies/utils/webSocket');
+} = require('dependencies/utils/invokeLambda');
 
 async function handler ({ authUser, params: { contactId } }) {
   const faunadb = initClient();

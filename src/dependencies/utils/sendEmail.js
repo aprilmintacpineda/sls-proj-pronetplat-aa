@@ -1,13 +1,4 @@
-const { invokeEvent } = require('./lambda');
-
-function sendEmail (payload) {
-  return invokeEvent({
-    eventName: 'sendEmail',
-    payload
-  });
-}
-
-module.exports.sendEmail = sendEmail;
+const { sendEmail } = require('./invokeLambda');
 
 module.exports.sendEmailVerificationCode = ({
   recipient,
