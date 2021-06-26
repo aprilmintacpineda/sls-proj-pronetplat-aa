@@ -112,7 +112,7 @@ async function handler ({
             ),
             query.Call(
               'updateUserBadgeCount',
-              authUser.id,
+              contactId,
               'unreadChatMessagesCount',
               1
             ),
