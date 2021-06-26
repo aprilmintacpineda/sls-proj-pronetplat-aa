@@ -12,7 +12,7 @@ module.exports = async ({
   type,
   trigger,
   payload,
-  isConnected
+  otherUserPayload
 }) => {
   const faunadb = initClient();
   let after = null;
@@ -49,7 +49,7 @@ module.exports = async ({
                 ref: { id: authUser.id },
                 data: authUser
               }),
-              isConnected
+              ...otherUserPayload
             },
             trigger,
             type,
