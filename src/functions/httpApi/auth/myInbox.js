@@ -62,7 +62,10 @@ async function handler ({ params: { nextToken }, authUser }) {
     body: JSON.stringify({
       data: result.data.map(inbox => ({
         ...inbox,
-        contact: getPublicUserData(inbox.contact),
+        contact: {
+          ...getPublicUserData(inbox.contact),
+          isConnected: inbox.inbox
+        },
         lastMessage: {
           id: inbox.lastMessage.ref.id,
           ...inbox.lastMessage.data
