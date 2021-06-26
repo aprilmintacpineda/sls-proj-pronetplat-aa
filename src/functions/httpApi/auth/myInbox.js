@@ -38,11 +38,19 @@ async function handler ({ params: { nextToken }, authUser }) {
               'contactByOwnerContact',
               authUser.id,
               query.Var('contactId')
+            ),
+            lastMessage: getById(
+              'chatMessages',
+              query.Select(
+                ['data', 'lastMessageId'],
+                query.Var('inbox')
+              )
             )
           },
           query.Merge(query.Select(['data'], query.Var('inbox')), {
             contact: query.Var('contact'),
-            isConnected: query.Var('isConnected')
+            isConnected: query.Var('isConnected'),
+            lastMessage: query.Var('lastMessage')
           })
         )
       )
@@ -54,7 +62,11 @@ async function handler ({ params: { nextToken }, authUser }) {
     body: JSON.stringify({
       data: result.data.map(inbox => ({
         ...inbox,
-        contact: getPublicUserData(inbox.contact)
+        contact: getPublicUserData(inbox.contact),
+        lastMessage: {
+          id: inbox.lastMessage.ref.id,
+          ...inbox.lastMessage.data
+        }
       })),
       nextToken: result.after?.[0].id || null
     })
