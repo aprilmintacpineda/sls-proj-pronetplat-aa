@@ -41,7 +41,8 @@ CreateFunction({
                   ),
                   Var('lastMessageId'),
                   Select(['data', 'lastMessageId'], Var('inbox'))
-                )
+                ),
+                updatedAt: Format('%t', Now())
               }
             }
           )
@@ -51,7 +52,9 @@ CreateFunction({
             userId: Var('userId'),
             contactId: Var('contactId'),
             numUnreadChatMessages: Var('amount'),
-            lastMessageId: Var('lastMessageId')
+            lastMessageId: Var('lastMessageId'),
+            createdAt: Format('%t', Now()),
+            updatedAt: Format('%t', Now())
           }
         })
       )

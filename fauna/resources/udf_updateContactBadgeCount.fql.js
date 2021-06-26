@@ -62,7 +62,8 @@ export default query.CreateFunction({
                 data: query.Select(
                   query.Var('targetBadge'),
                   badgesOperations
-                )
+                ),
+                updatedAt: query.Format('%t', query.Now())
               }
             )
           ),

@@ -1,36 +1,31 @@
 const { query } = require('faunadb');
 
 function constructIncrementQuery (badgesOperation) {
-  return query.Max(
-    0,
-    query.Add(
-      query.Select(
-        ['data', badgesOperation],
-        query.Var('document'),
-        0
-      ),
-      query.Var('amount')
-    )
-  );
+  return {
+    [badgesOperation]: query.Max(
+      0,
+      query.Add(
+        query.Select(
+          ['data', badgesOperation],
+          query.Var('document'),
+          0
+        ),
+        query.Var('amount')
+      )
+    ),
+    updatedAt: query.Format('%t', query.Now())
+  };
 }
 
 const badgesOperations = {
-  notificationsCount: {
-    notificationsCount: constructIncrementQuery('notificationsCount')
-  },
-  receivedContactRequestsCount: {
-    receivedContactRequestsCount: constructIncrementQuery(
-      'receivedContactRequestsCount'
-    )
-  },
-  contactsCount: {
-    contactsCount: constructIncrementQuery('contactsCount')
-  },
-  unreadChatMessagesCount: {
-    unreadChatMessagesCount: constructIncrementQuery(
-      'unreadChatMessagesCount'
-    )
-  }
+  notificationsCount: constructIncrementQuery('notificationsCount'),
+  receivedContactRequestsCount: constructIncrementQuery(
+    'receivedContactRequestsCount'
+  ),
+  contactsCount: constructIncrementQuery('contactsCount'),
+  unreadChatMessagesCount: constructIncrementQuery(
+    'unreadChatMessagesCount'
+  )
 };
 
 const allowedBadges = Object.keys(badgesOperations);
