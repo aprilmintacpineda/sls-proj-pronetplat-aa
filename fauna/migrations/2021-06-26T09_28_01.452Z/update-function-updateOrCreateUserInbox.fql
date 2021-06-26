@@ -1,0 +1,19 @@
+Update(Function("updateOrCreateUserInbox"), {
+  "body": Query(Lambda(["userId", "contactId", "lastMessageId", "amount"], If(Exists(Match(Index("inboxByUserContact"), [Var("userId"), Var("contactId")])), Let([{
+    "inbox": Get(Union(Match(Index("inboxByUserContact"), [Var("userId"), Var("contactId")])))
+  }], Update(Select(["ref"], Var("inbox")), {
+    "data": {
+      "numUnreadChatMessages": Max(0, Add(Select(["data", "numUnreadChatMessages"], Var("inbox")), Var("amount"))),
+      "lastMessageId": If(IsEmpty(Var("lastMessageId")), Select(["data", "lastMessageId"], Var("inbox")), Var("lastMessageId"))
+    }
+  })), Create("chatInboxes", {
+    "data": {
+      "userId": Var("userId"),
+      "contactId": Var("contactId"),
+      "numUnreadChatMessages": Var("amount"),
+      "lastMessageId": Var("lastMessageId")
+    }
+  })))),
+  "data": null,
+  "role": null
+})

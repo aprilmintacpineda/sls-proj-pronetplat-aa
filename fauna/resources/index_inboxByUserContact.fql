@@ -1,9 +1,9 @@
 CreateIndex({
-  name: 'inboxesByUserId',
+  name: 'inboxByUserContact',
   source: Collection('chatInboxes'),
   terms: [
-    { field: ['data', 'userId1'] },
-    { field: ['data', 'userId2'] },
+    { field: ['data', 'userId'] },
+    { field: ['data', 'contactId'] },
   ],
   values: [
     { field: ['data', 'updatedAt'], reverse: true },

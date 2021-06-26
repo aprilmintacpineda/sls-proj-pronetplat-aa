@@ -6,7 +6,7 @@ CreateFunction({
       If(
         Exists(
           Match(
-              Index('inboxesByUserId'),
+              Index('inboxByUserContact'),
               Var('userId'),
               Var('contactId')
             )
@@ -16,7 +16,7 @@ CreateFunction({
             inbox: Get(
               Union(
                 Match(
-                  Index('inboxesByUserId'),
+                  Index('inboxByUserContact'),
                   Var('userId'),
                   Var('contactId')
                 )
