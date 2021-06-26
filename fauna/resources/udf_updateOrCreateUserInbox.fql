@@ -6,10 +6,10 @@ CreateFunction({
       If(
         Exists(
           Match(
-              Index('inboxByUserContact'),
-              Var('userId'),
-              Var('contactId')
-            )
+            Index('inboxByUserContact'),
+            Var('userId'),
+            Var('contactId')
+          )
         ),
         Let(
           {
@@ -35,7 +35,10 @@ CreateFunction({
                   )
                 ),
                 lastMessageId: If(
-                  IsEmpty(Var('lastMessageId')),
+                  GT(
+                    Length(Var('lastMessageId')),
+                    0
+                  ),
                   Select(['data', 'lastMessageId'], Var('inbox')),
                   Var('lastMessageId')
                 )
