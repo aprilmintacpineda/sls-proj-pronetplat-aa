@@ -29,15 +29,15 @@ async function handler ({ params: { nextToken }, authUser }) {
         query.Let(
           {
             inbox: query.Get(query.Var('ref')),
-            userId: query.Select(
-              ['data', 'userId'],
+            contactId: query.Select(
+              ['data', 'contactId'],
               query.Var('inbox')
             ),
-            user: getById('users', query.Var('userId')),
+            user: getById('users', query.Var('contactId')),
             isConnected: existsByIndex(
               'contactByOwnerContact',
               authUser.id,
-              query.Var('userId')
+              query.Var('contactId')
             )
           },
           query.Merge(query.Select(['data'], query.Var('inbox')), {
