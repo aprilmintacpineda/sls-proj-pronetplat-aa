@@ -46,7 +46,8 @@ async function handler ({ authUser, formBody }) {
       contactsCount: 0,
       isTestAccount: false,
       allowSearchByName: false,
-      allowSearchByUsername: false
+      allowSearchByUsername: false,
+      unreadChatMessagesCount: 0
     })
   );
 

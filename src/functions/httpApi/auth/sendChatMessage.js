@@ -110,6 +110,12 @@ async function handler ({
               'unreadChatMessagesFromContact',
               1
             ),
+            query.Call(
+              'updateUserBadgeCount',
+              authUser.id,
+              'unreadChatMessagesCount',
+              1
+            ),
             {
               chatMessage: query.Var('chatMessage'),
               replyTo: query.Var('replyTo')

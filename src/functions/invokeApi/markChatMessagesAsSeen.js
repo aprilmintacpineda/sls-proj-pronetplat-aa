@@ -37,6 +37,12 @@ module.exports = async ({
       contactId,
       '',
       amount
+    ),
+    query.Call(
+      'updateUserBadgeCount',
+      authUser.id,
+      'unreadChatMessagesCount',
+      amount
     )
   );
 

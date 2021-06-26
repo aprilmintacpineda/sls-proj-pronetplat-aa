@@ -1,0 +1,24 @@
+Update(Function("updateUserBadgeCount"), {
+  "body": Query(Lambda(["userId", "targetBadge", "amount"], If(Not(ContainsValue(Var("targetBadge"), ["notificationsCount", "receivedContactRequestsCount", "contactsCount", "unreadChatMessagesCount"])), Abort(Concat(["Invalid argument `targetBadge`:", Concat(["`", Var("targetBadge"), "`"], ""), "provided,", Concat(["expecting `", Concat(["notificationsCount", "receivedContactRequestsCount", "contactsCount", "unreadChatMessagesCount"], "` | `"), "`"], "")], " ")), Let([{
+    "ref": Ref(Collection("users"), Var("userId"))
+  }, {
+    "document": Get(Var("ref"))
+  }], If(Not(ContainsPath(["data", "closedAt"], Var("document"))), Update(Var("ref"), {
+    "data": Select(Var("targetBadge"), {
+      "notificationsCount": {
+        "notificationsCount": Max(0, Add(Select(["data", "notificationsCount"], Var("document"), 0), Var("amount")))
+      },
+      "receivedContactRequestsCount": {
+        "receivedContactRequestsCount": Max(0, Add(Select(["data", "receivedContactRequestsCount"], Var("document"), 0), Var("amount")))
+      },
+      "contactsCount": {
+        "contactsCount": Max(0, Add(Select(["data", "contactsCount"], Var("document"), 0), Var("amount")))
+      },
+      "unreadChatMessagesCount": {
+        "unreadChatMessagesCount": Max(0, Add(Select(["data", "unreadChatMessagesCount"], Var("document"), 0), Var("amount")))
+      }
+    })
+  }), null))))),
+  "data": null,
+  "role": null
+})

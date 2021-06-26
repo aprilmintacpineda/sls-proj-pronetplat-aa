@@ -1,43 +1,34 @@
 const { query } = require('faunadb');
 
+function constructIncrementQuery (badgesOperation) {
+  return query.Max(
+    0,
+    query.Add(
+      query.Select(
+        ['data', badgesOperation],
+        query.Var('document'),
+        0
+      ),
+      query.Var('amount')
+    )
+  );
+}
+
 const badgesOperations = {
   notificationsCount: {
-    notificationsCount: query.Max(
-      0,
-      query.Add(
-        query.Select(
-          ['data', 'notificationsCount'],
-          query.Var('document'),
-          0
-        ),
-        query.Var('amount')
-      )
-    )
+    notificationsCount: constructIncrementQuery('notificationsCount')
   },
   receivedContactRequestsCount: {
-    receivedContactRequestsCount: query.Max(
-      0,
-      query.Add(
-        query.Select(
-          ['data', 'receivedContactRequestsCount'],
-          query.Var('document'),
-          0
-        ),
-        query.Var('amount')
-      )
+    receivedContactRequestsCount: constructIncrementQuery(
+      'receivedContactRequestsCount'
     )
   },
   contactsCount: {
-    contactsCount: query.Max(
-      0,
-      query.Add(
-        query.Select(
-          ['data', 'contactsCount'],
-          query.Var('document'),
-          0
-        ),
-        query.Var('amount')
-      )
+    contactsCount: constructIncrementQuery('contactsCount')
+  },
+  unreadChatMessagesCount: {
+    unreadChatMessagesCount: constructIncrementQuery(
+      'unreadChatMessagesCount'
     )
   }
 };

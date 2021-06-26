@@ -62,6 +62,12 @@ async function handler ({ authUser, params: { chatMessageId } }) {
                 '',
                 -1
               ),
+              query.Call(
+                'updateUserBadgeCount',
+                authUser.id,
+                'unreadChatMessagesCount',
+                1
+              ),
               query.Var('updatedChatMessage')
             )
           ),
