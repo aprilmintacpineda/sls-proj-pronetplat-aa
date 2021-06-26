@@ -64,7 +64,7 @@ async function handler ({ params: { nextToken }, authUser }) {
         ...inbox,
         contact: {
           ...getPublicUserData(inbox.contact),
-          isConnected: inbox.inbox
+          isConnected: inbox.isConnected
         },
         lastMessage: {
           id: inbox.lastMessage.ref.id,
