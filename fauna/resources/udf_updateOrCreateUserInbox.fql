@@ -2,21 +2,14 @@ CreateFunction({
   name: 'updateOrCreateUserInbox',
   body: Query(
     Lambda(
-      ['userId1', 'userId2', 'lastMessageId', 'amount'],
+      ['userId', 'contactId', 'lastMessageId', 'amount'],
       If(
         Exists(
-          Union(
-            Match(
+          Match(
               Index('inboxesByUserId'),
-              Var('userId1'),
-              Var('userId2')
-            ),
-            Match(
-              Index('inboxesByUserId'),
-              Var('userId2'),
-              Var('userId1')
+              Var('userId'),
+              Var('contactId')
             )
-          )
         ),
         Let(
           {
@@ -24,52 +17,36 @@ CreateFunction({
               Union(
                 Match(
                   Index('inboxesByUserId'),
-                  Var('userId1'),
-                  Var('userId2')
-                ),
-                Match(
-                  Index('inboxesByUserId'),
-                  Var('userId2'),
-                  Var('userId1')
+                  Var('userId'),
+                  Var('contactId')
                 )
               )
             ),
-            numUnreadChatMessages: Max(
-              0,
-              Add(
-                Select(['data', 'numUnreadChatMessages'], Var('inbox')),
-                Var('amount')
-              )
-            )
           },
-          If(
-            LT(
-              Var('amount'),
-              0
-            ),
-            Update(
-              Select(['ref'], Var('inbox')),
-              {
-                data: {
-                  numUnreadChatMessages: Var('numUnreadChatMessages')
-                }
+          Update(
+            Select(['ref'], Var('inbox')),
+            {
+              data: {
+                numUnreadChatMessages: Max(
+                  0,
+                  Add(
+                    Select(['data', 'numUnreadChatMessages'], Var('inbox')),
+                    Var('amount')
+                  )
+                ),
+                lastMessageId: If(
+                  IsEmpty(Var('lastMessageId')),
+                  Select(['data', 'lastMessageId'], Var('inbox')),
+                  Var('lastMessageId')
+                )
               }
-            ),
-            Update(
-              Select(['ref'], Var('inbox')),
-              {
-                data: {
-                  numUnreadChatMessages: Var('numUnreadChatMessages'),
-                  lastMessageId: Var('lastMessageId')
-                }
-              }
-            )
+            }
           )
         ),
         Create('chatInboxes', {
           data: {
-            userId1: Var('userId1'),
-            userId2: Var('userId2'),
+            userId: Var('userId'),
+            contactId: Var('contactId'),
             numUnreadChatMessages: Var('amount'),
             lastMessageId: Var('lastMessageId')
           }

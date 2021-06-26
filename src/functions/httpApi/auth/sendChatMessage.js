@@ -101,6 +101,13 @@ async function handler ({
               authUser.id,
               contactId,
               query.Select(['ref', 'id'], query.Var('chatMessage')),
+              0
+            ),
+            query.Call(
+              'updateOrCreateUserInbox',
+              contactId,
+              authUser.id,
+              query.Select(['ref', 'id'], query.Var('chatMessage')),
               1
             ),
             query.Call(
