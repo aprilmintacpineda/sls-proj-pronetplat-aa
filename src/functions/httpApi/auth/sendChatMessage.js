@@ -161,10 +161,8 @@ async function handler ({
     }),
     sendWebSocketEvent({
       type: 'chatMessageReceived',
-      authUser: {
-        ...authUser,
-        isConnected: true
-      },
+      authUser,
+      isConnected: true,
       userId: contactId,
       payload: chatMessage
     })

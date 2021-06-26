@@ -11,7 +11,8 @@ module.exports = async ({
   userId,
   type,
   trigger,
-  payload
+  payload,
+  isConnected
 }) => {
   const faunadb = initClient();
   let after = null;
@@ -43,10 +44,13 @@ module.exports = async ({
         await postToConnection({
           ConnectionId: connectionId,
           Data: JSON.stringify({
-            user: getPublicUserData({
-              ref: { id: authUser.id },
-              data: authUser
-            }),
+            user: {
+              ...getPublicUserData({
+                ref: { id: authUser.id },
+                data: authUser
+              }),
+              isConnected
+            },
             trigger,
             type,
             payload
