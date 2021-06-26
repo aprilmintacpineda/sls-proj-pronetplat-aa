@@ -39,8 +39,8 @@ CreateFunction({
                     Length(Var('lastMessageId')),
                     0
                   ),
-                  Select(['data', 'lastMessageId'], Var('inbox')),
-                  Var('lastMessageId')
+                  Var('lastMessageId'),
+                  Select(['data', 'lastMessageId'], Var('inbox'))
                 )
               }
             }
