@@ -33,7 +33,7 @@ async function handler ({ params: { nextToken }, authUser }) {
               ['data', 'contactId'],
               query.Var('inbox')
             ),
-            user: getById('users', query.Var('contactId')),
+            contact: getById('users', query.Var('contactId')),
             isConnected: existsByIndex(
               'contactByOwnerContact',
               authUser.id,
@@ -41,7 +41,7 @@ async function handler ({ params: { nextToken }, authUser }) {
             )
           },
           query.Merge(query.Select(['data'], query.Var('inbox')), {
-            user: query.Var('user'),
+            contact: query.Var('contact'),
             isConnected: query.Var('isConnected')
           })
         )
@@ -54,7 +54,7 @@ async function handler ({ params: { nextToken }, authUser }) {
     body: JSON.stringify({
       data: result.data.map(inbox => ({
         ...inbox,
-        user: getPublicUserData(inbox.user)
+        contact: getPublicUserData(inbox.contact)
       })),
       nextToken: result.after?.[0].id || null
     })
