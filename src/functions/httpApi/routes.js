@@ -122,5 +122,6 @@ routing.get(
   require('./auth/chatMessages')
 );
 routing.get('/my-inbox', require('./auth/myInbox'));
+routing.get('/search-contacts', require('./auth/searchContacts'));
 
 module.exports = routing;
