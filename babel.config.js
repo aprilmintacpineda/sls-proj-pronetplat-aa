@@ -46,6 +46,10 @@ if (process.env.NODE_ENV === 'production') {
         {
           search: /__webSocketUrl__/gm,
           replace: process.env.WEBSOCKET_URL
+        },
+        {
+          search: /__googleApiKey__/gm,
+          replace: process.env.GOOGLE_API_KEY
         }
       ]
     }
