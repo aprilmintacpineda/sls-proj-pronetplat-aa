@@ -7,6 +7,13 @@ const {
 const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ authUser, params: { search, nextToken } }) {
+  if (!search) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ data: [] })
+    };
+  }
+
   const fauna = initClient();
 
   const result = await fauna.query(

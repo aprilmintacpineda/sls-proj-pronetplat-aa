@@ -14,8 +14,12 @@ async function handler ({
   authUser,
   params: { search, searchBy, nextToken }
 }) {
-  if (!search || (searchBy !== 'name' && searchBy !== 'username'))
-    return { statusCode: 400 };
+  if (!search || (searchBy !== 'name' && searchBy !== 'username')) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ data: [] })
+    };
+  }
 
   const fauna = initClient();
   let result = [];
