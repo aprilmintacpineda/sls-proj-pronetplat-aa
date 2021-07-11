@@ -18,6 +18,8 @@ const guardTypes = {
 
 function httpGuard ({ handler, guards = [], formValidator = null }) {
   return async httpEvent => {
+    console.log(JSON.stringify(httpEvent, null, 2));
+
     const results = {
       body: httpEvent.body,
       headers: httpEvent.headers,
