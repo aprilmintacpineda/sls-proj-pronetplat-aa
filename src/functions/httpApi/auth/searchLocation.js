@@ -19,6 +19,8 @@ async function handler ({ params: { search } }) {
 
   results = await results.json();
 
+  console.log(JSON.stringify(results, null, 2));
+
   return {
     statusCode: 200,
     body: JSON.stringify({
