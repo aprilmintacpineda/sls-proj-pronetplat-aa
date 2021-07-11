@@ -13,27 +13,19 @@ async function handler ({ params: { search } }) {
     };
   }
 
-  console.log(
-    JSON.stringify(
-      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${search}&key=__googleApiKey__`
-    )
-  );
-
-  console.log('__googleApiKey__', '__googleApiKey__');
-
-  const response = await fetch(
+  let results = await fetch(
     `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${search}&key=` +
       '__googleApiKey__'
   );
 
-  const results = await response.json();
+  results = await results.json();
 
-  console.log(JSON.stringify(results, null, 2));
+  if (results.status !== 'ok') return { statusCode: 500 };
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: results
+      data: results.predictions
     })
   };
 }
