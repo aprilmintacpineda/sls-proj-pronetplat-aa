@@ -19,8 +19,11 @@ async function handler ({ params: { search } }) {
     )
   );
 
+  console.log('__googleApiKey__', '__googleApiKey__');
+
   const response = await fetch(
-    `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${search}&key=__googleApiKey__`
+    `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${search}&key=` +
+      '__googleApiKey__'
   );
 
   const results = await response.json();
