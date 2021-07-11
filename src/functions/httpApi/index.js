@@ -1,3 +1,5 @@
+require('cross-fetch/polyfill');
+
 const routes = require('./routes');
 
 async function handler (httpEvent) {
