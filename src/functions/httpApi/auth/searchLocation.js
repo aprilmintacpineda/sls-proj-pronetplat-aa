@@ -20,7 +20,7 @@ async function handler ({ params: { search } }) {
 
   results = await results.json();
 
-  if (results.status !== 'ok') return { statusCode: 500 };
+  if (results.status !== 'OK') return { statusCode: 500 };
 
   return {
     statusCode: 200,
