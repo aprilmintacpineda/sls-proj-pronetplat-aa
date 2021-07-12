@@ -86,6 +86,7 @@ routing.post(
   '/chat-typing-status/:contactId',
   require('./auth/chatTypingStatus')
 );
+routing.post('/create-event', require('./auth/createEvent'));
 
 routing.delete(
   '/contact-details/:contactDetailId',

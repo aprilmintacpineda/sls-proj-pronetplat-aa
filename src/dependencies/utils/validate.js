@@ -62,6 +62,18 @@ const validationRules = {
   },
   bool (value) {
     return value !== true && value !== false;
+  },
+  integer (value) {
+    return /[^0-9]/gim.test(value);
+  },
+  futureDate (value, [relativeTo] = []) {
+    const date = new Date(value);
+
+    return (
+      date.toString() === 'Invalid Date' ||
+      date <=
+        (relativeTo ? new Date(unescape(relativeTo)) : new Date())
+    );
   }
 };
 
