@@ -46,7 +46,7 @@ async function handler ({ authUser, formBody }) {
   try {
     const createQuery = query.Let(
       {
-        event: create('events', {
+        event: create('_events', {
           name: formBody.name,
           description: formBody.description,
           startDateTime: formBody.startDateTime,
@@ -95,6 +95,8 @@ async function handler ({ authUser, formBody }) {
         : createQuery
     );
   } catch (error) {
+    console.log(error);
+
     if (error.description === 'NonContactOrganizer')
       return { statusCode: 400 };
 
