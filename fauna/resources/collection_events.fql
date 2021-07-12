@@ -1,1 +1,2 @@
-CreateCollection({ name: "events" });
+# Because "events" is a reserved word
+CreateCollection({ name: "_events" });
