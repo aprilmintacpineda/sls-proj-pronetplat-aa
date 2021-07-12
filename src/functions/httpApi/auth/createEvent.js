@@ -62,12 +62,12 @@ async function handler ({ authUser, formBody }) {
         eventId: query.Select(['ref', 'id'], query.Var('event'))
       },
       query.Do(
-        create('eventOrganizer', {
+        create('eventOrganizers', {
           eventId: query.Var('eventId'),
           userId: authUser.id
         }),
         ...formBody.organizers.map(user =>
-          create('eventOrganizer', {
+          create('eventOrganizers', {
             eventId: query.Var('eventId'),
             userId: user.id
           })
