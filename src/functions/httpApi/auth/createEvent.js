@@ -24,19 +24,6 @@ module.exports = httpGuard({
     visibility,
     maxAttendees
   }) => {
-    console.log(
-      validate(name, ['required', 'maxLength:100']),
-      validate(description, ['required', 'maxLength:5000']),
-      validate(startDateTime, ['required', 'futureDate']),
-      validate(endDateTime, [
-        'required',
-        `futureDate:${startDateTime}`
-      ]),
-      validate(location, ['required', 'options:private,public']),
-      validate(visibility, ['required', 'options:private,public']),
-      validate(maxAttendees, ['required', 'integer'])
-    );
-
     return (
       validate(name, ['required', 'maxLength:100']) ||
       validate(description, ['required', 'maxLength:5000']) ||
@@ -45,7 +32,7 @@ module.exports = httpGuard({
         'required',
         `futureDate:${startDateTime}`
       ]) ||
-      validate(location, ['required', 'options:private,public']) ||
+      validate(location, ['required']) ||
       validate(visibility, ['required', 'options:private,public']) ||
       validate(maxAttendees, ['required', 'integer'])
     );
