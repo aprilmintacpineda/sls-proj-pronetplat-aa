@@ -76,7 +76,8 @@ async function handler ({ authUser, formBody }) {
             eventId: query.Var('eventId'),
             userId: user.id
           })
-        )
+        ),
+        query.Var('event')
       )
     );
 
@@ -107,8 +108,6 @@ async function handler ({ authUser, formBody }) {
 
     return { statusCode: 500 };
   }
-
-  console.log(event);
 
   const { signedUrl, url: coverPicture } = await getSignedUrlPromise(
     {
