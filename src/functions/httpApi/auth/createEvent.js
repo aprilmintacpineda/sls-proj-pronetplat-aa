@@ -108,6 +108,8 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 500 };
   }
 
+  console.log(event);
+
   const { signedUrl, url: coverPicture } = await getSignedUrlPromise(
     {
       objectKeyPrefix: 'newEventCoverPicture',
