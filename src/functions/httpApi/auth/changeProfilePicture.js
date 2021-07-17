@@ -10,9 +10,9 @@ async function handler ({ authUser, formBody }) {
   const { signedUrl, url: profilePicture } =
     await getSignedUrlPromise({
       objectKeyPrefix: 'newProfilePicture',
-      objectNamePrefix: `${authUser.id}_${randomNum()}`,
+      objectName: `${authUser.id}_${randomNum()}`,
       type: formBody.type,
-      finalObjectNamePrefix: 'profilePicture'
+      objectNamePrefix: 'profilePicture'
     });
 
   return {

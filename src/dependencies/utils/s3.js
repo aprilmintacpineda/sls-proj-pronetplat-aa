@@ -36,12 +36,12 @@ module.exports.uploadPromise = params => {
 
 module.exports.getSignedUrlPromise = async ({
   type,
-  objectNamePrefix,
+  objectName: _objectName,
   objectKeyPrefix,
-  finalObjectNamePrefix
+  objectNamePrefix
 }) => {
   const ext = mimetypes.extension(type);
-  const objectName = `${objectNamePrefix}.${ext}`;
+  const objectName = `${_objectName}.${ext}`;
 
   const signedUrl = await s3.getSignedUrlPromise('putObject', {
     Bucket: process.env.usersBucket,
@@ -53,7 +53,7 @@ module.exports.getSignedUrlPromise = async ({
 
   return {
     signedUrl,
-    url: `https://${process.env.usersBucket}.s3-accelerate.amazonaws.com/${finalObjectNamePrefix}_${objectName}`
+    url: `https://${process.env.usersBucket}.s3-accelerate.amazonaws.com/${objectNamePrefix}_${objectName}`
   };
 };
 

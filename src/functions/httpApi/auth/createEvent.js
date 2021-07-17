@@ -111,9 +111,9 @@ async function handler ({ authUser, formBody }) {
   const { signedUrl, url: coverPicture } = await getSignedUrlPromise(
     {
       objectKeyPrefix: 'newEventCoverPicture',
-      objectNamePrefix: `${event.ref.id}_${randomNum()}`,
+      objectName: `${event.ref.id}_${randomNum()}`,
       type: formBody.coverPicture,
-      finalObjectNamePrefix: 'eventCoverPicture'
+      objectNamePrefix: 'eventCoverPicture'
     }
   );
 
