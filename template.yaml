@@ -116,7 +116,7 @@ Resources:
             Effect: Allow
             Resource: "*"
       Events:
-        Upload:
+        newProfilePicture:
           Type: S3
           Properties:
             Bucket: !Ref usersS3Bucket
@@ -126,6 +126,14 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: newProfilePicture_
+        newEventCoverPicture:
+          Type: S3
+          Properties:
+            Bucket: !Ref usersS3Bucket
+            Events: s3:ObjectCreated:Put
+            Filter:
+              S3Key:
+                Rules:
                   - Name: prefix
                     Value: newEventCoverPicture_
   ######
