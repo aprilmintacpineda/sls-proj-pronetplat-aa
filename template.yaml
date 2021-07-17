@@ -126,6 +126,8 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: newProfilePicture_
+                  - Name: prefix
+                    Value: newEventCoverPicture_
   ######
   # Websocket
   #

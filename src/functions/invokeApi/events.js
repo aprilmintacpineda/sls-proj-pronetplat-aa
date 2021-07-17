@@ -10,5 +10,5 @@ module.exports = {
   confirmForgotPassword: require('./confirmForgotPassword'),
   sendForgotPasswordCode: require('./sendForgotPasswordCode'),
   createAccount: require('./createAccount'),
-  'ObjectCreated:Put': require('./profilePictureUploaded')
+  'ObjectCreated:Put': require('./s3FileUploaded')
 };

@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const mimetypes = require('mime-types');
 
 const s3 = new AWS.S3({
   apiVersion: '2006-03-01',
@@ -31,6 +32,29 @@ module.exports.uploadPromise = params => {
       else resolve(data);
     });
   });
+};
+
+module.exports.getSignedUrlPromise = async ({
+  type,
+  objectNamePrefix,
+  objectKeyPrefix,
+  finalObjectNamePrefix
+}) => {
+  const ext = mimetypes.extension(type);
+  const objectName = `${objectNamePrefix}.${ext}`;
+
+  const signedUrl = await s3.getSignedUrlPromise('putObject', {
+    Bucket: process.env.usersBucket,
+    Expires: 300,
+    ACL: 'private',
+    Key: `${objectKeyPrefix}_${objectName}`,
+    ContentType: type
+  });
+
+  return {
+    signedUrl,
+    url: `https://${process.env.usersBucket}.s3-accelerate.amazonaws.com/${finalObjectNamePrefix}_${objectName}`
+  };
 };
 
 module.exports.s3 = s3;

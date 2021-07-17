@@ -4,10 +4,12 @@ const {
   existsByIndex,
   create
 } = require('dependencies/utils/faunadb');
+const { randomNum } = require('dependencies/utils/helpers');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const { getSignedUrlPromise } = require('dependencies/utils/s3');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
@@ -43,6 +45,8 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 400 };
   }
 
+  let event = null;
+
   try {
     const createQuery = query.Let(
       {
@@ -57,7 +61,8 @@ async function handler ({ authUser, formBody }) {
           longitude,
           googlePlaceId,
           address,
-          placeName
+          placeName,
+          status: 'creating'
         }),
         eventId: query.Select(['ref', 'id'], query.Var('event'))
       },
@@ -77,7 +82,7 @@ async function handler ({ authUser, formBody }) {
 
     // if organizer was set,
     // validate that selected organizers are contacts of authUser
-    await faunadb.query(
+    event = await faunadb.query(
       formBody.organizers.length
         ? query.If(
             query.And(
@@ -103,13 +108,29 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 500 };
   }
 
-  return { statusCode: 200 };
+  const { signedUrl, url: coverPicture } = await getSignedUrlPromise(
+    {
+      objectKeyPrefix: 'newEventCoverPicture',
+      objectNamePrefix: `${event.ref.id}_${randomNum()}`,
+      type: formBody.coverPicture,
+      finalObjectNamePrefix: 'eventCoverPicture'
+    }
+  );
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      signedUrl,
+      coverPicture
+    })
+  };
 }
 
 module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete],
   formValidator: ({
+    coverPicture,
     name,
     description,
     startDateTime,
@@ -119,16 +140,23 @@ module.exports = httpGuard({
     maxAttendees
   }) => {
     return (
-      validate(name, ['required', 'maxLength:100']) ||
-      validate(description, ['required', 'maxLength:5000']) ||
-      validate(startDateTime, ['required', 'futureDate']) ||
-      validate(endDateTime, [
+      validate(coverPicture, [
         'required',
-        `futureDate:${startDateTime}`
-      ]) ||
-      validate(location, ['required']) ||
-      validate(visibility, ['required', 'options:private,public']) ||
-      validate(maxAttendees, ['required', 'integer'])
+        'options:image/jpeg,image/png'
+      ]),
+      validate(name, ['required', 'maxLength:100']) ||
+        validate(description, ['required', 'maxLength:5000']) ||
+        validate(startDateTime, ['required', 'futureDate']) ||
+        validate(endDateTime, [
+          'required',
+          `futureDate:${startDateTime}`
+        ]) ||
+        validate(location, ['required']) ||
+        validate(visibility, [
+          'required',
+          'options:private,public'
+        ]) ||
+        validate(maxAttendees, ['required', 'integer'])
     );
   }
 });
