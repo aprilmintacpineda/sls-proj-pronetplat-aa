@@ -39,21 +39,18 @@ async function handler ({ params: { nextToken }, authUser }) {
               query.Var('eventId')
             )
           ),
-          query.Lambda(
-            ['userId', 'ref'],
-            query.Let({
-              user: getById('users', query.Var('userId')),
-              isConnected: query.If(
-                query.Equals(query.Var('userId'), authUser.id),
-                false,
-                existsByIndex(
-                  'contactByOwnerContact',
-                  authUser.id,
-                  query.Var('userId')
-                )
+          query.Lambda(['userId', 'ref'], {
+            user: getById('users', query.Var('userId')),
+            isConnected: query.If(
+              query.Equals(query.Var('userId'), authUser.id),
+              false,
+              existsByIndex(
+                'contactByOwnerContact',
+                authUser.id,
+                query.Var('userId')
               )
-            })
-          )
+            )
+          })
         )
       })
     )
