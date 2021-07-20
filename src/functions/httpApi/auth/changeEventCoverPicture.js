@@ -33,6 +33,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       )
     );
   } catch (error) {
+    console.log(error);
     return { statusCode: 400 };
   }
 
