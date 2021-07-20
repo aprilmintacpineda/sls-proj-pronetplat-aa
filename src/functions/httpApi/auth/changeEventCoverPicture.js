@@ -34,7 +34,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     );
   } catch (error) {
     console.log(error);
-    return { statusCode: 400 };
+    if (error.statusCode === 404) return { statusCode: 400 };
+    return { statusCode: 500 };
   }
 
   console.log(JSON.stringify(event));
