@@ -88,7 +88,7 @@ routing.post(
 );
 routing.post('/create-event', require('./auth/createEvent'));
 routing.post(
-  '/change-event-cover-picture',
+  '/change-event-cover-picture/:eventId',
   require('./auth/changeEventCoverPicture')
 );
 
