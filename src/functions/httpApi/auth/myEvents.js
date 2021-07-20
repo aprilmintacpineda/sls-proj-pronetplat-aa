@@ -28,20 +28,30 @@ async function handler ({ params: { nextToken }, authUser }) {
             : []
         }
       ),
-      query.Lambda(
-        ['eventId', 'ref'],
-        getById('_events', query.Var('eventId'))
-      )
+      query.Lambda(['eventId', 'ref'], {
+        event: getById('_events', query.Var('eventId')),
+        organizers: query.Map(
+          query.Paginate(
+            query.Match(
+              query.Index('eventOrganizersByEvent'),
+              query.Var('eventId')
+            )
+          ),
+          query.Lambda(
+            ['userId', 'ref'],
+            getById('users', query.Var('userId'))
+          )
+        )
+      })
     )
   );
+
+  console.log(JSON.stringify(result));
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(event => ({
-        ...event.data,
-        id: event.ref.id
-      })),
+      data: [],
       nextToken: result.after?.[0].id || null
     })
   };
