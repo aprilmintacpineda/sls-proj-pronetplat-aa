@@ -124,5 +124,6 @@ routing.get(
 );
 routing.get('/my-inbox', require('./auth/myInbox'));
 routing.get('/search-contacts', require('./auth/searchContacts'));
+routing.get('/my-events', require('./auth/myEvents'));
 
 module.exports = routing;
