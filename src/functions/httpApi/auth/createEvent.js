@@ -62,7 +62,9 @@ async function handler ({ authUser, formBody }) {
           googlePlaceId,
           address,
           placeName,
-          status: 'creating'
+          status: 'creating',
+          going: 0,
+          interested: 0
         }),
         eventId: query.Select(['ref', 'id'], query.Var('event'))
       },

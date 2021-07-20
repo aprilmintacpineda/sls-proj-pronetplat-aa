@@ -87,6 +87,10 @@ routing.post(
   require('./auth/chatTypingStatus')
 );
 routing.post('/create-event', require('./auth/createEvent'));
+routing.post(
+  '/change-event-cover-picture',
+  require('./auth/changeEventCoverPicture')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',
