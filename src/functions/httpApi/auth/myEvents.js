@@ -66,7 +66,7 @@ async function handler ({ params: { nextToken }, authUser }) {
         ...event.data,
         organizers: organizers.data.reduce(
           (accumulator, { user, isConnected }) => {
-            if (user.id === authUser.id) return accumulator;
+            if (user.ref.id === authUser.id) return accumulator;
 
             return accumulator.concat({
               ...getPublicUserData(user),
