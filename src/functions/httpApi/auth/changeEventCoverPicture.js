@@ -2,7 +2,7 @@ const { query } = require('faunadb');
 const {
   initClient,
   getById,
-  getByIndex
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const { randomNum } = require('dependencies/utils/helpers');
 const {
@@ -18,23 +18,22 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
   try {
     event = await faunadb.query(
-      query.Let(
-        {
-          eventOrganizer: getByIndex(
-            'eventOrganizersByOrganizerEvent',
-            authUser.id,
-            eventId
-          )
-        },
-        query.Lambda(
-          ['userId', 'eventId', 'ref'],
-          getById('_events', query.Var('eventId'))
-        )
+      query.If(
+        existsByIndex(
+          'eventOrganizersByOrganizerEvent',
+          authUser.id,
+          eventId
+        ),
+        getById('_events', eventId),
+        query.Abort('eventNotFound')
       )
     );
   } catch (error) {
     console.log(error);
-    if (error.statusCode === 404) return { statusCode: 400 };
+
+    if (error.description === 'eventNotFound')
+      return { statusCode: 400 };
+
     return { statusCode: 500 };
   }
 
