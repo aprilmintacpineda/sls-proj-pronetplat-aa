@@ -1,0 +1,16 @@
+CreateIndex({
+  "name": "eventOrganizersByOrganizerEvent",
+  "source": Collection("eventOrganizers"),
+  "terms": [{
+    "field": ["data", "userId"]
+  }, {
+    "field": ["data", "eventId"]
+  }],
+  "values": [{
+    "field": ["data", "userId"]
+  }, {
+    "field": ["data", "eventId"]
+  }, {
+    "field": ["ref"]
+  }]
+})
