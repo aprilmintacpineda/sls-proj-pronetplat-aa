@@ -43,7 +43,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     {
       objectKeyPrefix: 'newEventCoverPicture',
       objectName: `${event.ref.id}_${randomNum()}`,
-      type: formBody.coverPicture,
+      type: formBody.type,
       objectNamePrefix: 'eventCoverPicture'
     }
   );
