@@ -63,8 +63,8 @@ async function handler ({ authUser, formBody }) {
           address,
           placeName,
           status: 'creating',
-          going: 0,
-          interested: 0
+          numGoing: 0,
+          numInterested: 0
         }),
         eventId: query.Select(['ref', 'id'], query.Var('event'))
       },
