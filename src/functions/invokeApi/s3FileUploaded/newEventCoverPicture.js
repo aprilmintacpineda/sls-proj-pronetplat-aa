@@ -44,7 +44,7 @@ module.exports = async ({ bucketName, objectKey }) => {
       ContentType: file.ContentType
     }),
     deleteObjectPromise(uploadedS3Object),
-    event.data.status === 'completed'
+    event.data.status !== 'creating'
       ? deleteObjectPromise({
           Bucket: bucketName,
           Key: event.data.coverPicture.split('/').reverse()[0]
@@ -55,7 +55,10 @@ module.exports = async ({ bucketName, objectKey }) => {
   await faunadb.query(
     update(event.ref, {
       coverPicture: uploaded.Location,
-      status: 'completed'
+      status:
+        event.data.status === 'creating'
+          ? 'unpublished'
+          : event.data.status
     })
   );
 };
