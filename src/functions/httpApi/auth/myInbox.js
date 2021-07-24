@@ -32,7 +32,10 @@ async function handler ({ params: { nextToken }, authUser }) {
             contactId: query.Select(
               ['data', 'contactId'],
               query.Var('inbox')
-            ),
+            )
+          },
+          {
+            inbox: query.Var('inbox'),
             contact: getById('users', query.Var('contactId')),
             isConnected: existsByIndex(
               'contactByOwnerContact',
@@ -46,12 +49,7 @@ async function handler ({ params: { nextToken }, authUser }) {
                 query.Var('inbox')
               )
             )
-          },
-          query.Merge(query.Select(['data'], query.Var('inbox')), {
-            contact: query.Var('contact'),
-            isConnected: query.Var('isConnected'),
-            lastMessage: query.Var('lastMessage')
-          })
+          }
         )
       )
     )
@@ -60,17 +58,19 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(inbox => ({
-        ...inbox,
-        contact: {
-          ...getPublicUserData(inbox.contact),
-          isConnected: inbox.isConnected
-        },
-        lastMessage: {
-          id: inbox.lastMessage.ref.id,
-          ...inbox.lastMessage.data
-        }
-      })),
+      data: result.data.map(
+        ({ inbox, contact, isConnected, lastMessage }) => ({
+          ...inbox,
+          contact: {
+            ...getPublicUserData(contact),
+            isConnected
+          },
+          lastMessage: {
+            id: lastMessage.ref.id,
+            ...lastMessage.data
+          }
+        })
+      ),
       nextToken: result.after?.[0].id || null
     })
   };
