@@ -105,6 +105,7 @@ routing.patch(
   '/contact-details/:contactDetailId',
   require('./auth/contactDetailUpdate')
 );
+routing.patch('/event/:eventId', require('./auth/editEvent'));
 
 routing.get(
   '/received-contact-requests',
