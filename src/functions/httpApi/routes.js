@@ -91,6 +91,10 @@ routing.post(
   '/change-event-cover-picture/:eventId',
   require('./auth/changeEventCoverPicture')
 );
+routing.post(
+  '/event/publish/:eventId',
+  require('./auth/publishEvent')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',
