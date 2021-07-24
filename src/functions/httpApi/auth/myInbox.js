@@ -60,7 +60,7 @@ async function handler ({ params: { nextToken }, authUser }) {
     body: JSON.stringify({
       data: result.data.map(
         ({ inbox, contact, isConnected, lastMessage }) => ({
-          ...inbox,
+          ...inbox.data,
           contact: {
             ...getPublicUserData(contact),
             isConnected
