@@ -19,10 +19,19 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
   try {
     event = await faunadb.query(
       query.If(
-        existsByIndex(
-          'eventOrganizersByOrganizerEvent',
-          authUser.id,
-          eventId
+        query.And(
+          existsByIndex(
+            'eventOrganizersByOrganizerEvent',
+            authUser.id,
+            eventId
+          ),
+          query.Equals(
+            query.Select(
+              ['data', 'status'],
+              getById('_events', eventId)
+            ),
+            'unpublished'
+          )
         ),
         getById('_events', eventId),
         query.Abort('eventNotFound')
