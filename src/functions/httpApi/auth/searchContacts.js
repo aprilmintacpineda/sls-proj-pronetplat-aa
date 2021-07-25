@@ -37,14 +37,14 @@ async function handler ({ authUser, params: { search, nextToken } }) {
             query.Match(
               'contactByOwnerContact',
               authUser.id,
-              query.Select(['id', query.Var('ref')])
+              query.Select(['id'], query.Var('ref'))
             )
           )
         ),
         {
           size: 20,
           after: nextToken
-            ? query.Ref(query.Collection('users'), nextToken)
+            ? query.Ref(query.Collection('contacts'), nextToken)
             : []
         }
       ),
