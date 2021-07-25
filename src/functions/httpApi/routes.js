@@ -96,7 +96,7 @@ routing.post(
   require('./auth/publishEvent')
 );
 routing.post(
-  'events/organizers/add/:eventId',
+  '/events/organizers/add/:eventId',
   require('./auth/addEventOrganizer')
 );
 
@@ -105,7 +105,7 @@ routing.delete(
   require('./auth/contactDetailDelete')
 );
 routing.post(
-  'events/organizers/:eventId/:organizerId',
+  '/events/organizers/:eventId/:organizerId',
   require('./auth/removeEventOrganizer')
 );
 
