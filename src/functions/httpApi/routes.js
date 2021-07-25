@@ -104,7 +104,7 @@ routing.delete(
   '/contact-details/:contactDetailId',
   require('./auth/contactDetailDelete')
 );
-routing.post(
+routing.delete(
   '/events/organizers/:eventId/:organizerId',
   require('./auth/removeEventOrganizer')
 );
