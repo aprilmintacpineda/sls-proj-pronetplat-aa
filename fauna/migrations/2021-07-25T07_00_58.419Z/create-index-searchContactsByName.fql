@@ -1,0 +1,12 @@
+CreateIndex({
+  "name": "searchContactsByName",
+  "terms": [{
+    "binding": "search"
+  }],
+  "source": {
+    "collection": Collection("contacts"),
+    "fields": {
+      "search": Query(Lambda(["row"], Union(NGram(LowerCase(Select(["data", "firstName"], Var("row"))), 2, 3), NGram(LowerCase(Select(["data", "middleName"], Var("row"))), 2, 3), NGram(LowerCase(Select(["data", "surname"], Var("row"))), 2, 3))))
+    }
+  }
+})
