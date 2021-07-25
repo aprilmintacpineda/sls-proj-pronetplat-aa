@@ -19,25 +19,15 @@ async function handler ({ authUser, params: { search, nextToken } }) {
   const result = await fauna.query(
     query.Map(
       query.Paginate(
-        query.Join(
-          query.Match('contactsByUserId', authUser.id),
-          query.Lambda(
-            [
-              'unreadChatMessagesFromContact',
-              'numTimesOpened',
-              'contactId',
-              'ref'
-            ],
-            query.Intersection(
-              query.Map(
-                query.NGram(search.toLowerCase(), 2, 3),
-                query.Lambda(
-                  ['needle'],
-                  query.Match(
-                    query.Index('searchUsersByName'),
-                    query.Var('needle')
-                  )
-                )
+        query.Intersection(
+          query.Map(
+            query.NGram(search.toLowerCase(), 2, 3),
+            query.Lambda(
+              ['needle'],
+              query.Match(
+                query.Index('searchContactsByName'),
+                authUser.id,
+                query.Var('needle')
               )
             )
           )
