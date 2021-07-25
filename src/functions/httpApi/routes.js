@@ -134,7 +134,7 @@ routing.get(
 routing.get('/my-inbox', require('./auth/myInbox'));
 routing.get('/search-contacts', require('./auth/searchContacts'));
 routing.get('/my-events', require('./auth/myEvents'));
-routing.patch(
+routing.get(
   '/event/organizers/:eventId',
   require('./auth/eventOrganizers')
 );
