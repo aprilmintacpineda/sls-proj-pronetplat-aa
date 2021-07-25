@@ -95,6 +95,10 @@ routing.post(
   '/event/publish/:eventId',
   require('./auth/publishEvent')
 );
+routing.post(
+  'events/organizers/add/:eventId',
+  require('./auth/addEventOrganizer')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',
