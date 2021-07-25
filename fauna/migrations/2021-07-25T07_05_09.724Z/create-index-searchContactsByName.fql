@@ -1,6 +1,8 @@
 CreateIndex({
   "name": "searchContactsByName",
   "terms": [{
+    "field": ["data", "userId"]
+  }, {
     "binding": "search"
   }],
   "source": {
