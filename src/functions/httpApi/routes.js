@@ -104,6 +104,10 @@ routing.delete(
   '/contact-details/:contactDetailId',
   require('./auth/contactDetailDelete')
 );
+routing.post(
+  'events/organizers/:eventId/:organizerId',
+  require('./auth/removeEventOrganizer')
+);
 
 routing.patch(
   '/contact-details/:contactDetailId',
