@@ -34,13 +34,13 @@ async function handler ({ authUser, params: { eventId } }) {
         updateById('_events', eventId, {
           status: 'published'
         }),
-        query.Abort('InvalidRequest')
+        query.Abort('CheckFailed')
       )
     );
   } catch (error) {
     console.log(error);
 
-    if (error.description === 'InvalidRequest')
+    if (error.description === 'CheckFailed')
       return { statusCode: 400 };
 
     return { statusCode: 500 };

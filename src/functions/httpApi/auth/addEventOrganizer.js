@@ -1,4 +1,9 @@
-const { initClient, create } = require('dependencies/utils/faunadb');
+const { query } = require('faunadb');
+const {
+  initClient,
+  existsByIndex,
+  create
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -12,15 +17,30 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
   try {
     await faunadb.query(
-      create('eventOrganizers', {
-        eventId,
-        userId: formBody.contactId
-      })
+      query.If(
+        query.And(
+          existsByIndex(
+            'eventOrganizersByOrganizerEvent',
+            authUser.id,
+            eventId
+          ),
+          existsByIndex(
+            'contactByOwnerContact',
+            formBody.contactId,
+            authUser.id
+          )
+        ),
+        create('eventOrganizers', {
+          eventId,
+          userId: formBody.contactId
+        }),
+        query.Abort('CheckFailed')
+      )
     );
   } catch (error) {
     console.log(error);
 
-    if (error.description === 'InvalidRequest')
+    if (error.description === 'CheckFailed')
       return { statusCode: 400 };
 
     return { statusCode: 500 };
