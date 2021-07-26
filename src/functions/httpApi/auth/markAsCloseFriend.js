@@ -9,9 +9,9 @@ const {
 
 async function handler ({ authUser, params: { contactId } }) {
   try {
-    const fauna = initClient();
+    const faunadb = initClient();
 
-    await fauna.query(
+    await faunadb.query(
       updateByIndex({
         index: 'contactByOwnerContact',
         args: [authUser.id, contactId],

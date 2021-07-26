@@ -21,11 +21,11 @@ async function handler ({
     };
   }
 
-  const fauna = initClient();
+  const faunadb = initClient();
   let result = [];
 
   if (searchBy === 'name') {
-    result = await fauna.query(
+    result = await faunadb.query(
       query.Filter(
         query.Map(
           query.Paginate(
@@ -69,7 +69,7 @@ async function handler ({
       )
     );
   } else {
-    const user = await fauna.query(
+    const user = await faunadb.query(
       getByIndexIfExists('userByUsername', search)
     );
 

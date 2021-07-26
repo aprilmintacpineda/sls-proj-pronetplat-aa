@@ -11,10 +11,10 @@ const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody }) {
-  const fauna = initClient();
+  const faunadb = initClient();
 
   try {
-    const user = await fauna.query(
+    const user = await faunadb.query(
       updateById('users', authUser.id, {
         username: formBody.username || null
       })

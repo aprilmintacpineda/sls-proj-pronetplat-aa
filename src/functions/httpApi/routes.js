@@ -124,7 +124,6 @@ routing.get(
   require('./auth/sentContactRequests')
 );
 routing.get('/notifications', require('./auth/notifications'));
-routing.get('/my-contacts', require('./auth/myContacts'));
 routing.get(
   '/contacts/:contactId',
   require('./auth/contactProfile')
