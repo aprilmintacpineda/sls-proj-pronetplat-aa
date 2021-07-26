@@ -146,8 +146,12 @@ routing.get(
   require('./auth/eventOrganizers')
 );
 routing.get(
-  '/events/invite-contacts',
+  '/events/invite-contacts/:eventId',
   require('./auth/inviteContacts')
+);
+routing.get(
+  '/events/add-organizer/:eventId',
+  require('./auth/addContactsToOrganizers')
 );
 
 module.exports = routing;
