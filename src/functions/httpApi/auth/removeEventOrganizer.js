@@ -1,7 +1,5 @@
-const { query } = require('faunadb');
 const {
   initClient,
-  existsByIndex,
   hardDeleteByIndex
 } = require('dependencies/utils/faunadb');
 const {
@@ -17,30 +15,13 @@ async function handler ({
 
   const faunadb = initClient();
 
-  try {
-    await faunadb.query(
-      query.If(
-        existsByIndex(
-          'eventOrganizerByOrganizerEvent',
-          authUser.id,
-          eventId
-        ),
-        hardDeleteByIndex(
-          'eventOrganizerByOrganizerEvent',
-          organizerId,
-          eventId
-        ),
-        query.Abort('CheckFailed')
-      )
-    );
-  } catch (error) {
-    console.log(error);
-
-    if (error.description === 'CheckFailed')
-      return { statusCode: 400 };
-
-    return { statusCode: 500 };
-  }
+  await faunadb.query(
+    hardDeleteByIndex(
+      'eventOrganizerByOrganizerEvent',
+      organizerId,
+      eventId
+    )
+  );
 
   return { statusCode: 200 };
 }
