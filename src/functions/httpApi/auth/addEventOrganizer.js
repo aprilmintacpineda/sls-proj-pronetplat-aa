@@ -28,6 +28,13 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             'contactByOwnerContact',
             formBody.contactId,
             authUser.id
+          ),
+          query.Not(
+            existsByIndex(
+              'eventOrganizerByOrganizerEvent',
+              formBody.contactId,
+              eventId
+            )
           )
         ),
         create('eventOrganizers', {
