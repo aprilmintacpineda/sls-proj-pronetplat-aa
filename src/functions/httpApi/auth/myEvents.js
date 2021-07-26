@@ -62,6 +62,7 @@ async function handler ({ params: { nextToken }, authUser }) {
       data: result.data.map(({ event, organizers }) => ({
         id: event.ref.id,
         ...event.data,
+        isOrganizer: true,
         organizers: organizers.data.reduce(
           (accumulator, { user, isConnected }) => {
             if (user.ref.id === authUser.id) return accumulator;
