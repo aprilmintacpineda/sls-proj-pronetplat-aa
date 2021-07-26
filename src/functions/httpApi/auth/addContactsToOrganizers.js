@@ -39,11 +39,9 @@ async function handler ({
           {
             user: getById('users', query.Var('contactId')),
             isOrganizer: existsByIndex(
-              existsByIndex(
-                'eventOrganizerByOrganizerEvent',
-                query.Var('contactId'),
-                eventId
-              )
+              'eventOrganizerByOrganizerEvent',
+              query.Var('contactId'),
+              eventId
             )
           }
         )
@@ -96,11 +94,9 @@ async function handler ({
             {
               user: query.Var('user'),
               isOrganizer: existsByIndex(
-                existsByIndex(
-                  'eventOrganizerByOrganizerEvent',
-                  query.Var('contactId'),
-                  eventId
-                )
+                'eventOrganizerByOrganizerEvent',
+                query.Var('contactId'),
+                eventId
               )
             }
           )
