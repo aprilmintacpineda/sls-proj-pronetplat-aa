@@ -51,7 +51,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       query.If(
         query.And(
           existsByIndex(
-            'eventOrganizersByOrganizerEvent',
+            'eventOrganizerByOrganizerEvent',
             authUser.id,
             eventId
           ),

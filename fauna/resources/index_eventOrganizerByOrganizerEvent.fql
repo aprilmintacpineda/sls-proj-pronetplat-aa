@@ -1,5 +1,5 @@
 CreateIndex({
-  name: 'eventOrganizersByOrganizerEvent',
+  name: 'eventOrganizerByOrganizerEvent',
   source: Collection('eventOrganizers'),
   terms: [
     { field: ['data', 'userId'] },
@@ -9,5 +9,6 @@ CreateIndex({
     { field: ['data', 'userId'] },
     { field: ['data', 'eventId'] },
     { field: ['ref'] }
-  ]
+  ],
+  unique: true
 })

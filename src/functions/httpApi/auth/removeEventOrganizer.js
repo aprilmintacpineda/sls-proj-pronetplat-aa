@@ -21,12 +21,12 @@ async function handler ({
     await faunadb.query(
       query.If(
         existsByIndex(
-          'eventOrganizersByOrganizerEvent',
+          'eventOrganizerByOrganizerEvent',
           authUser.id,
           eventId
         ),
         hardDeleteByIndex(
-          'eventOrganizersByOrganizerEvent',
+          'eventOrganizerByOrganizerEvent',
           organizerId,
           eventId
         ),
