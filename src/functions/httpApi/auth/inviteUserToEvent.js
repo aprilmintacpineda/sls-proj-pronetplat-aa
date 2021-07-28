@@ -34,7 +34,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             {
               existingInvitation: getByIndexIfExists(
                 'eventInvitationByUserEvent',
-                query.Var('contactId'),
+                formBody.contactId,
                 eventId
               )
             },
