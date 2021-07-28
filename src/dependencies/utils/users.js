@@ -49,6 +49,7 @@ export function getUserData ({ ref, data }) {
     notificationsCount: data.notificationsCount,
     receivedContactRequestsCount: data.receivedContactRequestsCount,
     contactsCount: data.contactsCount,
+    eventInvitationsCount: data.eventInvitationsCount,
     unreadChatMessagesCount: data.unreadChatMessagesCount,
     emailCodeCanSendAt: data.emailCodeCanSendAt,
     emailConfirmCodeExpiresAt: data.emailConfirmCodeExpiresAt,
