@@ -99,6 +99,10 @@ routing.post(
   '/events/organizers/add/:eventId',
   require('./auth/addEventOrganizer')
 );
+routing.post(
+  '/events/invite-user/:eventId',
+  require('./auth/inviteUserToEvent')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',
