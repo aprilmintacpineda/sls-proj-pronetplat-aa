@@ -33,9 +33,10 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
           query.Let(
             {
               existingInvitation: getByIndexIfExists(
-                'eventInvitationByUserEvent',
+                'eventInvitationByUserEventInviter',
                 formBody.contactId,
-                eventId
+                eventId,
+                authUser.id
               )
             },
             query.Or(

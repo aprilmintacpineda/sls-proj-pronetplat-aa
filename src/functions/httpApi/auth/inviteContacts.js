@@ -39,9 +39,10 @@ async function handler ({
           {
             user: getById('users', query.Var('contactId')),
             eventInvitation: getByIndexIfExists(
-              'eventInvitationByUserEvent',
+              'eventInvitationByUserEventInviter',
               query.Var('contactId'),
-              eventId
+              eventId,
+              authUser.id
             )
           }
         )
@@ -94,9 +95,10 @@ async function handler ({
             {
               user: query.Var('user'),
               eventInvitation: getByIndexIfExists(
-                'eventInvitationByUserEvent',
+                'eventInvitationByUserEventInviter',
                 query.Var('contactId'),
-                eventId
+                eventId,
+                authUser.id
               )
             }
           )
@@ -111,10 +113,7 @@ async function handler ({
       data: result.data.map(({ user, eventInvitation }) => ({
         ...getPublicUserData(user),
         isConnected: true,
-        canInvite:
-          !eventInvitation ||
-          (!eventInvitation.rejectedAt &&
-            !eventInvitation.acceptedAt)
+        canInvite: !eventInvitation || eventInvitation.rejectedAt
       })),
       nextToken: result.after?.[0].id || null
     })
