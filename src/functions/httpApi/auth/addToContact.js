@@ -18,7 +18,10 @@ const {
   sendPushNotification,
   sendWebSocketEvent
 } = require('dependencies/utils/invokeLambda');
-const { getFullName } = require('dependencies/utils/users');
+const {
+  getFullName,
+  getPersonalPronoun
+} = require('dependencies/utils/users');
 
 async function handler ({ authUser, params: { contactId } }) {
   if (contactId === authUser.id) {
@@ -99,9 +102,9 @@ async function handler ({ authUser, params: { contactId } }) {
       authUser,
       userId: contactId,
       payload: {
-        body: `${getFullName(
-          authUser
-        )} has accepted your contact request.`,
+        body: `${getFullName(authUser)} wants to add you to ${
+          getPersonalPronoun(authUser).possessive.lowercase
+        } contacts.`,
         title: 'Contact request received'
       }
     })
