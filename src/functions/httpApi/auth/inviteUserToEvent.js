@@ -48,11 +48,19 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             )
           )
         ),
-        create('eventInvitations', {
-          eventId,
-          userId: formBody.contactId,
-          inviterId: authUser.id
-        }),
+        query.Do(
+          create('eventInvitations', {
+            eventId,
+            userId: formBody.contactId,
+            inviterId: authUser.id
+          }),
+          query.Call(
+            'updateUserBadgeCount',
+            formBody.contactId,
+            'eventInvitationsCount',
+            1
+          )
+        ),
         query.Abort('CheckFailed')
       )
     );
@@ -66,7 +74,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       }),
       sendWebSocketEvent({
         type: 'notification',
-        trigger: 'contactRequest',
+        trigger: 'eventInvitation',
         authUser,
         userId: formBody.contactId,
         payload: {

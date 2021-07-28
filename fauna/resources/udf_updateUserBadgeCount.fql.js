@@ -25,6 +25,9 @@ const badgesOperations = {
   contactsCount: constructIncrementQuery('contactsCount'),
   unreadChatMessagesCount: constructIncrementQuery(
     'unreadChatMessagesCount'
+  ),
+  eventInvitationsCount: constructIncrementQuery(
+    'eventInvitationsCount'
   )
 };
 
