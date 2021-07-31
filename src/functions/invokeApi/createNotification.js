@@ -82,7 +82,8 @@ module.exports = async ({
   };
 
   Object.keys(values).forEach(key => {
-    const value = values.data[key];
+    const value = values[key];
+
     webSocketEventPayload[key] = {
       ...value.data,
       id: value.ref.id
