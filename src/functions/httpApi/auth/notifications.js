@@ -65,12 +65,15 @@ async function handler ({ params: { nextToken }, authUser }) {
       const notification = {
         ..._notification.data,
         id: _notification.ref.id,
-        user: getPublicUserData(user),
-        event: {
+        user: getPublicUserData(user)
+      };
+
+      if (event) {
+        notification.event = {
           id: event.ref.id,
           ...event.data
-        }
-      };
+        };
+      }
 
       if (!notification.seenAt)
         unseenNotificationIds.push(notification.id);
