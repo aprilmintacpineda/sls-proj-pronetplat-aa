@@ -1,5 +1,9 @@
 const { query } = require('faunadb');
-const { initClient, create } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  create,
+  getById
+} = require('dependencies/utils/faunadb');
 const {
   sendWebSocketEvent,
   sendPushNotification
@@ -56,10 +60,34 @@ module.exports = async ({
     );
   }
 
+  // getters
+  const getters = {};
+  if (payload?.eventId)
+    getters.event = getById('_events', payload.eventId);
+
+  queries.push(getters);
+
   const faunadb = initClient();
-  await faunadb.query(query.Do(...queries));
+  const values = await faunadb.query(query.Do(...queries));
 
   const fullname = getFullName(authUser);
+  const webSocketEventPayload = {
+    title: title.replace(/{fullname}/gim, fullname),
+    body: body
+      .replace(/{fullname}/gim, fullname)
+      .replace(
+        /{genderPossessiveLowercase}/gim,
+        getPersonalPronoun(authUser).possessive.lowercase
+      )
+  };
+
+  Object.keys(values.data).forEach(key => {
+    const value = values.data[key];
+    webSocketEventPayload[key] = {
+      ...value.data,
+      id: value.ref.id
+    };
+  });
 
   await Promise.all([
     sendPushNotification({
@@ -73,16 +101,7 @@ module.exports = async ({
       trigger: type,
       authUser,
       userId,
-      payload: {
-        ...payload,
-        title: title.replace(/{fullname}/gim, fullname),
-        body: body
-          .replace(/{fullname}/gim, fullname)
-          .replace(
-            /{genderPossessiveLowercase}/gim,
-            getPersonalPronoun(authUser).possessive.lowercase
-          )
-      }
+      payload: webSocketEventPayload
     })
   ]);
 };

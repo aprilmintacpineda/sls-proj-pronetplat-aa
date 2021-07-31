@@ -1,5 +1,8 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  getById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -24,30 +27,57 @@ async function handler ({ params: { nextToken }, authUser }) {
             : []
         }
       ),
-      query.Lambda(['createdAt', 'actorId', 'ref'], {
-        notification: query.Get(query.Var('ref')),
-        user: query.Get(
-          query.Ref(query.Collection('users'), query.Var('actorId'))
+      query.Lambda(
+        ['createdAt', 'actorId', 'ref'],
+        query.Let(
+          {
+            notification: query.Get(query.Var('ref')),
+            eventId: query.Select(
+              ['data', 'payload', 'eventId'],
+              query.Var('notifications'),
+              null
+            )
+          },
+          {
+            notification: query.Var('notification'),
+            user: query.Get(
+              query.Ref(
+                query.Collection('users'),
+                query.Var('actorId')
+              )
+            ),
+            event: query.If(
+              query.IsNull(query.Var('eventId')),
+              null,
+              getById('_events', query.Var('eventId'))
+            )
+          }
         )
-      })
+      )
     )
   );
 
   const unseenNotificationIds = [];
   const data = [];
 
-  result.data.forEach(document => {
-    const notification = {
-      ...document.notification.data,
-      id: document.notification.ref.id,
-      user: getPublicUserData(document.user)
-    };
+  result.data.forEach(
+    ({ notification: _notification, user, event }) => {
+      const notification = {
+        ..._notification.data,
+        id: _notification.ref.id,
+        user: getPublicUserData(user),
+        event: {
+          id: event.ref.id,
+          ...event.data
+        }
+      };
 
-    if (!notification.seenAt)
-      unseenNotificationIds.push(notification.id);
+      if (!notification.seenAt)
+        unseenNotificationIds.push(notification.id);
 
-    data.push(notification);
-  });
+      data.push(notification);
+    }
+  );
 
   if (unseenNotificationIds.length) {
     await invokeEvent({
