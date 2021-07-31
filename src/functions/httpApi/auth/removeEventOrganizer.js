@@ -1,11 +1,16 @@
+const { query } = require('faunadb');
 const {
   initClient,
-  hardDeleteByIndex
+  hardDeleteByIndex,
+  getById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const {
+  createNotification
+} = require('dependencies/utils/invokeLambda');
 
 async function handler ({
   authUser,
@@ -16,12 +21,23 @@ async function handler ({
   const faunadb = initClient();
 
   await faunadb.query(
-    hardDeleteByIndex(
-      'eventOrganizerByOrganizerEvent',
-      organizerId,
-      eventId
+    query.Do(
+      hardDeleteByIndex(
+        'eventOrganizerByOrganizerEvent',
+        organizerId,
+        eventId
+      ),
+      getById('_events', eventId)
     )
   );
+
+  await createNotification({
+    authUser,
+    userId: organizerId,
+    body: `{fullname} removed you as an organizer from the event ${event.data.name}.`,
+    title: 'Removed as organizer from event',
+    type: 'removedAsOrganizerFromEvent'
+  });
 
   return { statusCode: 200 };
 }

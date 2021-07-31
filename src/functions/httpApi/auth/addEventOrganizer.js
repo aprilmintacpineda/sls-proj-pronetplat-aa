@@ -2,21 +2,26 @@ const { query } = require('faunadb');
 const {
   initClient,
   existsByIndex,
-  create
+  create,
+  getById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const {
+  createNotification
+} = require('dependencies/utils/invokeLambda');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, params: { eventId }, formBody }) {
   if (formBody.contactId === authUser.id) return { statusCode: 400 };
 
   const faunadb = initClient();
+  let event = null;
 
   try {
-    await faunadb.query(
+    event = await faunadb.query(
       query.If(
         query.And(
           existsByIndex(
@@ -37,10 +42,13 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             )
           )
         ),
-        create('eventOrganizers', {
-          eventId,
-          userId: formBody.contactId
-        }),
+        query.Do(
+          create('eventOrganizers', {
+            eventId,
+            userId: formBody.contactId
+          }),
+          getById('_events', eventId)
+        ),
         query.Abort('CheckFailed')
       )
     );
@@ -52,6 +60,14 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
     return { statusCode: 500 };
   }
+
+  await createNotification({
+    authUser,
+    userId: formBody.contactId,
+    body: `{fullname} added you as an organizer to the event ${event.data.name}.`,
+    title: 'Added as organizer to event',
+    type: 'addedAsOrganizerToEvent'
+  });
 
   return { statusCode: 200 };
 }
