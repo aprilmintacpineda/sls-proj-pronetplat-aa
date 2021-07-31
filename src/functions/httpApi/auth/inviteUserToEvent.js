@@ -64,27 +64,6 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
         query.Abort('CheckFailed')
       )
     );
-
-    await Promise.all([
-      sendPushNotification({
-        userId: formBody.contactId,
-        title: 'Event invitation',
-        body: '{fullname} invited you to join an event.',
-        authUser
-      }),
-      sendWebSocketEvent({
-        type: 'notification',
-        trigger: 'eventInvitation',
-        authUser,
-        userId: formBody.contactId,
-        payload: {
-          body: `${getFullName(
-            authUser
-          )} invited you to join an event.`,
-          title: 'Event invitation'
-        }
-      })
-    ]);
   } catch (error) {
     console.log(error);
 
@@ -93,6 +72,27 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
     return { statusCode: 500 };
   }
+
+  await Promise.all([
+    sendPushNotification({
+      userId: formBody.contactId,
+      title: 'Event invitation',
+      body: '{fullname} invited you to join an event.',
+      authUser
+    }),
+    sendWebSocketEvent({
+      type: 'notification',
+      trigger: 'eventInvitation',
+      authUser,
+      userId: formBody.contactId,
+      payload: {
+        body: `${getFullName(
+          authUser
+        )} invited you to join an event.`,
+        title: 'Event invitation'
+      }
+    })
+  ]);
 
   return { statusCode: 200 };
 }
