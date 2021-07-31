@@ -2,8 +2,7 @@ const { query } = require('faunadb');
 const {
   initClient,
   existsByIndex,
-  create,
-  getById
+  create
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -18,10 +17,9 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
   if (formBody.contactId === authUser.id) return { statusCode: 400 };
 
   const faunadb = initClient();
-  let event = null;
 
   try {
-    event = await faunadb.query(
+    await faunadb.query(
       query.If(
         query.And(
           existsByIndex(
@@ -42,13 +40,10 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             )
           )
         ),
-        query.Do(
-          create('eventOrganizers', {
-            eventId,
-            userId: formBody.contactId
-          }),
-          getById('_events', eventId)
-        ),
+        create('eventOrganizers', {
+          eventId,
+          userId: formBody.contactId
+        }),
         query.Abort('CheckFailed')
       )
     );
@@ -64,8 +59,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
   await createNotification({
     authUser,
     userId: formBody.contactId,
-    body: `{fullname} added you as an organizer to the event ${event.data.name}.`,
-    title: 'Added as organizer to event',
+    body: '{fullname} added you as an organizer to an event.',
+    title: 'Added as organizer to an event',
     type: 'addedAsOrganizerToEvent'
   });
 

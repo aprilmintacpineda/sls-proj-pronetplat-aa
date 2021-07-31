@@ -1,8 +1,6 @@
-const { query } = require('faunadb');
 const {
   initClient,
-  hardDeleteByIndex,
-  getById
+  hardDeleteByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -21,21 +19,18 @@ async function handler ({
   const faunadb = initClient();
 
   await faunadb.query(
-    query.Do(
-      hardDeleteByIndex(
-        'eventOrganizerByOrganizerEvent',
-        organizerId,
-        eventId
-      ),
-      getById('_events', eventId)
+    hardDeleteByIndex(
+      'eventOrganizerByOrganizerEvent',
+      organizerId,
+      eventId
     )
   );
 
   await createNotification({
     authUser,
     userId: organizerId,
-    body: `{fullname} removed you as an organizer from the event ${event.data.name}.`,
-    title: 'Removed as organizer from event',
+    body: '{fullname} removed you as an organizer from an event.',
+    title: 'Removed as organizer from an event',
     type: 'removedAsOrganizerFromEvent'
   });
 
