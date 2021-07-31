@@ -34,7 +34,7 @@ async function handler ({ params: { nextToken }, authUser }) {
             notification: query.Get(query.Var('ref')),
             eventId: query.Select(
               ['data', 'payload', 'eventId'],
-              query.Var('notifications'),
+              query.Var('notification'),
               null
             )
           },
