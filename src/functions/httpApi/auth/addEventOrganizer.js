@@ -61,7 +61,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     userId: formBody.contactId,
     body: '{fullname} added you as an organizer to an event.',
     title: 'Added as organizer to an event',
-    type: 'addedAsOrganizerToEvent'
+    type: 'addedAsOrganizerToEvent',
+    payload: { eventId }
   });
 
   return { statusCode: 200 };

@@ -31,7 +31,8 @@ async function handler ({
     userId: organizerId,
     body: '{fullname} removed you as an organizer from an event.',
     title: 'Removed as organizer from an event',
-    type: 'removedAsOrganizerFromEvent'
+    type: 'removedAsOrganizerFromEvent',
+    payload: { eventId }
   });
 
   return { statusCode: 200 };

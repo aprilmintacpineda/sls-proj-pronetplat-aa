@@ -9,13 +9,21 @@ const {
   getPersonalPronoun
 } = require('dependencies/utils/users');
 
-module.exports = async ({ authUser, userId, body, type, title }) => {
+module.exports = async ({
+  authUser,
+  userId,
+  body,
+  type,
+  title,
+  payload
+}) => {
   const queries = [
     create('notifications', {
       userId,
       type,
       body,
-      actorId: authUser.id
+      actorId: authUser.id,
+      payload
     }),
     query.Call(
       'updateUserBadgeCount',
@@ -66,6 +74,7 @@ module.exports = async ({ authUser, userId, body, type, title }) => {
       authUser,
       userId,
       payload: {
+        ...payload,
         title: title.replace(/{fullname}/gim, fullname),
         body: body
           .replace(/{fullname}/gim, fullname)
