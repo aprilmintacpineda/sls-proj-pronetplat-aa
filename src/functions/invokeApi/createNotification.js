@@ -15,7 +15,7 @@ module.exports = async ({
   body,
   type,
   title,
-  payload
+  payload = null
 }) => {
   const queries = [
     create('notifications', {
