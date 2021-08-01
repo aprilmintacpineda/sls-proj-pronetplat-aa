@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   getById,
-  getByIndexIfExists
+  getByIndexIfExists,
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -99,6 +100,11 @@ async function handler ({
                 query.Var('contactId'),
                 eventId,
                 authUser.id
+              ),
+              isOrganizer: existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                query.Var('contactId'),
+                eventId
               )
             }
           )
@@ -110,11 +116,15 @@ async function handler ({
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ user, eventInvitation }) => ({
-        ...getPublicUserData(user),
-        isConnected: true,
-        canInvite: !eventInvitation || eventInvitation.rejectedAt
-      })),
+      data: result.data.map(
+        ({ user, eventInvitation, isOrganizer }) => ({
+          ...getPublicUserData(user),
+          isConnected: true,
+          canInvite:
+            !isOrganizer &&
+            (!eventInvitation || eventInvitation.rejectedAt)
+        })
+      ),
       nextToken: result.after?.[0].id || null
     })
   };
