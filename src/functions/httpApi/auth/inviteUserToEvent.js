@@ -33,7 +33,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
           query.Not(
             existsByIndex(
               'eventOrganizerByOrganizerEvent',
-              query.Var('contactId'),
+              formBody.contactId,
               eventId
             )
           ),
