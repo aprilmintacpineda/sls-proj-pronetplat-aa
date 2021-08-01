@@ -113,6 +113,8 @@ async function handler ({
     );
   }
 
+  console.log(JSON.stringify(result.data));
+
   return {
     statusCode: 200,
     body: JSON.stringify({
