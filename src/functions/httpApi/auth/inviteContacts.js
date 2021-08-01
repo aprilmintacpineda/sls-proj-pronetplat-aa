@@ -40,10 +40,9 @@ async function handler ({
           {
             user: getById('users', query.Var('contactId')),
             eventInvitation: getByIndexIfExists(
-              'eventInvitationByUserEventInviter',
+              'eventInvitationByUserEvent',
               query.Var('contactId'),
-              eventId,
-              authUser.id
+              eventId
             ),
             isOrganizer: existsByIndex(
               'eventOrganizerByOrganizerEvent',
@@ -100,16 +99,21 @@ async function handler ({
             },
             {
               user: query.Var('user'),
-              eventInvitation: getByIndexIfExists(
-                'eventInvitationByUserEventInviter',
-                query.Var('contactId'),
-                eventId,
-                authUser.id
-              ),
-              isOrganizer: existsByIndex(
-                'eventOrganizerByOrganizerEvent',
-                query.Var('contactId'),
-                eventId
+              canInvite: query.And(
+                query.Not(
+                  existsByIndex(
+                    'eventInvitationByUserEvent',
+                    query.Var('contactId'),
+                    eventId
+                  )
+                ),
+                query.Not(
+                  existsByIndex(
+                    'eventOrganizerByOrganizerEvent',
+                    query.Var('contactId'),
+                    eventId
+                  )
+                )
               )
             }
           )
@@ -121,15 +125,11 @@ async function handler ({
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(
-        ({ user, eventInvitation, isOrganizer }) => ({
-          ...getPublicUserData(user),
-          isConnected: true,
-          canInvite:
-            !isOrganizer &&
-            (!eventInvitation || eventInvitation.rejectedAt)
-        })
-      ),
+      data: result.data.map(({ user, canInvite }) => ({
+        ...getPublicUserData(user),
+        isConnected: true,
+        canInvite
+      })),
       nextToken: result.after?.[0].id || null
     })
   };

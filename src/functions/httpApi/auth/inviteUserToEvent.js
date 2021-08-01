@@ -2,8 +2,7 @@ const { query } = require('faunadb');
 const {
   initClient,
   existsByIndex,
-  create,
-  getByIndexIfExists
+  create
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -37,21 +36,11 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
               eventId
             )
           ),
-          query.Let(
-            {
-              existingInvitation: getByIndexIfExists(
-                'eventInvitationByUserEventInviter',
-                formBody.contactId,
-                eventId,
-                authUser.id
-              )
-            },
-            query.Or(
-              query.IsNull(query.Var('existingInvitation')),
-              query.ContainsPath(
-                ['data', 'rejectedAt'],
-                query.Var('existingInvitation')
-              )
+          query.Not(
+            existsByIndex(
+              'eventInvitationByUserEvent',
+              formBody.contactId,
+              eventId
             )
           )
         ),
