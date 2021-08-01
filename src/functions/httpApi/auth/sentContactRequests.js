@@ -1,5 +1,8 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  getById
+} = require('dependencies/utils/faunadb');
 const {
   httpGuard,
   guardTypes
@@ -28,12 +31,7 @@ async function handler ({ params: { nextToken }, authUser }) {
       ),
       query.Lambda(['recipientId', 'ref'], {
         contactRequest: query.Get(query.Var('ref')),
-        recipient: query.Get(
-          query.Ref(
-            query.Collection('users'),
-            query.Var('recipientId')
-          )
-        )
+        recipient: getById('users', query.Var('recipientId'))
       })
     )
   );

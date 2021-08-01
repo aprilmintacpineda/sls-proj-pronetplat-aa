@@ -40,12 +40,7 @@ async function handler ({ params: { nextToken }, authUser }) {
           },
           {
             notification: query.Var('notification'),
-            user: query.Get(
-              query.Ref(
-                query.Collection('users'),
-                query.Var('actorId')
-              )
-            ),
+            user: getById('users', query.Var('actorId')),
             event: query.If(
               query.IsNull(query.Var('eventId')),
               null,
