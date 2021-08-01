@@ -103,6 +103,8 @@ async function handler ({
               ),
               testOnly1: true,
               testOnly2: false,
+              testOnly3: 1,
+              testOnly4: 0,
               isOrganizer: existsByIndex(
                 'eventOrganizerByOrganizerEvent',
                 query.Var('contactId'),
