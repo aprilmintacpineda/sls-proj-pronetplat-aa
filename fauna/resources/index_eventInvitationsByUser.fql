@@ -1,0 +1,12 @@
+CreateIndex({
+  name: 'eventInvitationsByUser',
+  source: Collection('eventInvitations'),
+  terms: [
+    { field: ['data', 'userId'] }
+  ],
+  values: [
+    { field: ['data', 'eventId'] },
+    { field: ['data', 'inviterId'] },
+    { field: ['ref'] }
+  ]
+})
