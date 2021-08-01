@@ -2,7 +2,6 @@ const { query } = require('faunadb');
 const {
   initClient,
   getById,
-  getByIndexIfExists,
   existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
@@ -39,15 +38,21 @@ async function handler ({
           ],
           {
             user: getById('users', query.Var('contactId')),
-            eventInvitation: getByIndexIfExists(
-              'eventInvitationByUserEvent',
-              query.Var('contactId'),
-              eventId
-            ),
-            isOrganizer: existsByIndex(
-              'eventOrganizerByOrganizerEvent',
-              query.Var('contactId'),
-              eventId
+            canInvite: query.And(
+              query.Not(
+                existsByIndex(
+                  'eventInvitationByUserEvent',
+                  query.Var('contactId'),
+                  eventId
+                )
+              ),
+              query.Not(
+                existsByIndex(
+                  'eventOrganizerByOrganizerEvent',
+                  query.Var('contactId'),
+                  eventId
+                )
+              )
             )
           }
         )
@@ -121,8 +126,6 @@ async function handler ({
       )
     );
   }
-
-  console.log(JSON.stringify(result));
 
   return {
     statusCode: 200,
