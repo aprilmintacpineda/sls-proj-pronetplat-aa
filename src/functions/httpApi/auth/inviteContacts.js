@@ -44,6 +44,11 @@ async function handler ({
               query.Var('contactId'),
               eventId,
               authUser.id
+            ),
+            isOrganizer: existsByIndex(
+              'eventOrganizerByOrganizerEvent',
+              query.Var('contactId'),
+              eventId
             )
           }
         )
@@ -101,10 +106,6 @@ async function handler ({
                 eventId,
                 authUser.id
               ),
-              testOnly1: true,
-              testOnly2: false,
-              testOnly3: 1,
-              testOnly4: 0,
               isOrganizer: existsByIndex(
                 'eventOrganizerByOrganizerEvent',
                 query.Var('contactId'),
