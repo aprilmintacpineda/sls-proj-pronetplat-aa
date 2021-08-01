@@ -101,6 +101,8 @@ async function handler ({
                 eventId,
                 authUser.id
               ),
+              testOnly1: true,
+              testOnly2: false,
               isOrganizer: existsByIndex(
                 'eventOrganizerByOrganizerEvent',
                 query.Var('contactId'),
