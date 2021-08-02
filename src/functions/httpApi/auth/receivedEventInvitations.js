@@ -40,16 +40,23 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ invitation, event, inviter }) => ({
-        ...invitation.data,
-        id: invitation.ref.id,
-        event: {
-          ...event.data,
-          id: event.ref.id,
-          invitationId: invitation.ref.id
-        },
-        inviter: getPublicUserData(inviter)
-      })),
+      data: result.data.map(
+        ({ invitation, event, inviter: _inviter }) => {
+          const inviter = getPublicUserData(_inviter);
+
+          return {
+            ...invitation.data,
+            id: invitation.ref.id,
+            event: {
+              ...event.data,
+              id: event.ref.id,
+              invitationId: invitation.ref.id,
+              inviter
+            },
+            inviter
+          };
+        }
+      ),
       nextToken: result.after?.[0].id || null
     })
   };
