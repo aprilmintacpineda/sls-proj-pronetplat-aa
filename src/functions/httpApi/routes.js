@@ -116,6 +116,10 @@ routing.delete(
   '/events/organizers/:eventId/:organizerId',
   require('./auth/removeEventOrganizer')
 );
+routing.delete(
+  '/events/cancel-going/:eventId',
+  require('./auth/cancelGoing')
+);
 
 routing.patch(
   '/contact-details/:contactDetailId',
