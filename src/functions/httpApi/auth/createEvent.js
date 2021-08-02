@@ -26,8 +26,8 @@ async function handler ({ authUser, formBody }) {
   try {
     // resolve variables from google places
     const location = formBody.location;
-    latitude = location.location.latitude;
-    longitude = location.location.longitude;
+    latitude = Number(location.location.latitude);
+    longitude = Number(location.location.longitude);
     googlePlaceId = location.placeID;
     address = location.address;
     placeName = location.name;
@@ -56,7 +56,7 @@ async function handler ({ authUser, formBody }) {
           startDateTime: formBody.startDateTime,
           endDateTime: formBody.endDateTime,
           visibility: formBody.visibility,
-          maxAttendees: formBody.maxAttendees,
+          maxAttendees: Number(formBody.maxAttendees),
           latitude,
           longitude,
           googlePlaceId,

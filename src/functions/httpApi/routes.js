@@ -103,6 +103,10 @@ routing.post(
   '/events/invite-user/:eventId',
   require('./auth/inviteUserToEvent')
 );
+routing.post(
+  '/events/accept-invitation/:eventId',
+  require('./auth/acceptEventInvitation')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',

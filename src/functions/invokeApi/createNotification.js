@@ -16,7 +16,7 @@ const {
 module.exports = async ({
   authUser,
   userId,
-  body,
+  body: _body,
   type,
   title,
   payload = null
@@ -71,14 +71,19 @@ module.exports = async ({
   const values = await faunadb.query(query.Do(...queries));
 
   const fullname = getFullName(authUser);
+  let body = _body
+    .replace(/{fullname}/gim, fullname)
+    .replace(
+      /{genderPossessiveLowercase}/gim,
+      getPersonalPronoun(authUser).possessive.lowercase
+    );
+
+  if (payload?.eventId)
+    body = body.replace(/{eventName}/gim, values.event.data.name);
+
   const webSocketEventPayload = {
     title: title.replace(/{fullname}/gim, fullname),
-    body: body
-      .replace(/{fullname}/gim, fullname)
-      .replace(
-        /{genderPossessiveLowercase}/gim,
-        getPersonalPronoun(authUser).possessive.lowercase
-      )
+    body
   };
 
   Object.keys(values).forEach(key => {
