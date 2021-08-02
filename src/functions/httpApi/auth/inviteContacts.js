@@ -53,6 +53,8 @@ async function handler ({
                   eventId
                 )
               )
+              // @todo check that the user ig not going to the event
+              // @todo check that event is not full yet
             )
           }
         )
@@ -120,6 +122,8 @@ async function handler ({
                   )
                 )
               )
+              // @todo check that the user ig not going to the event
+              // @todo check that event is not full yet
             }
           )
         )

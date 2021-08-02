@@ -43,6 +43,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
               eventId
             )
           )
+          // @todo check that the user ig not going to the event
+          // @todo check that event is not full yet
         ),
         query.Do(
           create('eventInvitations', {
