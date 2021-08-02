@@ -1,7 +1,6 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  existsByIndex,
   create,
   getById,
   getByIndex,
@@ -23,61 +22,48 @@ async function handler ({ authUser, params: { eventId } }) {
 
   try {
     invitation = await faunadb.query(
-      query.If(
-        existsByIndex(
-          'eventInvitationByUserEvent',
-          authUser.id,
-          eventId
-        ),
-        query.Let(
-          {
-            invitation: getByIndex(
-              'eventInvitationByUserEvent',
-              authUser.id,
+      query.Let(
+        {
+          invitation: getByIndex(
+            'eventInvitationByUserEvent',
+            authUser.id,
+            eventId
+          ),
+          _event: getById('_events', eventId)
+        },
+        query.If(
+          query.LT(
+            query.Select(['data', 'numGoing'], query.Var('_event')),
+            query.Select(
+              ['data', 'maxAttendees'],
+              query.Var('_event')
+            )
+          ),
+          query.Do(
+            create('eventAttendees', {
+              userId: authUser.id,
               eventId
-            ),
-            _event: getById('_events', eventId)
-          },
-          query.If(
-            query.LT(
-              query.Select(
-                ['data', 'numGoing'],
-                query.Var('_event')
-              ),
-              query.Select(
-                ['data', 'maxAttendees'],
-                query.Var('_event')
+            }),
+            updateById('_events', eventId, {
+              numGoing: query.Add(
+                query.Select(
+                  ['data', 'numGoing'],
+                  query.Var('_event')
+                ),
+                1
               )
-            ),
-            query.Do(
-              create('eventAttendees', {
-                userId: authUser.id,
-                eventId
-              }),
-              updateById('_events', eventId, {
-                numGoing: query.Add(
-                  query.Select(
-                    ['data', 'numGoing'],
-                    query.Var('_event')
-                  ),
-                  1
-                )
-              }),
-              query.Delete(selectRef(query.Var('invitation'))),
-              query.Var('invitation')
-            ),
-            query.Abort('EventIsFull')
-          )
-        ),
-        query.Abort('InvitationNotFound')
+            }),
+            query.Delete(selectRef(query.Var('invitation'))),
+            query.Var('invitation')
+          ),
+          query.Abort('EventIsFull')
+        )
       )
     );
   } catch (error) {
     console.log(error);
 
-    if (error.description === 'InvitationNotFound') {
-      return { statusCode: 400 };
-    } else if (error.description === 'EventIsFull') {
+    if (error.description === 'EventIsFull') {
       return {
         statusCode: 400,
         body: JSON.stringify({
