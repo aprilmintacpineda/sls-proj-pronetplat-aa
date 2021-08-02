@@ -45,7 +45,8 @@ async function handler ({ params: { nextToken }, authUser }) {
         id: invitation.ref.id,
         event: {
           ...event.data,
-          id: event.ref.id
+          id: event.ref.id,
+          invitationId: invitation.ref.id
         },
         inviter: getPublicUserData(inviter)
       })),
