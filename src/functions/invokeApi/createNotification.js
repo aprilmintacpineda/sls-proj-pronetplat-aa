@@ -25,7 +25,7 @@ module.exports = async ({
     create('notifications', {
       userId,
       type,
-      body,
+      body: _body,
       actorId: authUser.id,
       payload
     }),
