@@ -20,9 +20,9 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.14.8",
-    "@babel/eslint-parser": "^7.14.7",
-    "@babel/preset-env": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/eslint-parser": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
     "@babel/runtime": "^7.14.8",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^27.0.6",
@@ -38,7 +38,7 @@
     "faker": "^5.5.3",
     "husky": "7.0.1",
     "jest": "^27.0.6",
-    "lint-staged": "^11.1.1",
+    "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "recursive-readdir-async": "^1.1.8",
     "ts-node": "^10.1.0"
