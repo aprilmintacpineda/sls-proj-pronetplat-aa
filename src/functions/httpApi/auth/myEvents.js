@@ -16,9 +16,12 @@ async function handler ({ params: { nextToken }, authUser }) {
   const result = await faunadb.query(
     query.Map(
       query.Paginate(
-        query.Match(
-          query.Index('eventsByEventOrganizer'),
-          authUser.id
+        query.Union(
+          query.Match(
+            query.Index('eventsByEventOrganizer'),
+            authUser.id
+          ),
+          query.Match(query.Index('eventsByAttendee'), authUser.id)
         ),
         {
           size: 20,
@@ -32,6 +35,16 @@ async function handler ({ params: { nextToken }, authUser }) {
       ),
       query.Lambda(['eventId', 'ref'], {
         event: getById('_events', query.Var('eventId')),
+        isGoing: existsByIndex(
+          'eventAttendeeByUserEvent',
+          authUser.id,
+          query.Var('eventId')
+        ),
+        isOrganizer: existsByIndex(
+          'eventOrganizerByOrganizerEvent',
+          authUser.id,
+          query.Var('eventId')
+        ),
         organizers: query.Map(
           query.Paginate(
             query.Match(
@@ -62,7 +75,6 @@ async function handler ({ params: { nextToken }, authUser }) {
       data: result.data.map(({ event, organizers }) => ({
         id: event.ref.id,
         ...event.data,
-        isOrganizer: true,
         organizers: organizers.data.reduce(
           (accumulator, { user, isConnected }) => {
             if (user.ref.id === authUser.id) return accumulator;
