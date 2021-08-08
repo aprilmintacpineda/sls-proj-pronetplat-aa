@@ -72,21 +72,25 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ event, organizers }) => ({
-        id: event.ref.id,
-        ...event.data,
-        organizers: organizers.data.reduce(
-          (accumulator, { user, isConnected }) => {
-            if (user.ref.id === authUser.id) return accumulator;
+      data: result.data.map(
+        ({ event, organizers, isOrganizer, isGoing }) => ({
+          id: event.ref.id,
+          ...event.data,
+          isGoing,
+          isOrganizer,
+          organizers: organizers.data.reduce(
+            (accumulator, { user, isConnected }) => {
+              if (user.ref.id === authUser.id) return accumulator;
 
-            return accumulator.concat({
-              ...getPublicUserData(user),
-              isConnected
-            });
-          },
-          []
-        )
-      })),
+              return accumulator.concat({
+                ...getPublicUserData(user),
+                isConnected
+              });
+            },
+            []
+          )
+        })
+      ),
       nextToken: result.after?.[0].id || null
     })
   };
