@@ -125,6 +125,10 @@ routing.delete(
   '/events/cancel-going/:eventId',
   require('./auth/cancelGoing')
 );
+routing.post(
+  '/events/cancel-invitation/:eventId',
+  require('./auth/cancelEventInvitation')
+);
 
 routing.patch(
   '/contact-details/:contactDetailId',
