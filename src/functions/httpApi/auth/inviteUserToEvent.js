@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   existsByIndex,
-  create
+  create,
+  getById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -15,7 +16,7 @@ const {
 const { getFullName } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, params: { eventId }, formBody }) {
+async function handler({ authUser, params: { eventId }, formBody }) {
   if (formBody.contactId === authUser.id) return { statusCode: 400 };
 
   const faunadb = initClient();
@@ -42,9 +43,29 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
               formBody.contactId,
               eventId
             )
+          ),
+          query.Not(
+            existsByIndex(
+              'eventAttendeeByUserEvent',
+              formBody.contactId,
+              eventId
+            )
+          ),
+          query.Let(
+            {
+              _event: getById('_events', eventId)
+            },
+            query.LT(
+              query.Select(
+                ['data', 'numGoing'],
+                query.Var('_event')
+              ),
+              query.Select(
+                ['data', 'maxAttendees'],
+                query.Var('_event')
+              )
+            )
           )
-          // @todo check that the user ig not going to the event
-          // @todo check that event is not full yet
         ),
         query.Do(
           create('eventInvitations', {

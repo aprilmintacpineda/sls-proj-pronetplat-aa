@@ -52,9 +52,14 @@ async function handler ({
                   query.Var('contactId'),
                   eventId
                 )
+              ),
+              query.Not(
+                existsByIndex(
+                  'eventAttendeeByUserEvent',
+                  query.Var('contactId'),
+                  eventId
+                )
               )
-              // @todo check that the user ig not going to the event
-              // @todo check that event is not full yet
             )
           }
         )
@@ -120,10 +125,15 @@ async function handler ({
                     query.Var('contactId'),
                     eventId
                   )
+                ),
+                query.Not(
+                  existsByIndex(
+                    'eventAttendeeByUserEvent',
+                    query.Var('contactId'),
+                    eventId
+                  )
                 )
               )
-              // @todo check that the user ig not going to the event
-              // @todo check that event is not full yet
             }
           )
         )
