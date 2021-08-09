@@ -28,7 +28,13 @@ async function handler ({ authUser, params: { eventId } }) {
           ),
           1
         )
-      })
+      }),
+      query.Call(
+        'updateUserBadgeCount',
+        authUser.id,
+        'eventInvitationsCount',
+        -1
+      )
     )
   );
 

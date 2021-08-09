@@ -54,6 +54,12 @@ async function handler ({ authUser, params: { eventId } }) {
               )
             }),
             query.Delete(selectRef(query.Var('invitation'))),
+            query.Call(
+              'updateUserBadgeCount',
+              authUser.id,
+              'eventInvitationsCount',
+              -1
+            ),
             query.Var('invitation')
           ),
           query.Abort('EventIsFull')
