@@ -174,5 +174,9 @@ routing.get(
   'received-event-invitations',
   require('./auth/receivedEventInvitations')
 );
+routing.get(
+  'sent-event-invitations',
+  require('./auth/sentEventInvitations')
+);
 
 module.exports = routing;
