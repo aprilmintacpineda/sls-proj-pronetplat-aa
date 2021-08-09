@@ -16,7 +16,7 @@ const {
 const { getFullName } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
-async function handler({ authUser, params: { eventId }, formBody }) {
+async function handler ({ authUser, params: { eventId }, formBody }) {
   if (formBody.contactId === authUser.id) return { statusCode: 400 };
 
   const faunadb = initClient();

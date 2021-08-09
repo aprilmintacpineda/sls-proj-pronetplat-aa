@@ -111,6 +111,7 @@ routing.post(
   '/events/reject-invitation/:eventId',
   require('./auth/rejectEventInvitation')
 );
+routing.post('/events/join/:eventId', require('./auth/joinEvent'));
 
 routing.delete(
   '/contact-details/:contactDetailId',
