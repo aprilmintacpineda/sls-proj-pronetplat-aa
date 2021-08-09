@@ -107,6 +107,10 @@ routing.post(
   '/events/accept-invitation/:eventId',
   require('./auth/acceptEventInvitation')
 );
+routing.post(
+  '/events/reject-invitation/:eventId',
+  require('./auth/rejectEventInvitation')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',
