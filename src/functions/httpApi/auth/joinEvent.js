@@ -16,33 +16,33 @@ async function handler ({ authUser, params: { eventId } }) {
 
   try {
     await faunadb.query(
-      query.If(
-        query.And(
-          query.Not(
-            existsByIndex(
-              'eventOrganizerByOrganizerEvent',
-              authUser.id,
-              eventId
-            )
-          ),
-          query.Not(
-            existsByIndex(
-              'eventInvitationByUserEvent',
-              authUser.id,
-              eventId
-            )
-          ),
-          query.Not(
-            existsByIndex(
-              'eventAttendeeByUserEvent',
-              authUser.id,
-              eventId
-            )
-          ),
-          query.Let(
-            {
-              _event: getById('_events', eventId)
-            },
+      query.Let(
+        {
+          _event: getById('_events', eventId)
+        },
+        query.If(
+          query.And(
+            query.Not(
+              existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                authUser.id,
+                eventId
+              )
+            ),
+            query.Not(
+              existsByIndex(
+                'eventInvitationByUserEvent',
+                authUser.id,
+                eventId
+              )
+            ),
+            query.Not(
+              existsByIndex(
+                'eventAttendeeByUserEvent',
+                authUser.id,
+                eventId
+              )
+            ),
             query.LT(
               query.Select(
                 ['data', 'numGoing'],
@@ -53,24 +53,24 @@ async function handler ({ authUser, params: { eventId } }) {
                 query.Var('_event')
               )
             )
-          )
-        ),
-        query.Do(
-          create('eventAttendees', {
-            userId: authUser.id,
-            eventId
-          }),
-          updateById('_events', eventId, {
-            numGoing: query.Add(
-              query.Select(
-                ['data', 'numGoing'],
-                query.Var('_event')
-              ),
-              1
-            )
-          })
-        ),
-        query.Abort('CheckFailed')
+          ),
+          query.Do(
+            create('eventAttendees', {
+              userId: authUser.id,
+              eventId
+            }),
+            updateById('_events', eventId, {
+              numGoing: query.Add(
+                query.Select(
+                  ['data', 'numGoing'],
+                  query.Var('_event')
+                ),
+                1
+              )
+            })
+          ),
+          query.Abort('CheckFailed')
+        )
       )
     );
   } catch (error) {
