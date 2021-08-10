@@ -22,6 +22,13 @@ async function handler ({ authUser, params: { eventId } }) {
         },
         query.If(
           query.And(
+            query.Equals(
+              query.Select(
+                ['data', 'visibility'],
+                query.Var('_event')
+              ),
+              'public'
+            ),
             query.Not(
               existsByIndex(
                 'eventOrganizerByOrganizerEvent',
