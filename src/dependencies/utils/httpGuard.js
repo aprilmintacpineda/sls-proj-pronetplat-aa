@@ -23,11 +23,20 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
     const results = {
       body: httpEvent.body,
       headers: httpEvent.headers,
-      params: {
-        ...httpEvent.queryStringParameters,
-        ...httpEvent.pathParameters
-      }
+      params: {}
     };
+
+    Object.keys(httpEvent.pathParameters).forEach(key => {
+      results.params[key] = decodeURIComponent(
+        httpEvent.pathParameters[key]
+      );
+    });
+
+    Object.keys(httpEvent.queryStringParameters).forEach(key => {
+      results.params[key] = decodeURIComponent(
+        httpEvent.queryStringParameters[key]
+      );
+    });
 
     if (guards.includes(guardTypes.deviceToken)) {
       const deviceToken = httpEvent.headers['device-token'];
