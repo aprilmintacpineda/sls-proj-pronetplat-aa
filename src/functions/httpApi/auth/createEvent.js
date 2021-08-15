@@ -140,9 +140,11 @@ module.exports = httpGuard({
     endDateTime,
     location,
     visibility,
-    maxAttendees
+    maxAttendees,
+    organizers
   }) => {
     return (
+      validate(organizers, ['maxLength:20']),
       validate(coverPicture, [
         'required',
         'options:image/jpeg,image/png'

@@ -32,6 +32,8 @@ const validationRules = {
     );
   },
   maxLength (value, [max]) {
+    console.log('maxLength', value, value.length);
+
     return value.length > max;
   },
   password (value) {
