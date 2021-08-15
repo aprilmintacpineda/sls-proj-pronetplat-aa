@@ -22,7 +22,7 @@ async function handler ({ authUser, params: { search, nextToken } }) {
         query.Paginate(
           query.Match(query.Index('contactsByUserId'), authUser.id),
           {
-            size: 1,
+            size: 20,
             after: nextToken
               ? [
                   Number(nextTokenParts[0]),
@@ -83,7 +83,7 @@ async function handler ({ authUser, params: { search, nextToken } }) {
             )
           ),
           {
-            size: 1,
+            size: 20,
             after: nextToken
               ? query.Ref(query.Collection('contacts'), nextToken)
               : []
