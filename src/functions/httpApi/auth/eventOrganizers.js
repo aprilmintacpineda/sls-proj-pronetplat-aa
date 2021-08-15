@@ -15,18 +15,22 @@ async function handler ({
   authUser
 }) {
   const faunadb = initClient();
+  const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   const result = await faunadb.query(
     query.Map(
       query.Paginate(
         query.Match(query.Index('eventOrganizersByEvent'), eventId),
         {
-          size: 20,
-          after: nextToken
-            ? query.Ref(
-                query.Collection('eventOrganizersByEvent'),
-                nextToken
-              )
+          size: 1,
+          after: nextTokenParts
+            ? [
+                nextTokenParts[0],
+                query.Ref(
+                  query.Collection('eventOrganizers'),
+                  nextTokenParts[1]
+                )
+              ]
             : []
         }
       ),
@@ -52,7 +56,9 @@ async function handler ({
         ...getPublicUserData(user),
         isConnected
       })),
-      nextToken: result.after?.[0].id || null
+      nextToken: result.after
+        ? `${result.after[0]}___${result.after[1].id}`
+        : null
     })
   };
 }
