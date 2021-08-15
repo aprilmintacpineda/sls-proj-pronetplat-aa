@@ -31,9 +31,10 @@ async function handler ({
               ? [
                   nextTokenParts[0],
                   nextTokenParts[1],
+                  nextTokenParts[2],
                   query.Ref(
                     query.Collection('contacts'),
-                    nextTokenParts[2]
+                    nextTokenParts[3]
                   )
                 ]
               : []
