@@ -34,8 +34,6 @@ function resolveParams (httpEvent) {
 
 function httpGuard ({ handler, guards = [], formValidator = null }) {
   return async httpEvent => {
-    console.log(JSON.stringify(httpEvent, null, 2));
-
     const payload = {
       params: resolveParams(httpEvent)
     };
