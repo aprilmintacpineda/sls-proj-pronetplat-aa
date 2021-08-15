@@ -7,6 +7,5 @@ CreateIndex({
     "field": ["data", "inviterId"]
   }, {
     "field": ["data", "eventId"]
-  }],
-  "unique": true
+  }]
 })
