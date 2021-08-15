@@ -16,16 +16,26 @@ async function handler ({
 }) {
   const faunadb = initClient();
   let result;
+  let nextNextToken;
 
   if (!search) {
+    const nextTokenParts = nextToken ? nextToken.split('___') : null;
+
     result = await faunadb.query(
       query.Map(
         query.Paginate(
           query.Match(query.Index('contactsByUserId'), authUser.id),
           {
-            size: 20,
-            after: nextToken
-              ? query.Ref(query.Collection('contacts'), nextToken)
+            size: 1,
+            after: nextTokenParts
+              ? [
+                  nextTokenParts[0],
+                  nextTokenParts[1],
+                  query.Ref(
+                    query.Collection('contacts'),
+                    nextTokenParts[2]
+                  )
+                ]
               : []
           }
         ),
@@ -47,6 +57,10 @@ async function handler ({
         )
       )
     );
+
+    nextNextToken = result.after
+      ? `${result.after[0]}___${result.after[1]}___${result.after[2]}___${result.after[3].id}`
+      : null;
   } else {
     result = await faunadb.query(
       query.Map(
@@ -74,7 +88,7 @@ async function handler ({
             )
           ),
           {
-            size: 20,
+            size: 1,
             after: nextToken
               ? query.Ref(query.Collection('contacts'), nextToken)
               : []
@@ -103,6 +117,8 @@ async function handler ({
         )
       )
     );
+
+    nextNextToken = result.after[0]?.id || null;
   }
 
   return {
@@ -113,7 +129,7 @@ async function handler ({
         isConnected: true,
         isOrganizer
       })),
-      nextToken: result.after?.[0].id || null
+      nextToken: nextNextToken
     })
   };
 }
