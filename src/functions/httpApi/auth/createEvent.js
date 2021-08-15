@@ -46,6 +46,7 @@ async function handler ({ authUser, formBody }) {
   }
 
   let event = null;
+  const numOrganizers = formBody.organizers.length;
 
   try {
     const createQuery = query.Let(
@@ -64,7 +65,8 @@ async function handler ({ authUser, formBody }) {
           placeName,
           status: 'creating',
           numGoing: 0,
-          numInterested: 0
+          numInterested: 0,
+          numOrganizers
         }),
         eventId: query.Select(['ref', 'id'], query.Var('event'))
       },
@@ -85,7 +87,7 @@ async function handler ({ authUser, formBody }) {
 
     event = await faunadb.query(
       // if organizer was set, validate that selected organizers are contacts of authUser
-      formBody.organizers.length
+      numOrganizers
         ? query.If(
             query.And(
               formBody.organizers.map(contactId =>
