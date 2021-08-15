@@ -21,20 +21,6 @@ async function handler ({
   if (!search) {
     const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
-    console.log(
-      nextTokenParts
-        ? [
-            nextTokenParts[0],
-            nextTokenParts[1],
-            nextTokenParts[2],
-            query.Ref(
-              query.Collection('contacts'),
-              nextTokenParts[3]
-            )
-          ]
-        : []
-    );
-
     result = await faunadb.query(
       query.Map(
         query.Paginate(
@@ -43,8 +29,8 @@ async function handler ({
             size: 1,
             after: nextTokenParts
               ? [
-                  nextTokenParts[0],
-                  nextTokenParts[1],
+                  Number(nextTokenParts[0]),
+                  Number(nextTokenParts[1]),
                   nextTokenParts[2],
                   query.Ref(
                     query.Collection('contacts'),
