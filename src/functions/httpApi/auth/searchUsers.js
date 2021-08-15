@@ -22,10 +22,9 @@ async function handler ({
   }
 
   const faunadb = initClient();
-  let result = [];
 
   if (searchBy === 'name') {
-    result = await faunadb.query(
+    const result = await faunadb.query(
       query.Filter(
         query.Map(
           query.Paginate(
@@ -42,9 +41,9 @@ async function handler ({
               )
             ),
             {
-              size: 20,
+              size: 1,
               after: nextToken
-                ? query.Ref(query.Collection('contacts'), nextToken)
+                ? query.Ref(query.Collection('users'), nextToken)
                 : []
             }
           ),
@@ -68,21 +67,35 @@ async function handler ({
         )
       )
     );
-  } else {
-    const user = await faunadb.query(
-      getByIndexIfExists('userByUsername', search)
-    );
 
-    if (user && user.data.allowSearchByUsername)
-      result = { data: [user] };
-    else result = { data: [] };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        data: result.data.map(user => getPublicUserData(user)),
+        nextToken: result.after?.[0].id || null
+      })
+    };
+  }
+
+  const user = await faunadb.query(
+    getByIndexIfExists('userByUsername', search)
+  );
+
+  if (user && user.data.allowSearchByUsername) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        data: [getPublicUserData(user)],
+        nextToken: null
+      })
+    };
   }
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(user => getPublicUserData(user)),
-      nextToken: result.after?.[0].id || null
+      data: [],
+      nextToken: null
     })
   };
 }
