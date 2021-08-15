@@ -1,6 +1,9 @@
+const { query } = require('faunadb');
 const {
   initClient,
-  hardDeleteByIndex
+  hardDeleteByIndex,
+  getById,
+  updateById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -19,10 +22,26 @@ async function handler ({
   const faunadb = initClient();
 
   await faunadb.query(
-    hardDeleteByIndex(
-      'eventOrganizerByOrganizerEvent',
-      organizerId,
-      eventId
+    query.Let(
+      {
+        numOrganizers: query.Select(
+          ['data', 'numOrganizers'],
+          getById('_events', eventId)
+        )
+      },
+      query.Do(
+        hardDeleteByIndex(
+          'eventOrganizerByOrganizerEvent',
+          organizerId,
+          eventId
+        ),
+        updateById('_events', eventId, {
+          numOrganizers: query.Subtract(
+            query.Var('numOrganizers'),
+            1
+          )
+        })
+      )
     )
   );
 
