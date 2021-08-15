@@ -19,15 +19,21 @@ const guardTypes = {
 function resolveParams (httpEvent) {
   const params = {};
 
-  Object.keys(httpEvent.pathParameters).forEach(key => {
-    params[key] = decodeURIComponent(httpEvent.pathParameters[key]);
-  });
+  if (httpEvent.pathParameters) {
+    Object.keys(httpEvent.pathParameters).forEach(key => {
+      params[key] = decodeURIComponent(
+        httpEvent.pathParameters[key]
+      );
+    });
+  }
 
-  Object.keys(httpEvent.queryStringParameters).forEach(key => {
-    params[key] = decodeURIComponent(
-      httpEvent.queryStringParameters[key]
-    );
-  });
+  if (httpEvent.queryStringParameters) {
+    Object.keys(httpEvent.queryStringParameters).forEach(key => {
+      params[key] = decodeURIComponent(
+        httpEvent.queryStringParameters[key]
+      );
+    });
+  }
 
   return params;
 }
