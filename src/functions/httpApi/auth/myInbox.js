@@ -19,7 +19,7 @@ async function handler ({ params: { nextToken }, authUser }) {
       query.Paginate(
         query.Match(query.Index('inboxByUserId'), authUser.id),
         {
-          size: 1,
+          size: 20,
           after: nextTokenParts
             ? [
                 nextTokenParts[0],
