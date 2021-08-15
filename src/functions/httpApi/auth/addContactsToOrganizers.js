@@ -26,7 +26,7 @@ async function handler ({
         query.Paginate(
           query.Match(query.Index('contactsByUserId'), authUser.id),
           {
-            size: 1,
+            size: 20,
             after: nextTokenParts
               ? [
                   Number(nextTokenParts[0]),
@@ -89,7 +89,7 @@ async function handler ({
             )
           ),
           {
-            size: 1,
+            size: 20,
             after: nextToken
               ? query.Ref(query.Collection('contacts'), nextToken)
               : []

@@ -22,7 +22,7 @@ async function handler ({
       query.Paginate(
         query.Match(query.Index('eventOrganizersByEvent'), eventId),
         {
-          size: 1,
+          size: 20,
           after: nextTokenParts
             ? [
                 nextTokenParts[0],
