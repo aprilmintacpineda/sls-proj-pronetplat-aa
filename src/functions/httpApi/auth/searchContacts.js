@@ -12,16 +12,27 @@ const { getPublicUserData } = require('dependencies/utils/users');
 async function handler ({ authUser, params: { search, nextToken } }) {
   const faunadb = initClient();
   let result;
+  let nextNextToken = null;
 
   if (!search) {
+    const nextTokenParts = nextToken ? nextToken.split('___') : null;
+
     result = await faunadb.query(
       query.Map(
         query.Paginate(
           query.Match(query.Index('contactsByUserId'), authUser.id),
           {
-            size: 20,
+            size: 1,
             after: nextToken
-              ? query.Ref(query.Collection('contacts'), nextToken)
+              ? [
+                  nextTokenParts[0],
+                  nextTokenParts[1],
+                  nextTokenParts[2],
+                  query.Ref(
+                    query.Collection('contacts'),
+                    nextTokenParts[3]
+                  )
+                ]
               : []
           }
         ),
@@ -41,6 +52,10 @@ async function handler ({ authUser, params: { search, nextToken } }) {
         )
       )
     );
+
+    nextNextToken = result.after
+      ? `${result.after[0]}___${result.after[1]}___${result.after[2]}___${result.after[3].id}`
+      : null;
   } else {
     result = await faunadb.query(
       query.Map(
@@ -98,6 +113,8 @@ async function handler ({ authUser, params: { search, nextToken } }) {
         )
       )
     );
+
+    nextNextToken = result.after?.[0].id || null;
   }
 
   return {
@@ -108,7 +125,7 @@ async function handler ({ authUser, params: { search, nextToken } }) {
         isConnected: true,
         unreadChatMessagesCount
       })),
-      nextToken: result.after?.[0].id || null
+      nextToken: nextNextToken
     })
   };
 }
