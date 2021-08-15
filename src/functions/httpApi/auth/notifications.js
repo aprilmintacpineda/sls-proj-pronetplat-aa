@@ -12,6 +12,7 @@ const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ params: { nextToken }, authUser }) {
   const faunadb = initClient();
+  const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   const result = await faunadb.query(
     query.Map(
@@ -22,8 +23,15 @@ async function handler ({ params: { nextToken }, authUser }) {
         ),
         {
           size: 5,
-          after: nextToken
-            ? query.Ref(query.Collection('notifications'), nextToken)
+          after: nextTokenParts
+            ? [
+                nextTokenParts[0],
+                nextTokenParts[1],
+                query.Ref(
+                  query.Collection('notifications'),
+                  nextTokenParts[2]
+                )
+              ]
             : []
         }
       ),
@@ -54,8 +62,6 @@ async function handler ({ params: { nextToken }, authUser }) {
 
   const unseenNotificationIds = [];
   const data = [];
-
-  console.log(JSON.stringify(result));
 
   result.data.forEach(
     ({ notification: _notification, user, event }) => {
@@ -93,7 +99,9 @@ async function handler ({ params: { nextToken }, authUser }) {
     statusCode: 200,
     body: JSON.stringify({
       data,
-      nextToken: result.after?.[0].id || null
+      nextToken: result.after
+        ? `${result.after[0]}___${result.after[1]}___${result.after[2]}`
+        : null
     })
   };
 }
