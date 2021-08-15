@@ -14,9 +14,7 @@ async function handler ({
   params: { contactId, nextToken }
 }) {
   const faunadb = initClient();
-  const nextTokenParts = nextToken
-    ? decodeURIComponent(nextToken).split('_')
-    : null;
+  const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   const result = await faunadb.query(
     query.Map(
@@ -111,7 +109,7 @@ async function handler ({
     body: JSON.stringify({
       data,
       nextToken: result.after
-        ? `${result.after[0]}_${result.after[1].id}`
+        ? `${result.after[0]}___${result.after[1].id}`
         : null
     })
   };
