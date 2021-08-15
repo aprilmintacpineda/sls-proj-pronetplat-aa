@@ -119,7 +119,7 @@ async function handler ({
       )
     );
 
-    nextNextToken = result.after[0]?.id || null;
+    nextNextToken = result.after?.[0].id || null;
   }
 
   return {
