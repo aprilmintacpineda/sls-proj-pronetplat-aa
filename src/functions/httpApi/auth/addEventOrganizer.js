@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   existsByIndex,
-  create
+  create,
+  hardDeleteIfExists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -40,10 +41,17 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             )
           )
         ),
-        create('eventOrganizers', {
-          eventId,
-          userId: formBody.contactId
-        }),
+        query.Do(
+          hardDeleteIfExists(
+            'eventInvitationByUserEvent',
+            formBody.contactId,
+            eventId
+          ),
+          create('eventOrganizers', {
+            eventId,
+            userId: formBody.contactId
+          })
+        ),
         query.Abort('CheckFailed')
       )
     );
