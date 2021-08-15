@@ -73,26 +73,25 @@ async function handler ({ authUser, formBody }) {
           eventId: query.Var('eventId'),
           userId: authUser.id
         }),
-        ...formBody.organizers.map(user =>
+        ...formBody.organizers.map(contactId =>
           create('eventOrganizers', {
             eventId: query.Var('eventId'),
-            userId: user.id
+            userId: contactId
           })
         ),
         query.Var('event')
       )
     );
 
-    // if organizer was set,
-    // validate that selected organizers are contacts of authUser
     event = await faunadb.query(
+      // if organizer was set, validate that selected organizers are contacts of authUser
       formBody.organizers.length
         ? query.If(
             query.And(
-              formBody.organizers.map(contact =>
+              formBody.organizers.map(contactId =>
                 existsByIndex(
                   'contactByOwnerContact',
-                  contact.id,
+                  contactId,
                   authUser.id
                 )
               )
@@ -102,6 +101,8 @@ async function handler ({ authUser, formBody }) {
           )
         : createQuery
     );
+
+    // send notifications to event organizers
   } catch (error) {
     console.log(error);
 
