@@ -4,6 +4,5 @@ CreateIndex({
   terms: [
     { field: ['data', 'userId'] },
     { field: ['data', 'eventId'] }
-  ],
-  unique: true
+  ]
 })
