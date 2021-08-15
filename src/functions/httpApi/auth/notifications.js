@@ -55,6 +55,8 @@ async function handler ({ params: { nextToken }, authUser }) {
   const unseenNotificationIds = [];
   const data = [];
 
+  console.log(JSON.stringify(result));
+
   result.data.forEach(
     ({ notification: _notification, user, event }) => {
       const notification = {

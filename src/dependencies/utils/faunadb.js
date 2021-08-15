@@ -67,8 +67,7 @@ module.exports.ifOwnedByUser = ifOwnedByUser;
 
 module.exports.initClient = () => {
   return new Client({
-    secret: process.env.faunadbSecret,
-    observer: res => console.log(JSON.stringify(res))
+    secret: process.env.faunadbSecret
   });
 };
 
