@@ -11,6 +11,7 @@ const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ params: { nextToken }, authUser }) {
   const faunadb = initClient();
+  const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   const result = await faunadb.query(
     query.Map(
@@ -20,12 +21,16 @@ async function handler ({ params: { nextToken }, authUser }) {
           authUser.id
         ),
         {
-          size: 20,
-          after: nextToken
-            ? query.Ref(
-                query.Collection('eventInvitations'),
-                nextToken
-              )
+          size: 1,
+          after: nextTokenParts
+            ? [
+                nextTokenParts[0],
+                nextTokenParts[1],
+                query.Ref(
+                  query.Collection('eventInvitations'),
+                  nextTokenParts[2]
+                )
+              ]
             : []
         }
       ),
@@ -57,7 +62,9 @@ async function handler ({ params: { nextToken }, authUser }) {
           };
         }
       ),
-      nextToken: result.after?.[0].id || null
+      nextToken: result.after
+        ? `${result.after[0]}___${result.after[1]}___${result.after[2].id}`
+        : null
     })
   };
 }
