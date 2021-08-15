@@ -21,7 +21,7 @@ async function handler ({ params: { nextToken }, authUser }) {
           authUser.id
         ),
         {
-          size: 20,
+          size: 5,
           after: nextToken
             ? query.Ref(query.Collection('notifications'), nextToken)
             : []
