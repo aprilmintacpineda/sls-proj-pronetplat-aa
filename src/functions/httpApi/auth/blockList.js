@@ -7,6 +7,7 @@ const {
 
 async function handler ({ authUser, params: { nextToken } }) {
   const faunadb = initClient();
+  const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   const result = await faunadb.query(
     query.Map(
@@ -28,9 +29,17 @@ async function handler ({ authUser, params: { nextToken } }) {
           )
         ),
         {
-          size: 20,
-          after: nextToken
-            ? query.Ref(query.Collection('userBlockings'), nextToken)
+          size: 1,
+          after: nextTokenParts
+            ? [
+                nextTokenParts[0],
+                nextTokenParts[1],
+                nextTokenParts[2],
+                query.Ref(
+                  query.Collection('users'),
+                  nextTokenParts[3]
+                )
+              ]
             : []
         }
       ),
@@ -48,7 +57,9 @@ async function handler ({ authUser, params: { nextToken } }) {
         ...document.data,
         id: document.ref.id
       })),
-      nextToken: result.after?.[0].id || null
+      nextToken: result.after
+        ? `${result.after[0]}___${result.after[1]}___${result.after[2]}___${result.after[3].id}`
+        : null
     })
   };
 }
