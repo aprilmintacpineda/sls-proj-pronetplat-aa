@@ -8,7 +8,6 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
-const { getPublicUserData } = require('dependencies/utils/users');
 
 async function handler ({ params: { nextToken }, authUser }) {
   const faunadb = initClient();
@@ -48,26 +47,6 @@ async function handler ({ params: { nextToken }, authUser }) {
           'eventOrganizerByOrganizerEvent',
           authUser.id,
           query.Var('eventId')
-        ),
-        organizers: query.Map(
-          query.Paginate(
-            query.Match(
-              query.Index('eventOrganizersByEvent'),
-              query.Var('eventId')
-            )
-          ),
-          query.Lambda(['userId', 'ref'], {
-            user: getById('users', query.Var('userId')),
-            isConnected: query.If(
-              query.Equals(query.Var('userId'), authUser.id),
-              false,
-              existsByIndex(
-                'contactByOwnerContact',
-                authUser.id,
-                query.Var('userId')
-              )
-            )
-          })
         )
       })
     )
@@ -76,25 +55,12 @@ async function handler ({ params: { nextToken }, authUser }) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(
-        ({ event, organizers, isOrganizer, isGoing }) => ({
-          id: event.ref.id,
-          ...event.data,
-          isGoing,
-          isOrganizer,
-          organizers: organizers.data.reduce(
-            (accumulator, { user, isConnected }) => {
-              if (user.ref.id === authUser.id) return accumulator;
-
-              return accumulator.concat({
-                ...getPublicUserData(user),
-                isConnected
-              });
-            },
-            []
-          )
-        })
-      ),
+      data: result.data.map(({ event, isOrganizer, isGoing }) => ({
+        id: event.ref.id,
+        ...event.data,
+        isGoing,
+        isOrganizer
+      })),
       nextToken: result.after
         ? `${result.after[0]}___${result.after[1].id}`
         : null
