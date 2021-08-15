@@ -100,7 +100,7 @@ async function handler ({ params: { nextToken }, authUser }) {
     body: JSON.stringify({
       data,
       nextToken: result.after
-        ? `${result.after[0]}___${result.after[1]}___${result.after[2]}`
+        ? `${result.after[0]}___${result.after[1]}___${result.after[2].id}`
         : null
     })
   };
