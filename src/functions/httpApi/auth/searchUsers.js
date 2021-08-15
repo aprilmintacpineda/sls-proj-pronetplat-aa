@@ -41,7 +41,7 @@ async function handler ({
               )
             ),
             {
-              size: 1,
+              size: 20,
               after: nextToken
                 ? query.Ref(query.Collection('users'), nextToken)
                 : []
