@@ -3,7 +3,9 @@ const {
   initClient,
   existsByIndex,
   create,
-  hardDeleteIfExists
+  hardDeleteIfExists,
+  getById,
+  updateById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -21,38 +23,50 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
   try {
     await faunadb.query(
-      query.If(
-        query.And(
-          existsByIndex(
-            'eventOrganizerByOrganizerEvent',
-            authUser.id,
-            eventId
-          ),
-          existsByIndex(
-            'contactByOwnerContact',
-            formBody.contactId,
-            authUser.id
-          ),
-          query.Not(
+      query.Let(
+        {
+          numOrganizers: query.Select(
+            ['data', 'numOrganizers'],
+            getById('_events', eventId)
+          )
+        },
+        query.If(
+          query.And(
             existsByIndex(
               'eventOrganizerByOrganizerEvent',
+              authUser.id,
+              eventId
+            ),
+            existsByIndex(
+              'contactByOwnerContact',
+              formBody.contactId,
+              authUser.id
+            ),
+            query.Not(
+              existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                formBody.contactId,
+                eventId
+              )
+            ),
+            query.LT(query.Var('numOrganizers'), 20)
+          ),
+          query.Do(
+            hardDeleteIfExists(
+              'eventInvitationByUserEvent',
               formBody.contactId,
               eventId
-            )
-          )
-        ),
-        query.Do(
-          hardDeleteIfExists(
-            'eventInvitationByUserEvent',
-            formBody.contactId,
-            eventId
+            ),
+            create('eventOrganizers', {
+              eventId,
+              userId: formBody.contactId
+            }),
+            updateById('_events', eventId, {
+              numOrganizers: query.Add(query.Var('numOrganizers'), 1)
+            })
           ),
-          create('eventOrganizers', {
-            eventId,
-            userId: formBody.contactId
-          })
-        ),
-        query.Abort('CheckFailed')
+          query.Abort('CheckFailed')
+        )
       )
     );
   } catch (error) {
