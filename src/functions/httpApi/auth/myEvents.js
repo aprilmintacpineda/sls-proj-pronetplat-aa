@@ -25,7 +25,7 @@ async function handler ({ params: { nextToken }, authUser }) {
           query.Match(query.Index('eventsByAttendee'), authUser.id)
         ),
         {
-          size: 1,
+          size: 20,
           after: nextTokenParts
             ? [
                 nextTokenParts[0],
