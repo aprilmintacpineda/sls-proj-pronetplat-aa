@@ -16,27 +16,29 @@ const guardTypes = {
   personalInfoComplete: 'personalInfoComplete'
 };
 
+function resolveParams (httpEvent) {
+  const params = {};
+
+  Object.keys(httpEvent.pathParameters).forEach(key => {
+    params[key] = decodeURIComponent(httpEvent.pathParameters[key]);
+  });
+
+  Object.keys(httpEvent.queryStringParameters).forEach(key => {
+    params[key] = decodeURIComponent(
+      httpEvent.queryStringParameters[key]
+    );
+  });
+
+  return params;
+}
+
 function httpGuard ({ handler, guards = [], formValidator = null }) {
   return async httpEvent => {
     console.log(JSON.stringify(httpEvent, null, 2));
 
-    const results = {
-      body: httpEvent.body,
-      headers: httpEvent.headers,
-      params: {}
+    const payload = {
+      params: resolveParams(httpEvent)
     };
-
-    Object.keys(httpEvent.pathParameters).forEach(key => {
-      results.params[key] = decodeURIComponent(
-        httpEvent.pathParameters[key]
-      );
-    });
-
-    Object.keys(httpEvent.queryStringParameters).forEach(key => {
-      results.params[key] = decodeURIComponent(
-        httpEvent.queryStringParameters[key]
-      );
-    });
 
     if (guards.includes(guardTypes.deviceToken)) {
       const deviceToken = httpEvent.headers['device-token'];
@@ -51,7 +53,7 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
         return { statusCode: 400 };
       }
 
-      results.deviceToken = deviceToken;
+      payload.deviceToken = deviceToken;
     }
 
     if (formValidator) {
@@ -62,7 +64,7 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
         return { statusCode: 400 };
       }
 
-      results.formBody = formBody;
+      payload.formBody = formBody;
     }
 
     if (
@@ -123,15 +125,15 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
           return { statusCode: 400 };
         }
 
-        results.authUser = authUser;
-        results.verifiedJwt = verifiedJwt;
+        payload.authUser = authUser;
+        payload.verifiedJwt = verifiedJwt;
       } catch (error) {
         console.log('Guard: token error', error);
         return { statusCode: 401 };
       }
     }
 
-    return handler(results, httpEvent);
+    return handler(payload, httpEvent);
   };
 }
 
