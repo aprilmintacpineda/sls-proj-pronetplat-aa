@@ -83,7 +83,7 @@ async function handler ({ authUser, params: { search, nextToken } }) {
             )
           ),
           {
-            size: 20,
+            size: 1,
             after: nextToken
               ? query.Ref(query.Collection('contacts'), nextToken)
               : []
