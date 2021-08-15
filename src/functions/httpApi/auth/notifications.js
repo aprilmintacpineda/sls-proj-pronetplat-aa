@@ -22,7 +22,7 @@ async function handler ({ params: { nextToken }, authUser }) {
           authUser.id
         ),
         {
-          size: 5,
+          size: 20,
           after: nextTokenParts
             ? [
                 nextTokenParts[0],
