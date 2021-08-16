@@ -57,9 +57,7 @@ jobs:
 
       - name: Build JS
         run: |
-          rm -rf build Makefile
-          mkdir -p build/dependencies
-          yarn concurrently "yarn build-functions" "yarn build-layers" "yarn build-makefile" "yarn build-package-json" "yarn copy-files"
+          yarn build
           cd build
           mkdir -p dependencies/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json

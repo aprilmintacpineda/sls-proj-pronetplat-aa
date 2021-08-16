@@ -54,7 +54,7 @@
     "build-layers": "babel src/dependencies -d build/dependencies --copy-files",
     "build-package-json": "node buildScripts/buildPackageJson.js",
     "copy-files": "cp samconfig.toml build/samconfig.toml && cp template.yaml build/template.yaml && cp yarn.lock build/yarn.lock && cp yarn.lock build/dependencies/yarn.lock && cp Makefile build/dependencies/Makefile && cp Makefile build/Makefile",
-    "build": "rm -rf build Makefile && mkdir build && yarn build-functions && yarn build-layers && yarn build-makefile && yarn build-package-json && yarn copy-files",
+    "build": "rm -rf build Makefile && mkdir -p build/dependencies && concurrently \"yarn build-functions\" \"yarn build-layers\" \"yarn build-makefile\" \"yarn build-package-json\" \"yarn copy-files\"",
     "clearData": "node scripts/clearData.js",
     "prepare": "husky install",
     "migration:generate": "FAUNA_LEGACY=true FAUNA_NOPRINT=true yarn fauna-schema-migrate generate",
