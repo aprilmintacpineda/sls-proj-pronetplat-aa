@@ -24,6 +24,7 @@ jobs:
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY_DEV }}
       FAUNA_LEGACY: true
       FAUNA_NOPRINT: true
+      NODE_ENV: production
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -56,7 +57,9 @@ jobs:
 
       - name: Build JS
         run: |
-          NODE_ENV=production yarn build
+          rm -rf build Makefile
+          mkdir -p build/dependencies
+          yarn concurrently "yarn build-functions" "yarn build-layers" "yarn build-makefile" "yarn build-package-json" "yarn copy-files"
           cd build
           mkdir -p dependencies/resources
           echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
