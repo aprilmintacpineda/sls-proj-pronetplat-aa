@@ -3,9 +3,9 @@ const {
   initClient,
   existsByIndex,
   create,
-  hardDeleteIfExists,
   getById,
-  updateById
+  updateById,
+  hardDeleteByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -52,10 +52,26 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             query.LT(query.Var('numOrganizers'), 20)
           ),
           query.Do(
-            hardDeleteIfExists(
-              'eventInvitationByUserEvent',
-              formBody.contactId,
-              eventId
+            query.If(
+              existsByIndex(
+                'eventInvitationByUserEvent',
+                formBody.contactId,
+                eventId
+              ),
+              query.Do(
+                hardDeleteByIndex(
+                  'eventInvitationByUserEvent',
+                  formBody.contactId,
+                  eventId
+                ),
+                query.Call(
+                  'updateUserBadgeCount',
+                  formBody.contactId,
+                  'eventInvitationsCount',
+                  -1
+                )
+              ),
+              null
             ),
             create('eventOrganizers', {
               eventId,
