@@ -24,7 +24,6 @@ jobs:
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY_DEV }}
       FAUNA_LEGACY: true
       FAUNA_NOPRINT: true
-      SAM_CLI_TELEMETRY: 0
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
