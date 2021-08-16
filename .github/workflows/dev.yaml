@@ -43,11 +43,6 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-
-      - uses: actions/cache@v2
-        with:
-          path: '**/.aws-sam'
-          key: ${{ runner.os }}-sam-build-${{ hashFiles('**/src/**') }}-${{ hashFiles('**/template.yaml') }}
       
       - name: Install sam
         run: |
