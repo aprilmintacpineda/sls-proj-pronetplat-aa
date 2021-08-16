@@ -51,6 +51,22 @@ async function handler ({ authUser, params: { eventId } }) {
               )
             ),
             query.LT(
+              query.GT(
+                query.Time(
+                  query.Select(
+                    ['data', 'startDateTime'],
+                    query.Var('_event')
+                  )
+                ),
+                query.Now()
+              ),
+              query.Equals(
+                query.Select(
+                  ['data', 'status'],
+                  query.Var('_event')
+                ),
+                'published'
+              ),
               query.Select(
                 ['data', 'numGoing'],
                 query.Var('_event')
