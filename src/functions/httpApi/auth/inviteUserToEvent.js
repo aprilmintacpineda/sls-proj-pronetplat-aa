@@ -55,14 +55,23 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             {
               _event: getById('_events', eventId)
             },
-            query.LT(
-              query.Select(
-                ['data', 'numGoing'],
-                query.Var('_event')
+            query.And(
+              query.Equals(
+                query.Select(
+                  ['data', 'status'],
+                  query.Var('_event')
+                ),
+                'published'
               ),
-              query.Select(
-                ['data', 'maxAttendees'],
-                query.Var('_event')
+              query.LT(
+                query.Select(
+                  ['data', 'numGoing'],
+                  query.Var('_event')
+                ),
+                query.Select(
+                  ['data', 'maxAttendees'],
+                  query.Var('_event')
+                )
               )
             )
           )
