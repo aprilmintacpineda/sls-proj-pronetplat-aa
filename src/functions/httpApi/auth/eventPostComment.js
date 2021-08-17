@@ -74,6 +74,8 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
     return { statusCode: 500 };
   }
 
+  console.log(result);
+
   await Promise.all(
     result.organizers.map(userId => {
       if (userId === authUser.id) return null;
