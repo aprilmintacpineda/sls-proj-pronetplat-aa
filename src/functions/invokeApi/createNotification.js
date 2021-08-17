@@ -1,31 +1,24 @@
 const { query } = require('faunadb');
-const {
-  initClient,
-  create,
-  getById
-} = require('dependencies/utils/faunadb');
+const { create, initClient } = require('dependencies/utils/faunadb');
 const {
   sendWebSocketEvent,
   sendPushNotification
 } = require('dependencies/utils/invokeLambda');
-const {
-  getFullName,
-  getPersonalPronoun
-} = require('dependencies/utils/users');
 
 module.exports = async ({
   authUser,
   userId,
-  body: _body,
+  body,
   type,
   title,
   payload = null
 }) => {
+  const faunadb = initClient();
   const queries = [
     create('notifications', {
       userId,
       type,
-      body: _body,
+      body,
       actorId: authUser.id,
       payload
     }),
@@ -60,54 +53,26 @@ module.exports = async ({
     );
   }
 
-  // getters
-  const getters = {};
-  if (payload?.eventId)
-    getters.event = getById('_events', payload.eventId);
-
-  queries.push(getters);
-
-  const faunadb = initClient();
-  const values = await faunadb.query(query.Do(...queries));
-
-  const fullname = getFullName(authUser);
-  let body = _body
-    .replace(/{fullname}/gim, fullname)
-    .replace(
-      /{genderPossessiveLowercase}/gim,
-      getPersonalPronoun(authUser).possessive.lowercase
-    );
-
-  if (payload?.eventId)
-    body = body.replace(/{eventName}/gim, values.event.data.name);
-
-  const webSocketEventPayload = {
-    title: title.replace(/{fullname}/gim, fullname),
-    body
-  };
-
-  Object.keys(values).forEach(key => {
-    const value = values[key];
-
-    webSocketEventPayload[key] = {
-      ...value.data,
-      id: value.ref.id
-    };
-  });
+  await faunadb.query(query.Do(...queries));
 
   await Promise.all([
     sendPushNotification({
       userId,
       authUser,
       title,
-      body
+      body,
+      payload
     }),
     sendWebSocketEvent({
       type: 'notification',
       trigger: type,
       authUser,
       userId,
-      payload: webSocketEventPayload
+      payload: {
+        title,
+        body,
+        ...payload
+      }
     })
   ]);
 };

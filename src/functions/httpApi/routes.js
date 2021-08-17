@@ -112,6 +112,10 @@ routing.post(
   require('./auth/rejectEventInvitation')
 );
 routing.post('/events/join/:eventId', require('./auth/joinEvent'));
+routing.post(
+  '/event/comment/:eventId',
+  require('./auth/eventPostComment')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',

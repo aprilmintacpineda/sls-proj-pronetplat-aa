@@ -13,7 +13,6 @@ const {
   sendPushNotification,
   sendWebSocketEvent
 } = require('dependencies/utils/invokeLambda');
-const { getFullName } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, params: { eventId }, formBody }) {
@@ -114,7 +113,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     sendPushNotification({
       userId: formBody.contactId,
       title: 'Event invitation',
-      body: '{fullname} invited you to join an event.',
+      body: '{fullname} invited you to join {eventName}.',
       authUser
     }),
     sendWebSocketEvent({
@@ -123,9 +122,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       authUser,
       userId: formBody.contactId,
       payload: {
-        body: `${getFullName(
-          authUser
-        )} invited you to join an event.`,
+        body: '{fullname} invited you to join {eventName}.',
         title: 'Event invitation'
       }
     })

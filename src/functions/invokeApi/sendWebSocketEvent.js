@@ -1,7 +1,8 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  hardDeleteByIndex
+  hardDeleteByIndex,
+  getById
 } = require('dependencies/utils/faunadb');
 const { getPublicUserData } = require('dependencies/utils/users');
 const { postToConnection } = require('dependencies/utils/webSocket');
@@ -36,6 +37,28 @@ module.exports = async ({
     after = result.after;
   } while (after);
 
+  // some data are being resolved from the payloads
+  const resolvedPayloads = {};
+  let getters = {};
+
+  if (payload?.eventId)
+    getters.event = getById('_events', payload.eventId);
+
+  const gettersKeys = Object.keys(getters);
+
+  if (gettersKeys.length) {
+    getters = await faunadb.query(query.Do(getters));
+
+    gettersKeys.forEach(key => {
+      const result = getters[key];
+
+      resolvedPayloads[key] = {
+        id: result.ref.id,
+        ...result.data
+      };
+    });
+  }
+
   const staleConnectionIds = [];
 
   await Promise.all(
@@ -53,7 +76,10 @@ module.exports = async ({
             },
             trigger,
             type,
-            payload
+            payload: {
+              ...payload,
+              ...resolvedPayloads
+            }
           })
         });
       } catch (error) {
