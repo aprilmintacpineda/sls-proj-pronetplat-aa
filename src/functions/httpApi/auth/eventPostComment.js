@@ -76,6 +76,8 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
 
   await Promise.all(
     result.organizers.map(userId => {
+      if (userId === authUser.id) return null;
+
       return createNotification({
         authUser,
         userId,

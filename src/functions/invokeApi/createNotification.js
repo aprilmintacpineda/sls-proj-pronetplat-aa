@@ -13,6 +13,11 @@ module.exports = async ({
   title,
   payload = null
 }) => {
+  if (userId === authUser.id) {
+    console.log('invalid: trying to send notification to self.');
+    return;
+  }
+
   const faunadb = initClient();
   const queries = [
     create('notifications', {
