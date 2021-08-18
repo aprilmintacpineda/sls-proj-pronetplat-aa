@@ -10,7 +10,10 @@ const {
 } = require('dependencies/utils/httpGuard');
 const { getPublicUserData } = require('dependencies/utils/users');
 
-async function handler ({ authUser, params: { eventId } }) {
+async function handler ({
+  authUser,
+  params: { eventId, nextToken }
+}) {
   const faunadb = initClient();
   let result = null;
 
@@ -43,7 +46,16 @@ async function handler ({ authUser, params: { eventId } }) {
           ),
           query.Map(
             query.Paginate(
-              query.Match(query.Index('commentsByEvent'), eventId)
+              query.Match(query.Index('commentsByEvent'), eventId),
+              {
+                size: 20,
+                after: nextToken
+                  ? query.Ref(
+                      query.Collection('eventComments'),
+                      nextToken
+                    )
+                  : []
+              }
             ),
             query.Lambda(
               ['ref'],
@@ -87,7 +99,7 @@ async function handler ({ authUser, params: { eventId } }) {
         ...comment.data,
         user: getPublicUserData(user)
       })),
-      nextToken: null
+      nextToken: result.after?.[0].id
     })
   };
 }
