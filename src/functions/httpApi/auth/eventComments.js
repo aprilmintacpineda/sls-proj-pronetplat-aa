@@ -54,7 +54,7 @@ async function handler ({ authUser, params: { eventId } }) {
                 {
                   comment: query.Var('comment'),
                   user: getById(
-                    'useers',
+                    'users',
                     query.Select(
                       ['data', 'userId'],
                       query.Var('comment')
