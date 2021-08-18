@@ -48,7 +48,7 @@ async function handler ({
             query.Paginate(
               query.Match(query.Index('commentsByEvent'), eventId),
               {
-                size: 20,
+                size: 1,
                 after: nextToken
                   ? query.Ref(
                       query.Collection('eventComments'),
