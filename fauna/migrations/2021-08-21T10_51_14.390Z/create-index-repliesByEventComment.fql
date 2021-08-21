@@ -13,5 +13,11 @@ CreateIndex({
     "binding": "isReply"
   }, {
     "binding": "isDeleted"
+  }],
+  "values": [{
+    "field": ["data", "createdAt"],
+    "reverse": true
+  }, {
+    "field": ["ref"]
   }]
 })
