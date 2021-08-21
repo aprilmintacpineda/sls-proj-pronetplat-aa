@@ -73,7 +73,10 @@ module.exports = async ({
       '{eventName}': 'name'
     },
     user: {
-      '{userFullName}': data => getFullName(data)
+      '{userFullName}': user =>
+        user.id === authUser.id
+          ? getPersonalPronoun(authUser).possessive.lowercase
+          : getFullName(user)
     }
   };
   let getters = {};
