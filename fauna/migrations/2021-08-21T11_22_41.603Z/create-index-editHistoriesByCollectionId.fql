@@ -1,0 +1,15 @@
+CreateIndex({
+  "name": "editHistoriesByCollectionId",
+  "source": Collection("editHistories"),
+  "terms": [{
+    "field": ["data", "targetCollection"]
+  }, {
+    "field": ["data", "targetId"]
+  }],
+  "values": [{
+    "field": ["data", "createdAt"],
+    "reverse": true
+  }, {
+    "field": ["ref"]
+  }]
+})
