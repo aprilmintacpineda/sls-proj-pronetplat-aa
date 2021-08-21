@@ -16,6 +16,7 @@ async function handler ({
 }) {
   const faunadb = initClient();
   let result = null;
+  const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   try {
     result = await faunadb.query(
@@ -54,16 +55,19 @@ async function handler ({
               ),
               {
                 size: 20,
-                after: nextToken
-                  ? query.Ref(
-                      query.Collection('eventComments'),
-                      nextToken
-                    )
+                after: nextTokenParts
+                  ? [
+                      nextTokenParts[0],
+                      query.Ref(
+                        query.Collection('eventComments'),
+                        nextTokenParts[1]
+                      )
+                    ]
                   : []
               }
             ),
             query.Lambda(
-              ['ref'],
+              ['createdAt', 'ref'],
               query.Let(
                 {
                   comment: query.Get(query.Var('ref'))
@@ -102,7 +106,9 @@ async function handler ({
         ...comment.data,
         user: getPublicUserData(user)
       })),
-      nextToken: result.after?.[0].id
+      nextToken: result.after
+        ? `${result.after[0]}___${result.after[1].id}`
+        : null
     })
   };
 }
