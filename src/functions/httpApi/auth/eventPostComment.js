@@ -12,6 +12,7 @@ const {
 const {
   createNotification
 } = require('dependencies/utils/invokeLambda');
+const { getPublicUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({ authUser, formBody, params: { eventId } }) {
@@ -94,7 +95,8 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
     statusCode: 200,
     body: JSON.stringify({
       id: result.eventComment.ref.id,
-      ...result.eventComment.data
+      ...result.eventComment.data,
+      user: getPublicUserData(authUser)
     })
   };
 }
