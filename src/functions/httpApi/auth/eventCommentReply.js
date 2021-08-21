@@ -83,8 +83,8 @@ async function handler ({
   return {
     statusCode: 200,
     body: JSON.stringify({
-      id: result.eventComment.ref.id,
-      ...result.eventComment.data
+      id: result.reply.ref.id,
+      ...result.reply.data
     })
   };
 }
