@@ -1,0 +1,7 @@
+CreateIndex({
+  name: 'repliesByEventComment',
+  source: Collection('eventComments'),
+  terms: [
+    { field: ['data', 'commentId'] }
+  ]
+});

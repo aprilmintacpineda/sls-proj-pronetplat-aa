@@ -28,7 +28,7 @@ async function handler ({ authUser, params: { senderId } }) {
 
   await createNotification({
     authUser,
-    userId: senderId,
+    recipientId: senderId,
     type: 'contactRequestDeclined',
     body: '{fullname} has declined your contact request.',
     title: 'Contact request declined'

@@ -44,7 +44,7 @@ async function handler ({ authUser, params: { contactId } }) {
   await sendWebSocketEvent({
     type: 'userDisconected',
     authUser,
-    userId: contactId
+    recipientId: contactId
   });
 
   return { statusCode: 200 };

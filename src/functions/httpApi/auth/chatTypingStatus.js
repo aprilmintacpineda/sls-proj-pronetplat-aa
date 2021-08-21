@@ -43,7 +43,7 @@ async function handler ({
   await sendWebSocketEvent({
     type: 'typingStatus',
     authUser,
-    userId: contactId,
+    recipientId: contactId,
     payload: {
       isTyping: formBody.isTyping
     }

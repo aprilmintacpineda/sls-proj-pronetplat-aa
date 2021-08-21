@@ -116,6 +116,10 @@ routing.post(
   '/event/comment/:eventId',
   require('./auth/eventPostComment')
 );
+routing.post(
+  '/event/reply-to-comment/:commentId',
+  require('./auth/eventCommentReply')
+);
 
 routing.delete(
   '/contact-details/:contactDetailId',

@@ -9,13 +9,13 @@ const { postToConnection } = require('dependencies/utils/webSocket');
 
 module.exports = async ({
   authUser,
-  userId,
+  recipientId,
   type,
   trigger,
   payload,
   otherUserPayload
 }) => {
-  if (userId === authUser.id) {
+  if (recipientId === authUser.id) {
     console.log('invalid: trying to send notification to self.');
     return;
   }
@@ -29,7 +29,7 @@ module.exports = async ({
       query.Paginate(
         query.Match(
           query.Index('userWebSocketConnectionsByUserId'),
-          userId
+          recipientId
         ),
         {
           size: 20,
@@ -46,8 +46,13 @@ module.exports = async ({
   const resolvedPayloads = {};
   let getters = {};
 
-  if (payload?.eventId)
-    getters.event = getById('_events', payload.eventId);
+  if (payload) {
+    if (payload.eventId)
+      getters.event = getById('_events', payload.eventId);
+
+    if (payload.userId)
+      getters.user = getById('users', payload.userId);
+  }
 
   const gettersKeys = Object.keys(getters);
 
@@ -72,7 +77,7 @@ module.exports = async ({
         await postToConnection({
           ConnectionId: connectionId,
           Data: JSON.stringify({
-            user: {
+            sender: {
               ...getPublicUserData({
                 ref: { id: authUser.id },
                 data: authUser

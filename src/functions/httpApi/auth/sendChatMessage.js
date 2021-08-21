@@ -154,7 +154,7 @@ async function handler ({
 
   await Promise.all([
     sendPushNotification({
-      userId: contactId,
+      recipientId: contactId,
       title: 'New message from {fullname}',
       body: '{fullname} sent you a message',
       authUser
@@ -165,7 +165,7 @@ async function handler ({
       otherUserPayload: {
         isConnected: true
       },
-      userId: contactId,
+      recipientId: contactId,
       payload: chatMessage
     })
   ]);

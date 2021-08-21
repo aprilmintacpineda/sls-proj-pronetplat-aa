@@ -5,6 +5,10 @@ function existsByIndex (index, ...args) {
   return query.Exists(query.Match(query.Index(index), ...args));
 }
 
+module.exports.existsById = (collection, id) => {
+  return query.Exists(query.Ref(query.Collection(collection), id));
+};
+
 module.exports.existsByIndex = existsByIndex;
 
 function updateByIndex ({ index, args, data }) {

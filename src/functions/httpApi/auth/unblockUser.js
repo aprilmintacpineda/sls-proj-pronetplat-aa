@@ -24,7 +24,7 @@ async function handler ({ authUser, params: { contactId } }) {
   await sendWebSocketEvent({
     type: 'unblockedByUser',
     authUser,
-    userId: contactId
+    recipientId: contactId
   });
 
   return { statusCode: 200 };

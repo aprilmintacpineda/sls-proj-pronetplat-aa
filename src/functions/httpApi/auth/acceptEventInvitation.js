@@ -83,7 +83,7 @@ async function handler ({ authUser, params: { eventId } }) {
 
   await createNotification({
     authUser,
-    userId: invitation.data.inviterId,
+    recipientId: invitation.data.inviterId,
     body: '{fullname} has accepted your invitation to join {eventName}',
     title: 'Event invitation accepted',
     type: 'eventInvitationAccepted',

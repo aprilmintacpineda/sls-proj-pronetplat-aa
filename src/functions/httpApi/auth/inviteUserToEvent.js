@@ -111,7 +111,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
   await Promise.all([
     sendPushNotification({
-      userId: formBody.contactId,
+      recipientId: formBody.contactId,
       title: 'Event invitation',
       body: '{fullname} invited you to join {eventName}.',
       authUser
@@ -120,7 +120,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       type: 'notification',
       trigger: 'eventInvitation',
       authUser,
-      userId: formBody.contactId,
+      recipientId: formBody.contactId,
       payload: {
         body: '{fullname} invited you to join {eventName}.',
         title: 'Event invitation'

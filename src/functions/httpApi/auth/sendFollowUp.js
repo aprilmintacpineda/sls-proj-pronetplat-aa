@@ -58,7 +58,7 @@ async function handler ({ authUser, params: { contactId } }) {
 
   await createNotification({
     authUser,
-    userId: contactId,
+    recipientId: contactId,
     type: 'contactRequestFollowUp',
     body: '{fullname} followed up with his contact request',
     title: 'Contact request'

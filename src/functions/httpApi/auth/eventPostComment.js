@@ -56,7 +56,8 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
                 query.Match(
                   query.Index('eventOrganizersByEvent'),
                   eventId
-                )
+                ),
+                { size: 20 }
               ),
               query.Lambda(['userId', 'ref'], query.Var('userId'))
             )
@@ -80,7 +81,7 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
 
       return createNotification({
         authUser,
-        userId,
+        recipientId: userId,
         body: '{fullname} posted a comment on {eventName}',
         title: 'Commented on your event',
         type: 'commentedOnEvent',

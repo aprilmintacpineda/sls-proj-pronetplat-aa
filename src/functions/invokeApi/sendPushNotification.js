@@ -14,12 +14,12 @@ const {
 
 module.exports = async ({
   authUser,
-  userId,
+  recipientId,
   body: _body,
   title: _title,
   payload
 }) => {
-  if (userId === authUser.id) {
+  if (recipientId === authUser.id) {
     console.log('invalid: trying to send notification to self.');
     return;
   }
@@ -35,7 +35,7 @@ module.exports = async ({
       query.Paginate(
         query.Match(
           query.Index('registeredDevicesByUserId'),
-          userId
+          recipientId
         ),
         {
           size: 20,
@@ -71,12 +71,20 @@ module.exports = async ({
   const placeholders = {
     event: {
       '{eventName}': 'name'
+    },
+    user: {
+      '{userFullName}': data => getFullName(data)
     }
   };
   let getters = {};
 
-  if (payload?.eventId)
-    getters.event = getById('_events', payload.eventId);
+  if (payload) {
+    if (payload.eventId)
+      getters.event = getById('_events', payload.eventId);
+
+    if (payload.userId)
+      getters.user = getById('users', payload.userId);
+  }
 
   const gettersKeys = Object.keys(getters);
 
@@ -85,13 +93,16 @@ module.exports = async ({
 
     gettersKeys.forEach(key => {
       const data = getters[key].data;
-
       const dataPlaceholders = placeholders[key];
 
       Object.keys(dataPlaceholders).forEach(placeholder => {
-        const field = dataPlaceholders[placeholder];
-        title = title.replace(placeholder, data[field]);
-        body = body.replace(placeholder, data[field]);
+        let value = dataPlaceholders[placeholder];
+
+        if (typeof value === 'function') value = value(data);
+        else value = data[value];
+
+        title = title.replace(placeholder, value);
+        body = body.replace(placeholder, value);
       });
     });
   }

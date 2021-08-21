@@ -87,7 +87,7 @@ async function handler ({ authUser, params: { chatMessageId } }) {
   await sendWebSocketEvent({
     type: 'chatMessageSeen',
     authUser,
-    userId: chatMessage.data.senderId,
+    recipientId: chatMessage.data.senderId,
     payload: {
       unseenChatMessageIds: [chatMessage.ref.id],
       seenAt: chatMessage.data.seenAt

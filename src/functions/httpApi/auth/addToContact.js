@@ -87,7 +87,7 @@ async function handler ({ authUser, params: { contactId } }) {
 
   await Promise.all([
     sendPushNotification({
-      userId: contactId,
+      recipientId: contactId,
       title: 'Contact request received',
       body: '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
       authUser
@@ -96,7 +96,7 @@ async function handler ({ authUser, params: { contactId } }) {
       type: 'notification',
       trigger: 'contactRequest',
       authUser,
-      userId: contactId,
+      recipientId: contactId,
       payload: {
         body: '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
         title: 'Contact request received'

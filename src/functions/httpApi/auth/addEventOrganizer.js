@@ -96,7 +96,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
   await createNotification({
     authUser,
-    userId: formBody.contactId,
+    recipientId: formBody.contactId,
     body: '{fullname} added you as an organizer to {eventName}.',
     title: 'Added as organizer to {eventName}',
     type: 'addedAsOrganizerToEvent',

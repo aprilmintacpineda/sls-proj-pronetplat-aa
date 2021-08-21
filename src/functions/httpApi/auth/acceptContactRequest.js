@@ -66,7 +66,7 @@ async function handler ({ authUser, params: { senderId } }) {
 
   await createNotification({
     authUser,
-    userId: contactRequest.data.senderId,
+    recipientId: contactRequest.data.senderId,
     body: '{fullname} has accepted your contact request.',
     title: 'Contact request accepted',
     type: 'contactRequestAccepted'

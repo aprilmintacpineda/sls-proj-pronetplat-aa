@@ -34,7 +34,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
   await createNotification({
     authUser,
-    userId: formBody.contactId,
+    recipientId: formBody.contactId,
     body: '{fullname} has cancelled {genderPossessiveLowercase} event invitation.',
     title: 'Event invitation cancelled',
     type: 'eventInvitationCancelled'

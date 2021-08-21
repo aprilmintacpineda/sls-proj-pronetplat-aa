@@ -121,7 +121,7 @@ async function handler ({ authUser, formBody }) {
     formBody.organizers.map(contactId =>
       createNotification({
         authUser,
-        userId: contactId,
+        recipientId: contactId,
         body: '{fullname} added you as an organizer to {eventName}.',
         title: 'Added as organizer to {eventName}',
         type: 'addedAsOrganizerToEvent',

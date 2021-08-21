@@ -7,13 +7,13 @@ const {
 
 module.exports = async ({
   authUser,
-  userId,
+  recipientId,
   body,
   type,
   title,
   payload = null
 }) => {
-  if (userId === authUser.id) {
+  if (recipientId === authUser.id) {
     console.log('invalid: trying to send notification to self.');
     return;
   }
@@ -21,7 +21,7 @@ module.exports = async ({
   const faunadb = initClient();
   const queries = [
     create('notifications', {
-      userId,
+      userId: recipientId,
       type,
       body,
       actorId: authUser.id,
@@ -29,7 +29,7 @@ module.exports = async ({
     }),
     query.Call(
       'updateUserBadgeCount',
-      userId,
+      recipientId,
       'notificationsCount',
       1
     )
@@ -39,7 +39,7 @@ module.exports = async ({
     queries.push(
       query.Call(
         'updateUserBadgeCount',
-        userId,
+        recipientId,
         'receivedContactRequestsCount',
         -1
       )
@@ -62,7 +62,7 @@ module.exports = async ({
 
   await Promise.all([
     sendPushNotification({
-      userId,
+      recipientId,
       authUser,
       title,
       body,
@@ -72,7 +72,7 @@ module.exports = async ({
       type: 'notification',
       trigger: type,
       authUser,
-      userId,
+      recipientId,
       payload: {
         title,
         body,

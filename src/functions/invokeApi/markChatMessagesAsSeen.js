@@ -58,7 +58,7 @@ module.exports = async ({
   await sendWebSocketEvent({
     type: 'chatMessageSeen',
     authUser,
-    userId: contactId,
+    recipientId: contactId,
     payload: {
       unseenChatMessageIds,
       seenAt

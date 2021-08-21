@@ -47,7 +47,7 @@ async function handler ({
 
   await createNotification({
     authUser,
-    userId: organizerId,
+    recipientId: organizerId,
     body: '{fullname} removed you as an organizer from an event.',
     title: 'Removed as organizer from an event',
     type: 'removedAsOrganizerFromEvent',
