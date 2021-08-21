@@ -69,7 +69,7 @@ async function handler ({
       return createNotification({
         authUser,
         recipientId: userId,
-        body: "{fullname} replied to {userFullName}'s comment on {eventName}",
+        body: '{fullname} replied to {userFullNamePossessive} comment on {eventName}',
         title: 'Replied to a comment',
         type: 'replyOnComment',
         payload: {
