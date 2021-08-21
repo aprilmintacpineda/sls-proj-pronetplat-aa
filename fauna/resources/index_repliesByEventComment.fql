@@ -1,7 +1,21 @@
 CreateIndex({
   name: 'repliesByEventComment',
-  source: Collection('eventComments'),
+  source: {
+    collection: Collection('eventComments'),
+    fields: {
+      isReply: Query(
+        Lambda(
+          'comment',
+          ContainsPath(
+            ['data', 'commentId'],
+            Var('comment')
+          )
+        )
+      )
+    }
+  },
   terms: [
-    { field: ['data', 'commentId'] }
+    { field: ['data', 'commentId'] },
+    { binding: 'isReply' }
   ]
 });

@@ -46,7 +46,11 @@ async function handler ({
           ),
           query.Map(
             query.Paginate(
-              query.Match(query.Index('commentsByEvent'), eventId),
+              query.Match(
+                query.Index('commentsByEvent'),
+                eventId,
+                false
+              ),
               {
                 size: 20,
                 after: nextToken
