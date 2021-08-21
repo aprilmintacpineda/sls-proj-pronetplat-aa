@@ -96,7 +96,12 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
     body: JSON.stringify({
       id: result.eventComment.ref.id,
       ...result.eventComment.data,
-      user: getPublicUserData(authUser)
+      user: getPublicUserData({
+        ref: {
+          id: authUser.id
+        },
+        data: authUser
+      })
     })
   };
 }
