@@ -147,6 +147,10 @@ routing.patch(
   require('./auth/contactDetailUpdate')
 );
 routing.patch('/event/:eventId', require('./auth/editEvent'));
+routing.patch(
+  '/event/comment/:commentId',
+  require('./auth/eventEditComment')
+);
 
 routing.get(
   '/received-contact-requests',
