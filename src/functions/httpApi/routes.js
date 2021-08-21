@@ -137,6 +137,10 @@ routing.delete(
   '/events/cancel-invitation/:eventId',
   require('./auth/cancelEventInvitation')
 );
+routing.delete(
+  '/event/comment/:commentId',
+  require('./auth/deleteEventComment')
+);
 
 routing.patch(
   '/contact-details/:contactDetailId',

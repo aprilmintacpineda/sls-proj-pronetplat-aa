@@ -69,14 +69,16 @@ function ifOwnedByUser (userId, getExpression, doExpression) {
 
 module.exports.ifOwnedByUser = ifOwnedByUser;
 
+function updateById (collection, id, data) {
+  return update(query.Ref(query.Collection(collection), id), data);
+}
+
+module.exports.updateById = updateById;
+
 module.exports.initClient = () => {
   return new Client({
     secret: process.env.faunadbSecret
   });
-};
-
-module.exports.updateById = (collection, id, data) => {
-  return update(query.Ref(query.Collection(collection), id), data);
 };
 
 module.exports.createOrUpdate = ({
@@ -173,6 +175,19 @@ module.exports.hardDeleteIfExists = (index, ...args) => {
     query.Exists(match),
     query.Delete(selectRef(query.Get(match))),
     null
+  );
+};
+
+module.exports.softDeleteByIdIfOwnedByUser = (
+  userId,
+  getExpression
+) => {
+  return ifOwnedByUser(
+    userId,
+    getExpression,
+    update(selectRef(query.Var('document')), {
+      deletedAt: query.Format('%t', query.Now())
+    })
   );
 };
 
