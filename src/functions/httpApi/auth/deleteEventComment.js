@@ -15,7 +15,7 @@ async function handler ({ authUser, params: { commentId } }) {
     await faunadb.query(
       softDeleteByIdIfOwnedByUser(
         authUser.id,
-        getById('users', commentId)
+        getById('eventComments', commentId)
       )
     );
   } catch (error) {
