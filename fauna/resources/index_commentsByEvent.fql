@@ -11,11 +11,21 @@ CreateIndex({
             Var('comment')
           )
         )
+      ),
+      isDeleted: Query(
+        Lambda(
+          'comment',
+          ContainsPath(
+            ['data', 'deletedAt'],
+            Var('comment')
+          )
+        )
       )
     }
   },
   terms: [
     { field: ['data', 'eventId'] },
-    { binding: 'isReply' }
+    { binding: 'isReply' },
+    { binding: 'isDeleted' }
   ]
 });

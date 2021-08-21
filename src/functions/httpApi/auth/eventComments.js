@@ -49,6 +49,7 @@ async function handler ({
               query.Match(
                 query.Index('commentsByEvent'),
                 eventId,
+                false,
                 false
               ),
               {
