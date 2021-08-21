@@ -26,7 +26,8 @@ async function handler ({
         getById('eventComments', commentId),
         query.Do(
           updateById('eventComments', commentId, {
-            comment: formBody.comment
+            comment: formBody.comment,
+            wasEdited: true
           }),
           create('editHistories', {
             targetCollection: 'eventComments',
