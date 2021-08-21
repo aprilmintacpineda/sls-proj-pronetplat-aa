@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   create,
-  getById
+  getById,
+  updateById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -25,7 +26,16 @@ async function handler ({
     result = await faunadb.query(
       query.Let(
         {
-          comment: getById('eventComments', commentId),
+          comment: updateById('eventComments', commentId, {
+            numReplies: query.Add(
+              query.Select(
+                ['data', 'numReplies'],
+                getById('eventComments', commentId),
+                0
+              ),
+              1
+            )
+          }),
           userId: query.Select(
             ['data', 'userId'],
             query.Var('comment')
