@@ -38,7 +38,10 @@ async function handler ({ authUser, params: { commentId } }) {
                   numReplies: query.Subtract(
                     query.Select(
                       ['data', 'numReplies'],
-                      getById(query.Var('replyToCommentId'))
+                      getById(
+                        'eventComments',
+                        query.Var('replyToCommentId')
+                      )
                     ),
                     1
                   )
