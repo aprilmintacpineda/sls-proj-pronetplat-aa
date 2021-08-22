@@ -1,7 +1,10 @@
+const { query } = require('faunadb');
 const {
   initClient,
-  softDeleteByIdIfOwnedByUser,
-  getById
+  getById,
+  ifOwnedByUser,
+  softDeleteById,
+  updateById
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -13,9 +16,38 @@ async function handler ({ authUser, params: { commentId } }) {
 
   try {
     await faunadb.query(
-      softDeleteByIdIfOwnedByUser(
+      ifOwnedByUser(
         authUser.id,
-        getById('eventComments', commentId)
+        getById('eventComments', commentId),
+        query.Let(
+          {
+            replyToCommentId: query.Select(
+              ['data', 'commentId'],
+              query.Var('document'),
+              null
+            )
+          },
+          query.Do(
+            softDeleteById('eventComments', commentId),
+            query.If(
+              query.Not(query.IsNull(query.Var('replyToCommentId'))),
+              updateById(
+                'eventComments',
+                query.Var('replyToCommentId'),
+                {
+                  numReplies: query.Subtract(
+                    query.Select(
+                      ['data', 'numReplies'],
+                      getById(query.Var('replyToCommentId'))
+                    ),
+                    1
+                  )
+                }
+              ),
+              null
+            )
+          )
+        )
       )
     );
   } catch (error) {

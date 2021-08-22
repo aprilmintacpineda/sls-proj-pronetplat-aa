@@ -75,6 +75,12 @@ function updateById (collection, id, data) {
 
 module.exports.updateById = updateById;
 
+module.exports.softDeleteById = (collection, id) => {
+  return updateById(collection, id, {
+    deletedAt: query.Format('%t', query.Now())
+  });
+};
+
 module.exports.initClient = () => {
   return new Client({
     secret: process.env.faunadbSecret
