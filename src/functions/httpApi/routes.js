@@ -206,5 +206,9 @@ routing.get(
   '/event/comment/edit-history/:commentId',
   require('./auth/eventCommentEditHistory')
 );
+routing.get(
+  '/event/replies/:commentId',
+  require('./auth/eventCommentReplies')
+);
 
 module.exports = routing;

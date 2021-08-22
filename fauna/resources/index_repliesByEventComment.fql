@@ -3,15 +3,6 @@ CreateIndex({
   source: {
     collection: Collection('eventComments'),
     fields: {
-      isReply: Query(
-        Lambda(
-          'comment',
-          ContainsPath(
-            ['data', 'commentId'],
-            Var('comment')
-          )
-        )
-      ),
       isDeleted: Query(
         Lambda(
           'comment',
@@ -25,7 +16,6 @@ CreateIndex({
   },
   terms: [
     { field: ['data', 'commentId'] },
-    { binding: 'isReply' },
     { binding: 'isDeleted' }
   ],
   values: [
