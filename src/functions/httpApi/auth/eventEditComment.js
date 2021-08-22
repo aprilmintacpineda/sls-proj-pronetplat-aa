@@ -32,14 +32,11 @@ async function handler ({
           create('editHistories', {
             targetCollection: 'eventComments',
             targetId: commentId,
-            fromData: {
+            data: {
               comment: query.Select(
                 ['data', 'comment'],
                 query.Var('document')
               )
-            },
-            toData: {
-              comment: formBody.comment
             }
           })
         )
