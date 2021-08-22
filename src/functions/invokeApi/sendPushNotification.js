@@ -74,11 +74,6 @@ module.exports = async ({
     },
     user: {
       '{userFullNamePossessive}': user => {
-        console.log(
-          '{userFullNamePossessive}',
-          JSON.stringify(user)
-        );
-
         return user.id === authUser.id
           ? getPersonalPronoun(authUser).possessive.lowercase
           : `${getFullName(user)}'s`;
@@ -98,10 +93,16 @@ module.exports = async ({
   const gettersKeys = Object.keys(getters);
 
   if (gettersKeys.length) {
-    getters = await faunadb.query(query.Do(getters));
+    getters = await faunadb.query(getters);
 
     gettersKeys.forEach(key => {
-      const data = getters[key].data;
+      const getter = getters[key];
+
+      const data = {
+        id: getter.ref.id,
+        ...getter.data
+      };
+
       const dataPlaceholders = placeholders[key];
 
       Object.keys(dataPlaceholders).forEach(placeholder => {
