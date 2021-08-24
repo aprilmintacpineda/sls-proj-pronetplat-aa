@@ -13,30 +13,51 @@ const {
 async function handler ({ authUser, params: { eventId } }) {
   const faunadb = initClient();
 
-  await faunadb.query(
-    query.Do(
-      hardDeleteByIndex(
-        'eventAttendeeByUserEvent',
-        authUser.id,
-        eventId
-      ),
-      updateById('_events', eventId, {
-        numGoing: query.Subtract(
-          query.Select(
-            ['data', 'numGoing'],
-            getById('_events', eventId)
+  try {
+    await faunadb.query(
+      query.If(
+        query.GT(
+          query.Time(
+            query.Select(
+              ['data', 'startDateTime'],
+              getById('_events', eventId)
+            )
           ),
-          1
-        )
-      }),
-      query.Call(
-        'updateUserBadgeCount',
-        authUser.id,
-        'eventInvitationsCount',
-        -1
+          query.Now()
+        ),
+        query.Do(
+          hardDeleteByIndex(
+            'eventAttendeeByUserEvent',
+            authUser.id,
+            eventId
+          ),
+          updateById('_events', eventId, {
+            numGoing: query.Subtract(
+              query.Select(
+                ['data', 'numGoing'],
+                getById('_events', eventId)
+              ),
+              1
+            )
+          }),
+          query.Call(
+            'updateUserBadgeCount',
+            authUser.id,
+            'eventInvitationsCount',
+            -1
+          )
+        ),
+        query.Abort('ValidationError')
       )
-    )
-  );
+    );
+  } catch (error) {
+    console.log(error);
+
+    if (error.description === 'ValidationError')
+      return { statusCode: 400 };
+
+    return { statusCode: 500 };
+  }
 
   return { statusCode: 200 };
 }
