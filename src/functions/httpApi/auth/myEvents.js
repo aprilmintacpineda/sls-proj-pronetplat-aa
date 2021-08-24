@@ -44,7 +44,10 @@ async function handler ({
                 ['eventId', 'ref'],
                 query.Match(
                   query.Index('eventsSortedByStartDateTime'),
-                  query.Var('ref')
+                  query.Ref(
+                    query.Collection('_events'),
+                    query.Var('eventId')
+                  )
                 )
               )
             ),
@@ -61,17 +64,17 @@ async function handler ({
                 : []
             }
           ),
-          query.Lambda(['eventId', 'ref'], {
-            event: getById('_events', query.Var('eventId')),
+          query.Lambda(['startDateTime', 'ref'], {
+            event: query.Get(query.Var('ref')),
             isGoing: existsByIndex(
               'eventAttendeeByUserEvent',
               authUser.id,
-              query.Var('eventId')
+              query.Select(['id'], query.Var('ref'))
             ),
             isOrganizer: existsByIndex(
               'eventOrganizerByOrganizerEvent',
               authUser.id,
-              query.Var('eventId')
+              query.Select(['id'], query.Var('ref'))
             )
           })
         ),
