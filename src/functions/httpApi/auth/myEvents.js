@@ -101,16 +101,16 @@ async function handler ({
                 query.Now()
               )
             : query.And(
-                query.LT(
-                  query.Now(),
+                query.LTE(
                   query.Time(
                     query.Select(
                       ['event', 'data', 'startDateTime'],
                       query.Var('document')
                     )
-                  )
+                  ),
+                  query.Now()
                 ),
-                query.GT(
+                query.GTE(
                   query.Time(
                     query.Select(
                       ['event', 'data', 'endDateTime'],
