@@ -1,0 +1,9 @@
+CreateIndex({
+  name: 'eventsSortedByStartDateTime',
+  source: Collection('users'),
+  terms: [{ field: ['ref'] }],
+  values: [
+    { field: ['data', 'startDateTime'] },
+    { field: ['ref'] }
+  ]
+})

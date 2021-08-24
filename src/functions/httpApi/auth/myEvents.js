@@ -29,14 +29,23 @@ async function handler ({
       query.Filter(
         query.Map(
           query.Paginate(
-            query.Union(
-              query.Match(
-                query.Index('eventsByEventOrganizer'),
-                authUser.id
+            query.Join(
+              query.Union(
+                query.Match(
+                  query.Index('eventsByEventOrganizer'),
+                  authUser.id
+                ),
+                query.Match(
+                  query.Index('eventsByAttendee'),
+                  authUser.id
+                )
               ),
-              query.Match(
-                query.Index('eventsByAttendee'),
-                authUser.id
+              query.Lambda(
+                ['eventId', 'ref'],
+                query.Match(
+                  query.Index('eventsSortedByStartDateTime'),
+                  query.Var('ref')
+                )
               )
             ),
             {
@@ -70,44 +79,43 @@ async function handler ({
           ['document'],
           schedule === 'past'
             ? query.LT(
-                query.TimeDiff(
-                  query.Now(),
-                  query.Time(
-                    query.Select(
-                      ['event', 'data', 'startDateTime'],
-                      query.Var('document')
-                    )
-                  ),
-                  'days'
+                query.Time(
+                  query.Select(
+                    ['event', 'data', 'startDateTime'],
+                    query.Var('document')
+                  )
                 ),
-                0
+                query.Now()
               )
             : schedule === 'future'
             ? query.GT(
-                query.TimeDiff(
-                  query.Now(),
-                  query.Time(
-                    query.Select(
-                      ['event', 'data', 'startDateTime'],
-                      query.Var('document')
-                    )
-                  ),
-                  'days'
+                query.Time(
+                  query.Select(
+                    ['event', 'data', 'startDateTime'],
+                    query.Var('document')
+                  )
                 ),
-                0
+                query.Now()
               )
-            : query.Equals(
-                query.TimeDiff(
+            : query.And(
+                query.LT(
                   query.Now(),
                   query.Time(
                     query.Select(
                       ['event', 'data', 'startDateTime'],
                       query.Var('document')
                     )
-                  ),
-                  'days'
+                  )
                 ),
-                0
+                query.GT(
+                  query.Time(
+                    query.Select(
+                      ['event', 'data', 'endDateTime'],
+                      query.Var('document')
+                    )
+                  ),
+                  query.Now()
+                )
               )
         )
       )
