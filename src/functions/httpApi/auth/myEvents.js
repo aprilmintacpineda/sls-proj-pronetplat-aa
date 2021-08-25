@@ -41,7 +41,7 @@ async function handler ({
             query.Lambda(
               ['eventId', 'ref'],
               query.Match(
-                query.Index('eventsSortedByStartDateTime'),
+                query.Index('eventsSortedByDateTime'),
                 query.Ref(
                   query.Collection('_events'),
                   query.Var('eventId')
@@ -63,7 +63,7 @@ async function handler ({
           }
         ),
         query.Lambda(
-          ['startDateTime', 'ref'],
+          ['startDateTime', 'endDateTime', 'ref'],
           schedule === 'past'
             ? query.And(
                 query.LT(
@@ -71,12 +71,7 @@ async function handler ({
                   query.Now()
                 ),
                 query.LT(
-                  query.Time(
-                    query.Select(
-                      ['data', 'endDateTime'],
-                      query.Get(query.Var('ref'))
-                    )
-                  ),
+                  query.Time(query.Var('endDateTime')),
                   query.Now()
                 )
               )
@@ -91,18 +86,13 @@ async function handler ({
                   query.Now()
                 ),
                 query.GTE(
-                  query.Time(
-                    query.Select(
-                      ['data', 'endDateTime'],
-                      query.Get(query.Var('ref'))
-                    )
-                  ),
+                  query.Time(query.Var('endDateTime')),
                   query.Now()
                 )
               )
         )
       ),
-      query.Lambda(['startDateTime', 'ref'], {
+      query.Lambda(['startDateTime', 'endDateTime', 'ref'], {
         event: query.Get(query.Var('ref')),
         isGoing: existsByIndex(
           'eventAttendeeByUserEvent',
@@ -128,7 +118,7 @@ async function handler ({
         isOrganizer
       })),
       nextToken: result.after
-        ? `${result.after[0]}___${result.after[1].id}`
+        ? `${result.after[0]}___${result.after[1]}___${result.after[2].id}`
         : null
     })
   };
