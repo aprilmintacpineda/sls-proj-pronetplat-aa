@@ -13,14 +13,7 @@ function toRadians (degrees) {
 }
 
 async function handler ({
-  params: {
-    nextToken,
-    schedule,
-    lat,
-    lng,
-    method = 'km',
-    maxDistance = 25
-  },
+  params: { nextToken, schedule, lat, lng, method = 'km' },
   authUser
 }) {
   if (
@@ -63,75 +56,77 @@ async function handler ({
             'longitude',
             'ref'
           ],
-          query.And(
-            query.LTE(
-              query.Multiply(
-                unit,
-                query.Acos(
-                  query.Add(
-                    query.Multiply(
-                      query.Cos(query.Radians(Number(lat))),
-                      query.Cos(
-                        query.Radians(query.Var('latitude'))
-                      ),
-                      query.Cos(
-                        query.Subtract(
-                          query.Radians(query.Var('longitude')),
-                          query.Radians(Number(lng))
-                        )
-                      )
-                    ),
-                    query.Multiply(
-                      query.Sin(query.Radians(Number(lat))),
-                      query.Sin(query.Radians(query.Var('latitude')))
-                    )
-                  )
-                )
-              ),
-              maxDistance
-            ),
-            schedule === 'past'
-              ? query.And(
-                  query.LT(
-                    query.Time(query.Var('startDateTime')),
-                    query.Now()
-                  ),
-                  query.LT(
-                    query.Time(query.Var('endDateTime')),
-                    query.Now()
-                  )
-                )
-              : schedule === 'future'
-              ? query.GT(
+          schedule === 'past'
+            ? query.And(
+                query.LT(
                   query.Time(query.Var('startDateTime')),
                   query.Now()
+                ),
+                query.LT(
+                  query.Time(query.Var('endDateTime')),
+                  query.Now()
                 )
-              : query.And(
-                  query.LTE(
-                    query.Time(query.Var('startDateTime')),
-                    query.Now()
-                  ),
-                  query.GTE(
-                    query.Time(query.Var('endDateTime')),
-                    query.Now()
-                  )
+              )
+            : schedule === 'future'
+            ? query.GT(
+                query.Time(query.Var('startDateTime')),
+                query.Now()
+              )
+            : query.And(
+                query.LTE(
+                  query.Time(query.Var('startDateTime')),
+                  query.Now()
+                ),
+                query.GTE(
+                  query.Time(query.Var('endDateTime')),
+                  query.Now()
                 )
-          )
+              )
         )
       ),
-      query.Lambda(['startDateTime', 'endDateTime', 'ref'], {
-        event: query.Get(query.Var('ref')),
-        isGoing: existsByIndex(
-          'eventAttendeeByUserEvent',
-          authUser.id,
-          query.Select(['id'], query.Var('ref'))
-        ),
-        isOrganizer: existsByIndex(
-          'eventOrganizerByOrganizerEvent',
-          authUser.id,
-          query.Select(['id'], query.Var('ref'))
-        )
-      })
+      query.Lambda(
+        [
+          'startDateTime',
+          'endDateTime',
+          'latitude',
+          'longitude',
+          'ref'
+        ],
+        {
+          event: query.Get(query.Var('ref')),
+          isGoing: existsByIndex(
+            'eventAttendeeByUserEvent',
+            authUser.id,
+            query.Select(['id'], query.Var('ref'))
+          ),
+          isOrganizer: existsByIndex(
+            'eventOrganizerByOrganizerEvent',
+            authUser.id,
+            query.Select(['id'], query.Var('ref'))
+          ),
+          distance: query.Multiply(
+            unit,
+            query.Acos(
+              query.Add(
+                query.Multiply(
+                  query.Cos(query.Radians(Number(lat))),
+                  query.Cos(query.Radians(query.Var('latitude'))),
+                  query.Cos(
+                    query.Subtract(
+                      query.Radians(query.Var('longitude')),
+                      query.Radians(Number(lng))
+                    )
+                  )
+                ),
+                query.Multiply(
+                  query.Sin(query.Radians(Number(lat))),
+                  query.Sin(query.Radians(query.Var('latitude')))
+                )
+              )
+            )
+          )
+        }
+      )
     )
   );
 
