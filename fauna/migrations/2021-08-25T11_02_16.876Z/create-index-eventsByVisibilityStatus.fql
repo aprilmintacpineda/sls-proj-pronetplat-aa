@@ -1,8 +1,10 @@
 CreateIndex({
-  "name": "eventsByVisibility",
+  "name": "eventsByVisibilityStatus",
   "source": Collection("_events"),
   "terms": [{
     "field": ["data", "visibility"]
+  }, {
+    "field": ["data", "status"]
   }],
   "values": [{
     "field": ["data", "startDateTime"]

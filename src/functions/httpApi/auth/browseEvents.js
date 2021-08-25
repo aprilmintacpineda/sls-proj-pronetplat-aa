@@ -41,7 +41,11 @@ async function handler ({
     query.Map(
       query.Filter(
         query.Paginate(
-          query.Match(query.Index('eventsByVisibility'), 'public'),
+          query.Match(
+            query.Index('eventsByVisibilityStatus'),
+            'public',
+            'published'
+          ),
           {
             size: 20,
             after: nextTokenParts
