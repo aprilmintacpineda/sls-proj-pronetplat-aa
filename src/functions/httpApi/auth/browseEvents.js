@@ -27,7 +27,9 @@ async function handler ({
     !schedule ||
     (schedule !== 'future' &&
       schedule !== 'past' &&
-      schedule !== 'present')
+      schedule !== 'present') ||
+    !lat ||
+    !lng
   )
     return { statusCode: 400 };
 
@@ -68,19 +70,19 @@ async function handler ({
                 query.Acos(
                   query.Add(
                     query.Multiply(
-                      query.Cos(query.Radians(lat)),
+                      query.Cos(query.Radians(Number(lat))),
                       query.Cos(
                         query.Radians(query.Var('latitude'))
                       ),
                       query.Cos(
                         query.Subtract(
                           query.Radians(query.Var('longitude')),
-                          query.Radians(lng)
+                          query.Radians(Number(lng))
                         )
                       )
                     ),
                     query.Multiply(
-                      query.Sin(query.Radians(lat)),
+                      query.Sin(query.Radians(Number(lat))),
                       query.Sin(query.Radians(query.Var('latitude')))
                     )
                   )
