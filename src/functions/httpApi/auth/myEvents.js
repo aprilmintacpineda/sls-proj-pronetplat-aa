@@ -65,33 +65,29 @@ async function handler ({
         query.Lambda(
           ['startDateTime', 'ref'],
           schedule === 'past'
-            ? query.LT(
-                query.Time(
-                  query.Select(
-                    ['data', 'startDateTime'],
-                    query.Get(query.Var('ref'))
-                  )
+            ? query.And(
+                query.LT(
+                  query.Time(query.Var('startDateTime')),
+                  query.Now()
                 ),
-                query.Now()
+                query.LT(
+                  query.Time(
+                    query.Select(
+                      ['data', 'endDateTime'],
+                      query.Get(query.Var('ref'))
+                    )
+                  ),
+                  query.Now()
+                )
               )
             : schedule === 'future'
             ? query.GT(
-                query.Time(
-                  query.Select(
-                    ['data', 'startDateTime'],
-                    query.Get(query.Var('ref'))
-                  )
-                ),
+                query.Time(query.Var('startDateTime')),
                 query.Now()
               )
             : query.And(
                 query.LTE(
-                  query.Time(
-                    query.Select(
-                      ['data', 'startDateTime'],
-                      query.Get(query.Var('ref'))
-                    )
-                  ),
+                  query.Time(query.Var('startDateTime')),
                   query.Now()
                 ),
                 query.GTE(
