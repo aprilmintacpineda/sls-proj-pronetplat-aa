@@ -54,9 +54,10 @@ async function handler ({
             after: nextTokenParts
               ? [
                   nextTokenParts[0],
+                  nextTokenParts[1],
                   query.Ref(
                     query.Collection('eventOrganizers'),
-                    nextTokenParts[1]
+                    nextTokenParts[2]
                   )
                 ]
               : []
