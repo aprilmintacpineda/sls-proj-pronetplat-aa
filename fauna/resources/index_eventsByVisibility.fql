@@ -1,0 +1,14 @@
+CreateIndex({
+  name: 'eventsByVisibility',
+  source: Collection('_events'),
+  terms: [
+    { field: ['data', 'visibility'] }
+  ],
+  values: [
+    { field: ['data', 'startDateTime'] },
+    { field: ['data', 'endDateTime'] },
+    { field: ['data', 'latitude'] },
+    { field: ['data', 'longitude'] },
+    { field: ['ref'] }
+  ]
+})

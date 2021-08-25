@@ -210,5 +210,6 @@ routing.get(
   '/event/replies/:commentId',
   require('./auth/eventCommentReplies')
 );
+routing.get('/browse-events', require('./auth/browseEvents'));
 
 module.exports = routing;
