@@ -320,13 +320,13 @@ Resources:
   #       Block: {}
   #     Scope: CLOUDFRONT
   #     VisibilityConfig: 
-  #       CloudWatchMetricsEnabled: true
+  #       CloudWatchMetricsEnabled: false
   #       MetricName: !Join
   #         - "-"
   #         - - "proj-pronetplat-aa-users"
   #           - !Ref Stage
   #           - webacl
-  #       SampledRequestsEnabled: true
+  #       SampledRequestsEnabled: false
   #     Rules:
   #       - Action:
   #           Block: {}
@@ -336,34 +336,34 @@ Resources:
   #             AggregateKeyType: IP
   #             Limit: 1500
   #         VisibilityConfig: 
-  #           CloudWatchMetricsEnabled: true
+  #           CloudWatchMetricsEnabled: false
   #           MetricName: !Join
   #             - "-"
   #             - - "proj-pronetplat-aa-users"
   #               - !Ref Stage
   #               - webacl-rate-limit
-  #           SampledRequestsEnabled: true
+  #           SampledRequestsEnabled: false
   #         Priority: 0
-  #       - Action:
-  #           Allow: {}
-  #         Name: AllowedCounties
-  #         Statement:
-  #           GeoMatchStatement:
-  #             CountryCodes:
-  #               - AU
-  #               - PH
-  #               - US
-  #               - CA
-  #               - GB
-  #         VisibilityConfig: 
-  #           CloudWatchMetricsEnabled: true
-  #           MetricName: !Join
-  #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
-  #               - webacl-allowed-countries
-  #           SampledRequestsEnabled: true
-  #         Priority: 1
+  # #       - Action:
+  # #           Allow: {}
+  # #         Name: AllowedCounties
+  # #         Statement:
+  # #           GeoMatchStatement:
+  # #             CountryCodes:
+  # #               - AU
+  # #               - PH
+  # #               - US
+  # #               - CA
+  # #               - GB
+  # #         VisibilityConfig: 
+  # #           CloudWatchMetricsEnabled: false
+  # #           MetricName: !Join
+  # #             - "-"
+  # #             - - "proj-pronetplat-aa-users"
+  # #               - !Ref Stage
+  # #               - webacl-allowed-countries
+  # #           SampledRequestsEnabled: false
+  # #         Priority: 1
   # mainBackendWebAclAssociations:
   #   Type: AWS::WAFv2::WebACLAssociation
   #   Properties: 
