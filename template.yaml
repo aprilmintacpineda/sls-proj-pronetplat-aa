@@ -282,7 +282,7 @@ Resources:
       BuildMethod: makefile
     Properties:
       CompatibleRuntimes:
-        - 
+        - nodejs14.x
       ContentUri: dependencies
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
