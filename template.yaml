@@ -32,7 +32,6 @@ Globals:
   Function:
     Layers:
       - !Ref dependencies
-      - !Sub "arn:aws:lambda:${AWS::Region}:580247275435:layer:LambdaInsightsExtension:14"
     MemorySize: 4096
     Timeout: 30
     Runtime: nodejs14.x
