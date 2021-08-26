@@ -85,7 +85,7 @@ module.exports.initClient = () => {
   return new Client({
     secret: process.env.faunadbSecret,
     observer: response => {
-      JSON.stringify(response, null, 2);
+      console.log(JSON.stringify(response, null, 2));
     }
   });
 };
