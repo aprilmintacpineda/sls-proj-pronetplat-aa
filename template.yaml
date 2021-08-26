@@ -318,7 +318,7 @@ Resources:
   #   Properties:
   #     DefaultAction:
   #       Block: {}
-  #     Scope: REGIONAL
+  #     Scope: CLOUDFRONT
   #     VisibilityConfig: 
   #       CloudWatchMetricsEnabled: true
   #       MetricName: !Join
