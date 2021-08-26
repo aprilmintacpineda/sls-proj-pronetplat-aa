@@ -303,6 +303,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      DisableExecuteApiEndpoint: true
       EndpointConfiguration:
         Type: EDGE
       Domain:
