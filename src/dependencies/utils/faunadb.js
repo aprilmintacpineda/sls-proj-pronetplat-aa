@@ -83,10 +83,7 @@ module.exports.softDeleteById = (collection, id) => {
 
 module.exports.initClient = () => {
   return new Client({
-    secret: process.env.faunadbSecret,
-    observer: response => {
-      console.log(JSON.stringify(response, null, 2));
-    }
+    secret: process.env.faunadbSecret
   });
 };
 
