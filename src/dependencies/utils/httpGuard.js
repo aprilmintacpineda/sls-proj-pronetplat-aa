@@ -17,6 +17,8 @@ const guardTypes = {
 };
 
 function resolveParams (httpEvent) {
+  console.log(JSON.stringify(httpEvent, null, 2));
+
   const params = {};
 
   if (httpEvent.pathParameters) {

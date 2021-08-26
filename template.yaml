@@ -304,7 +304,7 @@ Resources:
     Properties:
       StageName: !Ref Stage
       EndpointConfiguration:
-        Type: REGIONAL
+        Type: EDGE
       Domain:
         DomainName: !Sub
             - ${apiSubDomain}.entrepic.com
