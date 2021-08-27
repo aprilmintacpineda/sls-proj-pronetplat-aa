@@ -14,7 +14,7 @@ Mappings:
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSubDomain: "apiv1"
-      webSocketSubDomain: "websocketdev"
+      webSocketSubDomain: "websocket"
 
 Parameters:
   Stage:
@@ -297,11 +297,10 @@ Resources:
           - apiSubDomain
       ValidationMethod: DNS
   mainBackendApi:
-    Type: AWS::Serverless::Api
+    Type: AWS::Serverless::HttpApi
     Properties:
       StageName: !Ref Stage
-      EndpointConfiguration:
-        Type: EDGE
+      DisableExecuteApiEndpoint: true
       Domain:
         DomainName: !Sub
             - ${apiSubDomain}.entrepic.com
@@ -320,13 +319,13 @@ Resources:
   #       Block: {}
   #     Scope: CLOUDFRONT
   #     VisibilityConfig: 
-  #       CloudWatchMetricsEnabled: false
+  #       CloudWatchMetricsEnabled: true
   #       MetricName: !Join
   #         - "-"
   #         - - "proj-pronetplat-aa-users"
   #           - !Ref Stage
   #           - webacl
-  #       SampledRequestsEnabled: false
+  #       SampledRequestsEnabled: true
   #     Rules:
   #       - Action:
   #           Block: {}
@@ -336,13 +335,13 @@ Resources:
   #             AggregateKeyType: IP
   #             Limit: 1500
   #         VisibilityConfig: 
-  #           CloudWatchMetricsEnabled: false
+  #           CloudWatchMetricsEnabled: true
   #           MetricName: !Join
   #             - "-"
   #             - - "proj-pronetplat-aa-users"
   #               - !Ref Stage
   #               - webacl-rate-limit
-  #           SampledRequestsEnabled: false
+  #           SampledRequestsEnabled: true
   #         Priority: 0
   # #       - Action:
   # #           Allow: {}
@@ -356,13 +355,13 @@ Resources:
   # #               - CA
   # #               - GB
   # #         VisibilityConfig: 
-  # #           CloudWatchMetricsEnabled: false
+  # #           CloudWatchMetricsEnabled: true
   # #           MetricName: !Join
   # #             - "-"
   # #             - - "proj-pronetplat-aa-users"
   # #               - !Ref Stage
   # #               - webacl-allowed-countries
-  # #           SampledRequestsEnabled: false
+  # #           SampledRequestsEnabled: true
   # #         Priority: 1
   # mainBackendWebAclAssociations:
   #   Type: AWS::WAFv2::WebACLAssociation
