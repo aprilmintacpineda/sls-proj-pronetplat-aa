@@ -55,32 +55,32 @@ Globals:
           - "proj-pronetplat-aa-invokeApi"
 
 Resources:
-  # httpApi:
-  #   Type: AWS::Serverless::Function
-  #   Metadata:
-  #     BuildMethod: makefile
-  #   Properties:
-  #     Handler: httpApi/index.handler
-  #     FunctionName: !Join
-  #       - '-'
-  #       - - !Ref Stage
-  #         - "proj-pronetplat-aa-httpApi"
-  #     Policies:
-  #       - LambdaInvokePolicy:
-  #           FunctionName: !Ref invokeApi
-  #       - S3CrudPolicy:
-  #           BucketName: !Join
-  #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
-  #     Events:
-  #       HttpEvent:
-  #         Type: HttpApi
-  #         Properties:
-  #           Method: any
-  #           Path: /{proxy+}
-  #           ApiId:
-  #             Ref: mainBackendApi
+  httpApi:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: httpApi/index.handler
+      FunctionName: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-httpApi"
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref invokeApi
+        - S3CrudPolicy:
+            BucketName: !Join
+              - "-"
+              - - "proj-pronetplat-aa-users"
+                - !Ref Stage
+      Events:
+        HttpEvent:
+          Type: HttpApi
+          Properties:
+            Method: any
+            Path: /{proxy+}
+            ApiId:
+              Ref: mainBackendApi
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -296,21 +296,21 @@ Resources:
           - !Ref Stage
           - apiSubDomain
       ValidationMethod: DNS
-  # mainBackendApi:
-  #   Type: AWS::Serverless::HttpApi
-  #   Properties:
-  #     StageName: !Ref Stage
-  #     DisableExecuteApiEndpoint: true
-  #     Domain:
-  #       DomainName: !Sub
-  #           - ${apiSubDomain}.entrepic.com
-  #           - apiSubDomain: !FindInMap
-  #             - stageVars
-  #             - !Ref Stage
-  #             - apiSubDomain
-  #       CertificateArn: !Ref customDomainCert
-  #       Route53:
-  #         HostedZoneId: Z0450109WGLMG82TZFOY
+  mainBackendApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Stage
+      DisableExecuteApiEndpoint: true
+      Domain:
+        DomainName: !Sub
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - apiSubDomain
+        CertificateArn: !Ref customDomainCert
+        Route53:
+          HostedZoneId: Z0450109WGLMG82TZFOY
   # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
