@@ -297,7 +297,8 @@ Resources:
           AllowedMethods: [HEAD, DELETE, POST, GET, OPTIONS, PUT, PATCH]
           ViewerProtocolPolicy: redirect-to-https
           TargetOriginId: restApiOrigin
-          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # managed https://console.aws.amazon.com/cloudfront/v2/home#/policies
+          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # managed https://console.aws.amazon.com/cloudfront/v2/home#/policies
         Origins:
           - ConnectionAttempts: 1
             ConnectionTimeout: 10
@@ -310,6 +311,7 @@ Resources:
                 - !Ref Stage
                 - apiSubDomain
             Id: restApiOrigin
+        PriceClass: PriceClass_All
   ######
   # API
   #
