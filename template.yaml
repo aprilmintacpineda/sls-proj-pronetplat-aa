@@ -311,28 +311,28 @@ Resources:
               - Authorization
           QueryStringsConfig: 
             QueryStringBehavior: all
-  cloudfrontDist:
-    Type: AWS::CloudFront::Distribution
-    Properties:
-      DistributionConfig:
-        Enabled: true
-        DefaultCacheBehavior:
-          AllowedMethods: [HEAD, DELETE, POST, GET, OPTIONS, PUT, PATCH]
-          ViewerProtocolPolicy: redirect-to-https
-          TargetOriginId: restApiOrigin
-          CachePolicyId: cloudfrontDistCachePolicy
-        Origins:
-          - ConnectionAttempts: 1
-            ConnectionTimeout: 10
-            CustomOriginConfig:
-              OriginProtocolPolicy: https-only
-            DomainName: !Sub
-              - ${apiSubDomain}.entrepic.com
-              - apiSubDomain: !FindInMap
-                - stageVars
-                - !Ref Stage
-                - apiSubDomain
-            Id: restApiOrigin
+  # cloudfrontDist:
+  #   Type: AWS::CloudFront::Distribution
+  #   Properties:
+  #     DistributionConfig:
+  #       Enabled: true
+  #       DefaultCacheBehavior:
+  #         AllowedMethods: [HEAD, DELETE, POST, GET, OPTIONS, PUT, PATCH]
+  #         ViewerProtocolPolicy: redirect-to-https
+  #         TargetOriginId: restApiOrigin
+  #         CachePolicyId: cloudfrontDistCachePolicy
+  #       Origins:
+  #         - ConnectionAttempts: 1
+  #           ConnectionTimeout: 10
+  #           CustomOriginConfig:
+  #             OriginProtocolPolicy: https-only
+  #           DomainName: !Sub
+  #             - ${apiSubDomain}.entrepic.com
+  #             - apiSubDomain: !FindInMap
+  #               - stageVars
+  #               - !Ref Stage
+  #               - apiSubDomain
+  #           Id: restApiOrigin
   ######
   # API
   #
