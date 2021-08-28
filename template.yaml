@@ -295,10 +295,10 @@ Resources:
         DefaultTTL: 0
         MaxTTL: 0
         MinTTL: 0
-        Name: !Join
-          - '-'
+        Name: !Join # must be alphanumeric
+          - '_'
           - - !Ref Stage
-            - "proj-pronetplat-aa-cloudfrontDistCachePolicy"
+            - "proj_pronetplat_aa_cloudfrontDistCachePolicy"
         ParametersInCacheKeyAndForwardedToOrigin: 
           CookiesConfig: 
             CookieBehavior: all
