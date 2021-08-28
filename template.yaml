@@ -288,6 +288,26 @@ Resources:
   ######
   # cloudfront
   #
+  cloudfrontDistCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        DefaultTTL: 0
+        MaxTTL: 0
+        MinTTL: 0
+        Name: !Join
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-cloudfrontDistCachePolicy"
+        ParametersInCacheKeyAndForwardedToOrigin: 
+          CookiesConfig: 
+            CookieBehavior: all
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          HeadersConfig: 
+            HeaderBehavior: none
+          QueryStringsConfig: 
+            QueryStringBehavior: all
   cloudfrontDist:
     Type: AWS::CloudFront::Distribution
     Properties:
