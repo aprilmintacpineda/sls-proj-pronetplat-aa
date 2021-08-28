@@ -292,13 +292,13 @@ Resources:
     Type: AWS::CloudFront::CachePolicy
     Properties:
       CachePolicyConfig:
-        DefaultTTL: 0
-        MaxTTL: 0
-        MinTTL: 0
+        DefaultTTL: 1
+        MaxTTL: 1
+        MinTTL: 1
         Name: !Join # must be alphanumeric
-          - '_'
+          - '-'
           - - !Ref Stage
-            - "proj_pronetplat_aa_cloudfrontDistCachePolicy"
+            - "proj-pronetplat-aa-cloudfrontDistCachePolicy"
         ParametersInCacheKeyAndForwardedToOrigin: 
           CookiesConfig: 
             CookieBehavior: all
