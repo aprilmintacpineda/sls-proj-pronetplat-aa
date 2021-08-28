@@ -67,7 +67,7 @@ Resources:
           - "proj-pronetplat-aa-restApi"
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref invokeApiFunction
+            FunctionName: !Ref invokeApi
         - S3CrudPolicy:
             BucketName: !Join
               - "-"
