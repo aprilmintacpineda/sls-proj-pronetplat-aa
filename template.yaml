@@ -288,29 +288,6 @@ Resources:
   ######
   # cloudfront
   #
-  cloudfrontDistCachePolicy:
-    Type: AWS::CloudFront::CachePolicy
-    Properties:
-      CachePolicyConfig:
-        DefaultTTL: 1
-        MaxTTL: 1
-        MinTTL: 1
-        Name: !Join # must be alphanumeric
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-cloudfrontDistCachePolicy"
-        ParametersInCacheKeyAndForwardedToOrigin: 
-          CookiesConfig: 
-            CookieBehavior: all
-          EnableAcceptEncodingBrotli: true
-          EnableAcceptEncodingGzip: true
-          HeadersConfig: 
-            HeaderBehavior: whitelist
-            Headers:
-              - device-token
-              - Authorization
-          QueryStringsConfig: 
-            QueryStringBehavior: all
   cloudfrontDist:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -320,7 +297,7 @@ Resources:
           AllowedMethods: [HEAD, DELETE, POST, GET, OPTIONS, PUT, PATCH]
           ViewerProtocolPolicy: redirect-to-https
           TargetOriginId: restApiOrigin
-          CachePolicyId: cloudfrontDistCachePolicy
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
         Origins:
           - ConnectionAttempts: 1
             ConnectionTimeout: 10
