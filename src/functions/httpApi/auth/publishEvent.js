@@ -9,6 +9,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 
 async function handler ({ authUser, params: { eventId } }) {
   const faunadb = initClient();
@@ -45,6 +46,16 @@ async function handler ({ authUser, params: { eventId } }) {
 
     return { statusCode: 500 };
   }
+
+  await invokeEvent({
+    eventName: 'notifyAllContacts',
+    payload: {
+      authUser,
+      body: '{fullname} has published an event you might be interested in.',
+      title: 'New event from your contact',
+      type: 'contactPublishedAnEvent'
+    }
+  });
 
   return { statusCode: 200 };
 }
