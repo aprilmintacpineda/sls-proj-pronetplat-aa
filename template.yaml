@@ -33,7 +33,6 @@ Globals:
     Layers:
       - !Ref dependencies
     MemorySize: 4096
-    Timeout: 30
     Runtime: nodejs14.x
     EventInvokeConfig:
       MaximumRetryAttempts: 0
@@ -61,6 +60,7 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: httpApi/index.handler
+      Timeout: 30
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -87,6 +87,7 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: invokeApi/index.handler
+      Timeout: 900
       FunctionName: !Join
         - '-'
         - - !Ref Stage
@@ -198,6 +199,7 @@ Resources:
       BuildMethod: makefile
     Properties:
       Handler: webSocketApi/index.handler
+      Timeout: 30
       Policies:
         - Statement:
           - Action:
