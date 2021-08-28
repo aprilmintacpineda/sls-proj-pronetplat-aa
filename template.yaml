@@ -293,6 +293,15 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: true
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - PUT
+            - PATCH
+            - POST
+            - DELETE
+          ViewerProtocolPolicy: redirect-to-https
+          TargetOriginId: restApiOrigin
         Origins:
           - ConnectionAttempts: 1
             ConnectionTimeout: 10
@@ -304,16 +313,7 @@ Resources:
                 - stageVars
                 - !Ref Stage
                 - apiSubDomain
-            Id: restAPI
-            DefaultCacheBehavior:
-              AllowedMethods:
-                - GET
-                - PUT
-                - PATCH
-                - POST
-                - DELETE
-              ViewerProtocolPolicy: redirect-to-https
-              TargetOriginId: mainBackendApi
+            Id: restApiOrigin
   ######
   # API
   #
