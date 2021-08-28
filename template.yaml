@@ -321,15 +321,15 @@ Resources:
   #         - !Ref Stage
   #         - apiSubDomain
   #     ValidationMethod: DNS
-  mainBackendApi:
-    Type: AWS::ApiGatewayV2::Api
-    Properties:
-      Name: !Join
-        - "-"
-        - - "proj-pronetplat-aa-users"
-          - !Ref Stage
-      ProtocolType: HTTP
-      Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${httpApi.Arn}/invocations
+  # mainBackendApi:
+  #   Type: AWS::ApiGatewayV2::Api
+  #   Properties:
+  #     Name: !Join
+  #       - "-"
+  #       - - "proj-pronetplat-aa-users"
+  #         - !Ref Stage
+  #     ProtocolType: HTTP
+  #     Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${httpApi.Arn}/invocations
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
