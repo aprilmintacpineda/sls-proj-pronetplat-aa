@@ -288,16 +288,22 @@ Resources:
   ######
   # cloudfront
   #
-  cloudfrontFunction:
-    Type: AWS::CloudFront::Function
-    Properties: 
-      AutoPublish: true
-      FunctionMetadata: 
-        FunctionARN: !GetAtt httpApi.Arn
-      Name: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-cloudfrontFunction"
+  cloudfrontDist:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - ConnectionAttempts: 1
+            ConnectionTimeout: 10
+            CustomOriginConfig: 
+              CustomOriginConfig
+            DomainName: !Sub
+              - ${apiSubDomain}.entrepic.com
+              - apiSubDomain: !FindInMap
+                - stageVars
+                - !Ref Stage
+                - apiSubDomain
+            Id: restAPI
   ######
   # API
   #
