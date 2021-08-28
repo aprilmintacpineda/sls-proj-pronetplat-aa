@@ -338,8 +338,8 @@ Resources:
   #       CloudWatchMetricsEnabled: true
   #       MetricName: !Join
   #         - "-"
-  #         - - "proj-pronetplat-aa-users"
-  #           - !Ref Stage
+  #         - - !Ref Stage
+  #           - "proj-pronetplat-aa-users"
   #           - webacl
   #       SampledRequestsEnabled: true
   #     Rules:
@@ -354,8 +354,8 @@ Resources:
   #           CloudWatchMetricsEnabled: true
   #           MetricName: !Join
   #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
+  #             - - !Ref Stage
+  #               - "proj-pronetplat-aa-users"
   #               - webacl-rate-limit
   #           SampledRequestsEnabled: true
   #         Priority: 0
@@ -374,8 +374,8 @@ Resources:
   # #           CloudWatchMetricsEnabled: true
   # #           MetricName: !Join
   # #             - "-"
-  # #             - - "proj-pronetplat-aa-users"
-  # #               - !Ref Stage
+  # #             - - !Ref Stage
+  # #               - "proj-pronetplat-aa-users"
   # #               - webacl-allowed-countries
   # #           SampledRequestsEnabled: true
   # #         Priority: 1
