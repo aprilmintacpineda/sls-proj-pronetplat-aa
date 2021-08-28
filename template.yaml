@@ -54,7 +54,7 @@ Globals:
           - "proj-pronetplat-aa-invokeApi"
 
 Resources:
-  httpApi:
+  restApiFunction:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
@@ -67,7 +67,7 @@ Resources:
           - "proj-pronetplat-aa-httpApi"
       Policies:
         - LambdaInvokePolicy:
-            FunctionName: !Ref invokeApi
+            FunctionName: !Ref invokeApiFunction
         - S3CrudPolicy:
             BucketName: !Join
               - "-"
@@ -81,7 +81,7 @@ Resources:
       #       Path: /{proxy+}
       #       RestApiId:
       #         Ref: mainBackendApi
-  invokeApi:
+  invokeApiFunction:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
@@ -304,7 +304,7 @@ Resources:
             ConnectionTimeout: 10
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
-            DomainName: !Sub ${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${restApi}.execute-api.${AWS::Region}.amazonaws.com
             OriginPath: !Sub /${Stage}
             Id: restApiOrigin
         PriceClass: PriceClass_All
@@ -321,15 +321,15 @@ Resources:
   #         - !Ref Stage
   #         - apiSubDomain
   #     ValidationMethod: DNS
-  # mainBackendApi:
-  #   Type: AWS::ApiGatewayV2::Api
-  #   Properties:
-  #     Name: !Join
-  #       - "-"
-  #       - - "proj-pronetplat-aa-users"
-  #         - !Ref Stage
-  #     ProtocolType: HTTP
-  #     Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${httpApi.Arn}/invocations
+  restApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Join
+        - "-"
+        - - "proj-pronetplat-aa-users"
+          - !Ref Stage
+      ProtocolType: HTTP
+      Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${httpApi.Arn}/invocations
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
@@ -440,9 +440,9 @@ Outputs:
         - stageVars
         - !Ref Stage
         - webSocketSubDomain
-  # restApiDefaultUrl:
-  #   Description: "Rest API default URL"
-  #   Value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+  restApiDefaultUrl:
+    Description: "Rest API default URL"
+    Value: !Sub https://${restApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   restApiCustomDomain:
     Description: "Rest API custom domain"
     Value: !Sub
