@@ -322,6 +322,7 @@ Resources:
             - DELETE
           ViewerProtocolPolicy: redirect-to-https
           TargetOriginId: restApiOrigin
+          CachePolicyId: cloudfrontDistCachePolicy
         Origins:
           - ConnectionAttempts: 1
             ConnectionTimeout: 10
