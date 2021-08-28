@@ -452,3 +452,6 @@ Outputs:
         - stageVars
         - !Ref Stage
         - apiSubDomain
+  cloudfrontUrl:
+    Description: "Rest API custom domain"
+    Value: !Sub ${cloudfrontDist}.cloudfront.net
