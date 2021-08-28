@@ -292,6 +292,7 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
+        Enabled: true
         Origins:
           - ConnectionAttempts: 1
             ConnectionTimeout: 10
