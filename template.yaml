@@ -307,7 +307,7 @@ Resources:
             ConnectionAttempts: 1
             ConnectionTimeout: 10
             S3OriginConfig: {}
-            DomainName: !GetAtt cloudfrontS3Bucket.Domain
+            DomainName: !GetAtt cloudfrontS3Bucket.DomainName
   ######
   # API
   #
