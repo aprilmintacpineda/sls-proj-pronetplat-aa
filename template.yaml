@@ -314,12 +314,7 @@ Resources:
       DistributionConfig:
         Enabled: true
         DefaultCacheBehavior:
-          AllowedMethods:
-            - GET
-            - PUT
-            - PATCH
-            - POST
-            - DELETE
+          AllowedMethods: [HEAD, DELETE, POST, GET, OPTIONS, PUT, PATCH]
           ViewerProtocolPolicy: redirect-to-https
           TargetOriginId: restApiOrigin
           CachePolicyId: cloudfrontDistCachePolicy
