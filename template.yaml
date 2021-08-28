@@ -288,16 +288,16 @@ Resources:
   ######
   # cloudfront
   #
-  cloudfrontDist:
-    Type: AWS::CloudFront::Function
-    Properties: 
-      AutoPublish: true
-      FunctionMetadata: 
-        FunctionARN: !GetAtt httpApi.Arn
-      Name: !Join
-        - '-'
-        - - !Ref Stage
-          - "proj-pronetplat-aa-cloudfrontDist"
+  # cloudfrontDist:
+  #   Type: AWS::CloudFront::Function
+  #   Properties: 
+  #     AutoPublish: true
+  #     FunctionMetadata: 
+  #       FunctionARN: !GetAtt httpApi.Arn
+  #     Name: !Join
+  #       - '-'
+  #       - - !Ref Stage
+  #         - "proj-pronetplat-aa-cloudfrontDist"
   ######
   # API
   #
@@ -416,9 +416,6 @@ Resources:
           Value: "proj-pronetplat-aa users s3 bucket"
 
 Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   httpApiFunctionArn:
     Description: "httpApi function ARN"
     Value: !GetAtt httpApi.Arn
