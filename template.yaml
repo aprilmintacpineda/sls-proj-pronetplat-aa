@@ -305,7 +305,7 @@ Resources:
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
             DomainName: !Sub ${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com
-            OriginPath: ${Stage}/
+            OriginPath: !Sub /${Stage}
             Id: restApiOrigin
         PriceClass: PriceClass_All
   ######
