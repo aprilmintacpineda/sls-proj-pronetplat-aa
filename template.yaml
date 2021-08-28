@@ -416,6 +416,9 @@ Resources:
           Value: "proj-pronetplat-aa users s3 bucket"
 
 Outputs:
-  httpApiFunctionArn:
-    Description: "httpApi function ARN"
-    Value: !GetAtt httpApi.Arn
+  WebSocketApiUrl:
+    Description: "Websocket API default URL"
+    value: !Sub wss://${webSocket}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+  RestApiUrl:
+    Description: "Rest API default URL"
+    value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
