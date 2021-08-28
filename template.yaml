@@ -329,7 +329,7 @@ Resources:
         - - "proj-pronetplat-aa-users"
           - !Ref Stage
       ProtocolType: HTTP
-      Target: !Sub arn:aws:apigateway:${AWS:Region}:lambda:path/2015-03-31/functions/${httpApi.Arn}/invocations
+      Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${httpApi.Arn}/invocations
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
