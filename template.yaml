@@ -418,10 +418,10 @@ Resources:
 Outputs:
   webSocketApiDefaultUrl:
     Description: "Websocket API default URL"
-    value: !Sub wss://${webSocket}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+    Value: !Sub wss://${webSocket}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   webSocketCustomDomain:
     Description: "Websocket API custom domain"
-    value: !Sub
+    Value: !Sub
       - ${webSocketSubDomain}.entrepic.com
       - webSocketSubDomain: !FindInMap
         - stageVars
@@ -429,10 +429,10 @@ Outputs:
         - webSocketSubDomain
   restApiDefaultUrl:
     Description: "Rest API default URL"
-    value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+    Value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   restApiCustomDomain:
     Description: "Rest API custom domain"
-    value: !Sub
+    Value: !Sub
       - ${apiSubDomain}.entrepic.com
       - apiSubDomain: !FindInMap
         - stageVars
