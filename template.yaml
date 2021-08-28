@@ -295,9 +295,9 @@ Resources:
       FunctionMetadata: 
         FunctionARN: !GetAtt httpApi.Arn
       Name: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-cloudfrontDist"
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-cloudfrontDist"
   ######
   # API
   #
