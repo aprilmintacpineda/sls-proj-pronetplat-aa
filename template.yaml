@@ -305,6 +305,15 @@ Resources:
                 - !Ref Stage
                 - apiSubDomain
             Id: restAPI
+            DefaultCacheBehavior:
+              AllowedMethods:
+                - GET
+                - PUT
+                - PATCH
+                - POST
+                - DELETE
+              ViewerProtocolPolicy: redirect-to-https
+              TargetOriginId: mainBackendApi
   ######
   # API
   #
