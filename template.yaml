@@ -440,9 +440,9 @@ Outputs:
         - stageVars
         - !Ref Stage
         - webSocketSubDomain
-  restApiDefaultUrl:
-    Description: "Rest API default URL"
-    Value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+  # restApiDefaultUrl:
+  #   Description: "Rest API default URL"
+  #   Value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   restApiCustomDomain:
     Description: "Rest API custom domain"
     Value: !Sub
