@@ -304,43 +304,38 @@ Resources:
             ConnectionTimeout: 10
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
-            DomainName: !Sub
-              - ${apiSubDomain}.entrepic.com
-              - apiSubDomain: !FindInMap
-                - stageVars
-                - !Ref Stage
-                - apiSubDomain
+            DomainName: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
             Id: restApiOrigin
         PriceClass: PriceClass_All
   ######
   # API
   #
-  customDomainCert:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Sub
-        - ${apiSubDomain}.entrepic.com
-        - apiSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - apiSubDomain
-      ValidationMethod: DNS
+  # httpApiCustomDomainCert:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !Sub
+  #       - ${apiSubDomain}.entrepic.com
+  #       - apiSubDomain: !FindInMap
+  #         - stageVars
+  #         - !Ref Stage
+  #         - apiSubDomain
+  #     ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: EDGE
-      Domain:
-        DomainName: !Sub
-            - ${apiSubDomain}.entrepic.com
-            - apiSubDomain: !FindInMap
-              - stageVars
-              - !Ref Stage
-              - apiSubDomain
-        CertificateArn: !Ref customDomainCert
-        Route53:
-          HostedZoneId: Z0450109WGLMG82TZFOY
+      # Domain:
+      #   DomainName: !Sub
+      #       - ${apiSubDomain}.entrepic.com
+      #       - apiSubDomain: !FindInMap
+      #         - stageVars
+      #         - !Ref Stage
+      #         - apiSubDomain
+      #   CertificateArn: !Ref customDomainCert
+      #   Route53:
+      #     HostedZoneId: Z0450109WGLMG82TZFOY
   # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
