@@ -296,8 +296,8 @@ Resources:
         Origins:
           - ConnectionAttempts: 1
             ConnectionTimeout: 10
-            CustomOriginConfig: 
-              CustomOriginConfig
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
             DomainName: !Sub
               - ${apiSubDomain}.entrepic.com
               - apiSubDomain: !FindInMap
