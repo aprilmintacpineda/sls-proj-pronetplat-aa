@@ -305,7 +305,10 @@ Resources:
           EnableAcceptEncodingBrotli: true
           EnableAcceptEncodingGzip: true
           HeadersConfig: 
-            HeaderBehavior: none
+            HeaderBehavior: whitelist
+            Headers:
+              - device-token
+              - Authorization
           QueryStringsConfig: 
             QueryStringBehavior: all
   cloudfrontDist:
