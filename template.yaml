@@ -288,16 +288,16 @@ Resources:
   ######
   # cloudfront
   #
-  # cloudfrontDist:
-  #   Type: AWS::CloudFront::Function
-  #   Properties: 
-  #     AutoPublish: true
-  #     FunctionMetadata: 
-  #       FunctionARN: !GetAtt httpApi.Arn
-  #     Name: !Join
-  #       - '-'
-  #       - - !Ref Stage
-  #         - "proj-pronetplat-aa-cloudfrontDist"
+  cloudfrontFunction:
+    Type: AWS::CloudFront::Function
+    Properties: 
+      AutoPublish: true
+      FunctionMetadata: 
+        FunctionARN: !GetAtt httpApi.Arn
+      Name: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-cloudfrontFunction"
   ######
   # API
   #
