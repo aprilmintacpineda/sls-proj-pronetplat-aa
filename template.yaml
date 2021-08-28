@@ -286,6 +286,18 @@ Resources:
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
   ######
+  # cloudfront
+  #
+  Type: AWS::CloudFront::Function
+  Properties: 
+    AutoPublish: true
+    FunctionMetadata: 
+      FunctionARN: !GetAtt httpApi.Arn
+    Name: !Join
+        - '-'
+        - - !Ref Stage
+          - "proj-pronetplat-aa-cloudfront"
+  ######
   # API
   #
   customDomainCert:
