@@ -288,6 +288,30 @@ Resources:
   ######
   # cloudfront
   #
+  cloudfrontOriginRequestPolicy:
+    Type: AWS::CloudFront::OriginRequestPolicy
+    Properties:
+      CachePolicyConfig:
+        DefaultTTL: 1
+        MaxTTL: 1
+        MinTTL: 1
+        Name: !Join # must be alphanumeric
+          - '-'
+          - - !Ref Stage
+            - "proj-pronetplat-aa-cloudfrontOriginRequestPolicy"
+        ParametersInCacheKeyAndForwardedToOrigin: 
+          CookiesConfig: 
+            CookieBehavior: all
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          HeadersConfig: 
+            HeaderBehavior: whitelist
+            Headers:
+              - device-token
+              - Authorization
+              - Origin
+          QueryStringsConfig: 
+            QueryStringBehavior: all
   cloudfrontDist:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -298,16 +322,14 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           TargetOriginId: !Ref cloudfrontS3Bucket
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # managed https://console.aws.amazon.com/cloudfront/v2/home#/policies
-          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # managed https://console.aws.amazon.com/cloudfront/v2/home#/policies
-          LambdaFunctionAssociations:
-            - EventType: viewer-request
-              LambdaFunctionARN: !GetAtt restApi.Arn
+          OriginRequestPolicyId: !Ref cloudfrontOriginRequestPolicy
         Origins:
-          - Id: !Ref cloudfrontS3Bucket
+          - Id: restApiOrigin
             ConnectionAttempts: 1
             ConnectionTimeout: 10
-            S3OriginConfig: {}
-            DomainName: !GetAtt cloudfrontS3Bucket.DomainName
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+            DomainName: !Sub https://${restApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   ######
   # API
   #
@@ -321,15 +343,15 @@ Resources:
   #         - !Ref Stage
   #         - apiSubDomain
   #     ValidationMethod: DNS
-  # apiGateway:
-  #   Type: AWS::ApiGatewayV2::Api
-  #   Properties:
-  #     Name: !Join
-  #       - "-"
-  #       - - "proj-pronetplat-aa-users"
-  #         - !Ref Stage
-  #     ProtocolType: HTTP
-  #     Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${restApi.Arn}/invocations
+  apiGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Join
+        - "-"
+        - - "proj-pronetplat-aa-users"
+          - !Ref Stage
+      ProtocolType: HTTP
+      Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${restApi.Arn}/invocations
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
@@ -400,13 +422,6 @@ Resources:
   ######
   # S3 buckets
   #
-  cloudfrontS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Join
-        - "-"
-        - - !Ref Stage
-          - "proj-pronetplat-aa-cloudfront"
   usersS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -455,6 +470,9 @@ Outputs:
         - stageVars
         - !Ref Stage
         - apiSubDomain
+  restApiDefaultUrl:
+    Description: "Rest API default URL"
+    Value: !Sub https://${restApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   cloudfrontUrl:
     Description: "Rest API custom domain"
     Value: !GetAtt cloudfrontDist.DomainName
