@@ -54,17 +54,17 @@ Globals:
           - "proj-pronetplat-aa-invokeApi"
 
 Resources:
-  restApi:
+  httpApi:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: restApi/index.handler
+      Handler: httpApi/index.handler
       Timeout: 30
       FunctionName: !Join
         - '-'
         - - !Ref Stage
-          - "proj-pronetplat-aa-restApi"
+          - "proj-pronetplat-aa-httpApi"
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref invokeApi
@@ -80,7 +80,7 @@ Resources:
             Method: any
             Path: /{proxy+}
             RestApiId:
-              Ref: http
+              Ref: mainBackendApi
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -286,70 +286,34 @@ Resources:
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
   ######
-  # cloudfront
-  #
-  cloudfrontOriginRequestPolicy:
-    Type: AWS::CloudFront::OriginRequestPolicy
-    Properties:
-      OriginRequestPolicyConfig:
-        Name: !Join
-          - '-'
-          - - !Ref Stage
-            - "proj-pronetplat-aa-cloudfrontOriginRequestPolicy"
-        CookiesConfig: 
-          CookieBehavior: all
-        HeadersConfig: 
-          HeaderBehavior: allViewer
-        QueryStringsConfig: 
-          QueryStringBehavior: all
-  cloudfrontDist:
-    Type: AWS::CloudFront::Distribution
-    Properties:
-      DistributionConfig:
-        Enabled: true
-        PriceClass: PriceClass_All
-        DefaultCacheBehavior:
-          ViewerProtocolPolicy: redirect-to-https
-          TargetOriginId: customRestApiOrigin
-          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # managed https://console.aws.amazon.com/cloudfront/v2/home#/policies
-          OriginRequestPolicyId: !Ref cloudfrontOriginRequestPolicy
-        Origins:
-          - Id: customRestApiOrigin
-            ConnectionAttempts: 1
-            ConnectionTimeout: 10
-            CustomOriginConfig:
-              OriginProtocolPolicy: https-only
-            DomainName: !Sub ${http}.execute-api.${AWS::Region}.amazonaws.com
-            OriginPath: !Sub /${Stage}
-  ######
   # API
   #
-  # httpApiCustomDomainCert:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Sub
-  #       - ${apiSubDomain}.entrepic.com
-  #       - apiSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - apiSubDomain
-  #     ValidationMethod: DNS
-  http:
+  customDomainCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - apiSubDomain
+      ValidationMethod: DNS
+  mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
       EndpointConfiguration:
-        Type: REGIONAL 
-      # Domain:
-      #   DomainName: !Sub
-      #       - ${apiSubDomain}.entrepic.com
-      #       - apiSubDomain: !FindInMap
-      #         - stageVars
-      #         - !Ref Stage
-      #         - apiSubDomain
-      #   CertificateArn: !Ref customDomainCert
-      #   Route53:
-      #     HostedZoneId: Z0450109WGLMG82TZFOY
+        Type: EDGE
+      Domain:
+        DomainName: !Sub
+            - ${apiSubDomain}.entrepic.com
+            - apiSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - apiSubDomain
+        CertificateArn: !Ref customDomainCert
+        Route53:
+          HostedZoneId: Z0450109WGLMG82TZFOY
   # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
@@ -361,8 +325,8 @@ Resources:
   #       CloudWatchMetricsEnabled: true
   #       MetricName: !Join
   #         - "-"
-  #         - - !Ref Stage
-  #           - "proj-pronetplat-aa-users"
+  #         - - "proj-pronetplat-aa-users"
+  #           - !Ref Stage
   #           - webacl
   #       SampledRequestsEnabled: true
   #     Rules:
@@ -377,8 +341,8 @@ Resources:
   #           CloudWatchMetricsEnabled: true
   #           MetricName: !Join
   #             - "-"
-  #             - - !Ref Stage
-  #               - "proj-pronetplat-aa-users"
+  #             - - "proj-pronetplat-aa-users"
+  #               - !Ref Stage
   #               - webacl-rate-limit
   #           SampledRequestsEnabled: true
   #         Priority: 0
@@ -397,8 +361,8 @@ Resources:
   # #           CloudWatchMetricsEnabled: true
   # #           MetricName: !Join
   # #             - "-"
-  # #             - - !Ref Stage
-  # #               - "proj-pronetplat-aa-users"
+  # #             - - "proj-pronetplat-aa-users"
+  # #               - !Ref Stage
   # #               - webacl-allowed-countries
   # #           SampledRequestsEnabled: true
   # #         Priority: 1
@@ -438,29 +402,16 @@ Resources:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
 
-Outputs:
-  webSocketApiDefaultUrl:
-    Description: "Websocket API default URL"
-    Value: !Sub wss://${webSocket}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
-  webSocketCustomDomain:
-    Description: "Websocket API custom domain"
-    Value: !Sub
-      - ${webSocketSubDomain}.entrepic.com
-      - webSocketSubDomain: !FindInMap
-        - stageVars
-        - !Ref Stage
-        - webSocketSubDomain
-  restApiCustomDomain:
-    Description: "Rest API custom domain"
-    Value: !Sub
-      - ${apiSubDomain}.entrepic.com
-      - apiSubDomain: !FindInMap
-        - stageVars
-        - !Ref Stage
-        - apiSubDomain
-  restApiDefaultUrl:
-    Description: "Rest API default URL"
-    Value: !Sub https://${http}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
-  cloudfrontUrl:
-    Description: "Rest API custom domain"
-    Value: !GetAtt cloudfrontDist.DomainName
+# Outputs:
+#   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+#   # Find out more about other implicit resources you can reference within SAM
+#   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+#   HelloWorldApi:
+#     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+#   HelloWorldFunction:
+#     Description: "Hello World Lambda Function ARN"
+#     Value: !GetAtt HelloWorldFunction.Arn
+#   HelloWorldFunctionIamRole:
+#     Description: "Implicit IAM Role created for Hello World function"
+#     Value: !GetAtt HelloWorldFunctionRole.Arn
