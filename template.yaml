@@ -288,32 +288,51 @@ Resources:
   ######
   # API
   #
-  customDomainCert:
-    Type: AWS::CertificateManager::Certificate
+  mainBackendCloudfront:  
+    Type: AWS::CloudFront::Distribution
     Properties:
-      DomainName: !Sub
-        - ${apiSubDomain}.entrepic.com
-        - apiSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - apiSubDomain
-      ValidationMethod: DNS
+      DistributionConfig:
+        Enabled: true
+        IPV6Enabled: true
+        HttpVersion: http2
+        Origins:
+        - Id: mainBackendApiOrigin
+          DomainName: !Sub ${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com
+          OriginPath: !Sub /${Stage}
+          CustomOriginConfig:
+            OriginProtocolPolicy: https-only
+        DefaultCacheBehavior:
+          AllowedMethods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # managed https://console.aws.amazon.com/cloudfront/v2/home#/policy/details/4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # managed https://console.aws.amazon.com/cloudfront/v2/home#/policy/details/216adef6-5c7f-47e4-b989-5492eafa07d3
+          TargetOriginId: mainBackendApiOrigin
+          ViewerProtocolPolicy: https-only
+  # customDomainCert:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !Sub
+  #       - ${apiSubDomain}.entrepic.com
+  #       - apiSubDomain: !FindInMap
+  #         - stageVars
+  #         - !Ref Stage
+  #         - apiSubDomain
+  #     ValidationMethod: DNS
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
       EndpointConfiguration:
-        Type: EDGE
-      Domain:
-        DomainName: !Sub
-            - ${apiSubDomain}.entrepic.com
-            - apiSubDomain: !FindInMap
-              - stageVars
-              - !Ref Stage
-              - apiSubDomain
-        CertificateArn: !Ref customDomainCert
-        Route53:
-          HostedZoneId: Z0450109WGLMG82TZFOY
+        Type: REGIONAL
+      # Domain:
+      #   DomainName: !Sub
+      #       - ${apiSubDomain}.entrepic.com
+      #       - apiSubDomain: !FindInMap
+      #         - stageVars
+      #         - !Ref Stage
+      #         - apiSubDomain
+      #   CertificateArn: !Ref customDomainCert
+      #   Route53:
+      #     HostedZoneId: Z0450109WGLMG82TZFOY
   # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
