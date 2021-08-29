@@ -292,7 +292,7 @@ Resources:
     Type: AWS::CloudFront::OriginRequestPolicy
     Properties:
       OriginRequestPolicyConfig:
-        Name: !Joi
+        Name: !Join
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-cloudfrontOriginRequestPolicy"
