@@ -40,6 +40,8 @@ async function handler (
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
   const unit = method === 'km' ? 6371 : 3959;
 
+  console.log(lat, lng);
+
   const result = await faunadb.query(
     query.Map(
       query.Filter(
