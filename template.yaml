@@ -80,7 +80,7 @@ Resources:
             Method: any
             Path: /{proxy+}
             RestApiId:
-              Ref: !Ref httpApi
+              Ref: httpApi
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
