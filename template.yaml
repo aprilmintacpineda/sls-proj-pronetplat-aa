@@ -457,4 +457,4 @@ Outputs:
         - apiSubDomain
   cloudfrontUrl:
     Description: "Rest API custom domain"
-    Value: !GetAtt Distribution.DomainName
+    Value: !GetAtt cloudfrontDist.DomainName
