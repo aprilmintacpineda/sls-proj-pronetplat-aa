@@ -305,7 +305,7 @@ Resources:
         DefaultCacheBehavior:
           AllowedMethods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # managed https://console.aws.amazon.com/cloudfront/v2/home#/policy/details/4135ea2d-6df8-44a3-9df3-4b5a84be39ad
-          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # managed https://console.aws.amazon.com/cloudfront/v2/home#/policy/details/216adef6-5c7f-47e4-b989-5492eafa07d3
+          OriginRequestPolicyId: 7404f366-e3d3-47ca-8111-268449baa26e
           TargetOriginId: mainBackendApiOrigin
           ViewerProtocolPolicy: https-only
   # customDomainCert:
