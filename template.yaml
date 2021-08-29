@@ -292,24 +292,18 @@ Resources:
     Type: AWS::CloudFront::OriginRequestPolicy
     Properties:
       OriginRequestPolicyConfig:
-        DefaultTTL: 1
-        MaxTTL: 1
-        MinTTL: 1
         Name: !Join # must be alphanumeric
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-cloudfrontOriginRequestPolicy"
-        ParametersInCacheKeyAndForwardedToOrigin: 
-          CookiesConfig: 
-            CookieBehavior: all
-          EnableAcceptEncodingBrotli: true
-          EnableAcceptEncodingGzip: true
-          HeadersConfig: 
-            HeaderBehavior: allViewerAndWhitelistCloudFront
-            Headers:
-              - Origin
-          QueryStringsConfig: 
-            QueryStringBehavior: all
+        CookiesConfig: 
+          CookieBehavior: all
+        HeadersConfig: 
+          HeaderBehavior: allViewerAndWhitelistCloudFront
+          Headers:
+            - Origin
+        QueryStringsConfig: 
+          QueryStringBehavior: all
   cloudfrontDist:
     Type: AWS::CloudFront::Distribution
     Properties:
