@@ -80,7 +80,7 @@ Resources:
             Method: any
             Path: /{proxy+}
             RestApiId:
-              Ref: httpApi
+              Ref: http
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -319,7 +319,7 @@ Resources:
             ConnectionTimeout: 10
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
-            DomainName: !Sub ${httpApi}.execute-api.${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${http}.execute-api.${AWS::Region}.amazonaws.com
             OriginPath: !Sub /${Stage}
   ######
   # API
@@ -334,7 +334,7 @@ Resources:
   #         - !Ref Stage
   #         - apiSubDomain
   #     ValidationMethod: DNS
-  httpApi:
+  http:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
@@ -460,7 +460,7 @@ Outputs:
         - apiSubDomain
   restApiDefaultUrl:
     Description: "Rest API default URL"
-    Value: !Sub https://${restApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+    Value: !Sub https://${http}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   cloudfrontUrl:
     Description: "Rest API custom domain"
     Value: !GetAtt cloudfrontDist.DomainName
