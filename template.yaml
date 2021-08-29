@@ -291,7 +291,7 @@ Resources:
   cloudfrontOriginRequestPolicy:
     Type: AWS::CloudFront::OriginRequestPolicy
     Properties:
-      CachePolicyConfig:
+      OriginRequestPolicyConfig:
         DefaultTTL: 1
         MaxTTL: 1
         MinTTL: 1
@@ -305,10 +305,8 @@ Resources:
           EnableAcceptEncodingBrotli: true
           EnableAcceptEncodingGzip: true
           HeadersConfig: 
-            HeaderBehavior: whitelist
+            HeaderBehavior: allViewerAndWhitelistCloudFront
             Headers:
-              - device-token
-              - Authorization
               - Origin
           QueryStringsConfig: 
             QueryStringBehavior: all
