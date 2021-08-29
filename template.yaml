@@ -73,14 +73,14 @@ Resources:
               - "-"
               - - "proj-pronetplat-aa-users"
                 - !Ref Stage
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Method: any
-            Path: /{proxy+}
-            RestApiId:
-              Ref: !Ref httpApi
+      # Events:
+      #   ApiEvent:
+      #     Type: Api
+      #     Properties:
+      #       Method: any
+      #       Path: /{proxy+}
+      #       RestApiId:
+      #         Ref: !Ref httpApi
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
