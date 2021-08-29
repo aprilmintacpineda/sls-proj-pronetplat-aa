@@ -339,8 +339,8 @@ Resources:
     Properties:
       Name: !Join
         - "-"
-        - - "proj-pronetplat-aa-users"
-          - !Ref Stage
+        - - !Ref Stage
+          - "proj-pronetplat-aa-restapi"
       ProtocolType: HTTP
       Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${restApi.Arn}/invocations
       # Domain:
