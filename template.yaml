@@ -338,6 +338,8 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      EndpointConfiguration:
+        Type: REGIONAL 
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
