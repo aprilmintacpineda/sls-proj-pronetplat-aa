@@ -80,7 +80,7 @@ Resources:
             Method: any
             Path: /{proxy+}
             RestApiId:
-              Ref: apiGateway
+              Ref: !Ref httpApi
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -319,7 +319,7 @@ Resources:
             ConnectionTimeout: 10
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
-            DomainName: !Sub ${apiGateway}.execute-api.${AWS::Region}.amazonaws.com
+            DomainName: !Sub ${httpApi}.execute-api.${AWS::Region}.amazonaws.com
             OriginPath: !Sub /${Stage}
   ######
   # API
