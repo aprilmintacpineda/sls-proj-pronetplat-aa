@@ -319,7 +319,8 @@ Resources:
             ConnectionTimeout: 10
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
-            DomainName: !Sub https://${restApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+            DomainName: !Sub ${restApi}.execute-api.${AWS::Region}.amazonaws.com
+            OriginPath: !Sub /${Stage}
   ######
   # API
   #
