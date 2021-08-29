@@ -73,14 +73,14 @@ Resources:
               - "-"
               - - "proj-pronetplat-aa-users"
                 - !Ref Stage
-      # Events:
-      #   ApiEvent:
-      #     Type: Api
-      #     Properties:
-      #       Method: any
-      #       Path: /{proxy+}
-      #       RestApiId:
-      #         Ref: mainBackendApi
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Method: any
+            Path: /{proxy+}
+            RestApiId:
+              Ref: apiGateway
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -334,15 +334,10 @@ Resources:
   #         - !Ref Stage
   #         - apiSubDomain
   #     ValidationMethod: DNS
-  apiGateway:
-    Type: AWS::ApiGatewayV2::Api
+  httpApi:
+    Type: AWS::Serverless::Api
     Properties:
-      Name: !Join
-        - "-"
-        - - !Ref Stage
-          - "proj-pronetplat-aa-restapi"
-      ProtocolType: HTTP
-      Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${restApi.Arn}/invocations
+      StageName: !Ref Stage
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
