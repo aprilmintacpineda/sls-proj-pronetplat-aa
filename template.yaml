@@ -79,8 +79,7 @@ Resources:
           Properties:
             Method: any
             Path: /{proxy+}
-            RestApiId:
-              Ref: mainBackendApi
+            RestApiId: !Ref mainBackendApi
   invokeApi:
     Type: AWS::Serverless::Function
     Metadata:
