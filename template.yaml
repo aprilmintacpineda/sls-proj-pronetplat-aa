@@ -292,16 +292,14 @@ Resources:
     Type: AWS::CloudFront::OriginRequestPolicy
     Properties:
       OriginRequestPolicyConfig:
-        Name: !Join # must be alphanumeric
+        Name: !Joi
           - '-'
           - - !Ref Stage
             - "proj-pronetplat-aa-cloudfrontOriginRequestPolicy"
         CookiesConfig: 
           CookieBehavior: all
         HeadersConfig: 
-          HeaderBehavior: allViewerAndWhitelistCloudFront
-          Headers:
-            - Origin
+          HeaderBehavior: allViewer
         QueryStringsConfig: 
           QueryStringBehavior: all
   cloudfrontDist:
