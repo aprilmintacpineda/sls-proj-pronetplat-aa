@@ -12,27 +12,30 @@ function toRadians (degrees) {
   return (degrees * Math.PI) / 180;
 }
 
-async function handler ({
-  params: {
-    nextToken,
-    schedule,
-    lat,
-    lng,
-    method = 'km',
-    maxDistance = 25
+async function handler (
+  {
+    params: {
+      nextToken,
+      schedule,
+      lat: _lat,
+      lng: _lng,
+      method = 'km',
+      maxDistance = 25
+    },
+    authUser
   },
-  authUser
-}) {
+  { headers }
+) {
   if (
     !schedule ||
     (schedule !== 'future' &&
       schedule !== 'past' &&
-      schedule !== 'present') ||
-    !lat ||
-    !lng
+      schedule !== 'present')
   )
     return { statusCode: 400 };
 
+  const lat = _lat || headers['CloudFront-Viewer-Latitude'];
+  const lng = _lng || headers['CloudFront-Viewer-Longitude'];
   const faunadb = initClient();
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
   const unit = method === 'km' ? 6371 : 3959;
