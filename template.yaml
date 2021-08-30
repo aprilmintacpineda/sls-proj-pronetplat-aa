@@ -322,12 +322,11 @@ Resources:
         HostedZoneId: Z0450109WGLMG82TZFOY
       HostedZoneName: entrepic.com.
       Name: !Sub
-        - ${apiSubDomain}.entrepic.com
+        - ${apiSubDomain}.entrepic.com.
         - apiSubDomain: !FindInMap
           - stageVars
           - !Ref Stage
           - apiSubDomain
-        - "."
       Type: A
   mainBackendApiUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
