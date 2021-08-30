@@ -326,7 +326,21 @@ Resources:
         Type: REGIONAL
       Auth:
         ResourcePolicy:
-          AwsAccountWhitelist: !Sub ${AWS::AccountId}
+          CustomStatements:
+            - Version: '2012-10-17'
+              Statement:
+              - Effect: Allow
+                Principal: "*"
+                Action: execute-api:Invoke
+                Resource:
+                - execute-api:/*
+              - Effect: Deny
+                Principal: "*"
+                Action: execute-api:Invoke
+                Resource:
+                - execute-api:/*
+                Condition:
+                  ArnNotEquals: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${mainBackendCloudfront}
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
