@@ -327,7 +327,7 @@ Resources:
           - stageVars
           - !Ref Stage
           - apiSubDomain
-          - "."
+        - "."
       Type: A
   mainBackendApiUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
