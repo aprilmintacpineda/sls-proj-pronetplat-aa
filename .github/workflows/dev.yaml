@@ -68,7 +68,7 @@ jobs:
 
       - name: Timestamp
         id: date
-        run: echo "::set-output name=timestamp::$(date +'%Y-%m-%d')"
+        run: echo "::set-output name=timestamp::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
       - name: SAM deploy
         run: |
