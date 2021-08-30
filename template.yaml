@@ -26,6 +26,9 @@ Parameters:
   FaunadbSecret:
     Description: Faunadb secret
     Type: String
+  Timestamp:
+    Description: Curent date time of the build
+    Type: String
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
