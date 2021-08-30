@@ -9,11 +9,11 @@ Mappings:
   stageVars:
     dev:
       appPackageName: com.aprmp.projpronetplataa.dev
-      apiSubDomain: "apiv1dev"
-      webSocketSubDomain: "websocketdev"
+      apiSubDomain: "api-dev"
+      webSocketSubDomain: "websocket-dev"
     prod:
       appPackageName: com.aprmp.projpronetplataa
-      apiSubDomain: "apiv1"
+      apiSubDomain: "api"
       webSocketSubDomain: "websocket"
 
 Parameters:
@@ -314,6 +314,21 @@ Resources:
           OriginRequestPolicyId: 7404f366-e3d3-47ca-8111-268449baa26e
           TargetOriginId: mainBackendApiOrigin
           ViewerProtocolPolicy: https-only
+  mainBackendCloudfrontCustomDomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt mainBackendCloudfront.DomainName
+        HostedZoneId: Z0450109WGLMG82TZFOY
+      HostedZoneName: entrepic.com.
+      Name: !Sub
+        - ${apiSubDomain}.entrepic.com
+        - apiSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - apiSubDomain
+          - "."
+      Type: A
   mainBackendApiUsagePlan:
     Type: AWS::ApiGateway::UsagePlan
     Properties:
@@ -350,6 +365,8 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
+      Auth:
+        ApiKeyRequired: true
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
