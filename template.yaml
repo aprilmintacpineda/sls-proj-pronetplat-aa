@@ -307,7 +307,7 @@ Resources:
               - TLSv1.2
           OriginCustomHeaders:
             - HeaderName: x-api-key
-              HeaderValue: !Ref mainBackendApiKey
+              HeaderValue: !GetAtt mainBackendApiKey.APIKeyId
         DefaultCacheBehavior:
           AllowedMethods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
           CachePolicyId: ffac0a92-6907-4751-84fc-c9cd1af51234
