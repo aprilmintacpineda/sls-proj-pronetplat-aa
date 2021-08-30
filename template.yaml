@@ -330,7 +330,7 @@ Resources:
     Properties:
       KeyId: !Ref mainBackendApiKey
       KeyType: API_KEY
-      UsagePlanId: !Ref ApiUsagePlan
+      UsagePlanId: !Ref mainBackendApiUsagePlan
   # customDomainCert:
   #   Type: AWS::CertificateManager::Certificate
   #   Properties:
