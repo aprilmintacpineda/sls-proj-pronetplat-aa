@@ -340,7 +340,8 @@ Resources:
                 Resource:
                 - execute-api:/*
                 Condition:
-                  ArnNotEquals: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${mainBackendCloudfront}
+                  StringNotEquals:
+                    aws:SourceAccount: !Sub ${AWS::AccountId}
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
