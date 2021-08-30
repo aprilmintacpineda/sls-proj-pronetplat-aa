@@ -9,8 +9,8 @@ Mappings:
   stageVars:
     dev:
       appPackageName: com.aprmp.projpronetplataa.dev
-      apiSubDomain: api-dev
-      webSocketSubDomain: websocket-dev
+      apiSubDomain: apidev
+      webSocketSubDomain: websocketdev
     prod:
       appPackageName: com.aprmp.projpronetplataa
       apiSubDomain: api
