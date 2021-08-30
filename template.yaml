@@ -324,6 +324,9 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
+      Auth:
+        ResourcePolicy:
+          AwsAccountWhitelist: !Sub ${AWS::AccountId}
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
