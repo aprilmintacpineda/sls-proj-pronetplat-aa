@@ -329,19 +329,22 @@ Resources:
           CustomStatements:
             - Version: '2012-10-17'
               Statement:
-              - Effect: Allow
-                Principal: "*"
-                Action: execute-api:Invoke
-                Resource:
-                - execute-api:/*
-              - Effect: Deny
-                Principal: "*"
-                Action: execute-api:Invoke
-                Resource:
-                - execute-api:/*
-                Condition:
-                  StringNotEquals:
-                    aws:SourceAccount: !Sub ${AWS::AccountId}
+                - Effect: Allow
+                  Principal: "*"
+                  Action: execute-api:Invoke
+                  Resource:
+                    - execute-api:/*
+                  Condition:
+                    StringEquals:
+                      aws:SourceAccount: !Sub ${AWS::AccountId}
+                - Effect: Deny
+                  Principal: "*"
+                  Action: execute-api:Invoke
+                  Resource:
+                    - execute-api:/*
+                  Condition:
+                    StringNotEquals:
+                      aws:SourceAccount: !Sub ${AWS::AccountId}
       # Domain:
       #   DomainName: !Sub
       #       - ${apiSubDomain}.entrepic.com
