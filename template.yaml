@@ -331,7 +331,7 @@ Resources:
       Type: CNAME
       HostedZoneId: Z0450109WGLMG82TZFOY
       HostedZoneName: "entrepic.com."
-      Name: !Ref apiSubDomain
+      Name: !Sub ${apiSubDomain}
       ResourceRecords:
         - !GetAtt mainBackendCloudfront.DomainName
   mainBackendApi:
