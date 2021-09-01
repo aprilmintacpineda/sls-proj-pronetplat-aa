@@ -338,6 +338,7 @@ Resources:
           - apiSubDomain
       ResourceRecords:
         - !GetAtt mainBackendCloudfront.DomainName
+      TTL: 300
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
