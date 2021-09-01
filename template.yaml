@@ -328,7 +328,7 @@ Resources:
   mainBackendCloudfrontCustomDomain:
     Type: AWS::Route53::RecordSet
     Properties:
-      Type: A
+      Type: CNAME
       AliasTarget:
         DNSName: !GetAtt mainBackendCloudfront.DomainName
         HostedZoneId: Z0450109WGLMG82TZFOY
