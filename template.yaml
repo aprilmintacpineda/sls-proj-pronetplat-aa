@@ -294,6 +294,13 @@ Resources:
         Enabled: true
         IPV6Enabled: true
         HttpVersion: http2
+        Aliases:
+          - !Sub
+            - "${apiSubDomain}.entrepic.com."
+            - apiSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - apiSubDomain
         Origins:
         - Id: mainBackendApiOrigin
           DomainName: !Sub ${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com
@@ -436,16 +443,16 @@ Resources:
         - Key: "what"
           Value: "proj-pronetplat-aa users s3 bucket"
 
-# Outputs:
-#   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-#   # Find out more about other implicit resources you can reference within SAM
-#   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-#   HelloWorldApi:
-#     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-#   HelloWorldFunction:
-#     Description: "Hello World Lambda Function ARN"
-#     Value: !GetAtt HelloWorldFunction.Arn
-#   HelloWorldFunctionIamRole:
-#     Description: "Implicit IAM Role created for Hello World function"
-#     Value: !GetAtt HelloWorldFunctionRole.Arn
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  mainBackendApi:
+    Description: Rest API Gateway endpoint
+    Value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+  mainBackendCloudfront:
+    Description: Rest API cloudfront endpoint
+    Value: !GetAtt mainBackendCloudfront.DomainName
+  webSocket:
+    Description: Websocket endpoint
+    Value: !GetAtt webSocket.ApiEndpoint
