@@ -330,7 +330,6 @@ Resources:
     Properties:
       Type: CNAME
       HostedZoneId: Z0450109WGLMG82TZFOY
-      HostedZoneName: "entrepic.com."
       Name: !Sub
         - ${apiSubDomain}.entrepic.com
         - apiSubDomain: !FindInMap
