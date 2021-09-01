@@ -329,16 +329,13 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       Type: CNAME
-      AliasTarget:
-        DNSName: !GetAtt mainBackendCloudfront.DomainName
-        HostedZoneId: Z0450109WGLMG82TZFOY
+      # AliasTarget:
+      #   DNSName: !GetAtt mainBackendCloudfront.DomainName
+      #   HostedZoneId: Z0450109WGLMG82TZFOY
       HostedZoneName: "entrepic.com."
-      Name: !Sub
-        - "${apiSubDomain}.entrepic.com."
-        - apiSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - apiSubDomain
+      Name: !Ref apiSubDomain
+      ResourceRecords:
+        - !GetAtt mainBackendCloudfront.DomainName
   mainBackendApi:
     Type: AWS::Serverless::Api
     Properties:
