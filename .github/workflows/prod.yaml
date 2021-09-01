@@ -57,9 +57,8 @@ jobs:
       - name: Build JS
         run: |
           NODE_ENV=production yarn build
-          cd build
-          mkdir -p dependencies/resources
-          echo '${{ secrets.FIREBASE_ADMIN_PROD }}' > dependencies/resources/firebase_admin.json
+          mkdir -p build/dependencies/resources
+          echo '${{ secrets.FIREBASE_ADMIN_PROD }}' > build/dependencies/resources/firebase_admin.json
 
       - name: SAM build
         run: |

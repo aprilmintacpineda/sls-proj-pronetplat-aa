@@ -57,18 +57,13 @@ jobs:
       - name: Build JS
         run: |
           NODE_ENV=production yarn build
-          cd build
-          mkdir -p dependencies/resources
-          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > dependencies/resources/firebase_admin.json
+          mkdir -p build/dependencies/resources
+          echo '${{ secrets.FIREBASE_ADMIN_DEV }}' > build/dependencies/resources/firebase_admin.json
 
       - name: SAM build
         run: |
           cd build
           /usr/local/bin/sam build --parallel
-
-      - name: Timestamp
-        id: date
-        run: echo "::set-output name=timestamp::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
       - name: SAM deploy
         run: |
