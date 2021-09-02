@@ -166,7 +166,7 @@ Resources:
         DefaultCacheBehavior:
           AllowedMethods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
           CachePolicyId: ffac0a92-6907-4751-84fc-c9cd1af51234
-          OriginRequestPolicyId: 7404f366-e3d3-47ca-8111-268449baa26e
+          OriginRequestPolicyId: 38846f4d-af2f-411d-aeb5-ce2afcfe00d2
           TargetOriginId: webSocketOrigin
           ViewerProtocolPolicy: https-only
         ViewerCertificate:
