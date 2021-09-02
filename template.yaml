@@ -141,6 +141,38 @@ Resources:
                   - Name: prefix
                     Value: newEventCoverPicture_
   # Websocket
+  webSocketCloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        IPV6Enabled: true
+        HttpVersion: http2
+        Aliases:
+          - !Sub
+            - ${webSocketSubDomain}.entrepic.com
+            - webSocketSubDomain: !FindInMap
+              - stageVars
+              - !Ref Stage
+              - webSocketSubDomain
+        Origins:
+        - Id: webSocketOrigin
+          DomainName: !Sub ${webSocket.ApiEndpoint}
+          OriginPath: !Sub /${Stage}
+          CustomOriginConfig:
+            OriginProtocolPolicy: https-only
+            OriginSSLProtocols:
+              - TLSv1.2
+        DefaultCacheBehavior:
+          AllowedMethods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+          CachePolicyId: ffac0a92-6907-4751-84fc-c9cd1af51234
+          OriginRequestPolicyId: 7404f366-e3d3-47ca-8111-268449baa26e
+          TargetOriginId: webSocketOrigin
+          ViewerProtocolPolicy: https-only
+        ViewerCertificate:
+          AcmCertificateArn: !Ref wildcardCertificate
+          MinimumProtocolVersion: TLSv1.2_2018
+          SslSupportMethod: sni-only
   webSocket:
     Type: AWS::ApiGatewayV2::Api
     Properties:
@@ -187,19 +219,19 @@ Resources:
           - !Ref Stage
           - webSocketSubDomain
       AliasTarget: 
-        HostedZoneId: !GetAtt webSocketCustomDomain.RegionalHostedZoneId
-        DNSName: !GetAtt webSocketCustomDomain.RegionalDomainName
-  webSocketCustomDomainMapping:
-    Type: AWS::ApiGatewayV2::ApiMapping
-    Properties:
-      ApiId: !Ref webSocket
-      DomainName: !Sub
-        - ${webSocketSubDomain}.entrepic.com
-        - webSocketSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - webSocketSubDomain
-      Stage: !Ref Stage
+        HostedZoneId: Z2FDTNDATAQYW2 # constant for cloudfront
+        DNSName: !GetAtt webSocketCloudfront.DomainName
+  # webSocketCustomDomainMapping:
+  #   Type: AWS::ApiGatewayV2::ApiMapping
+  #   Properties:
+  #     ApiId: !Ref webSocket
+  #     DomainName: !Sub
+  #       - ${webSocketSubDomain}.entrepic.com
+  #       - webSocketSubDomain: !FindInMap
+  #         - stageVars
+  #         - !Ref Stage
+  #         - webSocketSubDomain
+  #     Stage: !Ref Stage
   webSocketApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -291,7 +323,7 @@ Resources:
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
   # API
-  mainBackendCloudfront:  
+  mainBackendCloudfront:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
