@@ -183,7 +183,7 @@ Resources:
   webSocketCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
-      Type: CNAME
+      Type: A
       HostedZoneId: Z0450109WGLMG82TZFOY
       Name: !Sub
         - ${webSocketSubDomain}.entrepic.com
@@ -191,9 +191,9 @@ Resources:
           - stageVars
           - !Ref Stage
           - webSocketSubDomain
-      ResourceRecords:
-        - !Sub ${webSocket.ApiEndpoint}/${Stage}
-      TTL: 300
+      AliasTarget: 
+        HostedZoneId: !GetAtt webSocketCustomDomain.RegionalHostedZoneId
+        DNSName: !GetAtt webSocketCustomDomain.RegionalDomainName
   webSocketCustomDomainMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
     Properties:
