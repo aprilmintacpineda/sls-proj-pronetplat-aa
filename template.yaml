@@ -181,17 +181,31 @@ Resources:
           - webSocketSubDomain
       DomainNameConfigurations:
         - CertificateArn: !Ref webSocketCustomDomainCert
-  # webSocketCustomDomainMapping:
-  #   Type: AWS::ApiGatewayV2::ApiMapping
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     Stage: !Ref Stage
+  webSocketCustomDomainRoute53:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: CNAME
+      HostedZoneId: Z0450109WGLMG82TZFOY
+      Name: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      ResourceRecords:
+        - !GetAtt webSocketCustomDomain.RegionalDomainName
+      TTL: 300
+  webSocketCustomDomainMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId: !Ref webSocket
+      DomainName: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      Stage: !Ref Stage
   webSocketApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -329,7 +343,7 @@ Resources:
           - !Ref Stage
           - apiSubDomain
       ValidationMethod: DNS
-  mainBackendCloudfrontCustomDomain:
+  mainBackendCloudfrontCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
       Type: CNAME
@@ -349,16 +363,6 @@ Resources:
       StageName: !Ref Stage
       EndpointConfiguration:
         Type: REGIONAL
-      # Domain:
-      #   DomainName: !Sub
-      #       - ${apiSubDomain}.entrepic.com
-      #       - apiSubDomain: !FindInMap
-      #         - stageVars
-      #         - !Ref Stage
-      #         - apiSubDomain
-      #   CertificateArn: !Ref customDomainCert
-      #   Route53:
-      #     HostedZoneId: Z0450109WGLMG82TZFOY
   # @todo re-add waf again some time in the future
   # mainBackendWebAcl:
   #   Type: AWS::WAFv2::WebACL
