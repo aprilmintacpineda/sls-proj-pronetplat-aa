@@ -7,19 +7,12 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const validate = require('dependencies/utils/validate');
 
 async function handler ({
   params: { nextToken, schedule },
   authUser
 }) {
-  if (
-    !schedule ||
-    (schedule !== 'future' &&
-      schedule !== 'past' &&
-      schedule !== 'present')
-  )
-    return { statusCode: 400 };
-
   const faunadb = initClient();
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
@@ -127,5 +120,7 @@ async function handler ({
 
 module.exports = httpGuard({
   handler,
-  guards: [guardTypes.auth, guardTypes.setupComplete]
+  guards: [guardTypes.auth, guardTypes.setupComplete],
+  queryParamsValidator: ({ schedule }) =>
+    validate(schedule, ['required', 'options:past,present,future'])
 });

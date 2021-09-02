@@ -38,7 +38,12 @@ function resolveParams (httpEvent) {
   return params;
 }
 
-function httpGuard ({ handler, guards = [], formValidator = null }) {
+function httpGuard ({
+  handler,
+  guards = [],
+  formValidator = null,
+  queryParamsValidator
+}) {
   return async httpEvent => {
     const payload = {
       params: resolveParams(httpEvent)
@@ -59,6 +64,12 @@ function httpGuard ({ handler, guards = [], formValidator = null }) {
 
       payload.deviceToken = deviceToken;
     }
+
+    if (
+      queryParamsValidator &&
+      queryParamsValidator(httpEvent.queryStringParameters)
+    )
+      return { statusCode: 400 };
 
     if (formValidator) {
       const formBody = JSON.parse(httpEvent.body) || {};

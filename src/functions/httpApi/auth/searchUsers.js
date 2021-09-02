@@ -9,18 +9,12 @@ const {
   guardTypes
 } = require('dependencies/utils/httpGuard');
 const { getPublicUserData } = require('dependencies/utils/users');
+const validate = require('dependencies/utils/validate');
 
 async function handler ({
   authUser,
   params: { search, searchBy, nextToken }
 }) {
-  if (!search || (searchBy !== 'name' && searchBy !== 'username')) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ data: [] })
-    };
-  }
-
   const faunadb = initClient();
 
   if (searchBy === 'name') {
@@ -102,5 +96,11 @@ async function handler ({
 
 module.exports = httpGuard({
   handler,
-  guards: [guardTypes.auth, guardTypes.setupComplete]
+  guards: [guardTypes.auth, guardTypes.setupComplete],
+  queryParamsValidator: ({ search, searchBy }) => {
+    return (
+      validate(search, ['required']) ||
+      validate(searchBy, ['required', 'options:name,username'])
+    );
+  }
 });

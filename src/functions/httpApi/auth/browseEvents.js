@@ -7,6 +7,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const validate = require('dependencies/utils/validate');
 
 function toRadians (degrees) {
   return (degrees * Math.PI) / 180;
@@ -26,17 +27,8 @@ async function handler (
   },
   { headers }
 ) {
-  if (
-    !schedule ||
-    (schedule !== 'future' &&
-      schedule !== 'past' &&
-      schedule !== 'present')
-  )
-    return { statusCode: 400 };
-
   const lat = _lat || headers['CloudFront-Viewer-Latitude'];
   const lng = _lng || headers['CloudFront-Viewer-Longitude'];
-
   if (!lat || !lng) return { statusCode: 400 };
 
   const faunadb = initClient();
@@ -186,5 +178,16 @@ async function handler (
 
 module.exports = httpGuard({
   handler,
-  guards: [guardTypes.auth, guardTypes.setupComplete]
+  guards: [guardTypes.auth, guardTypes.setupComplete],
+  queryParamsValidator: ({ schedule, method, maxDistance }) => {
+    return (
+      validate(schedule, [
+        'required',
+        'options:past,preset,future'
+      ]) ||
+      validate(schedule, ['required', 'options:km,mi']) ||
+      validate(method, ['required', 'options:km,mi']) ||
+      validate(maxDistance, ['required', 'integer'])
+    );
+  }
 });
