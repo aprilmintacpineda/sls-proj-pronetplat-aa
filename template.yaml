@@ -345,7 +345,7 @@ Resources:
   mainBackendCloudfrontCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
-      Type: CNAME
+      Type: A
       HostedZoneId: Z0450109WGLMG82TZFOY
       Name: !Sub
         - ${apiSubDomain}.entrepic.com
@@ -353,8 +353,9 @@ Resources:
           - stageVars
           - !Ref Stage
           - apiSubDomain
-      ResourceRecords:
-        - !GetAtt mainBackendCloudfront.DomainName
+      AliasTarget: 
+        HostedZoneId: Z2FDTNDATAQYW2 # constant for cloudfront
+        DNSName: !GetAtt mainBackendCloudfront.DomainName
       TTL: 300
   mainBackendApi:
     Type: AWS::Serverless::Api
