@@ -54,6 +54,13 @@ Globals:
           - "proj-pronetplat-aa-invokeApi"
 
 Resources:
+  # Reusables
+  wildcardCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: "*.entrepic.com"
+      ValidationMethod: DNS
+  # Functions
   httpApi:
     Type: AWS::Serverless::Function
     Metadata:
@@ -133,9 +140,7 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: newEventCoverPicture_
-  ######
   # Websocket
-  #
   webSocket:
     Type: AWS::ApiGatewayV2::Api
     Properties:
@@ -159,16 +164,6 @@ Resources:
       StageName: !Ref Stage
       DeploymentId: !Ref webSocketDeployment
       ApiId: !Ref webSocket
-  webSocketCustomDomainCert:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Sub
-        - ${webSocketSubDomain}.entrepic.com
-        - webSocketSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - webSocketSubDomain
-      ValidationMethod: DNS
   webSocketCustomDomain:
     Type: AWS::ApiGatewayV2::DomainName
     Properties:
@@ -179,7 +174,7 @@ Resources:
           - !Ref Stage
           - webSocketSubDomain
       DomainNameConfigurations:
-        - CertificateArn: !Ref webSocketCustomDomainCert
+        - CertificateArn: !Ref wildcardCertificate
   webSocketCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -284,9 +279,7 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref defaultWebSocketRouteInteg
-  ######
   # Lambda layers
-  #
   dependencies:
     Type: AWS::Serverless::LayerVersion
     Metadata:
@@ -297,9 +290,7 @@ Resources:
       ContentUri: dependencies
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
-  ######
   # API
-  #
   mainBackendCloudfront:  
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -329,19 +320,9 @@ Resources:
           TargetOriginId: mainBackendApiOrigin
           ViewerProtocolPolicy: https-only
         ViewerCertificate:
-          AcmCertificateArn: !Ref mainBackendCloudfrontCustomDomainCert
+          AcmCertificateArn: !Ref wildcardCertificate
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
-  mainBackendCloudfrontCustomDomainCert:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Sub
-        - ${apiSubDomain}.entrepic.com
-        - apiSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - apiSubDomain
-      ValidationMethod: DNS
   mainBackendCloudfrontCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -419,9 +400,7 @@ Resources:
   #   Properties: 
   #     ResourceArn: !Sub "arn:aws:apigateway:${AWS::Region}::/restapis/${mainBackendApi}/stages/${Stage}"
   #     WebACLArn: !GetAtt mainBackendWebAcl.Arn
-  ######
   # S3 buckets
-  #
   usersS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
