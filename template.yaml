@@ -157,7 +157,7 @@ Resources:
               - webSocketSubDomain
         Origins:
         - Id: webSocketOrigin
-          DomainName: !Sub ${webSocket.ApiEndpoint}
+          DomainName: !Sub ${webSocket}.execute-api.${AWS::Region}.amazonaws.com
           OriginPath: !Sub /${Stage}
           CustomOriginConfig:
             OriginProtocolPolicy: https-only
