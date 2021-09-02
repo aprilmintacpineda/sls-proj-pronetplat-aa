@@ -46,8 +46,8 @@ Globals:
           - appPackageName
         usersBucket: !Join
           - "-"
-          - - "proj-pronetplat-aa-users"
-            - !Ref Stage
+          - - !Ref Stage
+            - "proj-pronetplat-aa-users"
         fn_invokeApi: !Join
         - '-'
         - - !Ref Stage
@@ -71,8 +71,8 @@ Resources:
         - S3CrudPolicy:
             BucketName: !Join
               - "-"
-              - - "proj-pronetplat-aa-users"
-                - !Ref Stage
+              - - !Ref Stage
+                - "proj-pronetplat-aa-users"
       Events:
         ApiEvent:
           Type: Api
@@ -105,8 +105,8 @@ Resources:
         - S3CrudPolicy:
             BucketName: !Join
               - "-"
-              - - "proj-pronetplat-aa-users"
-                - !Ref Stage
+              - - !Ref Stage
+                - "proj-pronetplat-aa-users"
         - Statement:
           - Action:
               - execute-api:ManageConnections
@@ -370,8 +370,8 @@ Resources:
   #       CloudWatchMetricsEnabled: true
   #       MetricName: !Join
   #         - "-"
-  #         - - "proj-pronetplat-aa-users"
-  #           - !Ref Stage
+  #         - - !Ref Stage
+  #           - "proj-pronetplat-aa-users"
   #           - webacl
   #       SampledRequestsEnabled: true
   #     Rules:
@@ -386,8 +386,8 @@ Resources:
   #           CloudWatchMetricsEnabled: true
   #           MetricName: !Join
   #             - "-"
-  #             - - "proj-pronetplat-aa-users"
-  #               - !Ref Stage
+  #             - - !Ref Stage
+  #               - "proj-pronetplat-aa-users"
   #               - webacl-rate-limit
   #           SampledRequestsEnabled: true
   #         Priority: 0
@@ -406,8 +406,8 @@ Resources:
   # #           CloudWatchMetricsEnabled: true
   # #           MetricName: !Join
   # #             - "-"
-  # #             - - "proj-pronetplat-aa-users"
-  # #               - !Ref Stage
+  # #             - - !Ref Stage
+  # #               - "proj-pronetplat-aa-users"
   # #               - webacl-allowed-countries
   # #           SampledRequestsEnabled: true
   # #         Priority: 1
@@ -424,8 +424,8 @@ Resources:
     Properties:
       BucketName: !Join
         - "-"
-        - - "proj-pronetplat-aa-users"
-          - !Ref Stage
+        - - !Ref Stage
+          - "proj-pronetplat-aa-users"
       CorsConfiguration:
         CorsRules:
         - AllowedHeaders:
