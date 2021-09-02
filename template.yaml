@@ -165,7 +165,7 @@ Resources:
               - TLSv1.2
         DefaultCacheBehavior:
           AllowedMethods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-          CachePolicyId: ffac0a92-6907-4751-84fc-c9cd1af51234
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
           OriginRequestPolicyId: 38846f4d-af2f-411d-aeb5-ce2afcfe00d2
           TargetOriginId: webSocketOrigin
           ViewerProtocolPolicy: https-only
