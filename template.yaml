@@ -192,7 +192,7 @@ Resources:
           - !Ref Stage
           - webSocketSubDomain
       ResourceRecords:
-        - !GetAtt webSocket.ApiEndpoint
+        - !Sub ${webSocket.ApiEndpoint}/${Stage}
       TTL: 300
   webSocketCustomDomainMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
