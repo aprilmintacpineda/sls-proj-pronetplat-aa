@@ -296,11 +296,11 @@ Resources:
         HttpVersion: http2
         Aliases:
           - !Sub
-            - "${apiSubDomain}.entrepic.com."
-            - apiSubDomain: !FindInMap
-              - stageVars
-              - !Ref Stage
-              - apiSubDomain
+              - "${apiSubDomain}.entrepic.com."
+              - apiSubDomain: !FindInMap
+                - stageVars
+                - !Ref Stage
+                - apiSubDomain
         Origins:
         - Id: mainBackendApiOrigin
           DomainName: !Sub ${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com
