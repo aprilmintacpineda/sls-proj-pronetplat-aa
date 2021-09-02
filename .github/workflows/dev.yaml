@@ -19,7 +19,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
-      WEBSOCKET_URL: 2ks17w8caj.execute-api.ap-southeast-1.amazonaws.com/dev
+      WEBSOCKET_URL: d391hq47wts76.cloudfront.net
       FAUNA_ADMIN_KEY: ${{ secrets.FAUNA_ADMIN_KEY_DEV }}
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY_DEV }}
       FAUNA_LEGACY: true
