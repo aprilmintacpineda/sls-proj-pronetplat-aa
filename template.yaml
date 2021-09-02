@@ -456,7 +456,7 @@ Outputs:
     Value: !Sub https://${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   mainBackendCloudfront:
     Description: Rest API cloudfront endpoint
-    Value: !GetAtt mainBackendCloudfront.DomainName
+    Value: !Sub https://${mainBackendCloudfront.DomainName}
   webSocket:
     Description: Websocket endpoint
     Value: !Sub ${webSocket.ApiEndpoint}/${Stage}
