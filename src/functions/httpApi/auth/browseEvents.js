@@ -36,6 +36,9 @@ async function handler (
 
   const lat = _lat || headers['CloudFront-Viewer-Latitude'];
   const lng = _lng || headers['CloudFront-Viewer-Longitude'];
+
+  if (!lat || !lng) return { statusCode: 400 };
+
   const faunadb = initClient();
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
   const unit = method === 'km' ? 6371 : 3959;
