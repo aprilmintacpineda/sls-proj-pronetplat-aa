@@ -294,13 +294,13 @@ Resources:
         Enabled: true
         IPV6Enabled: true
         HttpVersion: http2
-        Aliases:
-          - !Sub
-              - "${apiSubDomain}.entrepic.com."
-              - apiSubDomain: !FindInMap
-                - stageVars
-                - !Ref Stage
-                - apiSubDomain
+        # Aliases:
+        #   - !Sub
+        #     - "${apiSubDomain}.entrepic.com."
+        #     - apiSubDomain: !FindInMap
+        #       - stageVars
+        #       - !Ref Stage
+        #       - apiSubDomain
         Origins:
         - Id: mainBackendApiOrigin
           DomainName: !Sub ${mainBackendApi}.execute-api.${AWS::Region}.amazonaws.com
@@ -315,10 +315,10 @@ Resources:
           OriginRequestPolicyId: 7404f366-e3d3-47ca-8111-268449baa26e
           TargetOriginId: mainBackendApiOrigin
           ViewerProtocolPolicy: https-only
-        ViewerCertificate:
-          AcmCertificateArn: !Ref mainBackendCloudfrontCustomDomainCert
-          MinimumProtocolVersion: TLSv1.2_2018
-          SslSupportMethod: sni-only
+        # ViewerCertificate:
+        #   AcmCertificateArn: !Ref mainBackendCloudfrontCustomDomainCert
+        #   MinimumProtocolVersion: TLSv1.2_2018
+        #   SslSupportMethod: sni-only
   mainBackendCloudfrontCustomDomainCert:
     Type: AWS::CertificateManager::Certificate
     Properties:
