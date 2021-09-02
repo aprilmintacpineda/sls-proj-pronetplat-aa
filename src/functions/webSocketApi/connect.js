@@ -5,8 +5,6 @@ const {
 const jwt = require('dependencies/utils/jwt');
 
 async function handler (webSocketEvent) {
-  console.log(JSON.stringify(webSocketEvent, null, 2));
-
   const authorization = (webSocketEvent.headers.Authorization || '')
     .replace(/Bearer /gim, '')
     .trim();

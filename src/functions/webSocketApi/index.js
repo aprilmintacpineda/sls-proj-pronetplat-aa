@@ -5,6 +5,8 @@ const routeKeyHandlers = {
 };
 
 async function handler (webSocketEvent) {
+  console.log(JSON.stringify(webSocketEvent, null, 2));
+
   const routeKey = webSocketEvent.requestContext.routeKey;
   const routeKeyHandler = routeKeyHandlers[routeKey];
   return routeKeyHandler(webSocketEvent);
