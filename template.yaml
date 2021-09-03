@@ -482,6 +482,25 @@ Outputs:
   mainBackendCloudfront:
     Description: Rest API cloudfront endpoint
     Value: !Sub https://${mainBackendCloudfront.DomainName}
+  mainBackendApiCustomDomain:
+    Description: Rest API Gateway custom domain
+    Value: !Sub
+      - ${apiSubDomain}.entrepic.com
+      - apiSubDomain: !FindInMap
+        - stageVars
+        - !Ref Stage
+        - apiSubDomain
   webSocket:
     Description: Websocket endpoint
     Value: !Sub ${webSocket.ApiEndpoint}/${Stage}
+  webSocketCloudfront:
+    Description: Websocket cloudfront endpoint
+    Value: !Sub https://${webSocketCloudfront.DomainName}
+  webSocketCustomDomain:
+    Description: Websocket custom domain
+    Value: !Sub
+      - https://${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
