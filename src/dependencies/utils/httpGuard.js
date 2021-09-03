@@ -46,7 +46,10 @@ function httpGuard ({
 }) {
   return async httpEvent => {
     const payload = {
-      params: resolveParams(httpEvent)
+      params: resolveParams(httpEvent),
+      sourceIp: httpEvent.headers['X-Forwarded-For']
+        .split(',')[0]
+        .trim()
     };
 
     if (guards.includes(guardTypes.deviceToken)) {
