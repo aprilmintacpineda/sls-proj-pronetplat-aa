@@ -208,7 +208,7 @@ module.exports = httpGuard({
       validate(search, ['maxLength:255']) ||
       validate(schedule, [
         'required',
-        'options:past,preset,future'
+        'options:past,present,future'
       ]) ||
       validate(unit, ['required', 'options:kilometers,miles']) ||
       validate(maxDistance, ['integer'])
