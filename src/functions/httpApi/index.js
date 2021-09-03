@@ -11,7 +11,8 @@ async function handler (httpEvent) {
 
   return routeHandler.callback({
     ...httpEvent,
-    pathParameters: routeHandler.pathParameters
+    pathParameters: routeHandler.pathParameters || {},
+    queryStringParameters: httpEvent.queryStringParameters || {}
   });
 }
 
