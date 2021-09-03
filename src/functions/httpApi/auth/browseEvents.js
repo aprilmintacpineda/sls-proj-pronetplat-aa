@@ -20,8 +20,8 @@ async function handler (
       schedule,
       lat: _lat,
       lng: _lng,
-      method = 'km',
-      maxDistance = 25
+      unit = 'kilometers',
+      maxDistance
     },
     authUser
   },
@@ -33,7 +33,7 @@ async function handler (
 
   const faunadb = initClient();
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
-  const unit = method === 'km' ? 6371 : 3959;
+  const measurement = unit === 'kilometers' ? 6371 : 3959;
 
   const result = await faunadb.query(
     query.Map(
@@ -69,31 +69,36 @@ async function handler (
             'ref'
           ],
           query.And(
-            query.LTE(
-              query.Multiply(
-                unit,
-                query.Acos(
-                  query.Add(
-                    query.Multiply(
-                      query.Cos(query.Radians(Number(lat))),
-                      query.Cos(
-                        query.Radians(query.Var('latitude'))
+            query.Or(
+              query.Not(query.IsNumber(maxDistance)),
+              query.LTE(
+                query.Multiply(
+                  measurement,
+                  query.Acos(
+                    query.Add(
+                      query.Multiply(
+                        query.Cos(query.Radians(Number(lat))),
+                        query.Cos(
+                          query.Radians(query.Var('latitude'))
+                        ),
+                        query.Cos(
+                          query.Subtract(
+                            query.Radians(query.Var('longitude')),
+                            query.Radians(Number(lng))
+                          )
+                        )
                       ),
-                      query.Cos(
-                        query.Subtract(
-                          query.Radians(query.Var('longitude')),
-                          query.Radians(Number(lng))
+                      query.Multiply(
+                        query.Sin(query.Radians(Number(lat))),
+                        query.Sin(
+                          query.Radians(query.Var('latitude'))
                         )
                       )
-                    ),
-                    query.Multiply(
-                      query.Sin(query.Radians(Number(lat))),
-                      query.Sin(query.Radians(query.Var('latitude')))
                     )
                   )
-                )
-              ),
-              maxDistance
+                ),
+                maxDistance
+              )
             ),
             schedule === 'past'
               ? query.And(
@@ -158,7 +163,7 @@ async function handler (
         isGoing,
         isOrganizer,
         distance:
-          unit *
+          measurement *
           Math.acos(
             Math.cos(toRadians(event.data.latitude)) *
               Math.cos(toRadians(lat)) *
@@ -179,15 +184,14 @@ async function handler (
 module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete],
-  queryParamsValidator: ({ schedule, method, maxDistance }) => {
+  queryParamsValidator: ({ schedule, unit, maxDistance }) => {
     return (
       validate(schedule, [
         'required',
         'options:past,preset,future'
       ]) ||
-      validate(schedule, ['required', 'options:km,mi']) ||
-      validate(method, ['required', 'options:km,mi']) ||
-      validate(maxDistance, ['required', 'integer'])
+      validate(unit, ['required', 'options:kilometers,miles']) ||
+      validate(maxDistance, ['integer'])
     );
   }
 });
