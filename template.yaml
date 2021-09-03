@@ -485,7 +485,7 @@ Outputs:
   mainBackendApiCustomDomain:
     Description: Rest API Gateway custom domain
     Value: !Sub
-      - ${apiSubDomain}.entrepic.com
+      - https://${apiSubDomain}.entrepic.com
       - apiSubDomain: !FindInMap
         - stageVars
         - !Ref Stage
@@ -499,8 +499,8 @@ Outputs:
   webSocketCustomDomain:
     Description: Websocket custom domain
     Value: !Sub
-      - https://${webSocketSubDomain}.entrepic.com
-        - webSocketSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - webSocketSubDomain
+      - wss://${webSocketSubDomain}.entrepic.com
+      - webSocketSubDomain: !FindInMap
+        - stageVars
+        - !Ref Stage
+        - webSocketSubDomain
