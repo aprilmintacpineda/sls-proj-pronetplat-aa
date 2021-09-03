@@ -45,6 +45,12 @@ function httpGuard ({
   queryParamsValidator
 }) {
   return async httpEvent => {
+    if (
+      queryParamsValidator &&
+      queryParamsValidator(httpEvent.queryStringParameters)
+    )
+      return { statusCode: 400 };
+
     const payload = {
       params: resolveParams(httpEvent),
       sourceIp: httpEvent.headers['X-Forwarded-For']
@@ -67,12 +73,6 @@ function httpGuard ({
 
       payload.deviceToken = deviceToken;
     }
-
-    if (
-      queryParamsValidator &&
-      queryParamsValidator(httpEvent.queryStringParameters)
-    )
-      return { statusCode: 400 };
 
     if (formValidator) {
       const formBody = JSON.parse(httpEvent.body) || {};
