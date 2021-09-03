@@ -8,5 +8,16 @@ CreateIndex({
     "fields": {
       "search": Query(Lambda(["row"], Union(NGram(LowerCase(Select(["data", "name"], Var("row"))), 2, 3), NGram(LowerCase(Select(["data", "description"], Var("row"))), 2, 3))))
     }
-  }
+  },
+  "values": [{
+    "field": ["data", "startDateTime"]
+  }, {
+    "field": ["data", "endDateTime"]
+  }, {
+    "field": ["data", "latitude"]
+  }, {
+    "field": ["data", "longitude"]
+  }, {
+    "field": ["ref"]
+  }]
 })
