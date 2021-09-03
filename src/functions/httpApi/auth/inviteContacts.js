@@ -9,6 +9,7 @@ const {
   guardTypes
 } = require('dependencies/utils/httpGuard');
 const { getPublicUserData } = require('dependencies/utils/users');
+const validate = require('dependencies/utils/validate');
 
 async function handler ({
   authUser,
@@ -173,5 +174,8 @@ async function handler ({
 
 module.exports = httpGuard({
   handler,
-  guards: [guardTypes.auth, guardTypes.setupComplete]
+  guards: [guardTypes.auth, guardTypes.setupComplete],
+  queryParamsValidator: ({ search }) => {
+    return validate(search, ['maxLength:255']);
+  }
 });
