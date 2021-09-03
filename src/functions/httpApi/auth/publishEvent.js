@@ -48,8 +48,6 @@ async function handler ({ authUser, params: { eventId } }) {
     return { statusCode: 500 };
   }
 
-  console.log(event, event.data.visibility);
-
   if (event.data.visibility === 'public') {
     await invokeEvent({
       eventName: 'notifyAllContacts',
