@@ -13,10 +13,11 @@ const { invokeEvent } = require('dependencies/utils/invokeLambda');
 
 async function handler ({ authUser, params: { eventId } }) {
   const faunadb = initClient();
+  let event = null;
 
   try {
     // if organizer was set,
-    await faunadb.query(
+    event = await faunadb.query(
       query.If(
         query.And(
           existsByIndex(
@@ -47,15 +48,19 @@ async function handler ({ authUser, params: { eventId } }) {
     return { statusCode: 500 };
   }
 
-  await invokeEvent({
-    eventName: 'notifyAllContacts',
-    payload: {
-      authUser,
-      body: '{fullname} has published an event you might be interested in.',
-      title: 'New event from your contact',
-      type: 'contactPublishedAnEvent'
-    }
-  });
+  console.log(event, event.data.visibility);
+
+  if (event.data.visibility === 'public') {
+    await invokeEvent({
+      eventName: 'notifyAllContacts',
+      payload: {
+        authUser,
+        body: '{fullname} has published an event you might be interested in.',
+        title: 'New event from your contact',
+        type: 'contactPublishedAnEvent'
+      }
+    });
+  }
 
   return { statusCode: 200 };
 }
