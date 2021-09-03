@@ -21,7 +21,8 @@ async function handler (
       lat: _lat,
       lng: _lng,
       unit = 'kilometers',
-      maxDistance
+      maxDistance,
+      search
     },
     authUser
   },
@@ -39,11 +40,24 @@ async function handler (
     query.Map(
       query.Filter(
         query.Paginate(
-          query.Match(
-            query.Index('eventsByVisibilityStatus'),
-            'public',
-            'published'
-          ),
+          search
+            ? query.Intersection(
+                query.Map(
+                  query.NGram(search.toLowerCase(), 2, 3),
+                  query.Lambda(
+                    ['needle'],
+                    query.Match(
+                      query.Index('searchEvents'),
+                      query.Var('needle')
+                    )
+                  )
+                )
+              )
+            : query.Match(
+                query.Index('eventsByVisibilityStatus'),
+                'public',
+                'published'
+              ),
           {
             size: 20,
             after: nextTokenParts
@@ -184,8 +198,14 @@ async function handler (
 module.exports = httpGuard({
   handler,
   guards: [guardTypes.auth, guardTypes.setupComplete],
-  queryParamsValidator: ({ schedule, unit, maxDistance }) => {
+  queryParamsValidator: ({
+    schedule,
+    unit,
+    maxDistance,
+    search
+  }) => {
     return (
+      validate(search, ['maxLength:255']) ||
       validate(schedule, [
         'required',
         'options:past,preset,future'
