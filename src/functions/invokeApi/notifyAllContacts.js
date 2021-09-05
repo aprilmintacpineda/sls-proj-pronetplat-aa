@@ -10,6 +10,7 @@ const {
 module.exports = async ({ authUser, ...notificationParams }) => {
   const faunadb = initClient();
   let after = [];
+  const promises = [];
 
   do {
     const result = await faunadb.query(
@@ -30,16 +31,18 @@ module.exports = async ({ authUser, ...notificationParams }) => {
       )
     );
 
-    await Promise.all(
-      result.data.map(({ user }) =>
+    result.data.forEach(({ user }) => {
+      promises.push(
         createNotification({
           authUser,
           recipientId: user.ref.id,
           ...notificationParams
         })
-      )
-    );
+      );
+    });
 
     after = result.after;
   } while (after);
+
+  await Promise.all(promises);
 };
