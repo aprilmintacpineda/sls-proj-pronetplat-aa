@@ -55,7 +55,8 @@ async function handler ({ authUser, params: { eventId } }) {
         authUser,
         body: '{fullname} has published {eventName} you might be interested in.',
         title: 'New event from your contact',
-        type: 'contactPublishedAnEvent'
+        type: 'contactPublishedAnEvent',
+        payload: { eventId }
       }
     });
   }
