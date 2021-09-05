@@ -9,9 +9,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
-const {
-  createNotification
-} = require('dependencies/utils/invokeLambda');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 const { getSignedUrlPromise } = require('dependencies/utils/s3');
 const validate = require('dependencies/utils/validate');
 
@@ -117,27 +115,25 @@ async function handler ({ authUser, formBody }) {
     return { statusCode: 500 };
   }
 
-  await Promise.all(
-    formBody.organizers.map(contactId =>
-      createNotification({
-        authUser,
-        recipientId: contactId,
-        body: '{fullname} added you as an organizer to {eventName}.',
-        title: 'Added as organizer to {eventName}',
-        type: 'addedAsOrganizerToEvent',
-        payload: { eventId: event.ref.id }
-      })
-    )
-  );
-
-  const { signedUrl, url: coverPicture } = await getSignedUrlPromise(
-    {
+  const [{ signedUrl, url: coverPicture }] = await Promise.all([
+    getSignedUrlPromise({
       objectKeyPrefix: 'newEventCoverPicture',
       objectName: `${event.ref.id}_${randomNum()}`,
       type: formBody.coverPicture,
       objectNamePrefix: 'eventCoverPicture'
-    }
-  );
+    }),
+    invokeEvent({
+      eventName: 'notifyAllEventOrganizers',
+      payload: {
+        eventId: event.ref.id,
+        authUser,
+        body: '{fullname} added you as an organizer to {eventName}.',
+        title: 'Added as organizer to {eventName}',
+        type: 'addedAsOrganizerToEvent',
+        payload: { eventId: event.ref.id }
+      }
+    })
+  ]);
 
   return {
     statusCode: 200,
