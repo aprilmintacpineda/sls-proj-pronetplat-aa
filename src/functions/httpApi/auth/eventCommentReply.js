@@ -79,7 +79,7 @@ async function handler ({
       eventId: result.eventId,
       authUser,
       body: '{fullname} replied to {userFullNamePossessive} comment on {eventName}',
-      title: 'New replied to a comment',
+      title: 'New replied to a comment on your event',
       type: 'replyOnComment',
       payload: {
         eventId: result.eventId,

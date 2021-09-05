@@ -70,7 +70,7 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
       eventId,
       authUser,
       body: '{fullname} posted a comment on {eventName}',
-      title: 'Commented on your event',
+      title: 'New comment on your event',
       type: 'commentedOnEvent',
       payload: { eventId }
     }
