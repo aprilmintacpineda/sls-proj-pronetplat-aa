@@ -1,8 +1,5 @@
 const { query } = require('faunadb');
-const {
-  initClient,
-  getById
-} = require('dependencies/utils/faunadb');
+const { initClient } = require('dependencies/utils/faunadb');
 const {
   createNotification
 } = require('dependencies/utils/invokeLambda');
@@ -18,7 +15,7 @@ module.exports = async notificationParams => {
       query.Map(
         query.Paginate(
           query.Match(query.Index('contactsByUserId'), authUser.id),
-          { size: 1000, after }
+          { size: 20, after }
         ),
         query.Lambda(
           [
@@ -27,15 +24,15 @@ module.exports = async notificationParams => {
             'contactId',
             'ref'
           ],
-          getById('users', query.Var('contactId'))
+          query.Var('contactId')
         )
       )
     );
 
-    result.data.forEach(user => {
+    result.data.forEach(contactId => {
       promises.push(
         createNotification({
-          recipientId: user.ref.id,
+          recipientId: contactId,
           ...notificationParams
         })
       );
