@@ -59,7 +59,7 @@ async function handler ({ authUser, params: { contactId } }) {
                     recipientId: contactId,
                     canFollowUpAt: query.Format(
                       '%t',
-                      query.TimeAdd(query.Now(), 4, 'hours')
+                      query.TimeAdd(query.Now(), 1, 'hours')
                     )
                   }),
                   query.Call(
