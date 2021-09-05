@@ -84,7 +84,9 @@ module.exports.softDeleteById = (collection, id) => {
 module.exports.initClient = () => {
   return new Client({
     secret: process.env.faunadbSecret,
-    checkNewVersion: false
+    checkNewVersion: false,
+    domain: 'db.us.fauna.com',
+    scheme: 'https'
   });
 };
 
