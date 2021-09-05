@@ -83,36 +83,31 @@ async function handler (
             'ref'
           ],
           query.And(
-            query.Or(
-              query.Not(query.IsNumber(maxDistance)),
-              query.LTE(
-                query.Multiply(
-                  measurement,
-                  query.Acos(
-                    query.Add(
-                      query.Multiply(
-                        query.Cos(query.Radians(Number(lat))),
-                        query.Cos(
-                          query.Radians(query.Var('latitude'))
-                        ),
-                        query.Cos(
-                          query.Subtract(
-                            query.Radians(query.Var('longitude')),
-                            query.Radians(Number(lng))
-                          )
-                        )
+            query.LTE(
+              query.Multiply(
+                measurement,
+                query.Acos(
+                  query.Add(
+                    query.Multiply(
+                      query.Cos(query.Radians(Number(lat))),
+                      query.Cos(
+                        query.Radians(query.Var('latitude'))
                       ),
-                      query.Multiply(
-                        query.Sin(query.Radians(Number(lat))),
-                        query.Sin(
-                          query.Radians(query.Var('latitude'))
+                      query.Cos(
+                        query.Subtract(
+                          query.Radians(query.Var('longitude')),
+                          query.Radians(Number(lng))
                         )
                       )
+                    ),
+                    query.Multiply(
+                      query.Sin(query.Radians(Number(lat))),
+                      query.Sin(query.Radians(query.Var('latitude')))
                     )
                   )
-                ),
-                maxDistance
-              )
+                )
+              ),
+              maxDistance
             ),
             schedule === 'past'
               ? query.And(
@@ -211,7 +206,7 @@ module.exports = httpGuard({
         'options:past,present,future'
       ]) ||
       validate(unit, ['required', 'options:kilometers,miles']) ||
-      validate(maxDistance, ['integer'])
+      validate(maxDistance, ['required', 'integer'])
     );
   }
 });
