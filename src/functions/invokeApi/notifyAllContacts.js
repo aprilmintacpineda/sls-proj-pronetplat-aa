@@ -7,7 +7,8 @@ const {
   createNotification
 } = require('dependencies/utils/invokeLambda');
 
-module.exports = async ({ authUser, ...notificationParams }) => {
+module.exports = async notificationParams => {
+  const { authUser } = notificationParams;
   const faunadb = initClient();
   let after = [];
   const promises = [];
@@ -34,7 +35,6 @@ module.exports = async ({ authUser, ...notificationParams }) => {
     result.data.forEach(user => {
       promises.push(
         createNotification({
-          authUser,
           recipientId: user.ref.id,
           ...notificationParams
         })
