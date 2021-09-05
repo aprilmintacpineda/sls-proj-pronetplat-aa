@@ -44,6 +44,7 @@ async function handler ({ authUser, formBody }) {
       notificationsCount: 0,
       receivedContactRequestsCount: 0,
       contactsCount: 0,
+      eventInvitationsCount: 0,
       isTestAccount: false,
       allowSearchByName: false,
       allowSearchByUsername: false,
