@@ -31,7 +31,7 @@ module.exports = async ({ authUser, ...notificationParams }) => {
       )
     );
 
-    result.data.forEach(({ user }) => {
+    result.data.forEach(user => {
       promises.push(
         createNotification({
           authUser,
