@@ -53,7 +53,7 @@ async function handler ({ authUser, params: { eventId } }) {
       eventName: 'notifyAllContacts',
       payload: {
         authUser,
-        body: '{fullname} has published an event you might be interested in.',
+        body: '{fullname} has published {eventName} you might be interested in.',
         title: 'New event from your contact',
         type: 'contactPublishedAnEvent'
       }
