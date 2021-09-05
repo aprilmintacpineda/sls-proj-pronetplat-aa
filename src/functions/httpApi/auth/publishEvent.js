@@ -16,7 +16,6 @@ async function handler ({ authUser, params: { eventId } }) {
   let event = null;
 
   try {
-    // if organizer was set,
     event = await faunadb.query(
       query.If(
         query.And(
@@ -54,6 +53,18 @@ async function handler ({ authUser, params: { eventId } }) {
       payload: {
         authUser,
         body: '{fullname} has published new event: {eventName}',
+        title: 'New event from your contact',
+        type: 'contactPublishedAnEvent',
+        payload: { eventId }
+      }
+    });
+  } else {
+    await invokeEvent({
+      eventName: 'notifyAllEventOrganizers',
+      payload: {
+        eventId,
+        authUser,
+        body: '{fullname} has published private event: {eventName}',
         title: 'New event from your contact',
         type: 'contactPublishedAnEvent',
         payload: { eventId }

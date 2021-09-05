@@ -9,9 +9,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
-const {
-  createNotification
-} = require('dependencies/utils/invokeLambda');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 const validate = require('dependencies/utils/validate');
 
 async function handler ({
@@ -60,17 +58,7 @@ async function handler ({
               eventId: query.Var('eventId'),
               comment: formBody.comment,
               commentId
-            }),
-            organizers: query.Map(
-              query.Paginate(
-                query.Match(
-                  query.Index('eventOrganizersByEvent'),
-                  query.Var('eventId')
-                ),
-                { size: 20 }
-              ),
-              query.Lambda(['userId', 'ref'], query.Var('userId'))
-            )
+            })
           }
         ),
         query.Abort('ValidationError')
@@ -85,23 +73,20 @@ async function handler ({
     return { statusCode: 500 };
   }
 
-  await Promise.all(
-    result.organizers.data.map(userId => {
-      if (userId === authUser.id) return null;
-
-      return createNotification({
-        authUser,
-        recipientId: userId,
-        body: '{fullname} replied to {userFullNamePossessive} comment on {eventName}',
-        title: 'Replied to a comment',
-        type: 'replyOnComment',
-        payload: {
-          eventId: result.eventId,
-          userId: result.userId
-        }
-      });
-    })
-  );
+  await invokeEvent({
+    eventName: 'notifyAllEventOrganizers',
+    payload: {
+      eventId: result.eventId,
+      authUser,
+      body: '{fullname} replied to {userFullNamePossessive} comment on {eventName}',
+      title: 'New replied to a comment',
+      type: 'replyOnComment',
+      payload: {
+        eventId: result.eventId,
+        userId: result.userId
+      }
+    }
+  });
 
   return {
     statusCode: 200,
