@@ -38,6 +38,11 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
                 'public'
               ),
               existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                authUser.id,
+                eventId
+              ),
+              existsByIndex(
                 'eventAttendeeByUserEvent',
                 authUser.id,
                 eventId

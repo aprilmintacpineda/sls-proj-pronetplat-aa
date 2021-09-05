@@ -3,7 +3,8 @@ const {
   initClient,
   create,
   getById,
-  updateById
+  updateById,
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -22,46 +23,81 @@ async function handler ({
 
   try {
     result = await faunadb.query(
-      query.If(
-        query.Not(
-          query.ContainsPath(
-            ['data', 'commentId'],
-            getById('eventComments', commentId)
-          )
-        ),
-        query.Let(
-          {
-            comment: updateById('eventComments', commentId, {
-              numReplies: query.Add(
-                query.Select(
-                  ['data', 'numReplies'],
-                  getById('eventComments', commentId),
-                  0
-                ),
-                1
+      query.Let(
+        {
+          comment: getById('eventComments', commentId),
+          eventId: query.Select(
+            ['data', 'eventId'],
+            query.Var('comment')
+          ),
+          _event: getById('_events', query.Var('eventId'))
+        },
+        query.If(
+          query.And(
+            query.Not(
+              query.ContainsPath(
+                ['data', 'commentId'],
+                query.Var('comment')
               )
-            }),
-            userId: query.Select(
-              ['data', 'userId'],
-              query.Var('comment')
             ),
-            eventId: query.Select(
-              ['data', 'eventId'],
-              query.Var('comment')
+            query.Equals(
+              query.Select(['data', 'status'], query.Var('_event')),
+              'published'
+            ),
+            query.Or(
+              query.Equals(
+                query.Select(
+                  ['data', 'visibility'],
+                  query.Var('_event')
+                ),
+                'public'
+              ),
+              existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                authUser.id,
+                query.Var('eventId')
+              ),
+              existsByIndex(
+                'eventAttendeeByUserEvent',
+                authUser.id,
+                query.Var('eventId')
+              )
             )
-          },
-          {
-            eventId: query.Var('eventId'),
-            userId: query.Var('userId'),
-            reply: create('eventComments', {
-              userId: authUser.id,
+          ),
+          query.Let(
+            {
+              comment: updateById('eventComments', commentId, {
+                numReplies: query.Add(
+                  query.Select(
+                    ['data', 'numReplies'],
+                    query.Var('comment'),
+                    0
+                  ),
+                  1
+                )
+              }),
+              userId: query.Select(
+                ['data', 'userId'],
+                query.Var('comment')
+              ),
+              eventId: query.Select(
+                ['data', 'eventId'],
+                query.Var('comment')
+              )
+            },
+            {
               eventId: query.Var('eventId'),
-              comment: formBody.comment,
-              commentId
-            })
-          }
-        ),
-        query.Abort('ValidationError')
+              userId: query.Var('userId'),
+              reply: create('eventComments', {
+                userId: authUser.id,
+                eventId: query.Var('eventId'),
+                comment: formBody.comment,
+                commentId
+              })
+            }
+          ),
+          query.Abort('ValidationError')
+        )
       )
     );
   } catch (error) {
