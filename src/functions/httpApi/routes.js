@@ -12,7 +12,6 @@ routing.post(
   require('./guest/forgotPasswordConfirm')
 );
 routing.post('/login', require('./guest/login'));
-routing.post('/re-auth', require('./guest/reAuth'));
 routing.post('/verify-email', require('./auth/verifyEmail'));
 routing.post(
   '/resend-email-code',
