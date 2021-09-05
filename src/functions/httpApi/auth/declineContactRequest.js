@@ -13,18 +13,13 @@ const {
 async function handler ({ authUser, params: { senderId } }) {
   const faunadb = initClient();
 
-  try {
-    await faunadb.query(
-      hardDeleteByIndex(
-        'contactRequestBySenderIdRecipientId',
-        senderId,
-        authUser.id
-      )
-    );
-  } catch (error) {
-    console.log('error', error);
-    return { statusCode: 400 };
-  }
+  await faunadb.query(
+    hardDeleteByIndex(
+      'contactRequestBySenderIdRecipientId',
+      senderId,
+      authUser.id
+    )
+  );
 
   await createNotification({
     authUser,
