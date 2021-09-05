@@ -39,6 +39,11 @@ async function handler ({
                 'public'
               ),
               existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                authUser.id,
+                eventId
+              ),
+              existsByIndex(
                 'eventAttendeeByUserEvent',
                 authUser.id,
                 eventId
