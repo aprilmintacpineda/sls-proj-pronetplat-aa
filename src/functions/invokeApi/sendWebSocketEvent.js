@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   hardDeleteByIndex,
-  getById
+  getById,
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const { getPublicUserData } = require('dependencies/utils/users');
 const { postToConnection } = require('dependencies/utils/webSocket');
@@ -47,8 +48,25 @@ module.exports = async ({
   let getters = {};
 
   if (payload) {
-    if (payload.eventId)
-      getters.event = getById('_events', payload.eventId);
+    if (payload.eventId) {
+      getters.event = query.Let(
+        {
+          event: getById('_events', payload.eventId)
+        },
+        query.Merge(query.Var('event'), {
+          data: query.Merge(
+            query.Select(['data'], query.Var('event')),
+            {
+              isOrganizer: existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                recipientId,
+                payload.eventId
+              )
+            }
+          )
+        })
+      );
+    }
 
     if (payload.userId)
       getters.user = getById('users', payload.userId);

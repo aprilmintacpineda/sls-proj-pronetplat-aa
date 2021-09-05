@@ -1,7 +1,8 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  getById
+  getById,
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -53,6 +54,15 @@ async function handler ({ params: { nextToken }, authUser }) {
               query.IsNull(query.Var('eventId')),
               null,
               getById('_events', query.Var('eventId'))
+            ),
+            isOrganizer: query.If(
+              query.IsNull(query.Var('eventId')),
+              null,
+              existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                authUser.id,
+                query.Var('eventId')
+              )
             )
           }
         )
@@ -64,7 +74,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   const data = [];
 
   result.data.forEach(
-    ({ notification: _notification, user, event }) => {
+    ({ notification: _notification, user, event, isOrganizer }) => {
       const notification = {
         ..._notification.data,
         id: _notification.ref.id,
@@ -74,7 +84,8 @@ async function handler ({ params: { nextToken }, authUser }) {
       if (event) {
         notification.event = {
           id: event.ref.id,
-          ...event.data
+          ...event.data,
+          isOrganizer
         };
       }
 
