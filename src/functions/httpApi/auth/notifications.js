@@ -70,7 +70,7 @@ async function handler ({ params: { nextToken }, authUser }) {
               existsByIndex(
                 'eventAttendeeByUserEvent',
                 authUser.id,
-                query.Select(['id'], query.Var('ref'))
+                query.Var('eventId')
               )
             )
           }

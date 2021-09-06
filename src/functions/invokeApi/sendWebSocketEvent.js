@@ -65,7 +65,7 @@ module.exports = async ({
               isGoing: existsByIndex(
                 'eventAttendeeByUserEvent',
                 authUser.id,
-                query.Select(['id'], query.Var('ref'))
+                payload.eventId
               )
             }
           )
