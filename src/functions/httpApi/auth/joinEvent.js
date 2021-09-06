@@ -29,6 +29,29 @@ async function handler ({ authUser, params: { eventId } }) {
               ),
               'public'
             ),
+            query.Equals(
+              query.Select(['data', 'status'], query.Var('_event')),
+              'published'
+            ),
+            query.GT(
+              query.Time(
+                query.Select(
+                  ['data', 'startDateTime'],
+                  query.Var('_event')
+                )
+              ),
+              query.Now()
+            ),
+            query.LT(
+              query.Select(
+                ['data', 'numGoing'],
+                query.Var('_event')
+              ),
+              query.Select(
+                ['data', 'maxAttendees'],
+                query.Var('_event')
+              )
+            ),
             query.Not(
               existsByIndex(
                 'eventOrganizerByOrganizerEvent',
@@ -48,32 +71,6 @@ async function handler ({ authUser, params: { eventId } }) {
                 'eventAttendeeByUserEvent',
                 authUser.id,
                 eventId
-              )
-            ),
-            query.LT(
-              query.GT(
-                query.Time(
-                  query.Select(
-                    ['data', 'startDateTime'],
-                    query.Var('_event')
-                  )
-                ),
-                query.Now()
-              ),
-              query.Equals(
-                query.Select(
-                  ['data', 'status'],
-                  query.Var('_event')
-                ),
-                'published'
-              ),
-              query.Select(
-                ['data', 'numGoing'],
-                query.Var('_event')
-              ),
-              query.Select(
-                ['data', 'maxAttendees'],
-                query.Var('_event')
               )
             )
           ),
