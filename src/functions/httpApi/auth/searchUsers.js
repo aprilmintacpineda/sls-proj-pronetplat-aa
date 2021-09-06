@@ -2,7 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   isOnBlockList,
-  getByIndexIfExists
+  getByIndexIfExists,
+  existsByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -41,7 +42,26 @@ async function handler ({
                 : []
             }
           ),
-          query.Lambda(['ref'], query.Get(query.Var('ref')))
+          query.Lambda(
+            ['ref'],
+            query.Let(
+              {
+                user: query.Get(query.Var('ref'))
+              },
+              query.Merge(query.Var('user'), {
+                data: query.Merge(
+                  query.Select(['data'], query.Var('user')),
+                  {
+                    isConnected: existsByIndex(
+                      'contactByOwnerContact',
+                      authUser.id,
+                      query.Var('userId')
+                    )
+                  }
+                )
+              })
+            )
+          )
         ),
         query.Lambda(
           ['user'],
