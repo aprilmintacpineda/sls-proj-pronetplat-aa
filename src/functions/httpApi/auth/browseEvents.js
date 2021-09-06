@@ -28,13 +28,13 @@ async function handler (
   },
   { headers }
 ) {
-  const lat = _lat || headers['CloudFront-Viewer-Latitude'];
-  const lng = _lng || headers['CloudFront-Viewer-Longitude'];
+  const lat = Number(_lat || headers['CloudFront-Viewer-Latitude']);
+  const lng = Number(_lng || headers['CloudFront-Viewer-Longitude']);
   if (!lat || !lng) return { statusCode: 400 };
 
   const faunadb = initClient();
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
-  const measurement = unit === 'kilometers' ? 6371 : 3959;
+  const unitConstant = unit === 'kilometers' ? 6371 : 3959;
 
   const result = await faunadb.query(
     query.Map(
@@ -85,29 +85,29 @@ async function handler (
           query.And(
             query.LTE(
               query.Multiply(
-                measurement,
+                unitConstant,
                 query.Acos(
                   query.Add(
                     query.Multiply(
-                      query.Cos(query.Radians(Number(lat))),
+                      query.Cos(query.Radians(lat)),
                       query.Cos(
                         query.Radians(query.Var('latitude'))
                       ),
                       query.Cos(
                         query.Subtract(
                           query.Radians(query.Var('longitude')),
-                          query.Radians(Number(lng))
+                          query.Radians(lng)
                         )
                       )
                     ),
                     query.Multiply(
-                      query.Sin(query.Radians(Number(lat))),
+                      query.Sin(query.Radians(lat)),
                       query.Sin(query.Radians(query.Var('latitude')))
                     )
                   )
                 )
               ),
-              maxDistance
+              Number(maxDistance)
             ),
             schedule === 'past'
               ? query.And(
@@ -172,7 +172,7 @@ async function handler (
         isGoing,
         isOrganizer,
         distance:
-          measurement *
+          unitConstant *
           Math.acos(
             Math.cos(toRadians(event.data.latitude)) *
               Math.cos(toRadians(lat)) *
