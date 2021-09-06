@@ -135,7 +135,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       recipientId: formBody.contactId,
       payload: {
         body: '{fullname} invited you to join {eventName}.',
-        title: 'Event invitation'
+        title: 'Event invitation',
+        eventId
       }
     })
   ]);
