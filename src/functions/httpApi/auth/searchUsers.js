@@ -82,14 +82,12 @@ async function handler ({
       )
     );
 
-    console.log(JSON.stringify(result, null, 2));
-
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result.data.map(({ isConnected, ...user }) => ({
+        data: result.data.map(user => ({
           ...getPublicUserData(user),
-          isConnected
+          isConnected: user.data.isConnected
         })),
         nextToken: result.after?.[0].id || null
       })
