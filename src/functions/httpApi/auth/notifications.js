@@ -63,6 +63,15 @@ async function handler ({ params: { nextToken }, authUser }) {
                 authUser.id,
                 query.Var('eventId')
               )
+            ),
+            isGoing: query.If(
+              query.IsNull(query.Var('eventId')),
+              null,
+              existsByIndex(
+                'eventAttendeeByUserEvent',
+                authUser.id,
+                query.Select(['id'], query.Var('ref'))
+              )
             )
           }
         )
@@ -74,7 +83,13 @@ async function handler ({ params: { nextToken }, authUser }) {
   const data = [];
 
   result.data.forEach(
-    ({ notification: _notification, user, event, isOrganizer }) => {
+    ({
+      notification: _notification,
+      user,
+      event,
+      isOrganizer,
+      isGoing
+    }) => {
       const notification = {
         ..._notification.data,
         id: _notification.ref.id,
@@ -85,7 +100,8 @@ async function handler ({ params: { nextToken }, authUser }) {
         notification.event = {
           id: event.ref.id,
           ...event.data,
-          isOrganizer
+          isOrganizer,
+          isGoing
         };
       }
 

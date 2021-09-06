@@ -61,6 +61,11 @@ module.exports = async ({
                 'eventOrganizerByOrganizerEvent',
                 recipientId,
                 payload.eventId
+              ),
+              isGoing: existsByIndex(
+                'eventAttendeeByUserEvent',
+                authUser.id,
+                query.Select(['id'], query.Var('ref'))
               )
             }
           )
