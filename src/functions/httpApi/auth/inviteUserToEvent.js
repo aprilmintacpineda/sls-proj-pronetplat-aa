@@ -50,6 +50,18 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
               eventId
             )
           ),
+          query.Or(
+            existsByIndex(
+              'eventAttendeeByUserEvent',
+              authUser.id,
+              eventId
+            ),
+            existsByIndex(
+              'eventOrganizerByOrganizerEvent',
+              authUser.id,
+              eventId
+            )
+          ),
           query.Let(
             {
               _event: getById('_events', eventId)
