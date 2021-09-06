@@ -85,7 +85,10 @@ async function handler ({
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result.data.map(user => getPublicUserData(user)),
+        data: result.data.map(({ isConnected, ...user }) => ({
+          ...getPublicUserData(user),
+          isConnected
+        })),
         nextToken: result.after?.[0].id || null
       })
     };
