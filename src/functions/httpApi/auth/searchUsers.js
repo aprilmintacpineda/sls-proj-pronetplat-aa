@@ -55,7 +55,7 @@ async function handler ({
                     isConnected: existsByIndex(
                       'contactByOwnerContact',
                       authUser.id,
-                      query.Var('userId')
+                      query.Select(['ref', 'id'], query.Var('user'))
                     )
                   }
                 )
