@@ -26,7 +26,7 @@ async function handler ({
           query.Paginate(
             query.Intersection(
               query.Union(
-                ...cleanExtraSpaces(search)
+                ...cleanExtraSpaces(search, false)
                   .toLowerCase()
                   .split(/\s/)
                   .map(slug =>
