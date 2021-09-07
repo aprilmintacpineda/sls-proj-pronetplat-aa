@@ -42,8 +42,8 @@ async function handler ({
             query.Exists(
               query.Match(
                 query.Index('contactByOwnerContact'),
-                contactId,
-                authUser.id
+                authUser.id,
+                contactId
               )
             ),
             {
