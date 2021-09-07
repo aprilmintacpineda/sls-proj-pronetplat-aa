@@ -28,9 +28,9 @@ module.exports.hasTimePassed = futureTime => {
 function cleanExtraSpaces (value, isMultiline = true) {
   if (isMultiline) {
     return value
-      .replace(/ {2,}/gim, ' ')
       .replace(/\n /gim, '\n')
       .replace(/\n{3,}/gim, '\n\n')
+      .replace(/ {2,}/gim, ' ')
       .trim();
   }
 
