@@ -1,8 +1,9 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  createIfNotExists,
-  getByIndexIfExists
+  getByIndex,
+  create,
+  selectRef
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -14,55 +15,60 @@ const {
 
 async function handler ({ authUser, params: { senderId } }) {
   const faunadb = initClient();
+  let contactRequest = null;
 
-  const contactRequest = await faunadb.query(
-    getByIndexIfExists(
-      'contactRequestBySenderIdRecipientId',
-      senderId,
-      authUser.id
-    )
-  );
+  try {
+    contactRequest = await faunadb.query(
+      query.Let(
+        {
+          contactRequest: getByIndex(
+            'contactRequestBySenderIdRecipientId',
+            senderId,
+            authUser.id
+          ),
+          senderId: query.Select(
+            ['data', 'senderId'],
+            query.Var('contactRequest')
+          )
+        },
+        query.Do(
+          create('contacts', {
+            userId: authUser.id,
+            contactId: query.Var('senderId'),
+            numTimesOpened: 0,
+            isCloseFriend: false,
+            unreadChatMessagesFromContact: 0
+          }),
+          create('contacts', {
+            userId: query.Var('senderId'),
+            contactId: authUser.id,
+            numTimesOpened: 0,
+            isCloseFriend: false,
+            numNewChatMessages: 0
+          }),
+          query.Call(
+            'updateUserBadgeCount',
+            query.Var('senderId'),
+            'contactsCount',
+            1
+          ),
+          query.Call(
+            'updateUserBadgeCount',
+            authUser.id,
+            'contactsCount',
+            1
+          ),
+          query.Delete(selectRef(query.Var('contactRequest'))),
+          query.Var('contactRequest')
+        )
+      )
+    );
+  } catch (error) {
+    console.log(error);
 
-  if (!contactRequest) {
-    console.log('Contact request does not exist');
-    return { statusCode: 400 };
+    if (error.description === 'checkFailed')
+      return { statusCode: 400 };
   }
-
-  await faunadb.query(
-    query.Do(
-      createIfNotExists({
-        collection: 'contacts',
-        index: 'contactByOwnerContact',
-        args: [authUser.id, contactRequest.data.senderId],
-        data: {
-          userId: authUser.id,
-          contactId: contactRequest.data.senderId,
-          numTimesOpened: 0,
-          isCloseFriend: false,
-          unreadChatMessagesFromContact: 0
-        }
-      }),
-      createIfNotExists({
-        collection: 'contacts',
-        index: 'contactByOwnerContact',
-        args: [contactRequest.data.senderId, authUser.id],
-        data: {
-          userId: contactRequest.data.senderId,
-          contactId: authUser.id,
-          numTimesOpened: 0,
-          isCloseFriend: false,
-          numNewChatMessages: 0
-        }
-      }),
-      query.Call(
-        'updateUserBadgeCount',
-        authUser.id,
-        'contactsCount',
-        1
-      ),
-      query.Delete(contactRequest.ref)
-    )
-  );
 
   await createNotification({
     authUser,
