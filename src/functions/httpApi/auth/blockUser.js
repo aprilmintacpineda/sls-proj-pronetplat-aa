@@ -60,79 +60,82 @@ async function handler ({ authUser, params: { contactId } }) {
                       -1
                     )
                   ),
-                  query.If(
-                    existsByIndex(
-                      'contactRequestBySenderIdRecipientId',
-                      contactId,
-                      authUser.id
-                    ),
-                    query.Do(
-                      query.Delete(
-                        selectRef(
-                          getByIndex(
-                            'contactRequestBySenderIdRecipientId',
-                            contactId,
-                            authUser.id
-                          )
+                  null
+                ),
+                query.If(
+                  existsByIndex(
+                    'contactRequestBySenderIdRecipientId',
+                    contactId,
+                    authUser.id
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
+                          'contactRequestBySenderIdRecipientId',
+                          contactId,
+                          authUser.id
                         )
-                      ),
-                      query.Call(
-                        'updateUserBadgeCount',
-                        authUser.id,
-                        'receivedContactRequestsCount',
-                        -1
                       )
                     ),
-                    query.If(
-                      existsByIndex(
-                        'contactByOwnerContact',
-                        authUser.id,
-                        contactId
-                      ),
-                      query.Do(
-                        query.Delete(
-                          selectRef(
-                            getByIndex(
-                              'contactByOwnerContact',
-                              authUser.id,
-                              contactId
-                            )
-                          )
-                        ),
-                        query.Call(
-                          'updateUserBadgeCount',
+                    query.Call(
+                      'updateUserBadgeCount',
+                      authUser.id,
+                      'receivedContactRequestsCount',
+                      -1
+                    )
+                  ),
+                  null
+                ),
+                query.If(
+                  existsByIndex(
+                    'contactByOwnerContact',
+                    authUser.id,
+                    contactId
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
+                          'contactByOwnerContact',
                           authUser.id,
-                          'contactsCount',
-                          -1
+                          contactId
                         )
-                      ),
-                      query.If(
-                        existsByIndex(
+                      )
+                    ),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      authUser.id,
+                      'contactsCount',
+                      -1
+                    )
+                  ),
+                  null
+                ),
+                query.If(
+                  existsByIndex(
+                    'contactByOwnerContact',
+                    contactId,
+                    authUser.id
+                  ),
+                  query.Do(
+                    query.Delete(
+                      selectRef(
+                        getByIndex(
                           'contactByOwnerContact',
                           contactId,
                           authUser.id
-                        ),
-                        query.Do(
-                          query.Delete(
-                            selectRef(
-                              getByIndex(
-                                'contactByOwnerContact',
-                                contactId,
-                                authUser.id
-                              )
-                            )
-                          ),
-                          query.Call(
-                            'updateUserBadgeCount',
-                            contactId,
-                            'contactsCount',
-                            -1
-                          )
-                        ),
-                        null
+                        )
                       )
+                    ),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      contactId,
+                      'contactsCount',
+                      -1
                     )
-                  )
+                  ),
+                  null
                 ),
                 create('userBlockings', {
                   blockerId: authUser.id,
