@@ -42,7 +42,7 @@ async function handler ({ authUser, params: { contactId } }) {
   );
 
   await sendWebSocketEvent({
-    type: 'userDisconected',
+    type: 'userDisconnected',
     authUser,
     recipientId: contactId
   });
