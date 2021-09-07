@@ -5,6 +5,7 @@ const {
   getByIndexIfExists,
   existsByIndex
 } = require('dependencies/utils/faunadb');
+const { cleanExtraSpaces } = require('dependencies/utils/helpers');
 const {
   httpGuard,
   guardTypes
@@ -25,7 +26,7 @@ async function handler ({
           query.Paginate(
             query.Intersection(
               query.Union(
-                ...search
+                ...cleanExtraSpaces(search)
                   .toLowerCase()
                   .split(/\s/)
                   .map(slug =>

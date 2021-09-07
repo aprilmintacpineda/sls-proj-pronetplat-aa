@@ -25,19 +25,27 @@ module.exports.hasTimePassed = futureTime => {
   return !futureTime || isPast(new Date(futureTime));
 };
 
+function cleanExtraSpaces (value, isMultiline = true) {
+  if (isMultiline) {
+    return value
+      .replace(/ {2,}/gim, ' ')
+      .replace(/\n /gim, '\n')
+      .replace(/\n{3,}/gim, '\n\n')
+      .trim();
+  }
+
+  return value.replace(/\n/gim, ' ').replace(/ {2,}/gim, ' ').trim();
+}
+
+module.exports.cleanExtraSpaces = cleanExtraSpaces;
+
 module.exports.sanitizeFormBody = data => {
   return Object.keys(data).reduce((accumulator, field) => {
     const value = data[field];
 
-    if (typeof value === 'string') {
-      accumulator[field] = value
-        .trim()
-        .replace(/ {2,}/gim, ' ')
-        .replace(/\n /gim, '\n')
-        .replace(/\n{3,}/gim, '\n\n');
-    } else {
-      accumulator[field] = value;
-    }
+    if (typeof value === 'string')
+      accumulator[field] = cleanExtraSpaces(value);
+    else accumulator[field] = value;
 
     return accumulator;
   }, {});
