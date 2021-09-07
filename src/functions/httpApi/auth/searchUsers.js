@@ -23,22 +23,24 @@ async function handler ({
       query.Filter(
         query.Map(
           query.Paginate(
-            query.Union(
-              ...search
-                .toLowerCase()
-                .split(/\s/)
-                .map(slug =>
-                  query.Map(
-                    query.NGram(slug, 2, 3),
-                    query.Lambda(
-                      ['needle'],
-                      query.Match(
-                        query.Index('searchUsersByName'),
-                        query.Var('needle')
+            query.Intersection(
+              query.Union(
+                ...search
+                  .toLowerCase()
+                  .split(/\s/)
+                  .map(slug =>
+                    query.Map(
+                      query.NGram(slug, 2, 3),
+                      query.Lambda(
+                        ['needle'],
+                        query.Match(
+                          query.Index('searchUsersByName'),
+                          query.Var('needle')
+                        )
                       )
                     )
                   )
-                )
+              )
             ),
             {
               size: 20,
