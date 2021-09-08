@@ -3,6 +3,7 @@ const {
   initClient,
   existsByIndex
 } = require('dependencies/utils/faunadb');
+const { cleanExtraSpaces } = require('dependencies/utils/helpers');
 const {
   httpGuard,
   guardTypes
@@ -42,17 +43,24 @@ async function handler (
         query.Paginate(
           search
             ? query.Intersection(
-                query.Map(
-                  query.NGram(search.toLowerCase(), 2, 3),
-                  query.Lambda(
-                    ['needle'],
-                    query.Match(
-                      query.Index('searchEvents'),
-                      query.Var('needle'),
-                      'public',
-                      'published'
+                query.Union(
+                  ...cleanExtraSpaces(search, false)
+                    .toLowerCase()
+                    .split(/\s/)
+                    .map(slug =>
+                      query.Map(
+                        query.NGram(slug, 2, 3),
+                        query.Lambda(
+                          ['needle'],
+                          query.Match(
+                            query.Index('searchEvents'),
+                            query.Var('needle'),
+                            'public',
+                            'published'
+                          )
+                        )
+                      )
                     )
-                  )
                 )
               )
             : query.Match(
