@@ -2,8 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   isOnBlockList,
-  getByIndexIfExists,
-  existsByIndex
+  existsByIndex,
+  getByIndex
 } = require('dependencies/utils/faunadb');
 const { cleanExtraSpaces } = require('dependencies/utils/helpers');
 const {
@@ -80,16 +80,16 @@ async function handler ({
                 query.Select(['ref', 'id'], query.Var('user'))
               )
             ),
+            query.Select(
+              ['data', 'allowSearchByName'],
+              query.Var('user'),
+              false
+            ),
             query.Not(
               isOnBlockList(
                 authUser.id,
                 query.Select(['ref', 'id'], query.Var('user'))
               )
-            ),
-            query.Select(
-              ['data', 'allowSearchByName'],
-              query.Var('user'),
-              false
             )
           )
         )
@@ -109,18 +109,61 @@ async function handler ({
   }
 
   const user = await faunadb.query(
-    getByIndexIfExists('userByUsername', search)
+    query.If(
+      existsByIndex('userByUsername', search),
+      query.Let(
+        {
+          user: getByIndex('userByUsername', search)
+        },
+        query.If(
+          query.And(
+            query.Not(
+              query.Equals(
+                authUser.id,
+                query.Select(['ref', 'id'], query.Var('user'))
+              )
+            ),
+            query.Select(
+              ['data', 'allowSearchByUsername'],
+              query.Var('user'),
+              false
+            ),
+            query.Not(
+              isOnBlockList(
+                authUser.id,
+                query.Select(['ref', 'id'], query.Var('user'))
+              )
+            )
+          )
+        ),
+        query.Merge(query.Var('user'), {
+          data: query.Merge(
+            query.Select(['data'], query.Var('user')),
+            {
+              isConnected: existsByIndex(
+                'contactByOwnerContact',
+                authUser.id,
+                query.Select(['ref', 'id'], query.Var('user'))
+              )
+            }
+          )
+        }),
+        null
+      ),
+      null
+    )
   );
 
-  if (
-    user &&
-    user.ref.id !== authUser.id &&
-    user.data.allowSearchByUsername
-  ) {
+  if (user) {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: [getPublicUserData(user)],
+        data: [
+          {
+            ...getPublicUserData(user),
+            isConnected: user.data.isConnected
+          }
+        ],
         nextToken: null
       })
     };
