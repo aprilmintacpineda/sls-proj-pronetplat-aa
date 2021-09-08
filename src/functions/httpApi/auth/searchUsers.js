@@ -110,7 +110,11 @@ async function handler ({
     getByIndexIfExists('userByUsername', search)
   );
 
-  if (user && user.data.allowSearchByUsername) {
+  if (
+    user &&
+    user.ref.id !== authUser.id &&
+    user.data.allowSearchByUsername
+  ) {
     return {
       statusCode: 200,
       body: JSON.stringify({
