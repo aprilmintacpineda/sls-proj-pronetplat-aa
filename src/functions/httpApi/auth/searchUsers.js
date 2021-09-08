@@ -134,21 +134,21 @@ async function handler ({
                 query.Select(['ref', 'id'], query.Var('user'))
               )
             )
-          )
-        ),
-        query.Merge(query.Var('user'), {
-          data: query.Merge(
-            query.Select(['data'], query.Var('user')),
-            {
-              isConnected: existsByIndex(
-                'contactByOwnerContact',
-                authUser.id,
-                query.Select(['ref', 'id'], query.Var('user'))
-              )
-            }
-          )
-        }),
-        null
+          ),
+          query.Merge(query.Var('user'), {
+            data: query.Merge(
+              query.Select(['data'], query.Var('user')),
+              {
+                isConnected: existsByIndex(
+                  'contactByOwnerContact',
+                  authUser.id,
+                  query.Select(['ref', 'id'], query.Var('user'))
+                )
+              }
+            )
+          }),
+          null
+        )
       ),
       null
     )
