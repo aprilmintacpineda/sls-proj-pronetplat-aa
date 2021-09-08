@@ -1,7 +1,9 @@
 CreateIndex({
   name: 'searchEvents',
   terms: [
-    { binding: 'search' }
+    { binding: 'search' },
+    { field: ['data', 'visibility'] },
+    { field: ['data', 'status'] }
   ],
   source: {
     collection: Collection('_events'),

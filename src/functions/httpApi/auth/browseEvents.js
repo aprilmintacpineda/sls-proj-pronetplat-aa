@@ -48,7 +48,9 @@ async function handler (
                     ['needle'],
                     query.Match(
                       query.Index('searchEvents'),
-                      query.Var('needle')
+                      query.Var('needle'),
+                      'public',
+                      'published'
                     )
                   )
                 )
