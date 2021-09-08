@@ -74,9 +74,11 @@ async function handler ({
         query.Lambda(
           ['user'],
           query.And(
-            query.Equals(
-              authUser.id,
-              query.Select(['ref', 'id'], query.Var('user'))
+            query.Not(
+              query.Equals(
+                authUser.id,
+                query.Select(['ref', 'id'], query.Var('user'))
+              )
             ),
             query.Not(
               isOnBlockList(
