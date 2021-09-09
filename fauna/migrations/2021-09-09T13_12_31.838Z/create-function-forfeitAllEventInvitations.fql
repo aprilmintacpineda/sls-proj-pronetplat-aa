@@ -1,0 +1,13 @@
+CreateFunction({
+  "name": "forfeitAllEventInvitations",
+  "body": Query(Lambda(["userId", "eventId", "afterId"], Let([{
+    "result": Paginate(Match(Index("eventInvitationByUserEventStatus"), [Var("userId"), Var("contactId")]), {
+      "size": 20,
+      "after": If(IsNull(Var("afterId")), [], Ref(Collection("eventInvitations"), Var("afterId")))
+    })
+  }], Do(Foreach(Select(["data"], Var("result")), Lambda(["ref"], Update(Var("ref"), {
+    "data": {
+      "status": "forfeited"
+    }
+  }))), If(ContainsPath(["after"], Var("result")), Call("forfeitAllEventInvitations", [Var("userId"), Var("eventId"), Select(["after", 0, "id"], Var("result"))]), null)))))
+})

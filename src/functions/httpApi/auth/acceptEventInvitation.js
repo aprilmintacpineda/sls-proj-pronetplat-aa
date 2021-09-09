@@ -64,6 +64,12 @@ async function handler ({ authUser, params: { eventId } }) {
               'eventInvitationsCount',
               -1
             ),
+            query.Call(
+              'forfeitAllEventInvitations',
+              authUser.id,
+              eventId,
+              null
+            ),
             query.Var('invitation')
           ),
           query.Abort('EventIsFull')
