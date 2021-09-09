@@ -54,6 +54,12 @@ Globals:
           - "proj-pronetplat-aa-invokeApi"
 
 Resources:
+  # Resuable resources
+  wildcardDomainSSL:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: "*.entrepic.com"
+      ValidationMethod: DNS
   # Functions
   httpApi:
     Type: AWS::Serverless::Function
