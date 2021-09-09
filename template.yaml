@@ -141,16 +141,6 @@ Resources:
                   - Name: prefix
                     Value: newEventCoverPicture_
   # Websocket
-  webSocketDomainSSL:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Sub
-        - ${webSocketSubDomain}.entrepic.com
-        - webSocketSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - webSocketSubDomain
-      ValidationMethod: DNS
   webSocketCloudfront:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -180,7 +170,7 @@ Resources:
           TargetOriginId: webSocketOrigin
           ViewerProtocolPolicy: https-only
         ViewerCertificate:
-          AcmCertificateArn: !Ref webSocketDomainSSL
+          AcmCertificateArn: !Ref wildcardDomainSSL
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
   webSocket:
@@ -216,7 +206,7 @@ Resources:
           - !Ref Stage
           - webSocketSubDomain
       DomainNameConfigurations:
-        - CertificateArn: !Ref webSocketDomainSSL
+        - CertificateArn: !Ref wildcardDomainSSL
   webSocketCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -333,16 +323,6 @@ Resources:
       LayerName: proj-pronetplat-aa
       RetentionPolicy: Delete
   # API
-  mainBackendDomainSSL:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Sub
-        - ${apiSubDomain}.entrepic.com
-        - apiSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - apiSubDomain
-      ValidationMethod: DNS
   mainBackendCloudfront:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -372,7 +352,7 @@ Resources:
           TargetOriginId: mainBackendApiOrigin
           ViewerProtocolPolicy: https-only
         ViewerCertificate:
-          AcmCertificateArn: !Ref mainBackendDomainSSL
+          AcmCertificateArn: !Ref wildcardDomainSSL
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
   mainBackendCloudfrontCustomDomainRoute53:
