@@ -5,6 +5,5 @@ CreateIndex({
     { field: ['data', 'userId'] },
     { field: ['data', 'eventId'] },
     { field: ['data', 'status'] }
-  ],
-  unique: true
+  ]
 })

@@ -7,6 +7,5 @@ CreateIndex({
     "field": ["data", "eventId"]
   }, {
     "field": ["data", "status"]
-  }],
-  "unique": true
+  }]
 })
