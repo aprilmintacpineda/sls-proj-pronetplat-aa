@@ -1,7 +1,7 @@
 CreateFunction({
   "name": "forfeitAllEventInvitations",
   "body": Query(Lambda(["userId", "eventId", "afterId"], Let([{
-    "result": Paginate(Match(Index("eventInvitationByUserEventStatus"), [Var("userId"), Var("contactId")]), {
+    "result": Paginate(Match(Index("eventInvitationByUserEventStatus"), [Var("userId"), Var("eventId"), "pending"]), {
       "size": 20,
       "after": If(IsNull(Var("afterId")), [], Ref(Collection("eventInvitations"), Var("afterId")))
     })
