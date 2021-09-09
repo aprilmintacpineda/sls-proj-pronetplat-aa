@@ -9,7 +9,8 @@ CreateFunction({
             Match(
               Index('eventInvitationByUserEventStatus'),
               Var('userId'),
-              Var('contactId')
+              Var('eventId'),
+              'pending'
             ),
             {
               size: 20,
