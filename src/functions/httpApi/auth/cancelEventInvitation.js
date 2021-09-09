@@ -19,7 +19,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     query.Let(
       {
         eventInvitation: updateByIndex({
-          index: 'eventInvitationByUserInviterEvent',
+          index: 'eventInvitationByUserInviterEventStatus',
           args: [
             formBody.contactId,
             authUser.id,

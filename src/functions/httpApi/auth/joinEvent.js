@@ -61,9 +61,10 @@ async function handler ({ authUser, params: { eventId } }) {
             ),
             query.Not(
               existsByIndex(
-                'eventInvitationByUserEvent',
+                'eventInvitationByUserEventStatus',
                 authUser.id,
-                eventId
+                eventId,
+                'pending'
               )
             ),
             query.Not(

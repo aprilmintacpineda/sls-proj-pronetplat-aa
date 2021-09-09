@@ -20,9 +20,10 @@ async function handler ({ authUser, params: { eventId } }) {
     query.Let(
       {
         invitation: getByIndex(
-          'eventInvitationByUserEvent',
+          'eventInvitationByUserEventStatus',
           authUser.id,
-          eventId
+          eventId,
+          'pending'
         )
       },
       query.Do(

@@ -54,15 +54,17 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
           query.Do(
             query.If(
               existsByIndex(
-                'eventInvitationByUserEvent',
+                'eventInvitationByUserEventStatus',
                 formBody.contactId,
-                eventId
+                eventId,
+                'pending'
               ),
               query.Do(
                 hardDeleteByIndex(
-                  'eventInvitationByUserEvent',
+                  'eventInvitationByUserEventStatus',
                   formBody.contactId,
-                  eventId
+                  eventId,
+                  'pending'
                 ),
                 query.Call(
                   'updateUserBadgeCount',

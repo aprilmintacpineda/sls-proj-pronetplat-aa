@@ -39,16 +39,18 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
           ),
           query.Not(
             existsByIndex(
-              'eventInvitationByUserEvent',
+              'eventAttendeeByUserEvent',
               formBody.contactId,
               eventId
             )
           ),
           query.Not(
             existsByIndex(
-              'eventAttendeeByUserEvent',
+              'eventInvitationByUserInviterEventStatus',
               formBody.contactId,
-              eventId
+              authUser.id,
+              eventId,
+              'pending'
             )
           ),
           query.Let(

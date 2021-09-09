@@ -53,9 +53,10 @@ async function handler ({
             canInvite: query.And(
               query.Not(
                 existsByIndex(
-                  'eventInvitationByUserEvent',
+                  'eventInvitationByUserEventStatus',
                   query.Var('contactId'),
-                  eventId
+                  eventId,
+                  'pending'
                 )
               ),
               query.Not(
@@ -130,9 +131,10 @@ async function handler ({
               canInvite: query.And(
                 query.Not(
                   existsByIndex(
-                    'eventInvitationByUserEvent',
+                    'eventInvitationByUserEventStatus',
                     query.Var('contactId'),
-                    eventId
+                    eventId,
+                    'pending'
                   )
                 ),
                 query.Not(
