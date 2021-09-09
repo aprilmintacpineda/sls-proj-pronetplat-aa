@@ -5,7 +5,8 @@ const {
   getById,
   getByIndex,
   selectRef,
-  updateById
+  updateById,
+  update
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -53,7 +54,9 @@ async function handler ({ authUser, params: { eventId } }) {
                 1
               )
             }),
-            query.Delete(selectRef(query.Var('invitation'))),
+            update(selectRef(query.Var('invitation')), {
+              status: 'accepted'
+            }),
             query.Call(
               'updateUserBadgeCount',
               authUser.id,
@@ -87,7 +90,10 @@ async function handler ({ authUser, params: { eventId } }) {
     body: '{fullname} has accepted your invitation to join {eventName}',
     title: 'Event invitation accepted',
     type: 'eventInvitationAccepted',
-    payload: { eventId }
+    payload: {
+      eventId,
+      eventInvitationId: invitation.ref.id
+    }
   });
 
   return { statusCode: 200 };

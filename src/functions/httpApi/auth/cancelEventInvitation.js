@@ -1,7 +1,7 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  hardDeleteByIndex
+  updateByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -15,19 +15,30 @@ const validate = require('dependencies/utils/validate');
 async function handler ({ authUser, params: { eventId }, formBody }) {
   const faunadb = initClient();
 
-  await faunadb.query(
-    query.Do(
-      hardDeleteByIndex(
-        'eventInvitationByUserInviterEvent',
-        formBody.contactId,
-        authUser.id,
-        eventId
-      ),
-      query.Call(
-        'updateUserBadgeCount',
-        formBody.contactId,
-        'eventInvitationsCount',
-        -1
+  const eventInvitation = await faunadb.query(
+    query.Let(
+      {
+        eventInvitation: updateByIndex({
+          index: 'eventInvitationByUserInviterEvent',
+          args: [
+            formBody.contactId,
+            authUser.id,
+            eventId,
+            'pending'
+          ],
+          data: {
+            status: 'cancelled'
+          }
+        })
+      },
+      query.Do(
+        query.Call(
+          'updateUserBadgeCount',
+          formBody.contactId,
+          'eventInvitationsCount',
+          -1
+        ),
+        query.Var('eventInvitation')
       )
     )
   );
@@ -38,7 +49,10 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     body: '{fullname} has cancelled {genderPossessiveLowercase} event invitation for {eventName}.',
     title: 'Event invitation cancelled',
     type: 'eventInvitationCancelled',
-    payload: { eventId }
+    payload: {
+      eventId,
+      eventInvitationId: eventInvitation.ref.id
+    }
   });
 
   return { statusCode: 200 };

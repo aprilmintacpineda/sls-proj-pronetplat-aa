@@ -1,7 +1,9 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  getByIndex
+  getByIndex,
+  update,
+  selectRef
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -24,7 +26,9 @@ async function handler ({ authUser, params: { eventId } }) {
         )
       },
       query.Do(
-        query.Delete(query.Select(['ref'], query.Var('invitation'))),
+        update(selectRef(query.Var('invitation')), {
+          status: 'rejected'
+        }),
         query.Call(
           'updateUserBadgeCount',
           authUser.id,
@@ -42,7 +46,10 @@ async function handler ({ authUser, params: { eventId } }) {
     body: '{fullname} has rejected your invitation to join {eventName}',
     title: 'Event invitation rejected',
     type: 'eventInvitationRejected',
-    payload: { eventId }
+    payload: {
+      eventId,
+      eventInvitationId: invitation.ref.id
+    }
   });
 
   return { statusCode: 200 };

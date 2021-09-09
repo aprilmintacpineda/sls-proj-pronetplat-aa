@@ -4,6 +4,7 @@ CreateIndex({
   terms: [
     { field: ['data', 'userId'] },
     { field: ['data', 'inviterId'] },
-    { field: ['data', 'eventId'] }
+    { field: ['data', 'eventId'] },
+    { field: ['data', 'status'] }
   ]
 })

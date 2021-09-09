@@ -73,6 +73,13 @@ module.exports = async ({
       );
     }
 
+    if (payload.eventInvitationId) {
+      getters.eventInvitation = getById(
+        'eventInvitations',
+        payload.eventInvitationId
+      );
+    }
+
     if (payload.userId)
       getters.user = getById('users', payload.userId);
   }

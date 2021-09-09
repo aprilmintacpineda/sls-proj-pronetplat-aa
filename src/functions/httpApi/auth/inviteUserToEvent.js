@@ -19,9 +19,10 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
   if (formBody.contactId === authUser.id) return { statusCode: 400 };
 
   const faunadb = initClient();
+  let eventInvitation = null;
 
   try {
-    await faunadb.query(
+    eventInvitation = await faunadb.query(
       query.If(
         query.And(
           existsByIndex(
@@ -84,17 +85,23 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
             )
           )
         ),
-        query.Do(
-          create('eventInvitations', {
-            eventId,
-            userId: formBody.contactId,
-            inviterId: authUser.id
-          }),
-          query.Call(
-            'updateUserBadgeCount',
-            formBody.contactId,
-            'eventInvitationsCount',
-            1
+        query.Let(
+          {
+            eventInvitation: create('eventInvitations', {
+              eventId,
+              userId: formBody.contactId,
+              inviterId: authUser.id,
+              status: 'pending'
+            })
+          },
+          query.Do(
+            query.Call(
+              'updateUserBadgeCount',
+              formBody.contactId,
+              'eventInvitationsCount',
+              1
+            ),
+            query.Var('eventInvitation')
           )
         ),
         query.Abort('CheckFailed')
@@ -124,7 +131,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       payload: {
         body: '{fullname} invited you to join {eventName}.',
         title: 'Event invitation',
-        eventId
+        eventId,
+        eventInvitationId: eventInvitation.ref.id
       }
     })
   ]);

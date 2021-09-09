@@ -18,7 +18,8 @@ async function handler ({ params: { nextToken }, authUser }) {
       query.Paginate(
         query.Match(
           query.Index('eventInvitationsByInviter'),
-          authUser.id
+          authUser.id,
+          'status'
         ),
         {
           size: 20,

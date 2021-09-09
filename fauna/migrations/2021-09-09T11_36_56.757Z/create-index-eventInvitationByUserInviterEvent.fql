@@ -1,14 +1,13 @@
 CreateIndex({
-  "name": "eventInvitationsByUser",
+  "name": "eventInvitationByUserInviterEvent",
   "source": Collection("eventInvitations"),
   "terms": [{
     "field": ["data", "userId"]
-  }],
-  "values": [{
-    "field": ["data", "eventId"]
   }, {
     "field": ["data", "inviterId"]
   }, {
-    "field": ["ref"]
+    "field": ["data", "eventId"]
+  }, {
+    "field": ["data", "status"]
   }]
 })
