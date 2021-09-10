@@ -90,7 +90,9 @@ module.exports.initClient = () => {
   return new Client({
     secret: process.env.faunadbSecret,
     checkNewVersion: false,
-    scheme: 'https'
+    scheme: 'https',
+    queryTimeout: 30000,
+    timeout: 30000
   });
 };
 
