@@ -49,17 +49,25 @@ async function handler ({
               ),
           query.Append(
             {
-              event: query.Get(query.Var('ref')),
+              event: query.Get(
+                query.Select([2], query.Var('values'))
+              ),
               isGoing: existsByIndex(
                 'eventAttendeeByUserEventStatus',
                 authUser.id,
-                query.Select(['id'], query.Var('ref')),
+                query.Select(
+                  ['id'],
+                  query.Select([2], query.Var('values'))
+                ),
                 'active'
               ),
               isOrganizer: existsByIndex(
                 'eventOrganizerByOrganizerEvent',
                 authUser.id,
-                query.Select(['id'], query.Var('ref'))
+                query.Select(
+                  ['id'],
+                  query.Select([2], query.Var('values'))
+                )
               )
             },
             query.Var('accumulator')
