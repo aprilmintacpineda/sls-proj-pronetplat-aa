@@ -3,7 +3,6 @@ const {
   initClient,
   create,
   getById,
-  getByIndex,
   selectRef,
   updateById,
   update
@@ -16,25 +15,30 @@ const {
   createNotification
 } = require('dependencies/utils/invokeLambda');
 
-async function handler ({ authUser, params: { eventId } }) {
+async function handler ({ authUser, params: { invitationId } }) {
   const faunadb = initClient();
-
   let invitation = null;
 
   try {
     invitation = await faunadb.query(
       query.Let(
         {
-          invitation: getByIndex(
-            'eventInvitationByUserEventStatus',
-            authUser.id,
-            eventId,
-            'pending'
+          invitation: getById('eventInvitations', invitationId),
+          eventId: query.Select(
+            ['data', 'eventId'],
+            query.Var('invitation')
           ),
-          _event: getById('_events', eventId)
+          _event: getById('_events', query.Var('eventId'))
         },
         query.If(
           query.And(
+            query.Equals(
+              query.Select(
+                ['data', 'status'],
+                query.Var('invitation')
+              ),
+              'pending'
+            ),
             query.LT(
               query.Time(
                 query.Select(
@@ -58,10 +62,10 @@ async function handler ({ authUser, params: { eventId } }) {
           query.Do(
             create('eventAttendees', {
               userId: authUser.id,
-              eventId,
+              eventId: query.Var('eventId'),
               status: 'active'
             }),
-            updateById('_events', eventId, {
+            updateById('_events', query.Var('eventId'), {
               numGoing: query.Add(
                 query.Select(
                   ['data', 'numGoing'],
@@ -82,7 +86,7 @@ async function handler ({ authUser, params: { eventId } }) {
             query.Call(
               'forfeitAllEventInvitations',
               authUser.id,
-              eventId,
+              query.Var('eventId'),
               null
             ),
             query.Var('invitation')
@@ -107,7 +111,7 @@ async function handler ({ authUser, params: { eventId } }) {
     title: 'Event invitation accepted',
     type: 'eventInvitationAccepted',
     payload: {
-      eventId,
+      eventId: invitation.data.eventId,
       eventInvitationId: invitation.ref.id
     }
   });

@@ -103,11 +103,11 @@ routing.post(
   require('./auth/inviteUserToEvent')
 );
 routing.post(
-  '/events/accept-invitation/:eventId',
+  '/events/accept-invitation/:invitationId',
   require('./auth/acceptEventInvitation')
 );
 routing.post(
-  '/events/reject-invitation/:eventId',
+  '/events/reject-invitation/:invitationId',
   require('./auth/rejectEventInvitation')
 );
 routing.post('/events/join/:eventId', require('./auth/joinEvent'));
