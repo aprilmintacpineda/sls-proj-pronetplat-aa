@@ -79,7 +79,8 @@ async function handler ({ authUser, params: { eventId } }) {
           query.Do(
             create('eventAttendees', {
               userId: authUser.id,
-              eventId
+              eventId,
+              status: 'active'
             }),
             updateById('_events', eventId, {
               numGoing: query.Add(
