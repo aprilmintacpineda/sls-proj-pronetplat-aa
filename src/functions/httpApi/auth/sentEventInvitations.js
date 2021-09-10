@@ -14,7 +14,42 @@ async function handler ({ params: { nextToken }, authUser }) {
   const nextTokenParts = nextToken ? nextToken.split('___') : null;
 
   const result = await faunadb.query(
-    query.Map(
+    query.Reduce(
+      query.Lambda(
+        ['accumulator', 'values'], // ['eventId', 'userId', 'ref']
+        query.Let(
+          {
+            event: getById(
+              '_events',
+              query.Select([0], query.Var('values'))
+            )
+          },
+          query.If(
+            query.LT(
+              query.Select(
+                ['data', 'startDateTime'],
+                query.Var('event')
+              ),
+              query.Now()
+            ),
+            query.Var('accumulator'),
+            query.Append(
+              {
+                invitation: query.Get(
+                  query.Select([2], query.Var('values'))
+                ),
+                event: query.Var('event'),
+                invitee: getById(
+                  'users',
+                  query.Select([1], query.Var('values'))
+                )
+              },
+              query.Var('accumulator')
+            )
+          )
+        )
+      ),
+      [],
       query.Paginate(
         query.Match(
           query.Index('eventInvitationsByInviterStatus'),
@@ -34,19 +69,14 @@ async function handler ({ params: { nextToken }, authUser }) {
               ]
             : []
         }
-      ),
-      query.Lambda(['eventId', 'userId', 'ref'], {
-        invitation: query.Get(query.Var('ref')),
-        event: getById('_events', query.Var('eventId')),
-        invitee: getById('users', query.Var('userId'))
-      })
+      )
     )
   );
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(
+      data: result.data[0].map(
         ({ invitation, event, invitee: _invitee }) => {
           const invitee = getPublicUserData(_invitee);
 
