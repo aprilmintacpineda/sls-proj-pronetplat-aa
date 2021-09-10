@@ -69,9 +69,10 @@ async function handler ({ authUser, params: { eventId } }) {
             ),
             query.Not(
               existsByIndex(
-                'eventAttendeeByUserEvent',
+                'eventAttendeeByUserEventStatus',
                 authUser.id,
-                eventId
+                eventId,
+                'active'
               )
             )
           ),

@@ -44,9 +44,10 @@ async function handler ({
                 eventId
               ),
               existsByIndex(
-                'eventAttendeeByUserEvent',
+                'eventAttendeeByUserEventStatus',
                 authUser.id,
-                eventId
+                eventId,
+                'active'
               )
             )
           ),

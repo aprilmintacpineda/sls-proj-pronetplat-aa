@@ -58,9 +58,10 @@ async function handler ({
                 query.Var('eventId')
               ),
               existsByIndex(
-                'eventAttendeeByUserEvent',
+                'eventAttendeeByUserEventStatus',
                 authUser.id,
-                query.Var('eventId')
+                query.Var('eventId'),
+                'active'
               )
             )
           ),

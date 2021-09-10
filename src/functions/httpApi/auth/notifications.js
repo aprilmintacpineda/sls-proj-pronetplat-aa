@@ -68,9 +68,10 @@ async function handler ({ params: { nextToken }, authUser }) {
               query.IsNull(query.Var('eventId')),
               null,
               existsByIndex(
-                'eventAttendeeByUserEvent',
+                'eventAttendeeByUserEventStatus',
                 authUser.id,
-                query.Var('eventId')
+                query.Var('eventId'),
+                'active'
               )
             )
           }

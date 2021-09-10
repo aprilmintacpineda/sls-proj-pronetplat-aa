@@ -68,9 +68,10 @@ async function handler ({
               ),
               query.Not(
                 existsByIndex(
-                  'eventAttendeeByUserEvent',
+                  'eventAttendeeByUserEventStatus',
                   query.Var('contactId'),
-                  eventId
+                  eventId,
+                  'active'
                 )
               )
             )
@@ -146,9 +147,10 @@ async function handler ({
                 ),
                 query.Not(
                   existsByIndex(
-                    'eventAttendeeByUserEvent',
+                    'eventAttendeeByUserEventStatus',
                     query.Var('contactId'),
-                    eventId
+                    eventId,
+                    'active'
                   )
                 )
               )

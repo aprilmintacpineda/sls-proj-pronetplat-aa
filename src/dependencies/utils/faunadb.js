@@ -12,10 +12,7 @@ module.exports.existsById = (collection, id) => {
 module.exports.existsByIndex = existsByIndex;
 
 function updateByIndex ({ index, args, data }) {
-  return update(
-    query.Select(['ref'], getByIndex(index, ...args)),
-    data
-  );
+  return update(selectRef(getByIndex(index, ...args)), data);
 }
 
 module.exports.updateByIndex = updateByIndex;
@@ -201,10 +198,7 @@ module.exports.softDeleteByIdIfOwnedByUser = (
 
 module.exports.hardDeleteByIndex = (index, ...args) => {
   return query.Delete(
-    query.Select(
-      ['ref'],
-      query.Get(query.Match(query.Index(index), ...args))
-    )
+    selectRef(query.Get(query.Match(query.Index(index), ...args)))
   );
 };
 

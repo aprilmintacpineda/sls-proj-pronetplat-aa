@@ -63,9 +63,10 @@ module.exports = async ({
                 payload.eventId
               ),
               isGoing: existsByIndex(
-                'eventAttendeeByUserEvent',
+                'eventAttendeeByUserEventStatus',
                 authUser.id,
-                payload.eventId
+                payload.eventId,
+                'active'
               )
             }
           )

@@ -43,9 +43,10 @@ async function handler ({ authUser, formBody, params: { eventId } }) {
                 eventId
               ),
               existsByIndex(
-                'eventAttendeeByUserEvent',
+                'eventAttendeeByUserEventStatus',
                 authUser.id,
-                eventId
+                eventId,
+                'active'
               )
             )
           ),

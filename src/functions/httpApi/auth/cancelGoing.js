@@ -2,8 +2,8 @@ const { query } = require('faunadb');
 const {
   initClient,
   updateById,
-  hardDeleteByIndex,
-  getById
+  getById,
+  updateByIndex
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -26,11 +26,11 @@ async function handler ({ authUser, params: { eventId } }) {
           query.Now()
         ),
         query.Do(
-          hardDeleteByIndex(
-            'eventAttendeeByUserEvent',
-            authUser.id,
-            eventId
-          ),
+          updateByIndex({
+            index: 'eventAttendeeByUserEventStatus',
+            args: [authUser.id, eventId, 'active'],
+            data: { status: 'cancelled' }
+          }),
           updateById('_events', eventId, {
             numGoing: query.Subtract(
               query.Select(

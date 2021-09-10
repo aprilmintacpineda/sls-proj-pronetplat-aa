@@ -89,9 +89,10 @@ async function handler ({
       query.Lambda(['startDateTime', 'endDateTime', 'ref'], {
         event: query.Get(query.Var('ref')),
         isGoing: existsByIndex(
-          'eventAttendeeByUserEvent',
+          'eventAttendeeByUserEventStatus',
           authUser.id,
-          query.Select(['id'], query.Var('ref'))
+          query.Select(['id'], query.Var('ref')),
+          'active'
         ),
         isOrganizer: existsByIndex(
           'eventOrganizerByOrganizerEvent',
