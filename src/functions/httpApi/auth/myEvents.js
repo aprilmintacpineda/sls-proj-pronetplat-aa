@@ -20,59 +20,58 @@ async function handler ({
     query.Reduce(
       query.Lambda(
         ['accumulator', 'values'], // ['startDateTime', 'endDateTime', 'ref']
-        query.If(
-          schedule === 'past'
-            ? query.And(
-                query.LT(
-                  query.Time(query.Select([0], query.Var('values'))),
-                  query.Now()
-                ),
-                query.LT(
-                  query.Time(query.Select([1], query.Var('values'))),
+        query.Let(
+          {
+            startDateTime: query.Select([0], query.Var('values')),
+            endDateTime: query.Select([1], query.Var('values')),
+            ref: query.Select([2], query.Var('values'))
+          },
+          query.If(
+            schedule === 'past'
+              ? query.And(
+                  query.LT(
+                    query.Time(query.Var('startDateTime')),
+                    query.Now()
+                  ),
+                  query.LT(
+                    query.Time(query.Var('endDateTime')),
+                    query.Now()
+                  )
+                )
+              : schedule === 'future'
+              ? query.GT(
+                  query.Time(query.Var('startDateTime')),
                   query.Now()
                 )
-              )
-            : schedule === 'future'
-            ? query.GT(
-                query.Time(query.Select([0], query.Var('values'))),
-                query.Now()
-              )
-            : query.And(
-                query.LTE(
-                  query.Time(query.Select([0], query.Var('values'))),
-                  query.Now()
+              : query.And(
+                  query.LTE(
+                    query.Time(query.Var('startDateTime')),
+                    query.Now()
+                  ),
+                  query.GTE(
+                    query.Time(query.Var('endDateTime')),
+                    query.Now()
+                  )
                 ),
-                query.GTE(
-                  query.Time(query.Select([1], query.Var('values'))),
-                  query.Now()
-                )
-              ),
-          query.Append(
-            {
-              event: query.Get(
-                query.Select([2], query.Var('values'))
-              ),
-              isGoing: existsByIndex(
-                'eventAttendeeByUserEventStatus',
-                authUser.id,
-                query.Select(
-                  ['id'],
-                  query.Select([2], query.Var('values'))
+            query.Append(
+              {
+                event: query.Get(query.Var('ref')),
+                isGoing: existsByIndex(
+                  'eventAttendeeByUserEventStatus',
+                  authUser.id,
+                  query.Select(['id'], query.Var('ref')),
+                  'active'
                 ),
-                'active'
-              ),
-              isOrganizer: existsByIndex(
-                'eventOrganizerByOrganizerEvent',
-                authUser.id,
-                query.Select(
-                  ['id'],
-                  query.Select([2], query.Var('values'))
+                isOrganizer: existsByIndex(
+                  'eventOrganizerByOrganizerEvent',
+                  authUser.id,
+                  query.Select(['id'], query.Var('ref'))
                 )
-              )
-            },
+              },
+              query.Var('accumulator')
+            ),
             query.Var('accumulator')
-          ),
-          query.Var('accumulator')
+          )
         )
       ),
       [],

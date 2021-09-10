@@ -19,10 +19,10 @@ async function handler ({ params: { nextToken }, authUser }) {
         ['accumulator', 'values'], // ['eventId', 'userId', 'ref']
         query.Let(
           {
-            event: getById(
-              '_events',
-              query.Select([0], query.Var('values'))
-            )
+            eventId: query.Select([0], query.Var('values')),
+            userId: query.Select([1], query.Var('values')),
+            ref: query.Select([2], query.Var('values')),
+            event: getById('_events', query.Var('eventId'))
           },
           query.If(
             query.LT(
@@ -35,14 +35,9 @@ async function handler ({ params: { nextToken }, authUser }) {
             query.Var('accumulator'),
             query.Append(
               {
-                invitation: query.Get(
-                  query.Select([2], query.Var('values'))
-                ),
+                invitation: query.Get(query.Var('ref')),
                 event: query.Var('event'),
-                invitee: getById(
-                  'users',
-                  query.Select([1], query.Var('values'))
-                )
+                invitee: getById('users', query.Var('userId'))
               },
               query.Var('accumulator')
             )
