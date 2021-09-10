@@ -3,7 +3,8 @@ const {
   initClient,
   updateById,
   getById,
-  updateByIndex
+  updateByIndex,
+  updateByIndexIfExists
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -29,6 +30,11 @@ async function handler ({ authUser, params: { eventId } }) {
           updateByIndex({
             index: 'eventAttendeeByUserEventStatus',
             args: [authUser.id, eventId, 'active'],
+            data: { status: 'cancelled' }
+          }),
+          updateByIndexIfExists({
+            index: 'eventInvitationByUserEventStatus',
+            args: [authUser.id, eventId, 'accepted'],
             data: { status: 'cancelled' }
           }),
           updateById('_events', eventId, {

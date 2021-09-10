@@ -72,6 +72,14 @@ function updateById (collection, id, data) {
 
 module.exports.updateById = updateById;
 
+module.exports.updateByIndexIfExists = ({ index, args, data }) => {
+  return query.If(
+    existsByIndex(index, ...args),
+    updateByIndex({ index, args, data }),
+    null
+  );
+};
+
 module.exports.softDeleteById = (collection, id) => {
   return updateById(collection, id, {
     deletedAt: query.Format('%t', query.Now())
