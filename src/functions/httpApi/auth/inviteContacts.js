@@ -62,8 +62,9 @@ async function handler ({
               eventId
             ),
             hasInvitation: existsByIndex(
-              'eventInvitationByUserEventStatus',
+              'eventInvitationByUserInviterEventStatus',
               query.Var('contactId'),
+              authUser.id,
               eventId,
               'pending'
             )
@@ -133,8 +134,9 @@ async function handler ({
                 eventId
               ),
               hasInvitation: existsByIndex(
-                'eventInvitationByUserEventStatus',
+                'eventInvitationByUserInviterEventStatus',
                 query.Var('contactId'),
+                authUser.id,
                 eventId,
                 'pending'
               )
