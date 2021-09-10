@@ -21,77 +21,82 @@ async function handler ({
 
   if (searchBy === 'name') {
     const result = await faunadb.query(
-      query.Filter(
-        query.Map(
-          query.Paginate(
-            query.Intersection(
-              query.Union(
-                ...cleanExtraSpaces(search, false)
-                  .toLowerCase()
-                  .split(/\s/)
-                  .map(slug =>
-                    query.Map(
-                      query.NGram(slug, 2, 3),
-                      query.Lambda(
-                        ['needle'],
-                        query.Match(
-                          query.Index('searchUsersByName'),
-                          query.Var('needle')
+      query.Reduce(
+        query.Lambda(
+          ['accumulator', 'ref'],
+          query.Let(
+            {
+              user: query.Get(query.Var('ref'))
+            },
+            query.If(
+              query.And(
+                query.Not(
+                  query.Equals(
+                    authUser.id,
+                    query.Select(['ref', 'id'], query.Var('user'))
+                  )
+                ),
+                query.Select(
+                  ['data', 'allowSearchByName'],
+                  query.Var('user'),
+                  false
+                ),
+                query.Not(
+                  isOnBlockList(
+                    authUser.id,
+                    query.Select(['ref', 'id'], query.Var('user'))
+                  )
+                )
+              ),
+              query.Append(
+                query.Merge(query.Var('user'), {
+                  data: query.Merge(
+                    query.Select(['data'], query.Var('user')),
+                    {
+                      isConnected: existsByIndex(
+                        'contactByOwnerContact',
+                        authUser.id,
+                        query.Select(
+                          ['ref', 'id'],
+                          query.Var('user')
                         )
                       )
-                    )
+                    }
                   )
-              )
-            ),
-            {
-              size: 20,
-              after: nextToken
-                ? query.Ref(query.Collection('users'), nextToken)
-                : []
-            }
-          ),
-          query.Lambda(
-            ['ref'],
-            query.Let(
-              {
-                user: query.Get(query.Var('ref'))
-              },
-              query.Merge(query.Var('user'), {
-                data: query.Merge(
-                  query.Select(['data'], query.Var('user')),
-                  {
-                    isConnected: existsByIndex(
-                      'contactByOwnerContact',
-                      authUser.id,
-                      query.Select(['ref', 'id'], query.Var('user'))
-                    )
-                  }
-                )
-              })
+                }),
+                query.Var('accumulator')
+              ),
+              query.Var('accumulator')
             )
           )
         ),
-        query.Lambda(
-          ['user'],
-          query.And(
-            query.Not(
-              query.Equals(
-                authUser.id,
-                query.Select(['ref', 'id'], query.Var('user'))
-              )
-            ),
-            query.Select(
-              ['data', 'allowSearchByName'],
-              query.Var('user'),
-              false
-            ),
-            query.Not(
-              isOnBlockList(
-                authUser.id,
-                query.Select(['ref', 'id'], query.Var('user'))
-              )
+        [],
+        query.Paginate(
+          query.Intersection(
+            query.Union(
+              ...cleanExtraSpaces(search, false)
+                .toLowerCase()
+                .split(/\s/)
+                .map(slug =>
+                  query.Map(
+                    query.NGram(slug, 2, 3),
+                    query.Lambda(
+                      ['needle'],
+                      query.Match(
+                        query.Index('searchUsersByName'),
+                        query.Var('needle')
+                      )
+                    )
+                  )
+                )
             )
-          )
+          ),
+          {
+            size: 20,
+            after: nextToken
+              ? query.Ref(query.Collection('users'), nextToken)
+              : []
+          }
         )
       )
     );
