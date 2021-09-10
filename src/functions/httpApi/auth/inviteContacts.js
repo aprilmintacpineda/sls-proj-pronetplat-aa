@@ -50,30 +50,22 @@ async function handler ({
           ],
           {
             user: getById('users', query.Var('contactId')),
-            canInvite: query.And(
-              query.Not(
-                existsByIndex(
-                  'eventInvitationByUserEventStatus',
-                  query.Var('contactId'),
-                  eventId,
-                  'pending'
-                )
-              ),
-              query.Not(
-                existsByIndex(
-                  'eventOrganizerByOrganizerEvent',
-                  query.Var('contactId'),
-                  eventId
-                )
-              ),
-              query.Not(
-                existsByIndex(
-                  'eventAttendeeByUserEventStatus',
-                  query.Var('contactId'),
-                  eventId,
-                  'active'
-                )
-              )
+            isGoing: existsByIndex(
+              'eventAttendeeByUserEventStatus',
+              query.Var('contactId'),
+              eventId,
+              'active'
+            ),
+            isOrganizer: existsByIndex(
+              'eventOrganizerByOrganizerEvent',
+              query.Var('contactId'),
+              eventId
+            ),
+            hasInvitation: existsByIndex(
+              'eventInvitationByUserEventStatus',
+              query.Var('contactId'),
+              eventId,
+              'pending'
             )
           }
         )
@@ -129,30 +121,22 @@ async function handler ({
             },
             {
               user: query.Var('user'),
-              canInvite: query.And(
-                query.Not(
-                  existsByIndex(
-                    'eventInvitationByUserEventStatus',
-                    query.Var('contactId'),
-                    eventId,
-                    'pending'
-                  )
-                ),
-                query.Not(
-                  existsByIndex(
-                    'eventOrganizerByOrganizerEvent',
-                    query.Var('contactId'),
-                    eventId
-                  )
-                ),
-                query.Not(
-                  existsByIndex(
-                    'eventAttendeeByUserEventStatus',
-                    query.Var('contactId'),
-                    eventId,
-                    'active'
-                  )
-                )
+              isGoing: existsByIndex(
+                'eventAttendeeByUserEventStatus',
+                query.Var('contactId'),
+                eventId,
+                'active'
+              ),
+              isOrganizer: existsByIndex(
+                'eventOrganizerByOrganizerEvent',
+                query.Var('contactId'),
+                eventId
+              ),
+              hasInvitation: existsByIndex(
+                'eventInvitationByUserEventStatus',
+                query.Var('contactId'),
+                eventId,
+                'pending'
               )
             }
           )
@@ -166,11 +150,15 @@ async function handler ({
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ user, canInvite }) => ({
-        ...getPublicUserData(user),
-        isConnected: true,
-        canInvite
-      })),
+      data: result.data.map(
+        ({ user, isGoing, isOrganizer, hasInvitation }) => ({
+          ...getPublicUserData(user),
+          isConnected: true,
+          isGoing,
+          isOrganizer,
+          hasInvitation
+        })
+      ),
       nextToken: nextNextToken
     })
   };
