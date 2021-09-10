@@ -34,11 +34,25 @@ async function handler ({ authUser, params: { eventId } }) {
           _event: getById('_events', eventId)
         },
         query.If(
-          query.LT(
-            query.Select(['data', 'numGoing'], query.Var('_event')),
-            query.Select(
-              ['data', 'maxAttendees'],
-              query.Var('_event')
+          query.And(
+            query.LT(
+              query.Time(
+                query.Select(
+                  ['data', 'startDateTime'],
+                  query.Var('_event')
+                )
+              ),
+              query.Now()
+            ),
+            query.LT(
+              query.Select(
+                ['data', 'numGoing'],
+                query.Var('_event')
+              ),
+              query.Select(
+                ['data', 'maxAttendees'],
+                query.Var('_event')
+              )
             )
           ),
           query.Do(
@@ -73,21 +87,15 @@ async function handler ({ authUser, params: { eventId } }) {
             ),
             query.Var('invitation')
           ),
-          query.Abort('EventIsFull')
+          query.Abort('CheckFailed')
         )
       )
     );
   } catch (error) {
     console.log(error);
 
-    if (error.description === 'EventIsFull') {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: 'EventIsFull'
-        })
-      };
-    }
+    if (error.description === 'CheckFailed')
+      return { statusCode: 400 };
 
     return { statusCode: 500 };
   }
