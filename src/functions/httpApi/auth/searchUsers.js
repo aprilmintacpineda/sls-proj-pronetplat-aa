@@ -104,7 +104,7 @@ async function handler ({
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result.data.map(user => ({
+        data: result.data[0].map(user => ({
           ...getPublicUserData(user),
           isConnected: user.data.isConnected
         })),
