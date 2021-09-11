@@ -24,14 +24,14 @@ module.exports = async function handler ({ authUser }) {
             ),
             {
               size: 2,
-              nextToken: nextToken
+              after: nextToken
                 ? [
-                    (nextToken[0],
+                    nextToken[0],
                     nextToken[1],
                     query.Ref(
                       query.Collection('eventInvitations'),
                       nextToken[2]
-                    ))
+                    )
                   ]
                 : []
             }
