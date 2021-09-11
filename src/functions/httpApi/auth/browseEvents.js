@@ -178,23 +178,25 @@ async function handler (
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: result.data.map(({ event, isOrganizer, isGoing }) => ({
-        id: event.ref.id,
-        ...event.data,
-        isGoing,
-        isOrganizer,
-        distance:
-          unitConstant *
-          Math.acos(
-            Math.cos(toRadians(event.data.latitude)) *
-              Math.cos(toRadians(lat)) *
-              Math.cos(
-                toRadians(lng) - toRadians(event.data.longitude)
-              ) +
-              Math.sin(toRadians(event.data.latitude)) *
-                Math.sin(toRadians(lat))
-          )
-      })),
+      data: result.data[0].map(
+        ({ event, isOrganizer, isGoing }) => ({
+          id: event.ref.id,
+          ...event.data,
+          isGoing,
+          isOrganizer,
+          distance:
+            unitConstant *
+            Math.acos(
+              Math.cos(toRadians(event.data.latitude)) *
+                Math.cos(toRadians(lat)) *
+                Math.cos(
+                  toRadians(lng) - toRadians(event.data.longitude)
+                ) +
+                Math.sin(toRadians(event.data.latitude)) *
+                  Math.sin(toRadians(lat))
+            )
+        })
+      ),
       nextToken: result.after
         ? `${result.after[0]}___${result.after[1]}___${result.after[2]}___${result.after[3]}___${result.after[4].id}`
         : null
