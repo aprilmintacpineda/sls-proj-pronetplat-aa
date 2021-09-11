@@ -40,13 +40,13 @@ async function handler ({ authUser, params: { invitationId } }) {
               'pending'
             ),
             query.LT(
+              query.Now(),
               query.Time(
                 query.Select(
                   ['data', 'startDateTime'],
                   query.Var('_event')
                 )
-              ),
-              query.Now()
+              )
             )
           ),
           query.Do(
