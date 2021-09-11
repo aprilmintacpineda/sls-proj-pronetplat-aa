@@ -26,9 +26,11 @@ async function handler ({ params: { nextToken }, authUser }) {
           },
           query.If(
             query.LT(
-              query.Select(
-                ['data', 'startDateTime'],
-                query.Var('event')
+              query.Time(
+                query.Select(
+                  ['data', 'startDateTime'],
+                  query.Var('event')
+                )
               ),
               query.Now()
             ),
