@@ -49,7 +49,7 @@ async function handler (
             longitude: query.Select([3], query.Var('values')),
             ref: query.Select([4], query.Var('values'))
           },
-          query.if(
+          query.If(
             query.And(
               query.LTE(
                 query.Multiply(
