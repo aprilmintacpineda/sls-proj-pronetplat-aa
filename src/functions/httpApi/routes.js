@@ -133,7 +133,7 @@ routing.delete(
   require('./auth/cancelGoing')
 );
 routing.delete(
-  '/events/cancel-invitation/:eventId',
+  '/events/cancel-invitation/:invitationId',
   require('./auth/cancelEventInvitation')
 );
 routing.delete(

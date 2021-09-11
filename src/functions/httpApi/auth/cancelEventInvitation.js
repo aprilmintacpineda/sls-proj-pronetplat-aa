@@ -1,7 +1,9 @@
 const { query } = require('faunadb');
 const {
   initClient,
-  updateByIndex
+  getById,
+  update,
+  selectRef
 } = require('dependencies/utils/faunadb');
 const {
   httpGuard,
@@ -10,47 +12,77 @@ const {
 const {
   createNotification
 } = require('dependencies/utils/invokeLambda');
-const validate = require('dependencies/utils/validate');
 
-async function handler ({ authUser, params: { eventId }, formBody }) {
+async function handler ({ authUser, params: { invitationId } }) {
   const faunadb = initClient();
+  let eventInvitation = null;
 
-  const eventInvitation = await faunadb.query(
-    query.Let(
-      {
-        eventInvitation: updateByIndex({
-          index: 'eventInvitationByUserInviterEventStatus',
-          args: [
-            formBody.contactId,
-            authUser.id,
-            eventId,
-            'pending'
-          ],
-          data: {
-            status: 'cancelled'
-          }
-        })
-      },
-      query.Do(
-        query.Call(
-          'updateUserBadgeCount',
-          formBody.contactId,
-          'eventInvitationsCount',
-          -1
-        ),
-        query.Var('eventInvitation')
+  try {
+    eventInvitation = await faunadb.query(
+      query.Let(
+        {
+          eventInvitation: getById('eventInvitations', invitationId),
+          _event: getById(
+            '_events',
+            query.Select(
+              ['data', 'eventId'],
+              query.Var('eventInvitation')
+            )
+          )
+        },
+        query.If(
+          query.LT(
+            query.Now(),
+            query.Time(
+              query.Select(
+                ['data', 'startDateTime'],
+                query.Var('_event')
+              )
+            )
+          ),
+          query.Let(
+            {
+              eventInvitation: update(
+                selectRef(query.Var('eventInvitation')),
+                {
+                  status: 'cancelled'
+                }
+              )
+            },
+            query.Do(
+              query.Call(
+                'updateUserBadgeCount',
+                query.Select(
+                  ['data', 'userId'],
+                  query.Var('eventInvitation')
+                ),
+                'eventInvitationsCount',
+                -1
+              ),
+              query.Var('eventInvitation')
+            )
+          ),
+          query.Abort('CheckFailed')
+        )
       )
-    )
-  );
+    );
+  } catch (error) {
+    console.log(error);
+
+    if (error.description === 'CheckFailed')
+      return { statusCode: 400 };
+
+    return { statusCode: 500 };
+  }
 
   await createNotification({
     authUser,
-    recipientId: formBody.contactId,
+    recipientId: eventInvitation.data.userId,
     body: '{fullname} has cancelled {genderPossessiveLowercase} event invitation for {eventName}.',
     title: 'Event invitation cancelled',
     type: 'eventInvitationCancelled',
     payload: {
-      eventId,
+      eventId: eventInvitation.data.eventId,
       eventInvitationId: eventInvitation.ref.id
     }
   });
@@ -60,6 +92,5 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
 
 module.exports = httpGuard({
   handler,
-  guards: [guardTypes.auth, guardTypes.setupComplete],
-  formValidator: ({ contactId }) => validate(contactId, ['required'])
+  guards: [guardTypes.auth, guardTypes.setupComplete]
 });
