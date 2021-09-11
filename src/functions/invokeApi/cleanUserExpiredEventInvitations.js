@@ -44,9 +44,11 @@ module.exports = async function handler ({ authUser }) {
                 query.If(
                   query.GTE(
                     query.Now(),
-                    query.Select(
-                      ['data', 'startDateTime'],
-                      query.Var('event')
+                    query.Time(
+                      query.Select(
+                        ['data', 'startDateTime'],
+                        query.Var('event')
+                      )
                     )
                   ),
                   update(query.Var('ref'), {
