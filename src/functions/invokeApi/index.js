@@ -18,7 +18,7 @@ function parseEvent (event) {
 
 async function handler (event) {
   const parsedEvent = parseEvent(event);
-  console.log(parsedEvent);
+  console.log(JSON.stringify(parsedEvent, null, 2));
   const { eventName, payload } = parsedEvent;
   console.log('---', eventName);
   const eventHandler = events[eventName];
