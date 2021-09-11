@@ -27,8 +27,8 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
         query.And(
           existsByIndex(
             'contactByOwnerContact',
-            formBody.contactId,
-            authUser.id
+            authUser.id,
+            formBody.contactId
           ),
           query.Not(
             existsByIndex(
@@ -83,6 +83,26 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
                 query.Select(
                   ['data', 'maxAttendees'],
                   query.Var('_event')
+                )
+              ),
+              query.Or(
+                query.Equals(
+                  query.Select(
+                    ['data', 'visibility'],
+                    query.Var('_event')
+                  ),
+                  'public'
+                ),
+                existsByIndex(
+                  'eventOrganizerByOrganizerEvent',
+                  authUser.id,
+                  eventId
+                ),
+                existsByIndex(
+                  'eventAttendeeByUserEventStatus',
+                  authUser.id,
+                  eventId,
+                  'active'
                 )
               )
             )
