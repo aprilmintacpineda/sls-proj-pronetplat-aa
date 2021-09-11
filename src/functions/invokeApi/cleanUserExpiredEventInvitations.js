@@ -27,7 +27,7 @@ module.exports = async function handler ({ authUser }) {
               )
             ),
             {
-              size: 1,
+              size: 20,
               after: nextToken || []
             }
           )
