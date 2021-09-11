@@ -48,6 +48,11 @@ async function handler ({
                 authUser.id,
                 eventId,
                 'active'
+              ),
+              existsByIndex(
+                'eventInvitationsByUserStatus',
+                authUser.id,
+                'pending'
               )
             )
           ),
