@@ -10,6 +10,7 @@ const {
   httpGuard,
   guardTypes
 } = require('dependencies/utils/httpGuard');
+const { invokeEvent } = require('dependencies/utils/invokeLambda');
 const jwt = require('dependencies/utils/jwt');
 const { getUserData } = require('dependencies/utils/users');
 const validate = require('dependencies/utils/validate');
@@ -51,7 +52,13 @@ async function handler ({ formBody, deviceToken }) {
   );
 
   const userData = getUserData(user);
-  const authToken = await jwt.sign(userData);
+  const [authToken] = await Promise.all([
+    jwt.sign(userData),
+    invokeEvent({
+      eventName: 'cleanUserExpiredEventInvitations',
+      payload: { authUser: userData }
+    })
+  ]);
 
   return {
     statusCode: 200,

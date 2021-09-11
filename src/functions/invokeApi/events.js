@@ -12,5 +12,6 @@ module.exports = {
   createAccount: require('./createAccount'),
   'ObjectCreated:Put': require('./s3FileUploaded'),
   notifyAllContacts: require('./notifyAllContacts'),
-  notifyAllEventOrganizers: require('./notifyAllEventOrganizers')
+  notifyAllEventOrganizers: require('./notifyAllEventOrganizers'),
+  cleanUserExpiredEventInvitations: require('./cleanUserExpiredEventInvitations')
 };
