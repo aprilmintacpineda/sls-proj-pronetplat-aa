@@ -51,9 +51,17 @@ module.exports = async function handler ({ authUser }) {
                       )
                     )
                   ),
-                  update(query.Var('ref'), {
-                    status: 'expired'
-                  }),
+                  query.Do(
+                    update(query.Var('ref'), {
+                      status: 'expired'
+                    }),
+                    query.Call(
+                      'updateUserBadgeCount',
+                      authUser.id,
+                      'eventInvitationsCount',
+                      -1
+                    )
+                  ),
                   null
                 )
               )
