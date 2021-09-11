@@ -71,7 +71,5 @@ module.exports = async function handler ({ authUser }) {
         )
       )
     );
-
-    console.log(nextToken);
   } while (nextToken);
 };
