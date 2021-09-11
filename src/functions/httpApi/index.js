@@ -3,7 +3,7 @@ require('cross-fetch/polyfill');
 const routes = require('./routes');
 
 async function handler (httpEvent) {
-  console.log(JSON.stringify(httpEvent, null, 2));
+  console.log(httpEvent);
 
   const { httpMethod, path } = httpEvent;
   const routeHandler = routes.getRouteHandler(httpMethod, path);
