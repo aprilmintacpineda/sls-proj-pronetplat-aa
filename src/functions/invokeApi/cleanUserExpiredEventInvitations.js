@@ -1,5 +1,9 @@
 const { query } = require('faunadb');
-const { initClient } = require('dependencies/utils/faunadb');
+const {
+  initClient,
+  update,
+  getById
+} = require('dependencies/utils/faunadb');
 
 module.exports = async function handler ({ authUser }) {
   const faunadb = initClient();
@@ -24,16 +28,7 @@ module.exports = async function handler ({ authUser }) {
             ),
             {
               size: 2,
-              after: nextToken
-                ? [
-                    nextToken[0],
-                    nextToken[1],
-                    query.Ref(
-                      query.Collection('eventInvitations'),
-                      nextToken[2]
-                    )
-                  ]
-                : []
+              after: nextToken || []
             }
           )
         },
@@ -44,12 +39,7 @@ module.exports = async function handler ({ authUser }) {
               ['eventId', 'userId', 'ref'],
               query.Let(
                 {
-                  event: query.Get(
-                    query.Ref(
-                      query.Collection('_events'),
-                      query.Var('eventId')
-                    )
-                  )
+                  event: getById('_events', query.Var('eventId'))
                 },
                 query.If(
                   query.GTE(
@@ -59,10 +49,8 @@ module.exports = async function handler ({ authUser }) {
                       query.Var('event')
                     )
                   ),
-                  query.Update(query.Var('ref'), {
-                    data: {
-                      status: 'expired'
-                    }
+                  update(query.Var('ref'), {
+                    status: 'expired'
                   }),
                   null
                 )
