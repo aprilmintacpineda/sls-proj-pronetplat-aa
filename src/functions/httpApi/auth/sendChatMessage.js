@@ -155,9 +155,11 @@ async function handler ({
   await Promise.all([
     sendPushNotification({
       recipientId: contactId,
-      title: 'New message from {fullname}',
-      body: '{fullname} sent you a message',
-      authUser
+      authUser,
+      payload: {
+        title: 'New message from {fullname}',
+        body: '{fullname} sent you a message'
+      }
     }),
     sendWebSocketEvent({
       type: 'chatMessageReceived',

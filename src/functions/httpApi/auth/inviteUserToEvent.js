@@ -122,9 +122,12 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
   await Promise.all([
     sendPushNotification({
       recipientId: formBody.contactId,
-      title: 'Event invitation',
-      body: '{fullname} invited you to join {eventName}.',
-      authUser
+      authUser,
+      payload: {
+        title: 'Event invitation',
+        body: '{fullname} invited you to join {eventName}.',
+        eventId
+      }
     }),
     sendWebSocketEvent({
       type: 'notification',

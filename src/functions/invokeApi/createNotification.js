@@ -11,7 +11,7 @@ module.exports = async ({
   body,
   type,
   title,
-  payload = null
+  payload: _payload = null
 }) => {
   if (recipientId === authUser.id) {
     console.log('invalid: trying to send notification to self.');
@@ -25,7 +25,7 @@ module.exports = async ({
       type,
       body,
       actorId: authUser.id,
-      payload
+      payload: _payload
     }),
     query.Call(
       'updateUserBadgeCount',
@@ -60,12 +60,16 @@ module.exports = async ({
 
   await faunadb.query(query.Do(...queries));
 
+  const payload = {
+    title,
+    body,
+    ..._payload
+  };
+
   await Promise.all([
     sendPushNotification({
       recipientId,
       authUser,
-      title,
-      body,
       payload
     }),
     sendWebSocketEvent({
@@ -73,11 +77,7 @@ module.exports = async ({
       trigger: type,
       authUser,
       recipientId,
-      payload: {
-        title,
-        body,
-        ...payload
-      }
+      payload
     })
   ]);
 };

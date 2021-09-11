@@ -88,9 +88,11 @@ async function handler ({ authUser, params: { contactId } }) {
   await Promise.all([
     sendPushNotification({
       recipientId: contactId,
-      title: 'Contact request received',
-      body: '{fullname} wants to add you to {genderPossessiveLowercase} contacts.',
-      authUser
+      authUser,
+      payload: {
+        title: 'Contact request received',
+        body: '{fullname} wants to add you to {genderPossessiveLowercase} contacts.'
+      }
     }),
     sendWebSocketEvent({
       type: 'notification',

@@ -15,9 +15,7 @@ const {
 module.exports = async ({
   authUser,
   recipientId,
-  body: _body,
-  title: _title,
-  payload
+  payload: { body: _body, title: _title, eventId, userId }
 }) => {
   if (recipientId === authUser.id) {
     console.log('invalid: trying to send notification to self.');
@@ -82,13 +80,8 @@ module.exports = async ({
   };
   let getters = {};
 
-  if (payload) {
-    if (payload.eventId)
-      getters.event = getById('_events', payload.eventId);
-
-    if (payload.userId)
-      getters.user = getById('users', payload.userId);
-  }
+  if (eventId) getters.event = getById('_events', eventId);
+  if (userId) getters.user = getById('users', userId);
 
   const gettersKeys = Object.keys(getters);
 
