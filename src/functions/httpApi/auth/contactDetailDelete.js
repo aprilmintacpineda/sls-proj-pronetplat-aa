@@ -18,8 +18,6 @@ async function handler ({ authUser, params: { contactDetailId } }) {
         getById('contactDetails', contactDetailId)
       )
     );
-
-    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
 
@@ -28,6 +26,8 @@ async function handler ({ authUser, params: { contactDetailId } }) {
 
     return { statusCode: 500 };
   }
+
+  return { statusCode: 200 };
 }
 
 module.exports = httpGuard({

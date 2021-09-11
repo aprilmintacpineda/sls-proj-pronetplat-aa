@@ -82,7 +82,7 @@ async function handler ({ authUser, params: { contactId } }) {
     if (error.description === 'hasPendingRequest')
       return { statusCode: 422 };
 
-    return { statusCode: 400 };
+    return { statusCode: 500 };
   }
 
   await Promise.all([

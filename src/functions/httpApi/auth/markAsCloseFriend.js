@@ -8,9 +8,9 @@ const {
 } = require('dependencies/utils/httpGuard');
 
 async function handler ({ authUser, params: { contactId } }) {
-  try {
-    const faunadb = initClient();
+  const faunadb = initClient();
 
+  try {
     await faunadb.query(
       updateByIndex({
         index: 'contactByOwnerContact',
@@ -18,8 +18,6 @@ async function handler ({ authUser, params: { contactId } }) {
         data: { isCloseFriend: true }
       })
     );
-
-    return { statusCode: 200 };
   } catch (error) {
     console.log('error', error);
 
@@ -28,6 +26,8 @@ async function handler ({ authUser, params: { contactId } }) {
 
     return { statusCode: 500 };
   }
+
+  return { statusCode: 200 };
 }
 
 module.exports = httpGuard({

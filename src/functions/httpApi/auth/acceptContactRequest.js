@@ -17,58 +17,51 @@ async function handler ({ authUser, params: { senderId } }) {
   const faunadb = initClient();
   let contactRequest = null;
 
-  try {
-    contactRequest = await faunadb.query(
-      query.Let(
-        {
-          contactRequest: getByIndex(
-            'contactRequestBySenderIdRecipientId',
-            senderId,
-            authUser.id
-          ),
-          senderId: query.Select(
-            ['data', 'senderId'],
-            query.Var('contactRequest')
-          )
-        },
-        query.Do(
-          create('contacts', {
-            userId: authUser.id,
-            contactId: query.Var('senderId'),
-            numTimesOpened: 0,
-            isCloseFriend: false,
-            unreadChatMessagesFromContact: 0
-          }),
-          create('contacts', {
-            userId: query.Var('senderId'),
-            contactId: authUser.id,
-            numTimesOpened: 0,
-            isCloseFriend: false,
-            numNewChatMessages: 0
-          }),
-          query.Call(
-            'updateUserBadgeCount',
-            query.Var('senderId'),
-            'contactsCount',
-            1
-          ),
-          query.Call(
-            'updateUserBadgeCount',
-            authUser.id,
-            'contactsCount',
-            1
-          ),
-          query.Delete(selectRef(query.Var('contactRequest'))),
+  contactRequest = await faunadb.query(
+    query.Let(
+      {
+        contactRequest: getByIndex(
+          'contactRequestBySenderIdRecipientId',
+          senderId,
+          authUser.id
+        ),
+        senderId: query.Select(
+          ['data', 'senderId'],
           query.Var('contactRequest')
         )
+      },
+      query.Do(
+        create('contacts', {
+          userId: authUser.id,
+          contactId: query.Var('senderId'),
+          numTimesOpened: 0,
+          isCloseFriend: false,
+          unreadChatMessagesFromContact: 0
+        }),
+        create('contacts', {
+          userId: query.Var('senderId'),
+          contactId: authUser.id,
+          numTimesOpened: 0,
+          isCloseFriend: false,
+          numNewChatMessages: 0
+        }),
+        query.Call(
+          'updateUserBadgeCount',
+          query.Var('senderId'),
+          'contactsCount',
+          1
+        ),
+        query.Call(
+          'updateUserBadgeCount',
+          authUser.id,
+          'contactsCount',
+          1
+        ),
+        query.Delete(selectRef(query.Var('contactRequest'))),
+        query.Var('contactRequest')
       )
-    );
-  } catch (error) {
-    console.log(error);
-
-    if (error.description === 'checkFailed')
-      return { statusCode: 400 };
-  }
+    )
+  );
 
   await createNotification({
     authUser,

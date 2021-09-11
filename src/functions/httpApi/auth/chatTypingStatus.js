@@ -37,7 +37,7 @@ async function handler ({
     if (error.description === 'NotInContact')
       return { statusCode: 400 };
 
-    return 500;
+    return { statusCode: 500 };
   }
 
   await sendWebSocketEvent({

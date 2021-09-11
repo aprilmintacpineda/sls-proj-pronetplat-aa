@@ -14,10 +14,11 @@ async function handler ({
   params: { contactDetailId },
   formBody
 }) {
-  try {
-    const faunadb = initClient();
+  const faunadb = initClient();
+  let contactDetail = null;
 
-    const contactDetail = await faunadb.query(
+  try {
+    contactDetail = await faunadb.query(
       updateIfOwnedByUser(
         authUser.id,
         getById('contactDetails', contactDetailId),
@@ -29,14 +30,6 @@ async function handler ({
         }
       )
     );
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        ...contactDetail.data,
-        id: contactDetail.ref.id
-      })
-    };
   } catch (error) {
     console.log('error', error);
 
@@ -45,6 +38,14 @@ async function handler ({
 
     return { statusCode: 500 };
   }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      ...contactDetail.data,
+      id: contactDetail.ref.id
+    })
+  };
 }
 
 module.exports = httpGuard({

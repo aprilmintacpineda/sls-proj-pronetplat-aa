@@ -138,7 +138,7 @@ async function handler ({
     if (error.description === 'ValidationError')
       return { statusCode: 404 };
 
-    return { statusCode: 400 };
+    return { statusCode: 500 };
   }
 
   chatMessage = {
