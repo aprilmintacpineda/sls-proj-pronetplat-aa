@@ -34,6 +34,7 @@ async function handler ({ params: { nextToken }, authUser }) {
               ),
               query.Now()
             ),
+            query.Var('accumulator'),
             query.Append(
               {
                 invitation: query.Get(query.Var('ref')),
@@ -41,8 +42,7 @@ async function handler ({ params: { nextToken }, authUser }) {
                 invitee: getById('users', query.Var('userId'))
               },
               query.Var('accumulator')
-            ),
-            query.Var('accumulator')
+            )
           )
         )
       ),
