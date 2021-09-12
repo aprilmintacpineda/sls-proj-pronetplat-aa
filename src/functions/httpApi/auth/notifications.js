@@ -127,7 +127,15 @@ async function handler ({ params: { nextToken }, authUser }) {
                 isGoing
               }
             : null,
-          user: payload.user ? getPublicUserData(payload.user) : null
+          user: payload.user
+            ? getPublicUserData(payload.user)
+            : null,
+          eventInvitation: payload.eventInvitation
+            ? {
+                ...payload.eventInvitation.data,
+                id: payload.eventInvitation.ref.id
+              }
+            : null
         },
         actor: getPublicUserData(actor)
       };
