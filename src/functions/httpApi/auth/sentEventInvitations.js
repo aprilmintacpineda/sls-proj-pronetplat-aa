@@ -62,7 +62,7 @@ async function handler ({ params: { nextToken }, authUser }) {
                 nextTokenParts[2],
                 query.Ref(
                   query.Collection('eventInvitations'),
-                  nextTokenParts[2]
+                  nextTokenParts[3]
                 )
               ]
             : []
