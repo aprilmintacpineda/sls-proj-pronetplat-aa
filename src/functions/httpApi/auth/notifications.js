@@ -45,16 +45,32 @@ async function handler ({ params: { nextToken }, authUser }) {
               ['data', 'payload', 'eventId'],
               query.Var('notification'),
               null
+            ),
+            userId: query.Select(
+              ['data', 'payload', 'userId'],
+              query.Var('notification'),
+              null
             )
           },
           {
-            notification: query.Var('notification'),
+            notification: query.Merge(query.Var('notification'), {
+              data: query.Merge(
+                query.Select(['data'], query.Var('notification')),
+                {
+                  event: query.If(
+                    query.IsNull(query.Var('eventId')),
+                    null,
+                    getById('_events', query.Var('eventId'))
+                  ),
+                  user: query.If(
+                    query.IsNull(query.Var('userId')),
+                    null,
+                    getById('users', query.Var('userId'))
+                  )
+                }
+              )
+            }),
             actor: getById('users', query.Var('actorId')),
-            event: query.If(
-              query.IsNull(query.Var('eventId')),
-              null,
-              getById('_events', query.Var('eventId'))
-            ),
             isOrganizer: query.If(
               query.IsNull(query.Var('eventId')),
               null,
