@@ -157,7 +157,7 @@ async function handler ({
       recipientId: contactId,
       authUser,
       payload: {
-        title: 'New message from {fullname}',
+        title: 'New message',
         body: '{fullname} sent you a message'
       }
     }),
