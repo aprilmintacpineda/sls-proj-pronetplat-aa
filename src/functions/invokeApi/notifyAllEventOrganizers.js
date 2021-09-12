@@ -4,7 +4,11 @@ const {
   createNotification
 } = require('dependencies/utils/invokeLambda');
 
-module.exports = async ({ eventId, ...notificationParams }) => {
+module.exports = async ({
+  eventId,
+  exclude = null,
+  ...notificationParams
+}) => {
   const faunadb = initClient();
   let after = [];
   const promises = [];
@@ -24,12 +28,14 @@ module.exports = async ({ eventId, ...notificationParams }) => {
     );
 
     result.data.forEach(userId => {
-      promises.push(
-        createNotification({
-          recipientId: userId,
-          ...notificationParams
-        })
-      );
+      if (!exclude || !exclude.includes(userId)) {
+        promises.push(
+          createNotification({
+            recipientId: userId,
+            ...notificationParams
+          })
+        );
+      }
     });
 
     after = result.after;
