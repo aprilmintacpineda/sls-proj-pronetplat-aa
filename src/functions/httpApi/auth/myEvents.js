@@ -56,7 +56,12 @@ async function handler ({
             query.Append(
               {
                 event: query.Get(query.Var('ref')),
-                isGoing: true,
+                isGoing: existsByIndex(
+                  'eventAttendeeByUserEventStatus',
+                  authUser.id,
+                  query.Select(['id'], query.Var('ref')),
+                  'active'
+                ),
                 isOrganizer: existsByIndex(
                   'eventOrganizerByOrganizerEvent',
                   authUser.id,
@@ -78,7 +83,7 @@ async function handler ({
               authUser.id
             ),
             query.Match(
-              query.Index('eventsByAttendeeStatus'),
+              query.Index('eventsByAttendeeByUserStatus'),
               authUser.id,
               'active'
             )
