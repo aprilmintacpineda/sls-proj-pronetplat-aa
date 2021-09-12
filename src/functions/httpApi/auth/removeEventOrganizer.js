@@ -53,7 +53,7 @@ async function handler ({
         eventId,
         authUser,
         body: '{fullname} removed {userFullNamePossessive} as an organizer from {eventName}.',
-        title: 'Added as organizer to {eventName}',
+        title: 'Removed as organizer to {eventName}',
         type: 'addedAsOrganizerToEvent',
         exclude: [organizerId],
         payload: {

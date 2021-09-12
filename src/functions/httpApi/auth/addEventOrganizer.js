@@ -12,7 +12,8 @@ const {
   guardTypes
 } = require('dependencies/utils/httpGuard');
 const {
-  createNotification
+  createNotification,
+  invokeEvent
 } = require('dependencies/utils/invokeLambda');
 const validate = require('dependencies/utils/validate');
 
@@ -96,14 +97,31 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
     return { statusCode: 500 };
   }
 
-  await createNotification({
-    authUser,
-    recipientId: formBody.contactId,
-    body: '{fullname} added you as an organizer to {eventName}.',
-    title: 'Added as organizer to {eventName}',
-    type: 'addedAsOrganizerToEvent',
-    payload: { eventId }
-  });
+  await Promise.all([
+    invokeEvent({
+      eventName: 'notifyAllEventOrganizers',
+      payload: {
+        eventId,
+        authUser,
+        body: '{fullname} added {userFullNamePossessive} as an organizer from {eventName}.',
+        title: 'Added as organizer to {eventName}',
+        type: 'addedAsOrganizerToEvent',
+        exclude: [formBody.contactId],
+        payload: {
+          eventId,
+          userId: formBody.contactId
+        }
+      }
+    }),
+    createNotification({
+      authUser,
+      recipientId: formBody.contactId,
+      body: '{fullname} added you as an organizer to {eventName}.',
+      title: 'Added as organizer to {eventName}',
+      type: 'addedAsOrganizerToEvent',
+      payload: { eventId }
+    })
+  ]);
 
   return { statusCode: 200 };
 }
