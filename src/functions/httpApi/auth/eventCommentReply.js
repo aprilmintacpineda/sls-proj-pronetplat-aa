@@ -113,6 +113,7 @@ async function handler ({
       body: '{fullname} replied to {userFullNamePossessive} comment on {eventName}',
       title: 'New reply to a comment on your event',
       type: 'replyOnComment',
+      exclude: [authUser.id],
       payload: {
         eventId: result.eventId,
         userId: result.userId
