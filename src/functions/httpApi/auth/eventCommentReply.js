@@ -76,19 +76,14 @@ async function handler ({
                   ),
                   1
                 )
-              }),
+              })
+            },
+            {
+              eventId: query.Var('eventId'),
               userId: query.Select(
                 ['data', 'userId'],
                 query.Var('comment')
               ),
-              eventId: query.Select(
-                ['data', 'eventId'],
-                query.Var('comment')
-              )
-            },
-            {
-              eventId: query.Var('eventId'),
-              userId: query.Var('userId'),
               reply: create('eventComments', {
                 userId: authUser.id,
                 eventId: query.Var('eventId'),
