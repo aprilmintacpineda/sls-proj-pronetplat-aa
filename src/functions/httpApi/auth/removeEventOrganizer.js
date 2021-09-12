@@ -10,7 +10,8 @@ const {
   guardTypes
 } = require('dependencies/utils/httpGuard');
 const {
-  createNotification
+  createNotification,
+  invokeEvent
 } = require('dependencies/utils/invokeLambda');
 
 async function handler ({
@@ -45,14 +46,31 @@ async function handler ({
     )
   );
 
-  await createNotification({
-    authUser,
-    recipientId: organizerId,
-    body: '{fullname} removed you as an organizer from {eventName}.',
-    title: 'Removed as organizer from {eventName}',
-    type: 'removedAsOrganizerFromEvent',
-    payload: { eventId }
-  });
+  await Promise.all([
+    invokeEvent({
+      eventName: 'notifyAllEventOrganizers',
+      payload: {
+        eventId,
+        authUser,
+        body: '{fullname} removed {userFullNamePossessive} as an organizer from {eventName}.',
+        title: 'Added as organizer to {eventName}',
+        type: 'addedAsOrganizerToEvent',
+        exclude: [organizerId],
+        payload: {
+          eventId,
+          userId: organizerId
+        }
+      }
+    }),
+    createNotification({
+      authUser,
+      recipientId: organizerId,
+      body: '{fullname} removed you as an organizer from {eventName}.',
+      title: 'Removed as organizer from {eventName}',
+      type: 'removedAsOrganizerFromEvent',
+      payload: { eventId }
+    })
+  ]);
 
   return { statusCode: 200 };
 }
