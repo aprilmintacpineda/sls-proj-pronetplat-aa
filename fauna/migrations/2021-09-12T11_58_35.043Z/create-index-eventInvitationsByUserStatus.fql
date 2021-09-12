@@ -7,7 +7,8 @@ CreateIndex({
     "field": ["data", "status"]
   }],
   "values": [{
-    "field": ["data", "createdAt"]
+    "field": ["data", "createdAt"],
+    "reverse": true
   }, {
     "field": ["data", "eventId"]
   }, {
