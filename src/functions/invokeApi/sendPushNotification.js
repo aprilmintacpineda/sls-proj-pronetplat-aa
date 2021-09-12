@@ -77,6 +77,13 @@ module.exports = async ({
           : user.id === recipientId
           ? 'your'
           : `${getFullName(user)}'s`;
+      },
+      '{userFullName}': user => {
+        return user.id === authUser.id
+          ? getPersonalPronoun(authUser).possessive.lowercase
+          : user.id === recipientId
+          ? 'you'
+          : `${getFullName(user)}`;
       }
     }
   };

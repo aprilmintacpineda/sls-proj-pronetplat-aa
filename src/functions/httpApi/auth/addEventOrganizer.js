@@ -103,7 +103,7 @@ async function handler ({ authUser, params: { eventId }, formBody }) {
       payload: {
         eventId,
         authUser,
-        body: '{fullname} added {userFullNamePossessive} as an organizer from {eventName}.',
+        body: '{fullname} added {userFullName} as an organizer from {eventName}.',
         title: 'Added as organizer to {eventName}',
         type: 'addedAsOrganizerToEvent',
         exclude: [formBody.contactId],
