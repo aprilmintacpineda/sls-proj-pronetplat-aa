@@ -58,31 +58,27 @@ async function handler ({ params: { nextToken }, authUser }) {
             )
           },
           {
-            notification: query.Merge(query.Var('notification'), {
-              data: query.Merge(
-                query.Select(['data'], query.Var('notification')),
-                {
-                  event: query.If(
-                    query.IsNull(query.Var('eventId')),
-                    null,
-                    getById('_events', query.Var('eventId'))
-                  ),
-                  user: query.If(
-                    query.IsNull(query.Var('userId')),
-                    null,
-                    getById('users', query.Var('userId'))
-                  ),
-                  eventInvitation: query.If(
-                    query.IsNull(query.Var('eventInvitationId')),
-                    null,
-                    getById(
-                      'eventInvitations',
-                      query.Var('eventInvitationId')
-                    )
-                  )
-                }
+            notification: query.Var('notification'),
+            payload: {
+              event: query.If(
+                query.IsNull(query.Var('eventId')),
+                null,
+                getById('_events', query.Var('eventId'))
+              ),
+              user: query.If(
+                query.IsNull(query.Var('userId')),
+                null,
+                getById('users', query.Var('userId'))
+              ),
+              eventInvitation: query.If(
+                query.IsNull(query.Var('eventInvitationId')),
+                null,
+                getById(
+                  'eventInvitations',
+                  query.Var('eventInvitationId')
+                )
               )
-            }),
+            },
             actor: getById('users', query.Var('actorId')),
             isOrganizer: query.If(
               query.IsNull(query.Var('eventId')),
@@ -110,35 +106,36 @@ async function handler ({ params: { nextToken }, authUser }) {
   );
 
   const unseenNotificationIds = [];
-  const data = [];
-
-  result.data.forEach(
+  const data = result.data.map(
     ({
       notification: _notification,
       actor,
-      event,
       isOrganizer,
-      isGoing
+      isGoing,
+      payload = {}
     }) => {
       const notification = {
         ..._notification.data,
         id: _notification.ref.id,
+        payload: {
+          ...payload,
+          event: payload.event
+            ? {
+                id: payload.event.ref.id,
+                ...payload.event.data,
+                isOrganizer,
+                isGoing
+              }
+            : null,
+          user: payload.user ? getPublicUserData(payload.user) : null
+        },
         actor: getPublicUserData(actor)
       };
-
-      if (event) {
-        notification.event = {
-          id: event.ref.id,
-          ...event.data,
-          isOrganizer,
-          isGoing
-        };
-      }
 
       if (!notification.seenAt)
         unseenNotificationIds.push(notification.id);
 
-      data.push(notification);
+      return notification;
     }
   );
 
