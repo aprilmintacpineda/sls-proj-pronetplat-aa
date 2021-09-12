@@ -7,6 +7,7 @@ const {
 module.exports = async ({
   eventId,
   exclude = null,
+  authUser,
   ...notificationParams
 }) => {
   const faunadb = initClient();
@@ -28,10 +29,14 @@ module.exports = async ({
     );
 
     result.data.forEach(userId => {
-      if (!exclude || !exclude.includes(userId)) {
+      if (
+        userId !== authUser.id &&
+        (!exclude || !exclude.includes(userId))
+      ) {
         promises.push(
           createNotification({
             recipientId: userId,
+            authUser,
             ...notificationParams
           })
         );
