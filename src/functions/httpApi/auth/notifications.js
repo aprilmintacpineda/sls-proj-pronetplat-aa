@@ -50,6 +50,11 @@ async function handler ({ params: { nextToken }, authUser }) {
               ['data', 'payload', 'userId'],
               query.Var('notification'),
               null
+            ),
+            eventInvitationId: query.Select(
+              ['data', 'payload', 'eventInvitationId'],
+              query.Var('notification'),
+              null
             )
           },
           {
@@ -66,6 +71,14 @@ async function handler ({ params: { nextToken }, authUser }) {
                     query.IsNull(query.Var('userId')),
                     null,
                     getById('users', query.Var('userId'))
+                  ),
+                  eventInvitation: query.If(
+                    query.IsNull(query.Var('eventInvitationId')),
+                    null,
+                    getById(
+                      'eventInvitations',
+                      query.Var('eventInvitationId')
+                    )
                   )
                 }
               )
