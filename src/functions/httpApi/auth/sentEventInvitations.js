@@ -16,12 +16,12 @@ async function handler ({ params: { nextToken }, authUser }) {
   const result = await faunadb.query(
     query.Reduce(
       query.Lambda(
-        ['accumulator', 'values'], // ['eventId', 'userId', 'ref']
+        ['accumulator', 'values'], // ['createdAt', 'eventId', 'userId', 'ref']
         query.Let(
           {
-            eventId: query.Select([0], query.Var('values')),
-            userId: query.Select([1], query.Var('values')),
-            ref: query.Select([2], query.Var('values')),
+            eventId: query.Select([1], query.Var('values')),
+            userId: query.Select([2], query.Var('values')),
+            ref: query.Select([3], query.Var('values')),
             event: getById('_events', query.Var('eventId'))
           },
           query.If(

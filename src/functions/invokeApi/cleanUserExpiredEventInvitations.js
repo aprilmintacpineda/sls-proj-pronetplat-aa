@@ -36,7 +36,7 @@ module.exports = async function handler ({ authUser }) {
           query.Foreach(
             query.Var('result'),
             query.Lambda(
-              ['eventId', 'userId', 'ref'],
+              ['createdAt', 'eventId', 'userId', 'ref'],
               query.Let(
                 {
                   event: getById('_events', query.Var('eventId'))
