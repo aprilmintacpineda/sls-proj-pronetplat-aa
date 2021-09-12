@@ -59,6 +59,7 @@ async function handler ({ params: { nextToken }, authUser }) {
             ? [
                 nextTokenParts[0],
                 nextTokenParts[1],
+                nextTokenParts[2],
                 query.Ref(
                   query.Collection('eventInvitations'),
                   nextTokenParts[2]
@@ -91,7 +92,7 @@ async function handler ({ params: { nextToken }, authUser }) {
         }
       ),
       nextToken: result.after
-        ? `${result.after[0]}___${result.after[1]}___${result.after[2].id}`
+        ? `${result.after[0]}___${result.after[1]}___${result.after[2]}___${result.after[3].id}`
         : null
     })
   };
