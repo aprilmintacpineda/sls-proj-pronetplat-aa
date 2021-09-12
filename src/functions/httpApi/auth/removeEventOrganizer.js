@@ -55,7 +55,6 @@ async function handler ({
         body: '{fullname} removed {userFullNamePossessive} as an organizer from {eventName}.',
         title: 'Removed as organizer to {eventName}',
         type: 'addedAsOrganizerToEvent',
-        exclude: [organizerId],
         payload: {
           eventId,
           userId: organizerId
