@@ -49,7 +49,7 @@ async function handler ({ params: { nextToken }, authUser }) {
           },
           {
             notification: query.Var('notification'),
-            user: getById('users', query.Var('actorId')),
+            actor: getById('users', query.Var('actorId')),
             event: query.If(
               query.IsNull(query.Var('eventId')),
               null,
@@ -86,7 +86,7 @@ async function handler ({ params: { nextToken }, authUser }) {
   result.data.forEach(
     ({
       notification: _notification,
-      user,
+      actor,
       event,
       isOrganizer,
       isGoing
@@ -94,7 +94,7 @@ async function handler ({ params: { nextToken }, authUser }) {
       const notification = {
         ..._notification.data,
         id: _notification.ref.id,
-        user: getPublicUserData(user)
+        actor: getPublicUserData(actor)
       };
 
       if (event) {
