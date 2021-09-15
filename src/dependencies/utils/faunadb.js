@@ -92,7 +92,8 @@ module.exports.initClient = () => {
     checkNewVersion: false,
     scheme: 'https',
     queryTimeout: 30000,
-    timeout: 30000
+    timeout: 30000,
+    domain: 'db.us.fauna.com'
   });
 };
 
