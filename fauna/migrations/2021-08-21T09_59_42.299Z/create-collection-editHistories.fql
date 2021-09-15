@@ -1,3 +1,4 @@
 CreateCollection({
-  "name": "editHistories"
+  "name": "editHistories",
+  history_days: 0
 })

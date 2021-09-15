@@ -1,1 +1,4 @@
-CreateCollection({ name: 'editHistories' });
+CreateCollection({
+  name: 'editHistories',
+  history_days: 0
+});

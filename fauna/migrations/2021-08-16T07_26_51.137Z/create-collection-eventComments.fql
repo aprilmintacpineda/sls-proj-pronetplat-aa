@@ -1,3 +1,4 @@
 CreateCollection({
-  "name": "eventComments"
+  "name": "eventComments",
+  history_days: 0
 })

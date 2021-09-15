@@ -1,1 +1,4 @@
-CreateCollection({ name: 'notifications' })
+CreateCollection({
+  name: 'notifications',
+  history_days: 0
+})

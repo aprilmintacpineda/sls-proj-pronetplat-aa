@@ -1,1 +1,4 @@
-CreateCollection({ name: 'eventComments' })
+CreateCollection({
+  name: 'eventComments',
+  history_days: 0
+})

@@ -1,3 +1,4 @@
 CreateCollection({
-  name: "registeredDevices"
+  name: "registeredDevices",
+  history_days: 0
 })

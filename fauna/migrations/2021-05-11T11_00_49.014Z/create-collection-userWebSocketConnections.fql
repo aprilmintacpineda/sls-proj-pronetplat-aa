@@ -1,3 +1,4 @@
 CreateCollection({
-  "name": "userWebSocketConnections"
+  "name": "userWebSocketConnections",
+  history_days: 0
 })

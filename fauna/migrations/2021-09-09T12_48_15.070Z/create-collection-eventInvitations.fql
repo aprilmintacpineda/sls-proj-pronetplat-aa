@@ -1,3 +1,4 @@
 CreateCollection({
-  "name": "eventInvitations"
+  "name": "eventInvitations",
+  history_days: 0
 })

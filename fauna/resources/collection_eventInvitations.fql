@@ -1,1 +1,4 @@
-CreateCollection({ name: 'eventInvitations' });
+CreateCollection({
+  name: 'eventInvitations',
+  history_days: 0
+});

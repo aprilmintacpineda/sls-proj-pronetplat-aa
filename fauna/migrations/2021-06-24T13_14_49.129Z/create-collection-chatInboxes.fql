@@ -1,3 +1,4 @@
 CreateCollection({
-  "name": "chatInboxes"
+  "name": "chatInboxes",
+  history_days: 0
 })

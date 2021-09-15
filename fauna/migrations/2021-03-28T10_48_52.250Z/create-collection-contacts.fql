@@ -1,3 +1,4 @@
 CreateCollection({
-  name: "contacts"
+  name: "contacts",
+  history_days: 0
 })

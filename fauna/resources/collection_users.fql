@@ -1,1 +1,4 @@
-CreateCollection({ name: 'users' })
+CreateCollection({
+  name: 'users',
+  history_days: 0
+})

@@ -1,1 +1,4 @@
-CreateCollection({ name: "chatInboxes" });
+CreateCollection({
+  name: "chatInboxes",
+  history_days: 0
+});

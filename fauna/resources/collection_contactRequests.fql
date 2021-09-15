@@ -1,1 +1,4 @@
-CreateCollection({ name: 'contactRequests' })
+CreateCollection({
+  name: 'contactRequests',
+  history_days: 0
+});

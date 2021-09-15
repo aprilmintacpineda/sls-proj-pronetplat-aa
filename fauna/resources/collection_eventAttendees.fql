@@ -1,1 +1,4 @@
-CreateCollection({ name: 'eventAttendees' });
+CreateCollection({
+  name: 'eventAttendees',
+  history_days: 0
+});
