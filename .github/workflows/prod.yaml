@@ -24,6 +24,7 @@ jobs:
       FAUNA_LEGACY: true
       FAUNA_NOPRINT: true
       FAUNA_ADMIN_KEY: ${{ secrets.FAUNADB_ADMIN_KEY_PROD }}
+      FAUNADB_DOMAIN: db.us.fauna.com
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
