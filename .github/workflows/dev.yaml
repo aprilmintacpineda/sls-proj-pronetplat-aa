@@ -20,7 +20,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
       WEBSOCKET_URL: 503hzmc0a0.execute-api.us-east-1.amazonaws.com/dev
-      FAUNA_ADMIN_KEY: ${{ secrets.FAUNADB_ADMIN_KEY_DEV }}
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY_DEV }}
       FAUNA_LEGACY: true
       FAUNA_NOPRINT: true
@@ -52,6 +51,8 @@ jobs:
         run: yarn --prefer-offline
 
       - name: Run migration
+        env:
+          FAUNA_ADMIN_KEY: ${{ secrets.FAUNADB_ADMIN_KEY_DEV }}
         run: yarn fauna-schema-migrate apply all
 
       - name: Build JS
