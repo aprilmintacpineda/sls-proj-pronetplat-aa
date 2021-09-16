@@ -23,6 +23,7 @@ jobs:
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY_PROD }}
       FAUNA_LEGACY: true
       FAUNA_NOPRINT: true
+      FAUNA_ADMIN_KEY: ${{ secrets.FAUNADB_ADMIN_KEY_PROD }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -51,8 +52,6 @@ jobs:
         run: yarn --prefer-offline
 
       - name: Run migration
-        env:
-          FAUNA_ADMIN_KEY: ${{ secrets.FAUNADB_ADMIN_KEY_DEV }}
         run: yarn fauna-schema-migrate apply all
 
       - name: Build JS
