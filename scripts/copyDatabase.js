@@ -20,13 +20,13 @@
 
 // enter values for the database you want to copy from
 const sourceConfig = {
-  secret: '',
+  secret: process.env.SOURCE_SECRET,
   domain: 'db.fauna.com'
 };
 
 // enter values for the database you want to copy to
 const destinationConfig = {
-  secret: '',
+  secret: process.env.DESTINATION_SECRET,
   domain: 'db.us.fauna.com'
 };
 
