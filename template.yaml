@@ -54,12 +54,6 @@ Globals:
           - "proj-pronetplat-aa-invokeApi"
 
 Resources:
-  # Resuable resources
-  wildcardDomainSSL:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: "*.entrepic.com"
-      ValidationMethod: DNS
   # Functions
   httpApi:
     Type: AWS::Serverless::Function
@@ -170,7 +164,7 @@ Resources:
           TargetOriginId: webSocketOrigin
           ViewerProtocolPolicy: https-only
         ViewerCertificate:
-          AcmCertificateArn: !Ref wildcardDomainSSL
+          AcmCertificateArn: arn:aws:acm:us-east-1:127336369406:certificate/ffe2d370-424a-4c2b-a944-53a74a8c1b97
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
   webSocket:
@@ -206,7 +200,7 @@ Resources:
           - !Ref Stage
           - webSocketSubDomain
       DomainNameConfigurations:
-        - CertificateArn: !Ref wildcardDomainSSL
+        - CertificateArn: arn:aws:acm:us-east-1:127336369406:certificate/ffe2d370-424a-4c2b-a944-53a74a8c1b97
   webSocketCustomDomainRoute53:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -352,7 +346,7 @@ Resources:
           TargetOriginId: mainBackendApiOrigin
           ViewerProtocolPolicy: https-only
         ViewerCertificate:
-          AcmCertificateArn: !Ref wildcardDomainSSL
+          AcmCertificateArn: arn:aws:acm:us-east-1:127336369406:certificate/ffe2d370-424a-4c2b-a944-53a74a8c1b97
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
   mainBackendCloudfrontCustomDomainRoute53:
