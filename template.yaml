@@ -167,6 +167,20 @@ Resources:
           AcmCertificateArn: arn:aws:acm:us-east-1:127336369406:certificate/ffe2d370-424a-4c2b-a944-53a74a8c1b97
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
+  webSocketCustomDomainRoute53:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: A
+      HostedZoneId: Z0450109WGLMG82TZFOY
+      Name: !Sub
+        - ${webSocketSubDomain}.entrepic.com
+        - webSocketSubDomain: !FindInMap
+          - stageVars
+          - !Ref Stage
+          - webSocketSubDomain
+      AliasTarget: 
+        HostedZoneId: Z2FDTNDATAQYW2 # constant for cloudfront
+        DNSName: !GetAtt webSocketCloudfront.DomainName
   webSocket:
     Type: AWS::ApiGatewayV2::Api
     Properties:
@@ -190,42 +204,6 @@ Resources:
       StageName: !Ref Stage
       DeploymentId: !Ref webSocketDeployment
       ApiId: !Ref webSocket
-  webSocketCustomDomain:
-    Type: AWS::ApiGatewayV2::DomainName
-    Properties:
-      DomainName: !Sub
-        - ${webSocketSubDomain}.entrepic.com
-        - webSocketSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - webSocketSubDomain
-      DomainNameConfigurations:
-        - CertificateArn: arn:aws:acm:us-east-1:127336369406:certificate/ffe2d370-424a-4c2b-a944-53a74a8c1b97
-  webSocketCustomDomainRoute53:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      Type: A
-      HostedZoneId: Z0450109WGLMG82TZFOY
-      Name: !Sub
-        - ${webSocketSubDomain}.entrepic.com
-        - webSocketSubDomain: !FindInMap
-          - stageVars
-          - !Ref Stage
-          - webSocketSubDomain
-      AliasTarget: 
-        HostedZoneId: Z2FDTNDATAQYW2 # constant for cloudfront
-        DNSName: !GetAtt webSocketCloudfront.DomainName
-  # webSocketCustomDomainMapping:
-  #   Type: AWS::ApiGatewayV2::ApiMapping
-  #   Properties:
-  #     ApiId: !Ref webSocket
-  #     DomainName: !Sub
-  #       - ${webSocketSubDomain}.entrepic.com
-  #       - webSocketSubDomain: !FindInMap
-  #         - stageVars
-  #         - !Ref Stage
-  #         - webSocketSubDomain
-  #     Stage: !Ref Stage
   webSocketApi:
     Type: AWS::Serverless::Function
     Metadata:
