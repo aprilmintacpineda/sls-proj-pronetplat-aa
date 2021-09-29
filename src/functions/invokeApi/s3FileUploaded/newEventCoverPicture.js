@@ -6,8 +6,7 @@ const {
 } = require('dependencies/utils/faunadb');
 const {
   getObjectPromise,
-  uploadPromise,
-  deleteObjectPromise
+  uploadPromise
 } = require('dependencies/utils/s3');
 
 module.exports = async ({ bucketName, objectKey }) => {
@@ -34,23 +33,14 @@ module.exports = async ({ bucketName, objectKey }) => {
 
   const event = await faunadb.query(getById('_events', eventId));
 
-  const [uploaded] = await Promise.all([
-    uploadPromise({
-      ACL: 'public-read',
-      Key: coverPicture,
-      Bucket: bucketName,
-      Body: resizedImage,
-      ContentEncoding: file.ContentEncoding,
-      ContentType: file.ContentType
-    }),
-    deleteObjectPromise(uploadedS3Object),
-    event.data.status !== 'creating'
-      ? deleteObjectPromise({
-          Bucket: bucketName,
-          Key: event.data.coverPicture.split('/').reverse()[0]
-        })
-      : null
-  ]);
+  const uploaded = await uploadPromise({
+    ACL: 'public-read',
+    Key: coverPicture,
+    Bucket: bucketName,
+    Body: resizedImage,
+    ContentEncoding: file.ContentEncoding,
+    ContentType: file.ContentType
+  });
 
   await faunadb.query(
     update(event.ref, {
